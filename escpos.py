@@ -160,7 +160,7 @@ class Escpos:
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
-        else: # DEFAULT FONT: UPC A
+        else: # DEFAULT FONT: A
             self._raw(BARCODE_FONT_A)
         # Position
         if pos.upper() == "OFF":
