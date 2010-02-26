@@ -1,0 +1,10 @@
+# python temporary files
+syntax: glob
+*.pyc
+
+# editor autosaves
+$~
+
+# temporary data
+syntax: regexp
+temp

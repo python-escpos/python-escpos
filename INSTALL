@@ -1,0 +1,8 @@
+python-escpos
+=============
+
+Ensure it is present under ${lib_arch}/${python_ver}/site-packages/escpos
+
+Enjoy !!!
+
+Manuel F Martinez <manpaz@bashlinux.com>
