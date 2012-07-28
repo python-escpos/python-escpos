@@ -6,7 +6,8 @@
 @license: GPL
 '''
 
-import usb
+import usb.core
+import usb.util
 import Image
 import time
 
@@ -21,13 +22,8 @@ class DeviceDescriptor:
         self.interface = interface
 
     def get_device(self) :
-        buses = usb.busses()
-        for bus in buses :
-            for device in bus.devices :
-                if device.idVendor == self.idVendor and device.idProduct == self.idProduct :
-                        return device
-        return None
-
+	device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
+	return device
 
 class Escpos:
     """ ESC/POS Printer object """
@@ -43,21 +39,25 @@ class Escpos:
 
         device_descriptor = DeviceDescriptor(self.idVendor, self.idProduct, self.interface)
         self.device = device_descriptor.get_device()
-        if not self.device:
+        if self.device is None:
             print "Cable isn't plugged in"
-        try:
-            self.handle = self.device.open()
-            self.handle.detachKernelDriver(self.interface) # Claim the interface
-            self.handle.setConfiguration(self.device.configurations[0])
-            self.handle.claimInterface(device_descriptor.interface)
-            #self.handle.AltInterface(device_descriptor.interface)
 
-        except usb.USBError, err:
-            print err
+	if self.device.is_kernel_driver_active(0):
+		try:
+			self.device.detach_kernel_driver(0)
+		except usb.core.USBError as e:
+			print "Could not detatch kernel driver: %s" % str(e)
+
+	try:
+		self.device.set_configuration()
+		self.device.reset()
+	except usb.core.USBError as e:
+		print "Could not set configuration: %s" % str(e)
+
 
     def _raw(self, msg):
         """ Print any of the commands above, or clear text """
-        self.handle.bulkWrite(self.out_ep, msg, 1000)
+        self.device.write(self.out_ep, msg, self.interface)
         
 
     def _check_image_size(self, size):
