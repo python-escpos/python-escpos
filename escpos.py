@@ -2,66 +2,23 @@
 '''
 @author: Manuel F Martinez <manpaz@bashlinux.com>
 @organization: Bashlinux
-@copyright: Copyright (c) 2010 Bashlinux
+@copyright: Copyright (c) 2012 Bashlinux
 @license: GPL
 '''
 
-import usb.core
-import usb.util
 import Image
 import time
 
 from constants import *
 from exceptions import *
 
-class DeviceDescriptor:
-    """ Search device on USB tree and return it if found """
-    def __init__(self, idVendor, idProduct, interface) :
-        self.idVendor = idVendor
-        self.idProduct = idProduct
-        self.interface = interface
-
-    def get_device(self) :
-	device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
-	return device
-
 class Escpos:
     """ ESC/POS Printer object """
-    handle    = None
     device    = None
 
-    def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01) :
-        self.idVendor  = idVendor
-        self.idProduct = idProduct
-        self.interface = interface
-        self.in_ep     = in_ep
-        self.out_ep    = out_ep
-
-        device_descriptor = DeviceDescriptor(self.idVendor, self.idProduct, self.interface)
-        self.device = device_descriptor.get_device()
-        if self.device is None:
-            print "Cable isn't plugged in"
-
-	if self.device.is_kernel_driver_active(0):
-		try:
-			self.device.detach_kernel_driver(0)
-		except usb.core.USBError as e:
-			print "Could not detatch kernel driver: %s" % str(e)
-
-	try:
-		self.device.set_configuration()
-		self.device.reset()
-	except usb.core.USBError as e:
-		print "Could not set configuration: %s" % str(e)
-
-
-    def _raw(self, msg):
-        """ Print any of the commands above, or clear text """
-        self.device.write(self.out_ep, msg, self.interface)
-        
 
     def _check_image_size(self, size):
-        """Check and fix the size of the image to 32 bits"""
+        """ Check and fix the size of the image to 32 bits """
         if size % 32 == 0:
             return (0, 0)
         else:
@@ -73,6 +30,7 @@ class Escpos:
 
 
     def _print_image(self, line, size):
+        """ Print formatted image """
         i = 0
         cont = 0
         buffer = ""
@@ -94,7 +52,7 @@ class Escpos:
 
 
     def image(self, img):
-        """Parse image and then print it"""
+        """ Parse image and prepare it to a printable format """
         pixels   = []
         pix_line = ""
         im_left  = ""
@@ -294,23 +252,4 @@ class Escpos:
         elif ctl.upper() == "HT":
             self._raw(CTL_HT)
         elif ctl.upper() == "VT":
-            self._raw(CTL_VT)
-
-
-    def __del__(self):
-        """ Release device interface """
-        if self.handle:
-            try:
-                self.handle.releaseInterface()
-                self.handle.resetEndpoint(self.out_ep)
-                self.handle.reset()
-            except Exception, err:
-                print err
-            self.handle, self.device = None, None
-            # Give a chance to return the interface to the system
-            # The following message could appear if the application is executed 
-            # too fast twice or more times.
-            # 
-            # >> could not detach kernel driver from interface 0: No data available
-            # >> No interface claimed
-            time.sleep(1)
+            delf._raw(CTL_VT)
