@@ -69,12 +69,12 @@ class Usb(Escpos):
 class Serial(Escpos):
     """ Define Serial printer """
 
-    def __init__(self, devfile="/dev/ttyUSB0", baudrate=9600, bytesize=8, timeout=5):
+    def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1):
         """
         @param devfile  : Device file under dev filesystem
         @param baudrate : Baud rate for serial transmission
-        @param timeout  : Read/Write timeout
         @param bytesize : Serial buffer size
+        @param timeout  : Read/Write timeout
         """
         self.devfile  = devfile
         self.baudrate = baudrate
