@@ -252,4 +252,4 @@ class Escpos:
         elif ctl.upper() == "HT":
             self._raw(CTL_HT)
         elif ctl.upper() == "VT":
-            delf._raw(CTL_VT)
+            self._raw(CTL_VT)
