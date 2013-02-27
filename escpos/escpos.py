@@ -85,7 +85,7 @@ class Escpos:
         bandsize = 255
         current = 0
         while current < im.size[1]:
-            self.image(im.crop((0, current, width, current + bandsize)))
+            self.image(im.crop((0, current, width, min(im.size[1], current + bandsize))))
             current += bandsize
 
 
