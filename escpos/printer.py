@@ -43,7 +43,7 @@ class Usb(Escpos):
         """ Search device on USB tree and set it as escpos device """
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
-            print("Cable isn't plugged in")
+            raise USBNotFoundError("Device not found or cable not plugged in.")
 
         check_driver = None
 

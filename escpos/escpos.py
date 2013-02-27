@@ -18,6 +18,8 @@ import qrcode
 import time
 import textwrap
 import binascii
+import os
+import operator
 
 from .constants import *
 from .exceptions import *
@@ -160,6 +162,42 @@ class Escpos(object):
 
         # Convert the RGB image in printable image
         self._convert_image(im)
+
+    def fullimage(self, img, max_height=860, width=512, histeq=True):
+        """ Resizes and prints an arbitrarily sized image """
+        if isinstance(img, (Image, Image.Image)):
+            im = img.convert("RGB")
+        else:
+            im = Image.open(img).convert("RGB")
+
+        if histeq:
+            # Histogram equaliztion
+            h = im.histogram()
+            lut = []
+            for b in range(0, len(h), 256):
+                # step size
+                step = reduce(operator.add, h[b:b+256]) / 255
+                # create equalization lookup table
+                n = 0
+                for i in range(256):
+                    lut.append(n / step)
+                    n = n + h[i+b]
+            im = im.point(lut)
+
+        ratio = float(width) / im.size[0]
+        newheight = int(ratio * im.size[1])
+
+        # Resize the image
+        im = im.resize((width, newheight), Image.ANTIALIAS)
+        if im.size[1] > max_height:
+            im = im.crop((0, 0, im.size[0], max_height))
+
+        # Divide into bands
+        bandsize = 255
+        current = 0
+        while current < im.size[1]:
+            self.image(im.crop((0, current, width, min(im.size[1], current + bandsize))))
+            current += bandsize
 
     def direct_image(self, image):
         """ Send image to printer

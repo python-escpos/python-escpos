@@ -11,6 +11,7 @@ Result/Exit codes:
     - `60` = Invalid pin to send Cash Drawer pulse :py:exc:`~escpos.exceptions.CashDrawerError`
     - `70` = Invalid number of tab positions :py:exc:`~escpos.exceptions.TabPosError`
     - `80` = Invalid char code :py:exc:`~escpos.exceptions.CharCodeError`
+    - `90` = USB device not found :py:exc:`~escpos.exceptions.USBNotFoundError`
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
@@ -151,3 +152,17 @@ class CharCodeError(Error):
 
     def __str__(self):
         return "Valid char code must be set"
+
+class USBNotFoundError(Error):
+    """ Device wasn't found (probably not plugged in)
+
+    The USB device seems to be not plugged in.
+    Ths returncode for this exception is `90`.
+    """
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 90
+
+    def __str__(self):
+        return "USB device not found"
