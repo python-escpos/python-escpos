@@ -7,7 +7,6 @@
 '''
 
 import Image
-import PIL.Image
 import time
 import os
 import operator
@@ -55,7 +54,7 @@ class Escpos:
 
     def fullimage(self, img, max_height=860, width=512, histeq=True):
         """ Resizes and prints an arbitrarily sized image """
-        if isinstance(img, (Image.Image, PIL.Image.Image)):
+        if isinstance(img, Image.Image):
             im = img.convert("RGB")
         else:
             im = Image.open(img).convert("RGB")
@@ -99,7 +98,7 @@ class Escpos:
         switch   = 0
         img_size = [ 0, 0 ]
 
-        if isinstance(img, (Image.Image, PIL.Image.Image)):
+        if isinstance(img, Image.Image):
             im = img.convert("RGB")
         else:
             im = Image.open(img).convert("RGB")
