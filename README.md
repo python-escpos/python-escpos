@@ -3,8 +3,8 @@ ESCPOS
 
 Python library to manipulate ESC/POS Printers.
 
-------------------------------------------------------------------
 1. Dependencies
+------------------------------------------------------------------
 
 In order to start getting access to your printer, you must ensure
 you have previously installed the following python modules:
@@ -12,8 +12,8 @@ you have previously installed the following python modules:
   * pyusb (python-usb)
   * PIL (Python Image Library)
 
-------------------------------------------------------------------
 2. Description
+------------------------------------------------------------------
 
 Python ESC/POS is a library which lets the user have access to all
 those printers handled by ESC/POS commands, as defined by Epson,
@@ -32,8 +32,8 @@ Also, this module handles some hardware functionalities like, cut
 paper, carrier return, printer reset and others concerned to the
 carriage alignment.
 
-------------------------------------------------------------------
 3. Define your printer
+------------------------------------------------------------------
 
 Before start create your Python ESC/POS printer instance, you must
 see at your system for the printer parameters. This is done with
@@ -43,7 +43,7 @@ First run the command to look for the "Vendor ID" and "Product ID",
 then write down the values, these values are displayed just before
 the name of the device with the following format:
 
-  xxxx:xxxx
+    xxxx:xxxx
 
 Example:
   Bus 002 Device 001: ID 1a2b:1a2b Device name
@@ -51,8 +51,8 @@ Example:
 Write down the the values in question, then issue the following
 command so you can get the "Interface" number and "End Point"
 
-  lsusb -vvv -d xxxx:xxxx | grep iInterface
-  lsusb -vvv -d xxxx:xxxx | grep bEndpointAddress | grep OUT
+    lsusb -vvv -d xxxx:xxxx | grep iInterface
+    lsusb -vvv -d xxxx:xxxx | grep bEndpointAddress | grep OUT
 
 The first command will yields the "Interface" number that must
 be handy to have and the second yields the "Output Endpoint"
@@ -62,25 +62,25 @@ By default the "Interface" number is "0" and the "Output Endpoint"
 address is "0x82",  if you have other values then you can define
 with your instance.
 
-------------------------------------------------------------------
 4. Define your instance
+------------------------------------------------------------------
 
 The following example shows how to initialize the Epson TM-TI88IV
 *** NOTE: Always finish the sequence with Epson.cut() otherwise
           you will endup with weird chars being printed.
 
-  from escpos import *
+    from escpos import *
+  
+    """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
+    Epson = escpos.Escpos(0x04b8,0x0202,0)
+    Epson.text("Hello World")
+    Epson.image("logo.gif")
+    Epson.barcode
+    Epson.barcode('1324354657687','EAN13',64,2,'','')
+    Epson.cut()
 
-  """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-  Epson = escpos.Escpos(0x04b8,0x0202,0)
-  Epson.text("Hello World")
-  Epson.image("logo.gif")
-  Epson.barcode
-  Epson.barcode('1324354657687','EAN13',64,2,'','')
-  Epson.cut()
-
-------------------------------------------------------------------
 5. Links
+------------------------------------------------------------------
 
 Please visit project homepage at:
 http://repo.bashlinux.com/projects/escpos.html
