@@ -8,6 +8,7 @@
 
 import Image
 import time
+import os
 
 from constants import *
 from exceptions import *
@@ -60,8 +61,10 @@ class Escpos:
         switch   = 0
         img_size = [ 0, 0 ]
 
-        im_open = Image.open(img)
-        im = im_open.convert("RGB")
+        if isinstance(img, Image):
+            im = img.convert("RGB")
+        else:
+            im = Image.open(img).convert("RGB")
 
         if im.size[0] > 512:
             print  "WARNING: Image is wider than 512 and could be truncated at print time "
