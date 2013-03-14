@@ -7,6 +7,7 @@
 '''
 
 import Image
+import qrcode
 import time
 
 from constants import *
@@ -51,7 +52,7 @@ class Escpos:
                 cont = 0
 
 
-    def image(self, img):
+    def _convert_image(self, im):
         """ Parse image and prepare it to a printable format """
         pixels   = []
         pix_line = ""
@@ -60,8 +61,6 @@ class Escpos:
         switch   = 0
         img_size = [ 0, 0 ]
 
-        im_open = Image.open(img)
-        im = im_open.convert("RGB")
 
         if im.size[0] > 512:
             print  "WARNING: Image is wider than 512 and could be truncated at print time "
@@ -99,6 +98,23 @@ class Escpos:
             img_size[0] += im_border[1]
 
         self._print_image(pix_line, img_size)
+
+
+    def image(self,path_img):
+        """ Open image file """
+        im_open = Image.open(path_img)
+        im = im_open.convert("RGB")
+        self._convert_image(im)
+
+
+    def qr(self,text):
+        """ Print QR Code for the provided string """
+        qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
+	qr_code.add_data(text)
+	qr_code.make(fit=True)
+	qr_img = qr_code.make_image()
+        im = qr_img._img.convert("RGB")
+        self._convert_image(im)
 
 
     def barcode(self, code, bc, width, height, pos, font):
