@@ -1,7 +1,11 @@
 python-escpos
 =============
 
-Ensure it is present under ${lib_arch}/${python_ver}/site-packages/escpos
+Ensure the library is installed on ${lib_arch}/${python_ver}/site-packages/escpos
+
+On CLi you must run:
+# python setup.py build
+# sudo python setup.py install
 
 On Linux, ensure you belongs to the proper group so you can have access to the printer.
 This can be done, by adding yourself to 'dialout' group, this might require to re-login
