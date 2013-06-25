@@ -75,6 +75,7 @@ The following example shows how to initialize the Epson TM-TI88IV
     Epson = escpos.Escpos(0x04b8,0x0202,0)
     Epson.text("Hello World")
     Epson.image("logo.gif")
+    Epson.fullimage("a.really.large.image.png")
     Epson.barcode
     Epson.barcode('1324354657687','EAN13',64,2,'','')
     Epson.cut()
