@@ -14,6 +14,9 @@ class Error(Exception):
     def __str__(self):
         return self.msg
 
+class NotFoundError(Error):
+    """ Device wasn't found (not plugged in) """
+
 # Result/Exit codes
 # 0  = success
 # 10 = No Barcode type defined

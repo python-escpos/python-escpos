@@ -38,7 +38,7 @@ class Usb(Escpos):
         """ Search device on USB tree and set is as escpos device """
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
-            print "Cable isn't plugged in"
+            raise NotFoundError("Device not found or cable not plugged in.")
 
         if self.device.is_kernel_driver_active(0):
             try:
@@ -135,7 +135,6 @@ class Network(Escpos):
     def __del__(self):
         """ Close TCP connection """
         self.device.close()
-
 
 
 class File(Escpos):
