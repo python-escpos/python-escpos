@@ -1,0 +1,18 @@
+CHANGELOG
+
+* 2012-11-15 - Version 1.0
+- Issue #2: Added ethernet support
+- Issue #3: Added compatibility with libusb-1.0.1
+- Issue #4: Fixed typo in escpos.py
+
+* 2013-03-14 - Version 1.0.1
+- Issue #8: Fixed set font
+- Added QR support
+
+* 2013-12-30 - Version 1.0.2
+- Issue #5: Fixed vertical tab
+- Issue #9: Fixed identation inconsistence
+
+* 2013-02-23 - Version 1.0.3
+- Issue #18: Added quad-area characters (Sent by syncman1x@gmail.com)
+- Added exception for PIL import
