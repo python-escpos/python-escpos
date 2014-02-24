@@ -186,17 +186,17 @@ class Escpos:
     def set(self, align='left', font='a', type='normal', width=1, height=1):
         """ Set text properties """
         # Width
-        if width == 2 and height != 2:
+        if height != 2 and width != 2: # DEFAULT SIZE: NORMAL
             self._raw(TXT_NORMAL)
-            self._raw(TXT_2WIDTH)
-        elif height == 2 and width != 2:
-            self._raw(TXT_NORMAL)
+
+        if height == 2:
             self._raw(TXT_2HEIGHT)
-        elif height == 2 and width == 2:
+        if width == 2:
             self._raw(TXT_2WIDTH)
-            self._raw(TXT_2HEIGHT)
-        else: # DEFAULT SIZE: NORMAL
-            self._raw(TXT_NORMAL)
+
+        if height == 2 and width == 2:
+            self._raw(TXT_4SQUARE)
+
         # Type
         if type.upper() == "B":
             self._raw(TXT_BOLD_ON)
