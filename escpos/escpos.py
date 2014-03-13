@@ -6,9 +6,9 @@
 @license: GPL
 '''
 
-import qrcode
-import time
 import os
+import time
+import qrcode
 import operator
 from PIL import Image
 
@@ -141,15 +141,15 @@ class Escpos:
 
         self._print_image(pix_line, img_size)
 
-    def qr(self,text):
+    def qr(self, text):
         """ Print QR Code for the provided string """
         qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
-        im = qr_img._img.convert("RGB")
         # Convert the RGB image in printable image
-        self._convert_image(im)
+        im = qr_img._img.convert("RGB")
+        self.image(im)
 
     def barcode(self, code, bc, width, height, pos, font):
         """ Print Barcode """
