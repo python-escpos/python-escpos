@@ -73,7 +73,7 @@ The following example shows how to initialize the Epson TM-TI88IV
 
     p = printer.Usb(0x04b8, 0x0202)
     p.text("Hello World")
-    p.image("logo.gif")
+    p.image("doge.jpg")
     p.fullimage("a.really.large.image.png")
     p.barcode('1324354657687','EAN13',64,2,'','')
     p.qr('this is a piece of code')
