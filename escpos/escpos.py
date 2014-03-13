@@ -206,7 +206,7 @@ class Escpos:
     def text(self, txt):
         """ Print alpha-numeric text """
         if txt:
-            self._raw(txt)
+            self._raw(txt.encode('cp936'))
         else:
             raise TextError()
 
