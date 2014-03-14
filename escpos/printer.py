@@ -167,7 +167,7 @@ class Network(Escpos):
 
         :param msg: arbitrary code to be printed
         """
-        self.device.send(msg)
+        self.device.sendall(msg)
 
     def __del__(self):
         """ Close TCP connection """
