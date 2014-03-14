@@ -10,7 +10,7 @@ In order to start getting access to your printer, you must ensure
 you have previously installed the following python modules:
 
   * pyusb (python-usb)
-  * PIL (Python Image Library)
+  * PIL (Python Image Library) or Pillow (recommended)
 
 2. Description
 ------------------------------------------------------------------
@@ -69,16 +69,15 @@ The following example shows how to initialize the Epson TM-TI88IV
 *** NOTE: Always finish the sequence with Epson.cut() otherwise
           you will endup with weird chars being printed.
 
-    from escpos import *
-  
-    """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-    Epson = escpos.Escpos(0x04b8,0x0202,0)
-    Epson.text("Hello World")
-    Epson.image("logo.gif")
-    Epson.fullimage("a.really.large.image.png")
-    Epson.barcode
-    Epson.barcode('1324354657687','EAN13',64,2,'','')
-    Epson.cut()
+    from escpos import printer
+
+    p = printer.Usb(0x04b8, 0x0202)
+    p.text("Hello World")
+    p.image("doge.jpg")
+    p.fullimage("a.really.large.image.png")
+    p.barcode('1324354657687','EAN13',64,2,'','')
+    p.qr('this is a piece of code')
+    p.cut()
 
 5. Links
 ------------------------------------------------------------------

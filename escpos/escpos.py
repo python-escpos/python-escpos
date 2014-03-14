@@ -6,11 +6,11 @@
 @license: GPL
 '''
 
-import Image
-import qrcode
-import time
 import os
+import time
+import qrcode
 import operator
+from PIL import Image
 
 from constants import *
 from exceptions import *
@@ -37,7 +37,7 @@ class Escpos:
         i = 0
         cont = 0
         buffer = ""
-       
+
         self._raw(S_RASTER_N)
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
         self._raw(buffer.decode('hex'))
@@ -135,21 +135,21 @@ class Escpos:
                         break
                     elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
-                        break 
+                        break
             pix_line += im_right
             img_size[0] += im_border[1]
 
         self._print_image(pix_line, img_size)
 
-    def qr(self,text):
+    def qr(self, text):
         """ Print QR Code for the provided string """
         qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
-        im = qr_img._img.convert("RGB")
         # Convert the RGB image in printable image
-        self._convert_image(im)
+        im = qr_img._img.convert("RGB")
+        self.image(im)
 
     def barcode(self, code, bc, width, height, pos, font):
         """ Print Barcode """
@@ -177,9 +177,9 @@ class Escpos:
             self._raw(BARCODE_TXT_BTH)
         elif pos.upper() == "ABOVE":
             self._raw(BARCODE_TXT_ABV)
-        else:  # DEFAULT POSITION: BELOW 
+        else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-        # Type 
+        # Type
         if bc.upper() == "UPC-A":
             self._raw(BARCODE_UPC_A)
         elif bc.upper() == "UPC-E":
@@ -202,11 +202,11 @@ class Escpos:
         else:
             raise exception.BarcodeCodeError()
 
-        
+
     def text(self, txt):
         """ Print alpha-numeric text """
         if txt:
-            self._raw(txt)
+            self._raw(txt.encode('cp936'))
         else:
             raise TextError()
 
