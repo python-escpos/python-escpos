@@ -3,16 +3,7 @@ ESCPOS
 
 Python library to manipulate ESC/POS Printers.
 
-1. Dependencies
-------------------------------------------------------------------
-
-In order to start getting access to your printer, you must ensure
-you have previously installed the following python modules:
-
-  * pyusb (python-usb)
-  * PIL (Python Image Library) or Pillow (recommended)
-
-2. Description
+Description
 ------------------------------------------------------------------
 
 Python ESC/POS is a library which lets the user have access to all
@@ -32,11 +23,50 @@ Also, this module handles some hardware functionalities like, cut
 paper, carrier return, printer reset and others concerned to the
 carriage alignment.
 
-3. Define your printer
+
+Dependencies
 ------------------------------------------------------------------
 
+In order to start getting access to your printer, you must ensure
+you have previously installed the following python modules:
+
+  * pyusb (python-usb)
+  * PIL (Python Image Library) or Pillow (recommended)
+
+
+Feature List
+------------------------------------------------------------------
+
+  * Support for the following interfaces
+    * USB
+    * Serial
+    * Network
+    * File
+
+  * Commands include
+    * Text and image positioning
+    * Text formatting
+    * Opening cash drawers
+    * Full/Partial cuts
+    * Barcodes and QR Codes
+    * Images and image scaling
+    * Chinese character support
+
+TODO
+------------------------------------------------------------------
+
+  * Testing
+  * Possibly a virtual printer in the far future
+  * Provide install instructions
+  * Provide API documentation
+
+USB Quickstart
+------------------------------------------------------------------
+
+### Find your printer ###
+
 Before start create your Python ESC/POS printer instance, you must
-see at your system for the printer parameters. This is done with
+see at your system for the printer parameters. On Linux this is done with
 the 'lsusb' command.
 
 First run the command to look for the "Vendor ID" and "Product ID",
@@ -62,13 +92,12 @@ By default the "Interface" number is "0" and the "Output Endpoint"
 address is "0x82",  if you have other values then you can define
 with your instance.
 
-4. Define your instance
-------------------------------------------------------------------
+### Define a printer instance and send commands ###
 
 The following example shows how to initialize a printer over USB.
 
 *** NOTE: Always finish the sequence with cut otherwise
-          you will endup with weird chars being printed.
+          you will end up with weird chars being printed.
 
     from escpos import printer
 
@@ -80,11 +109,13 @@ The following example shows how to initialize a printer over USB.
     p.qr('this is a piece of code')
     p.cut()
 
-5. Links
+Links
 ------------------------------------------------------------------
 
-Please visit project homepage at:
+Project homepage originally at:
+
 http://repo.bashlinux.com/projects/escpos.html
 
-Manuel F Martinez <manpaz@bashlinux.com>
+By Manuel F Martinez <manpaz@bashlinux.com>
 
+Forked from https://code.google.com/p/python-escpos/
