@@ -129,7 +129,7 @@ class Network(Escpos):
 
     def _raw(self, msg):
         """ Print any command sent in raw format """
-        self.device.send(msg)
+        self.device.sendall(msg)
 
 
     def __del__(self):
