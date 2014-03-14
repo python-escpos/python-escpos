@@ -50,7 +50,7 @@ Feature List
     * Full/Partial cuts
     * Barcodes and QR Codes
     * Images and image scaling
-    * Chinese character support
+    * Chinese character support using CP936
 
 TODO
 ------------------------------------------------------------------
