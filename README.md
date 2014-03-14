@@ -65,8 +65,9 @@ with your instance.
 4. Define your instance
 ------------------------------------------------------------------
 
-The following example shows how to initialize the Epson TM-TI88IV
-*** NOTE: Always finish the sequence with Epson.cut() otherwise
+The following example shows how to initialize a printer over USB.
+
+*** NOTE: Always finish the sequence with cut otherwise
           you will endup with weird chars being printed.
 
     from escpos import printer
