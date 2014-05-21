@@ -230,7 +230,7 @@ class Escpos:
             raise TextError()
 
 
-    def set(self, align='left', font='a', type='normal', width=1, height=1):
+    def set(self, align='left', font='a', type='normal', width=1, height=1, density=9):
         """ Set text properties """
         # Width
         if height == 2 and width == 2:
@@ -276,6 +276,27 @@ class Escpos:
             self._raw(TXT_ALIGN_RT)
         elif align.upper() == "LEFT":
             self._raw(TXT_ALIGN_LT)
+        # Density
+        if density == 0:
+            self._raw(PD_N50)
+        elif density == 1:
+            self._raw(PD_N37)
+        elif density == 2:
+            self._raw(PD_N25)
+        elif density == 3:
+            self._raw(PD_N12)
+        elif density == 4:
+            self._raw(PD_0)
+        elif density == 5:
+            self._raw(PD_P12)
+        elif density == 6:
+            self._raw(PD_P25)
+        elif density == 7:
+            self._raw(PD_P37)
+        elif density == 8:
+            self._raw(PD_P50)
+        else:# DEFAULT: DOES NOTHING
+            pass
 
 
     def cut(self, mode=''):

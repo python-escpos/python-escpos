@@ -18,5 +18,6 @@ CHANGELOG
 - Added exception for PIL import
 
 * 2014-05-20 - Version 1.0.4
+- Issue #20: Added Density support (Sent by thomas.erbacher@ragapack.de)
 - Added charcode tables
 - Fixed Horizontal Tab

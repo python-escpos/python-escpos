@@ -73,3 +73,13 @@ S_RASTER_N      = '\x1d\x76\x30\x00' # Set raster image normal size
 S_RASTER_2W     = '\x1d\x76\x30\x01' # Set raster image double width
 S_RASTER_2H     = '\x1d\x76\x30\x02' # Set raster image double height
 S_RASTER_Q      = '\x1d\x76\x30\x03' # Set raster image quadruple
+# Printing Density
+PD_N50          = '\x1d\x7c\x00' # Printing Density -50%
+PD_N37          = '\x1d\x7c\x01' # Printing Density -37.5%
+PD_N25          = '\x1d\x7c\x02' # Printing Density -25%
+PD_N12          = '\x1d\x7c\x03' # Printing Density -12.5%
+PD_0            = '\x1d\x7c\x04' # Printing Density  0%
+PD_P50          = '\x1d\x7c\x08' # Printing Density +50%
+PD_P37          = '\x1d\x7c\x07' # Printing Density +37.5%
+PD_P25          = '\x1d\x7c\x06' # Printing Density +25%
+PD_P12          = '\x1d\x7c\x05' # Printing Density +12.5%
