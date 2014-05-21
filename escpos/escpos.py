@@ -234,8 +234,8 @@ class Escpos:
         """ Set text properties """
         # Width
         if height == 2 and width == 2:
-            self._raw(TXT_2WIDTH)
-            self._raw(TXT_2HEIGHT)
+            self._raw(TXT_NORMAL)
+            self._raw(TXT_4SQUARE)
         elif height == 2 and width != 2:
             self._raw(TXT_NORMAL)
             self._raw(TXT_2HEIGHT)
@@ -254,7 +254,6 @@ class Escpos:
         elif type.upper() == "U2":
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL2_ON)
-            self._raw(TXT_ITALIC_OFF)
         elif type.upper() == "BU":
             self._raw(TXT_BOLD_ON)
             self._raw(TXT_UNDERL_ON)
