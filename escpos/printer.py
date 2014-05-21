@@ -31,7 +31,7 @@ class Usb(Escpos):
         self.interface = interface
         self.in_ep     = in_ep
         self.out_ep    = out_ep
-	self.open()
+        self.open()
 
 
     def open(self):
@@ -151,7 +151,7 @@ class File(Escpos):
 
     def open(self):
         """ Open system file """
-	self.device = open(self.devfile, "wb")
+        self.device = open(self.devfile, "wb")
 
         if self.device is None:
             print "Could not open the specified file %s" % self.devfile

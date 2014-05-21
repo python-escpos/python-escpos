@@ -21,3 +21,4 @@ CHANGELOG
 - Issue #20: Added Density support (Sent by thomas.erbacher@ragapack.de)
 - Added charcode tables
 - Fixed Horizontal Tab
+- Fixed code tabulators
