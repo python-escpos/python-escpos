@@ -1,18 +1,19 @@
 """ ESC/POS Commands (Constants) """
 
 # Feed control sequences
-CTL_LF    = '\x0a'             # Print and line feed
-CTL_FF    = '\x0c'             # Form feed
-CTL_CR    = '\x0d'             # Carriage return
-CTL_HT    = '\x09'             # Horizontal tab
-CTL_VT    = '\x0b'             # Vertical tab
+CTL_LF     = '\x0a'              # Print and line feed
+CTL_FF     = '\x0c'              # Form feed
+CTL_CR     = '\x0d'              # Carriage return
+CTL_HT     = '\x09'              # Horizontal tab
+CTL_SET_HT = '\x1b\x44'          # Set horizontal tab positions
+CTL_VT     = '\x1b\x64\x04'      # Vertical tab
 # Printer hardware
-HW_INIT   = '\x1b\x40'         # Clear data in buffer and reset modes
-HW_SELECT = '\x1b\x3d\x01'     # Printer select
-HW_RESET  = '\x1b\x3f\x0a\x00' # Reset printer hardware
+HW_INIT    = '\x1b\x40'          # Clear data in buffer and reset modes
+HW_SELECT  = '\x1b\x3d\x01'      # Printer select
+HW_RESET   = '\x1b\x3f\x0a\x00'  # Reset printer hardware
 # Cash Drawer
-CD_KICK_2 = '\x1b\x70\x00'     # Sends a pulse to pin 2 [] 
-CD_KICK_5 = '\x1b\x70\x01'     # Sends a pulse to pin 5 [] 
+CD_KICK_2  = '\x1b\x70\x00'      # Sends a pulse to pin 2 [] 
+CD_KICK_5  = '\x1b\x70\x01'      # Sends a pulse to pin 5 [] 
 # Paper
 PAPER_FULL_CUT  = '\x1d\x56\x00' # Full cut paper
 PAPER_PART_CUT  = '\x1d\x56\x01' # Partial cut paper
@@ -20,7 +21,6 @@ PAPER_PART_CUT  = '\x1d\x56\x01' # Partial cut paper
 TXT_NORMAL      = '\x1b\x21\x00' # Normal text
 TXT_2HEIGHT     = '\x1b\x21\x10' # Double height text
 TXT_2WIDTH      = '\x1b\x21\x20' # Double width text
-TXT_4SQUARE     = '\x1b\x21\x30' # Quad area text
 TXT_UNDERL_OFF  = '\x1b\x2d\x00' # Underline font OFF
 TXT_UNDERL_ON   = '\x1b\x2d\x01' # Underline font 1-dot ON
 TXT_UNDERL2_ON  = '\x1b\x2d\x02' # Underline font 2-dot ON
@@ -31,6 +31,27 @@ TXT_FONT_B      = '\x1b\x4d\x01' # Font type B
 TXT_ALIGN_LT    = '\x1b\x61\x00' # Left justification
 TXT_ALIGN_CT    = '\x1b\x61\x01' # Centering
 TXT_ALIGN_RT    = '\x1b\x61\x02' # Right justification
+# Char code table
+CHARCODE_PC437  = '\x1b\x74\x00' # USA: Standard Europe
+CHARCODE_JIS    = '\x1b\x74\x01' # Japanese Katakana
+CHARCODE_PC850  = '\x1b\x74\x02' # Multilingual
+CHARCODE_PC860  = '\x1b\x74\x03' # Portuguese
+CHARCODE_PC863  = '\x1b\x74\x04' # Canadian-French
+CHARCODE_PC865  = '\x1b\x74\x05' # Nordic
+CHARCODE_WEU    = '\x1b\x74\x06' # Simplified Kanji, Hirakana
+CHARCODE_GREEK  = '\x1b\x74\x07' # Simplified Kanji
+CHARCODE_HEBREW = '\x1b\x74\x08' # Simplified Kanji
+CHARCODE_PC1252 = '\x1b\x74\x11' # Western European Windows Code Set
+CHARCODE_PC866  = '\x1b\x74\x12' # Cirillic #2
+CHARCODE_PC852  = '\x1b\x74\x13' # Latin 2
+CHARCODE_PC858  = '\x1b\x74\x14' # Euro
+CHARCODE_THAI42 = '\x1b\x74\x15' # Thai character code 42
+CHARCODE_THAI11 = '\x1b\x74\x16' # Thai character code 11
+CHARCODE_THAI13 = '\x1b\x74\x17' # Thai character code 13
+CHARCODE_THAI14 = '\x1b\x74\x18' # Thai character code 14
+CHARCODE_THAI16 = '\x1b\x74\x19' # Thai character code 16
+CHARCODE_THAI17 = '\x1b\x74\x1a' # Thai character code 17
+CHARCODE_THAI18 = '\x1b\x74\x1b' # Thai character code 18
 # Barcode format
 BARCODE_TXT_OFF = '\x1d\x48\x00' # HRI barcode chars OFF
 BARCODE_TXT_ABV = '\x1d\x48\x01' # HRI barcode chars above

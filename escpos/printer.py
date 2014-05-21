@@ -1,10 +1,10 @@
 #!/usr/bin/python
-'''
+"""
 @author: Manuel F Martinez <manpaz@bashlinux.com>
 @organization: Bashlinux
 @copyright: Copyright (c) 2012 Bashlinux
 @license: GPL
-'''
+"""
 
 import usb.core
 import usb.util

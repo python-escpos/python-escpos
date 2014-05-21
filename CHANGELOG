@@ -13,6 +13,10 @@ CHANGELOG
 - Issue #5: Fixed vertical tab
 - Issue #9: Fixed identation inconsistence
 
-* 2013-02-23 - Version 1.0.3
+* 2014-02-23 - Version 1.0.3
 - Issue #18: Added quad-area characters (Sent by syncman1x@gmail.com)
 - Added exception for PIL import
+
+* 2014-05-20 - Version 1.0.4
+- Added charcode tables
+- Fixed Horizontal Tab

@@ -22,6 +22,8 @@ class Error(Exception):
 # 40 = Image height is too large
 # 50 = No string supplied to be printed
 # 60 = Invalid pin to send Cash Drawer pulse
+# 70 = Invalid number of tab positions
+# 80 = Invalid char code
 
 
 class BarcodeTypeError(Error):
@@ -78,3 +80,23 @@ class CashDrawerError(Error):
 
     def __str__(self):
         return "Valid pin must be set to send pulse"
+
+
+class TabError(Error):
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 70
+
+    def __str__(self):
+        return "Valid tab positions must be in the range 0 to 16"
+
+
+class CharCodeError(Error):
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 70
+
+    def __str__(self):
+        return "Valid char code must be set"

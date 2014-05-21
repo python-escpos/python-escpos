@@ -1,10 +1,10 @@
 #!/usr/bin/python
-'''
+"""
 @author: Manuel F Martinez <manpaz@bashlinux.com>
 @organization: Bashlinux
 @copyright: Copyright (c) 2012 Bashlinux
 @license: GPL
-'''
+"""
 
 try:
     import Image
@@ -123,6 +123,53 @@ class Escpos:
         self._convert_image(im)
 
 
+    def charcode(self,code):
+        """ Set Character Code Table """
+        if code.upper() == "USA":
+            self._raw(CHARCODE_PC437)
+        elif code.upper() == "JIS":
+            self._raw(CHARCODE_JIS)
+        elif code.upper() == "MULTILINGUAL":
+            self._raw(CHARCODE_PC850)
+        elif code.upper() == "PORTUGUESE":
+            self._raw(CHARCODE_PC860)
+        elif code.upper() == "CA_FRENCH":
+            self._raw(CHARCODE_PC863)
+        elif code.upper() == "NORDIC":
+            self._raw(CHARCODE_PC865)
+        elif code.upper() == "WEST_EUROPE":
+            self._raw(CHARCODE_WEU)
+        elif code.upper() == "GREEK":
+            self._raw(CHARCODE_GREEK)
+        elif code.upper() == "HEBREW":
+            self._raw(CHARCODE_HEBREW)
+        elif code.upper() == "LATVIAN":
+            self._raw(CHARCODE_PC755)
+        elif code.upper() == "WPC1252":
+            self._raw(CHARCODE_PC1252)
+        elif code.upper() == "CIRILLIC2":
+            self._raw(CHARCODE_PC866)
+        elif code.upper() == "LATIN2":
+            self._raw(CHARCODE_PC852)
+        elif code.upper() == "EURO":
+            self._raw(CHARCODE_PC858)
+        elif code.upper() == "THAI42":
+            self._raw(CHARCODE_THAI42)
+        elif code.upper() == "THAI11":
+            self._raw(CHARCODE_THAI11)
+        elif code.upper() == "THAI13":
+            self._raw(CHARCODE_THAI13)
+        elif code.upper() == "THAI14":
+            self._raw(CHARCODE_THAI14)
+        elif code.upper() == "THAI16":
+            self._raw(CHARCODE_THAI16)
+        elif code.upper() == "THAI17":
+            self._raw(CHARCODE_THAI17)
+        elif code.upper() == "THAI18":
+            self._raw(CHARCODE_THAI18)
+        else:
+            raise CharCode_error()
+
     def barcode(self, code, bc, width, height, pos, font):
         """ Print Barcode """
         # Align Bar Code()
@@ -186,17 +233,17 @@ class Escpos:
     def set(self, align='left', font='a', type='normal', width=1, height=1):
         """ Set text properties """
         # Width
-        if height != 2 and width != 2: # DEFAULT SIZE: NORMAL
-            self._raw(TXT_NORMAL)
-
-        if height == 2:
-            self._raw(TXT_2HEIGHT)
-        if width == 2:
-            self._raw(TXT_2WIDTH)
-
         if height == 2 and width == 2:
-            self._raw(TXT_4SQUARE)
-
+            self._raw(TXT_2WIDTH)
+            self._raw(TXT_2HEIGHT)
+        elif height == 2 and width != 2:
+            self._raw(TXT_NORMAL)
+            self._raw(TXT_2HEIGHT)
+        elif width == 2 and height != 2:
+            self._raw(TXT_NORMAL)
+            self._raw(TXT_2WIDTH)
+        else: # DEFAULT SIZE: NORMAL
+            self._raw(TXT_NORMAL)
         # Type
         if type.upper() == "B":
             self._raw(TXT_BOLD_ON)
@@ -264,8 +311,14 @@ class Escpos:
             pass
 
 
-    def control(self, ctl):
+    def control(self, ctl, pos=4):
         """ Feed control sequences """
+        # Set tab positions
+        if pos < 1 or pos > 16:
+            raise TabError()
+        else:
+            self._raw("".join([CTL_SET_HT,hex(pos)]))
+        # Set position
         if ctl.upper() == "LF":
             self._raw(CTL_LF)
         elif ctl.upper() == "FF":
