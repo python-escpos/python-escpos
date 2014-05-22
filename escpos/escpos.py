@@ -342,7 +342,7 @@ class Escpos(object):
             self._raw(BARCODE_CODE39)
         elif bc.upper() == "ITF":
             self._raw(BARCODE_ITF)
-        elif bc.upper() == "NW7":
+        elif bc.upper() in ("NW7", "CODABAR"):
             self._raw(BARCODE_NW7)
         else:
             raise BarcodeTypeError(bc)
