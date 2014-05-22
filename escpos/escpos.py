@@ -268,7 +268,7 @@ class Escpos(object):
         else:
             raise CharCodeError()
 
-    def barcode(self, code, bc, width, height, pos, font):
+    def barcode(self, code, bc, height, width, pos, font):
         """ Print Barcode
 
         :param code: alphanumeric data to be printed as bar code
@@ -283,10 +283,10 @@ class Escpos(object):
             * NW7
 
             If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
-        :param width: barcode width, has to be between 1 and 255
-            *default*: 64
         :param height: barcode height, has to be between 2 and 6
             *default*: 3
+        :param width: barcode width, has to be between 1 and 255
+            *default*: 64
         :param pos: where to place the text relative to the barcode, *default*: below
 
             * ABOVE
@@ -306,13 +306,13 @@ class Escpos(object):
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
         # Height
-        if height >= 2 or height <= 6:
-            self._raw(BARCODE_HEIGHT)
+        if 1 <= height <= 255:
+            self._raw(BARCODE_HEIGHT + chr(height))
         else:
             raise BarcodeSizeError()
         # Width
-        if width >= 1 or width <= 255:
-            self._raw(BARCODE_WIDTH)
+        if 2 <= width <= 6:
+            self._raw(BARCODE_WIDTH + chr(width))
         else:
             raise BarcodeSizeError()
         # Font
