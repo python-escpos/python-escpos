@@ -37,10 +37,10 @@ HW_SELECT = ESC + '=\x01'         # Printer select
 HW_RESET  = ESC + '\x3f\x0a\x00'  # Reset printer hardware
                                   # (TODO: Where is this specified?)
 
-# Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
-_CASH_DRAWER = lambda m, t1='', t2='': ESC + 'p' + m + t1 + t2
-CD_KICK_2 = _CASH_DRAWER('\x00')  # Sends a pulse to pin 2 []
-CD_KICK_5 = _CASH_DRAWER('\x01')  # Sends a pulse to pin 5 []
+#{ Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
+_CASH_DRAWER = lambda m, t1='', t2='': ESC + 'p' + m + chr(t1) + chr(t2)
+CD_KICK_2 = _CASH_DRAWER('\x00', 50, 50)  # Sends a pulse to pin 2 []
+CD_KICK_5 = _CASH_DRAWER('\x01', 50, 50)  # Sends a pulse to pin 5 []
 
 # Paper Cutter
 _CUT_PAPER = lambda m: GS + 'V' + m
