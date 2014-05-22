@@ -159,12 +159,12 @@ class Escpos:
         if 1 <= height <= 255:
             self._raw(BARCODE_HEIGHT + chr(height))
         else:
-            raise BarcodeSizeError()
+            raise BarcodeSizeError("height = %s" % height)
         # Width
         if 2 <= width <= 6:
             self._raw(BARCODE_WIDTH + chr(width))
         else:
-            raise BarcodeSizeError()
+            raise BarcodeSizeError("width = %s" % width)
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
@@ -195,7 +195,7 @@ class Escpos:
         elif bc.upper() == "NW7":
             self._raw(BARCODE_NW7)
         else:
-            raise BarcodeTypeError()
+            raise BarcodeTypeError(bc)
         # Print Code
         if code:
             self._raw(code)
