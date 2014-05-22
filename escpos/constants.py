@@ -65,8 +65,8 @@ _SET_HRI_FONT = lambda n: GS + 'f' + n
 BARCODE_FONT_A = _SET_HRI_FONT('\x00')  # Font type A for HRI barcode chars
 BARCODE_FONT_B = _SET_HRI_FONT('\x01')  # Font type B for HRI barcode chars
 
-BARCODE_HEIGHT = GS + 'h' + '\x64'  # Barcode Height [1-255]
-BARCODE_WIDTH  = GS + 'w' + '\x03'  # Barcode Width  [2-6]
+BARCODE_HEIGHT = GS + 'h'  # Barcode Height [1-255]
+BARCODE_WIDTH  = GS + 'w'  # Barcode Width  [2-6]
 
 #NOTE: This isn't actually an ESC/POS command. It's the common prefix to the
 #      two "print bar code" commands:

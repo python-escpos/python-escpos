@@ -151,18 +151,18 @@ class Escpos:
         im = qr_img._img.convert("RGB")
         self.image(im)
 
-    def barcode(self, code, bc, width, height, pos, font):
+    def barcode(self, code, bc, height, width, pos, font):
         """ Print Barcode """
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
         # Height
-        if height >=2 or height <=6:
-            self._raw(BARCODE_HEIGHT)
+        if 1 <= height <= 255:
+            self._raw(BARCODE_HEIGHT + chr(height))
         else:
             raise BarcodeSizeError()
         # Width
-        if width >= 1 or width <=255:
-            self._raw(BARCODE_WIDTH)
+        if 2 <= width <= 6:
+            self._raw(BARCODE_WIDTH + chr(width))
         else:
             raise BarcodeSizeError()
         # Font
