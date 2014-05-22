@@ -74,19 +74,22 @@ class Escpos:
                     n = n + h[i+b]
             im = im.point(lut)
 
-        ratio = float(width) / im.size[0]
-        newheight = int(ratio * im.size[1])
+        if width:
+            ratio = float(width) / im.size[0]
+            newheight = int(ratio * im.size[1])
 
-        # Resize the image
-        im = im.resize((width, newheight), Image.ANTIALIAS)
-        if im.size[1] > max_height:
+            # Resize the image
+            im = im.resize((width, newheight), Image.ANTIALIAS)
+
+        if max_height and im.size[1] > max_height:
             im = im.crop((0, 0, im.size[0], max_height))
 
         # Divide into bands
         bandsize = 255
         current = 0
         while current < im.size[1]:
-            self.image(im.crop((0, current, width, min(im.size[1], current + bandsize))))
+            self.image(im.crop((0, current, width or im.size[0],
+                                min(im.size[1], current + bandsize))))
             current += bandsize
 
 
