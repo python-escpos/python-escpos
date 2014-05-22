@@ -45,7 +45,7 @@ class BarcodeTypeError(Error):
         self.resultcode = 10
 
     def __str__(self):
-        return "No Barcode type is defined"
+        return "No Barcode type is defined (%s)" % self.msg
 
 
 class BarcodeSizeError(Error):
@@ -61,7 +61,7 @@ class BarcodeSizeError(Error):
         self.resultcode = 20
 
     def __str__(self):
-        return "Barcode size is out of range"
+        return "Barcode size is out of range (%s)" % self.msg
 
 
 class BarcodeCodeError(Error):
