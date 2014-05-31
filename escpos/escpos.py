@@ -12,10 +12,11 @@ import qrcode
 import operator
 from PIL import Image
 
-from constants import *
-from exceptions import *
+from escpos.utils import *
+from escpos.constants import *
+from escpos.exceptions import *
 
-class Escpos:
+class Escpos(object):
     """ ESC/POS Printer object """
     device    = None
 
@@ -40,7 +41,7 @@ class Escpos:
 
         self._raw(S_RASTER_N)
         buffer = "%02X%02X%02X%02X" % (((size[0]//size[1])//8), 0, size[1], 0)
-        self._raw(buffer.decode('hex'))
+        self._raw(hex2bytes(buffer))
         buffer = ""
 
         while i < len(line):
@@ -49,7 +50,7 @@ class Escpos:
             i += 8
             cont += 1
             if cont % 4 == 0:
-                self._raw(buffer.decode("hex"))
+                self._raw(hex2bytes(buffer))
                 buffer = ""
                 cont = 0
 
