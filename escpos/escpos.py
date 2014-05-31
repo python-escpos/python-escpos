@@ -27,9 +27,9 @@ class Escpos:
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
-                return (image_border / 2, image_border / 2)
+                return (image_border // 2, image_border // 2)
             else:
-                return (image_border / 2, (image_border / 2) + 1)
+                return (image_border // 2, (image_border // 2) + 1)
 
 
     def _print_image(self, line, size):
@@ -39,7 +39,7 @@ class Escpos:
         buffer = ""
 
         self._raw(S_RASTER_N)
-        buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
+        buffer = "%02X%02X%02X%02X" % (((size[0]//size[1])//8), 0, size[1], 0)
         self._raw(buffer.decode('hex'))
         buffer = ""
 
@@ -66,11 +66,11 @@ class Escpos:
             lut = []
             for b in range(0, len(h), 256):
                 # step size
-                step = reduce(operator.add, h[b:b+256]) / 255
+                step = reduce(operator.add, h[b:b+256]) // 255
                 # create equalization lookup table
                 n = 0
                 for i in range(256):
-                    lut.append(n / step)
+                    lut.append(n // step)
                     n = n + h[i+b]
             im = im.point(lut)
 
@@ -105,7 +105,7 @@ class Escpos:
             im = Image.open(img).convert("RGB")
 
         if im.size[0] > 512:
-            print  "WARNING: Image is wider than 512 and could be truncated at print time "
+            print("WARNING: Image is wider than 512 and could be truncated at print time ")
         if im.size[1] > 255:
             raise ImageSizeError()
 
@@ -127,13 +127,13 @@ class Escpos:
                 pattern_len = len(im_pattern)
                 switch = (switch - 1 ) * (-1)
                 for x in range(pattern_len):
-                    if im_color <= (255 * 3 / pattern_len * (x+1)):
+                    if im_color <= (255 * 3 // pattern_len * (x+1)):
                         if im_pattern[x] == "X":
                             pix_line += "%d" % switch
                         else:
                             pix_line += im_pattern[x]
                         break
-                    elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
+                    elif im_color > (255 * 3 // pattern_len * pattern_len) and im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
                         break
             pix_line += im_right
