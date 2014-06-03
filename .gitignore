@@ -1,2 +1,6 @@
 *.py[cod]
 .DS_Store
+escpos.egg-info
+MANIFEST
+dist
+

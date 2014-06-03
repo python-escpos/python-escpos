@@ -5,12 +5,12 @@
 @copyright: Copyright (c) 2012 Bashlinux
 @license: GPL
 '''
-
+import struct
 import os
 import time
 import qrcode
 import operator
-from PIL import Image
+from PIL import Image, ImageOps
 
 from escpos.utils import *
 from escpos.constants import *
@@ -30,29 +30,19 @@ class Escpos(object):
             if (image_border % 2) == 0:
                 return (image_border // 2, image_border // 2)
             else:
-                return (image_border // 2, (image_border // 2) + 1)
+                return (image_border // 2, image_border // 2 + 1)
 
 
-    def _print_image(self, line, size):
+    def _print_image(self, imagedata, n_rows, col_bytes):
         """ Print formatted image """
         i = 0
         cont = 0
         buffer = ""
 
         self._raw(S_RASTER_N)
-        buffer = "%02X%02X%02X%02X" % (((size[0]//size[1])//8), 0, size[1], 0)
-        self._raw(hex2bytes(buffer))
-        buffer = ""
-
-        while i < len(line):
-            hex_string = int(line[i:i+8],2)
-            buffer += "%02X" % hex_string
-            i += 8
-            cont += 1
-            if cont % 4 == 0:
-                self._raw(hex2bytes(buffer))
-                buffer = ""
-                cont = 0
+        buffer = struct.pack('<HH', col_bytes, n_rows)
+        self._raw(buffer)
+        self._raw(imagedata)
 
     def fullimage(self, img, max_height=860, width=512, histeq=True):
         """ Resizes and prints an arbitrarily sized image """
@@ -91,7 +81,7 @@ class Escpos(object):
             current += bandsize
 
 
-    def image(self, img):
+    def image(self, im):
         """ Parse image and prepare it to a printable format """
         pixels   = []
         pix_line = ""
@@ -100,47 +90,25 @@ class Escpos(object):
         switch   = 0
         img_size = [ 0, 0 ]
 
-        if isinstance(img, Image.Image):
-            im = img.convert("RGB")
-        else:
-            im = Image.open(img).convert("RGB")
+        if not isinstance(im, Image.Image):
+            im = Image.open(im)
 
-        if im.size[0] > 512:
-            print("WARNING: Image is wider than 512 and could be truncated at print time ")
-        if im.size[1] > 255:
+        im = im.convert("L")
+        im = ImageOps.invert(im)
+        im = im.convert("1")
+
+        if im.size[0] > 640:
+            print("WARNING: Image is wider than 640 and could be truncated at print time ")
+        if im.size[1] > 640:
             raise ImageSizeError()
+ 
+        orig_width, height = im.size
+        width = ((orig_width + 31) // 32) * 32
+        new_image = Image.new("1", (width, height))
+        new_image.paste(im, (0, 0, orig_width, height))
 
-        im_border = self._check_image_size(im.size[0])
-        for i in range(im_border[0]):
-            im_left += "0"
-        for i in range(im_border[1]):
-            im_right += "0"
-
-        for y in range(im.size[1]):
-            img_size[1] += 1
-            pix_line += im_left
-            img_size[0] += im_border[0]
-            for x in range(im.size[0]):
-                img_size[0] += 1
-                RGB = im.getpixel((x, y))
-                im_color = (RGB[0] + RGB[1] + RGB[2])
-                im_pattern = "1X0"
-                pattern_len = len(im_pattern)
-                switch = (switch - 1 ) * (-1)
-                for x in range(pattern_len):
-                    if im_color <= (255 * 3 // pattern_len * (x+1)):
-                        if im_pattern[x] == "X":
-                            pix_line += "%d" % switch
-                        else:
-                            pix_line += im_pattern[x]
-                        break
-                    elif im_color > (255 * 3 // pattern_len * pattern_len) and im_color <= (255 * 3):
-                        pix_line += im_pattern[-1]
-                        break
-            pix_line += im_right
-            img_size[0] += im_border[1]
-
-        self._print_image(pix_line, img_size)
+        the_bytes = new_image.tobytes()
+        self._print_image(the_bytes, n_rows=height, col_bytes=width//8)
 
     def qr(self, text):
         """ Print QR Code for the provided string """
@@ -149,7 +117,14 @@ class Escpos(object):
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
         # Convert the RGB image in printable image
-        im = qr_img._img.convert("RGB")
+        im = qr_img._img.convert("1")
+        width = im.size[0]
+        height = im.size[1]
+        while width * 2 <= 640:
+             width *= 2
+             height *= 2
+
+        im = im.resize((width, height))
         self.image(im)
 
     def barcode(self, code, bc, width, height, pos, font):
