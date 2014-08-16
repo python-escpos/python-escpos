@@ -53,7 +53,7 @@ class Escpos:
                 buffer = ""
                 cont = 0
 
-    def fullimage(self, img, max_height=860, width=512, histeq=True):
+    def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
         """ Resizes and prints an arbitrarily sized image """
         if isinstance(img, Image.Image):
             im = img.convert("RGB")
@@ -85,7 +85,6 @@ class Escpos:
             im = im.crop((0, 0, im.size[0], max_height))
 
         # Divide into bands
-        bandsize = 255
         current = 0
         while current < im.size[1]:
             self.image(im.crop((0, current, width or im.size[0],
