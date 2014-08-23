@@ -60,6 +60,10 @@ TODO
   * Provide install instructions
   * Provide API documentation
 
+  * Google Code revisions (Updated 2014.8.22)
+     * 205d489cdf8d - Density Support
+     * 386c544dd163 - Charcode Tables, Tab positions
+
 USB Quickstart
 ------------------------------------------------------------------
 
