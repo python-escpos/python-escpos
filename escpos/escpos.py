@@ -53,7 +53,7 @@ class Escpos:
                 buffer = ""
                 cont = 0
 
-    def fullimage(self, img, max_height=860, width=512, histeq=True):
+    def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
         """ Resizes and prints an arbitrarily sized image """
         if isinstance(img, Image.Image):
             im = img.convert("RGB")
@@ -74,19 +74,21 @@ class Escpos:
                     n = n + h[i+b]
             im = im.point(lut)
 
-        ratio = float(width) / im.size[0]
-        newheight = int(ratio * im.size[1])
+        if width:
+            ratio = float(width) / im.size[0]
+            newheight = int(ratio * im.size[1])
 
-        # Resize the image
-        im = im.resize((width, newheight), Image.ANTIALIAS)
-        if im.size[1] > max_height:
+            # Resize the image
+            im = im.resize((width, newheight), Image.ANTIALIAS)
+
+        if max_height and im.size[1] > max_height:
             im = im.crop((0, 0, im.size[0], max_height))
 
         # Divide into bands
-        bandsize = 255
         current = 0
         while current < im.size[1]:
-            self.image(im.crop((0, current, width, min(im.size[1], current + bandsize))))
+            self.image(im.crop((0, current, width or im.size[0],
+                                min(im.size[1], current + bandsize))))
             current += bandsize
 
 
@@ -143,28 +145,31 @@ class Escpos:
 
     def qr(self, text):
         """ Print QR Code for the provided string """
-        qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
+        qr_code = qrcode.QRCode(version=4, box_size=4, border=1, error_correction=qrcode.constants.ERROR_CORRECT_H)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
         # Convert the RGB image in printable image
         im = qr_img._img.convert("RGB")
+        self.text('\n')
+        self.set(align='center')
         self.image(im)
+        self.text('\n')
 
-    def barcode(self, code, bc, width, height, pos, font):
+    def barcode(self, code, bc, height, width, pos, font):
         """ Print Barcode """
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
         # Height
-        if height >=2 or height <=6:
-            self._raw(BARCODE_HEIGHT)
+        if 1 <= height <= 255:
+            self._raw(BARCODE_HEIGHT + chr(height))
         else:
-            raise BarcodeSizeError()
+            raise BarcodeSizeError("height = %s" % height)
         # Width
-        if width >= 1 or width <=255:
-            self._raw(BARCODE_WIDTH)
+        if 2 <= width <= 6:
+            self._raw(BARCODE_WIDTH + chr(width))
         else:
-            raise BarcodeSizeError()
+            raise BarcodeSizeError("width = %s" % width)
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
@@ -192,10 +197,10 @@ class Escpos:
             self._raw(BARCODE_CODE39)
         elif bc.upper() == "ITF":
             self._raw(BARCODE_ITF)
-        elif bc.upper() == "NW7":
+        elif bc.upper() in ("NW7", "CODABAR"):
             self._raw(BARCODE_NW7)
         else:
-            raise BarcodeTypeError()
+            raise BarcodeTypeError(bc)
         # Print Code
         if code:
             self._raw(code)
