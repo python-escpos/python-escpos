@@ -168,7 +168,7 @@ class Escpos:
         elif code.upper() == "THAI18":
             self._raw(CHARCODE_THAI18)
         else:
-            raise CharCode_error()
+            raise CharCodeError()
 
     def barcode(self, code, bc, width, height, pos, font):
         """ Print Barcode """
