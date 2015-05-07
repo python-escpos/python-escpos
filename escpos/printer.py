@@ -11,9 +11,9 @@ import usb.util
 import serial
 import socket
 
-from escpos import *
-from constants import *
-from exceptions import *
+from .escpos import *
+from .constants import *
+from .exceptions import *
 
 class Usb(Escpos):
     """ Define USB printer """
@@ -38,19 +38,19 @@ class Usb(Escpos):
         """ Search device on USB tree and set is as escpos device """
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
-            print "Cable isn't plugged in"
+            print("Cable isn't plugged in")
 
         if self.device.is_kernel_driver_active(0):
             try:
                 self.device.detach_kernel_driver(0)
             except usb.core.USBError as e:
-                print "Could not detatch kernel driver: %s" % str(e)
+                print("Could not detatch kernel driver: %s" % str(e))
 
         try:
             self.device.set_configuration()
             self.device.reset()
         except usb.core.USBError as e:
-            print "Could not set configuration: %s" % str(e)
+            print("Could not set configuration: %s" % str(e))
 
 
     def _raw(self, msg):
@@ -88,9 +88,9 @@ class Serial(Escpos):
         self.device = serial.Serial(port=self.devfile, baudrate=self.baudrate, bytesize=self.bytesize, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=self.timeout, dsrdtr=True)
 
         if self.device is not None:
-            print "Serial printer enabled"
+            print("Serial printer enabled")
         else:
-            print "Unable to open serial printer on: %s" % self.devfile
+            print("Unable to open serial printer on: %s" % self.devfile)
 
 
     def _raw(self, msg):
@@ -124,7 +124,7 @@ class Network(Escpos):
         self.device.connect((self.host, self.port))
 
         if self.device is None:
-            print "Could not open socket for %s" % self.host
+            print("Could not open socket for %s" % self.host)
 
 
     def _raw(self, msg):
@@ -154,7 +154,7 @@ class File(Escpos):
         self.device = open(self.devfile, "wb")
 
         if self.device is None:
-            print "Could not open the specified file %s" % self.devfile
+            print("Could not open the specified file %s" % self.devfile)
 
 
     def _raw(self, msg):

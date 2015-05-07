@@ -14,8 +14,8 @@ except ImportError:
 import qrcode
 import time
 
-from constants import *
-from exceptions import *
+from .constants import *
+from .exceptions import *
 
 class Escpos:
     """ ESC/POS Printer object """
