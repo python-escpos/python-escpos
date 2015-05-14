@@ -20,7 +20,7 @@ from exceptions import *
 class Escpos:
     """ ESC/POS Printer object """
     device    = None
-
+    img_cache = []
 
     def _check_image_size(self, size):
         """ Check and fix the size of the image to 32 bits """
@@ -33,13 +33,45 @@ class Escpos:
             else:
                 return (image_border / 2, (image_border / 2) + 1)
 
+    def cache_image(self, path_img):
+        """ Open image file and store in the printer's cache """
+
+        img_no = len(self.img_cache)
+
+        im_open = Image.open(path_img)
+        im = im_open.convert("RGB")
+        # Convert the RGB image into printable image
+        (pix_line, img_size) = self._convert_image(im)
+
+        # Convert the buffered data directly to the printer readable format
+        cache = ""
+        buffer = ""
+        i = 0
+        cont = 0
+
+        buffer = "%02X%02X%02X%02X" % (((img_size[0]/img_size[1])/8), 0, img_size[1], 0)
+        cache = buffer.decode('hex')
+        buffer = ""
+
+        while i < len(pix_line):
+            hex_string = int(pix_line[i:i+8],2)
+            buffer += "%02X" % hex_string
+            i += 8
+            cont += 1
+            if cont % 4 == 0:
+                cache += buffer.decode("hex")
+                buffer = ""
+                cont = 0
+
+        self.img_cache.append(cache)
+        return img_no
 
     def _print_image(self, line, size):
         """ Print formatted image """
         i = 0
         cont = 0
         buffer = ""
-       
+
         self._raw(S_RASTER_N)
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
         self._raw(buffer.decode('hex'))
@@ -97,20 +129,25 @@ class Escpos:
                         break
                     elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
-                        break 
+                        break
             pix_line += im_right
             img_size[0] += im_border[1]
 
-        self._print_image(pix_line, img_size)
-
+        return pix_line, img_size
 
     def image(self,path_img):
-        """ Open image file """
+        """ Open and immediately print image file """
         im_open = Image.open(path_img)
         im = im_open.convert("RGB")
-        # Convert the RGB image in printable image
-        self._convert_image(im)
 
+        # Convert the RGB image in printable image
+        (pix_line, img_size) = self._convert_image(im)
+        self._print_image(pix_line, img_size)
+
+    def cached_image(self, index):
+        """ Prints an image from the image cache """
+        self._raw(S_RASTER_N)
+        self._raw(self.img_cache[index])
 
     def qr(self,text):
         """ Print QR Code for the provided string """
