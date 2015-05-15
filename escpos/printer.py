@@ -18,6 +18,8 @@ from exceptions import *
 class Usb(Escpos):
     """ Define USB printer """
 
+    is_open = False
+
     def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01):
         """
         @param idVendor  : Vendor ID
@@ -36,9 +38,14 @@ class Usb(Escpos):
 
     def open(self):
         """ Search device on USB tree and set is as escpos device """
+        if self.is_open:
+            return  # Already open; no need to reopen
+
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
             print "Cable isn't plugged in"
+        else:
+            self.is_open = True
 
         if self.device.is_kernel_driver_active(0):
             try:
@@ -50,7 +57,19 @@ class Usb(Escpos):
             self.device.set_configuration()
             self.device.reset()
         except usb.core.USBError as e:
+            # Seems fatal when it occurs. Should the device be closed as a result?
+            #self.close()
             print "Could not set configuration: %s" % str(e)
+
+
+    def close(self):
+        """ Manually release USB interface """
+        self.is_open = False
+
+        if self.device:
+            usb.util.dispose_resources(self.device)
+
+        self.device = None
 
 
     def _raw(self, msg):
@@ -60,14 +79,14 @@ class Usb(Escpos):
 
     def __del__(self):
         """ Release USB interface """
-        if self.device:
-            usb.util.dispose_resources(self.device)
-        self.device = None
+        self.close()
 
 
 
 class Serial(Escpos):
     """ Define Serial printer """
+
+    is_open = False
 
     def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1):
         """
@@ -84,13 +103,27 @@ class Serial(Escpos):
 
 
     def open(self):
-        """ Setup serial port and set is as escpos device """
+        """ Setup serial port and set it as escpos device """
+        if self.is_open:
+            return  # Already open; no need to reopen
+
         self.device = serial.Serial(port=self.devfile, baudrate=self.baudrate, bytesize=self.bytesize, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=self.timeout, dsrdtr=True)
 
         if self.device is not None:
             print "Serial printer enabled"
+            self.is_open = True
         else:
             print "Unable to open serial printer on: %s" % self.devfile
+
+
+    def close(self):
+        """ Manually close Serial interface """
+        self.is_open = False
+
+        if self.device is not None:
+            self.device.close()
+
+        self.device = None
 
 
     def _raw(self, msg):
@@ -100,13 +133,13 @@ class Serial(Escpos):
 
     def __del__(self):
         """ Close Serial interface """
-        if self.device is not None:
-            self.device.close()
-
+        self.close()
 
 
 class Network(Escpos):
     """ Define Network printer """
+
+    is_open = False
 
     def __init__(self,host,port=9100):
         """
@@ -120,11 +153,26 @@ class Network(Escpos):
 
     def open(self):
         """ Open TCP socket and set it as escpos device """
+        if self.is_open:
+            return  # Already open; no need to reopen
+
         self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.device.connect((self.host, self.port))
 
         if self.device is None:
             print "Could not open socket for %s" % self.host
+        else:
+            self.is_open = True
+
+
+    def close(self):
+        """ Manually close TCP connection """
+        self.is_open = False
+
+        if self.device is not None:
+            self.device.close()
+
+        self.device = None
 
 
     def _raw(self, msg):
@@ -134,12 +182,14 @@ class Network(Escpos):
 
     def __del__(self):
         """ Close TCP connection """
-        self.device.close()
+        self.close()
 
 
 
 class File(Escpos):
     """ Define Generic file printer """
+
+    is_open = False
 
     def __init__(self, devfile="/dev/usb/lp0"):
         """
@@ -151,10 +201,25 @@ class File(Escpos):
 
     def open(self):
         """ Open system file """
+        if self.is_open:
+            return  # Already open; no need to reopen
+
         self.device = open(self.devfile, "wb")
 
         if self.device is None:
             print "Could not open the specified file %s" % self.devfile
+        else:
+            self.is_open = True
+
+
+    def close(self):
+        """ Manually close system file """
+        self.is_open = False
+
+        if self.device is not None:
+            self.device.close()
+
+        self.device = None
 
 
     def _raw(self, msg):
@@ -164,4 +229,4 @@ class File(Escpos):
 
     def __del__(self):
         """ Close system file """
-        self.device.close()
+        self.close()
