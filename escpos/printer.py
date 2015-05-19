@@ -159,7 +159,10 @@ class File(Escpos):
 
     def _raw(self, msg):
         """ Print any command sent in raw format """
-        self.device.write(msg);
+        if type(msg) is str:
+            self.device.write(msg.encode());
+        else:
+            self.device.write(msg);
 
 
     def __del__(self):
