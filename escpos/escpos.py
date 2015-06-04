@@ -29,9 +29,9 @@ class Escpos:
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
-                return (image_border / 2, image_border / 2)
+                return (round(image_border / 2), round(image_border / 2))
             else:
-                return (image_border / 2, (image_border / 2) + 1)
+                return (round(image_border / 2), round((image_border / 2) + 1))
 
 
     def _print_image(self, line, size):
