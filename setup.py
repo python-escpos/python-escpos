@@ -5,8 +5,8 @@ from distutils.core import setup
 setup(
     name='escpos',
     version='1.0-4',
-    url='http://code.google.com/p/python-escpos',
-    download_url='http://python-escpos.googlecode.com/files/python-escpos-1.0.zip',
+    url='https://github.com/manpaz/python-escpos',
+    download_url='https://github.com/manpaz/python-escpos.git',
     description='Python library to manipulate ESC/POS Printers',
     license='GNU GPL v3',
     long_description=open('README').read(),
