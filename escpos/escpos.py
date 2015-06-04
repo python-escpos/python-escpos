@@ -13,6 +13,7 @@ except ImportError:
 
 import qrcode
 import time
+import textwrap
 
 from .constants import *
 from .exceptions import *
@@ -21,6 +22,8 @@ class Escpos:
     """ ESC/POS Printer object """
     device    = None
 
+    def __init__(self, columns=32):
+        self.columns = columns
 
     def _check_image_size(self, size):
         """ Check and fix the size of the image to 32 bits """
@@ -39,7 +42,7 @@ class Escpos:
         i = 0
         cont = 0
         buffer = ""
-       
+
         self._raw(S_RASTER_N)
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
         self._raw(buffer.decode('hex'))
@@ -97,7 +100,7 @@ class Escpos:
                         break
                     elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
-                        break 
+                        break
             pix_line += im_right
             img_size[0] += im_border[1]
 
@@ -196,9 +199,9 @@ class Escpos:
             self._raw(BARCODE_TXT_BTH)
         elif pos.upper() == "ABOVE":
             self._raw(BARCODE_TXT_ABV)
-        else:  # DEFAULT POSITION: BELOW 
+        else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-        # Type 
+        # Type
         if bc.upper() == "UPC-A":
             self._raw(BARCODE_UPC_A)
         elif bc.upper() == "UPC-E":
@@ -221,7 +224,7 @@ class Escpos:
         else:
             raise exception.BarcodeCodeError()
 
-        
+
     def text(self, txt):
         """ Print alpha-numeric text """
         if txt:
@@ -229,6 +232,10 @@ class Escpos:
         else:
             raise TextError()
 
+    def block_text(self, txt, columns=None):
+        '''Text is printed wrapped to specified columns'''
+        colCount = self.columns if columns == None else columns
+        self.text(textwrap.fill(txt, colCount))
 
     def set(self, align='left', font='a', type='normal', width=1, height=1, density=9):
         """ Set text properties """

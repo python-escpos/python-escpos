@@ -18,7 +18,7 @@ from .exceptions import *
 class Usb(Escpos):
     """ Define USB printer """
 
-    def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01):
+    def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
         """
         @param idVendor  : Vendor ID
         @param idProduct : Product ID
@@ -26,6 +26,7 @@ class Usb(Escpos):
         @param in_ep     : Input end point
         @param out_ep    : Output end point
         """
+        Escpos.__init__(self, *args, **kwargs)
         self.idVendor  = idVendor
         self.idProduct = idProduct
         self.interface = interface
@@ -69,13 +70,14 @@ class Usb(Escpos):
 class Serial(Escpos):
     """ Define Serial printer """
 
-    def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1):
+    def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1, *args, **kwargs):
         """
         @param devfile  : Device file under dev filesystem
         @param baudrate : Baud rate for serial transmission
         @param bytesize : Serial buffer size
         @param timeout  : Read/Write timeout
         """
+        Escpos.__init__(self, *args, **kwargs)
         self.devfile  = devfile
         self.baudrate = baudrate
         self.bytesize = bytesize
@@ -108,11 +110,12 @@ class Serial(Escpos):
 class Network(Escpos):
     """ Define Network printer """
 
-    def __init__(self,host,port=9100):
+    def __init__(self,host,port=9100, *args, **kwargs):
         """
         @param host : Printer's hostname or IP address
         @param port : Port to write to
         """
+        Escpos.__init__(self, *args, **kwargs)
         self.host = host
         self.port = port
         self.open()
@@ -141,10 +144,11 @@ class Network(Escpos):
 class File(Escpos):
     """ Define Generic file printer """
 
-    def __init__(self, devfile="/dev/usb/lp0"):
+    def __init__(self, devfile="/dev/usb/lp0", *args, **kwargs):
         """
         @param devfile : Device file under dev filesystem
         """
+        Escpos.__init__(self, *args, **kwargs)
         self.devfile = devfile
         self.open()
 
