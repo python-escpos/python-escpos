@@ -82,8 +82,8 @@ The following example shows how to initialize the Epson TM-TI88IV
 ------------------------------------------------------------------
 5. Links
 
-Please visit project homepage at:
-http://repo.bashlinux.com/projects/escpos.html
+Please visit project documentation at:
+https://github.com/manpaz/python-escpos/tree/wiki
 
 Manuel F Martinez <manpaz@bashlinux.com>
 
