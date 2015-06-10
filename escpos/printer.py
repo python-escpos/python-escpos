@@ -3,7 +3,7 @@
 @author: Manuel F Martinez <manpaz@bashlinux.com>
 @organization: Bashlinux
 @copyright: Copyright (c) 2012 Bashlinux
-@license: GPL
+@license: GNU GPL v3
 """
 
 import usb.core
