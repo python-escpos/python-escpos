@@ -14,6 +14,7 @@ except ImportError:
 import qrcode
 import time
 import textwrap
+import binascii
 
 from .constants import *
 from .exceptions import *
@@ -113,6 +114,38 @@ class Escpos:
         im = im_open.convert("RGB")
         # Convert the RGB image in printable image
         self._convert_image(im)
+
+    def direct_image(self, image):
+        """ Send image to printer"""
+        mask = 0x80
+        i = 0
+        temp = 0
+
+        (width, height) = image.size
+        self._raw(S_RASTER_N)
+        headerX = int(width / 8)
+        headerY = height
+        buf = "%02X" % (headerX & 0xff)
+        buf += "%02X" % ((headerX >> 8) & 0xff)
+        buf += "%02X" % (headerY & 0xff)
+        buf += "%02X" % ((headerY >> 8) & 0xff)
+        #self._raw(binascii.unhexlify(buf))
+        for y in range(height):
+            for x in range(width):
+                value = image.getpixel((x,y))
+                value = (value << 8) | value;
+                if value == 0:
+                    temp |= mask
+
+                mask = mask >> 1
+
+                i += 1
+                if i == 8:
+                    buf +=   ("%02X" % temp)
+                    mask = 0x80
+                    i = 0
+                    temp = 0
+        self._raw(binascii.unhexlify(buf))
 
 
     def qr(self,text):
