@@ -46,7 +46,7 @@ class Escpos:
 
         self._raw(S_RASTER_N)
         buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
-        self._raw(buffer.decode('hex'))
+        self._raw(binascii.unhexlify(buffer))
         buffer = ""
 
         while i < len(line):
@@ -55,7 +55,7 @@ class Escpos:
             i += 8
             cont += 1
             if cont % 4 == 0:
-                self._raw(buffer.decode("hex"))
+                self._raw(binascii.unhexlify(buffer))
                 buffer = ""
                 cont = 0
 
