@@ -145,7 +145,7 @@ class Escpos:
                     mask = 0x80
                     i = 0
                     temp = 0
-        self._raw(binascii.unhexlify(buf))
+        self._raw(binascii.unhexlify(bytes(buf, "ascii")))
 
 
     def qr(self,text):
