@@ -72,7 +72,7 @@ The following example shows how to initialize the Epson TM-TI88IV
   from escpos import *
 
   """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-  Epson = escpos.Escpos(0x04b8,0x0202,0)
+  Epson = escpos.Escpos(0x04b8,0x0202)
   Epson.text("Hello World")
   Epson.image("logo.gif")
   Epson.barcode
