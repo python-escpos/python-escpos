@@ -112,13 +112,13 @@ class Escpos:
         """ Open image file """
         im_open = Image.open(path_img)
 
-	# Remove the alpha channel on transparent images
-	if im_open.mode == 'RGBA':
-		im_open.load()
-		im = Image.new("RGB", im_open.size, (255, 255, 255))
-		im.paste(im_open, mask=im_open.split()[3])
-	else:
-	        im = im_open.convert("RGB")
+        # Remove the alpha channel on transparent images
+        if im_open.mode == 'RGBA':
+            im_open.load()
+            im = Image.new("RGB", im_open.size, (255, 255, 255))
+            im.paste(im_open, mask=im_open.split()[3])
+        else:
+            im = im_open.convert("RGB")
 
         # Convert the RGB image in printable image
         self._convert_image(im)
