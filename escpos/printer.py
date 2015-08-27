@@ -3,7 +3,7 @@
 @author: Manuel F Martinez <manpaz@bashlinux.com>
 @organization: Bashlinux
 @copyright: Copyright (c) 2012 Bashlinux
-@license: GPL
+@license: GNU GPL v3
 """
 
 import usb.core
@@ -70,24 +70,40 @@ class Usb(Escpos):
 class Serial(Escpos):
     """ Define Serial printer """
 
-    def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1, *args, **kwargs):
+    def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1,
+                 parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
+                 xonxoff=False , dsrdtr=True, *args, **kwargs):
         """
         @param devfile  : Device file under dev filesystem
         @param baudrate : Baud rate for serial transmission
         @param bytesize : Serial buffer size
         @param timeout  : Read/Write timeout
+
+        @param parity   : Parity checking
+        @param stopbits : Number of stop bits
+        @param xonxoff  : Software flow control
+        @param dsrdtr   : Hardware flow control (False to enable RTS/CTS)
         """
         Escpos.__init__(self, *args, **kwargs)
         self.devfile  = devfile
         self.baudrate = baudrate
         self.bytesize = bytesize
         self.timeout  = timeout
+
+        self.parity = parity
+        self.stopbits = stopbits
+        self.xonxoff = xonxoff
+        self.dsrdtr = dsrdtr
+
         self.open()
 
 
     def open(self):
         """ Setup serial port and set is as escpos device """
-        self.device = serial.Serial(port=self.devfile, baudrate=self.baudrate, bytesize=self.bytesize, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=self.timeout, dsrdtr=True)
+        self.device = serial.Serial(port=self.devfile, baudrate=self.baudrate,
+                                    bytesize=self.bytesize, parity=self.parity,
+                                    stopbits=self.stopbits, timeout=self.timeout,
+                                    xonxoff=self.xonxoff, dsrdtr=self.dsrdtr)
 
         if self.device is not None:
             print("Serial printer enabled")
