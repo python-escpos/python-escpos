@@ -95,7 +95,7 @@ class Escpos:
                         else:
                             pix_line += im_pattern[x]
                         break
-                    elif im_color > (255 * 3 / pattern_len * pattern_len) and im_color <= (255 * 3):
+                    elif (255 * 3 / pattern_len * pattern_len) < im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
                         break 
             pix_line += im_right
