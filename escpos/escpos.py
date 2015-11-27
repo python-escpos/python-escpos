@@ -17,7 +17,7 @@ import time
 from constants import *
 from exceptions import *
 
-class Escpos:
+class Escpos(object):
     """ ESC/POS Printer object """
     device    = None
 
