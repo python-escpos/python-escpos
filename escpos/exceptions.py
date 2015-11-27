@@ -26,6 +26,7 @@ class Error(Exception):
 
 
 class BarcodeTypeError(Error):
+    """No Barcode type defined """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -36,6 +37,7 @@ class BarcodeTypeError(Error):
 
 
 class BarcodeSizeError(Error):
+    """ Barcode size is out of range """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -46,16 +48,18 @@ class BarcodeSizeError(Error):
 
 
 class BarcodeCodeError(Error):
+    """ No Barcode code was supplied """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 30
 
     def __str__(self):
-        return "Code was not supplied"
+        return "No Barcode code was supplied"
 
 
 class ImageSizeError(Error):
+    """ Image height is longer than 255px and can't be printed """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -66,6 +70,7 @@ class ImageSizeError(Error):
 
 
 class TextError(Error):
+    """ Test sting must be supplied to the text() method """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -76,6 +81,7 @@ class TextError(Error):
 
 
 class CashDrawerError(Error):
+    """ Valid pin must be set to send pulse """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -86,6 +92,7 @@ class CashDrawerError(Error):
 
 
 class TabPosError(Error):
+    """ Valid tab positions must be in the range 0 to 16 """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -96,6 +103,7 @@ class TabPosError(Error):
 
 
 class CharCodeError(Error):
+    """ Valid char code must be set """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg

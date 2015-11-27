@@ -16,25 +16,47 @@ import qrcode
 from constants import *
 from exceptions import *
 
+from abc import ABCMeta, abstractmethod  # abstract base class support
+
 
 class Escpos(object):
     """ ESC/POS Printer object """
+    __metaclass__ = ABCMeta
     device = None
+
+    @abstractmethod
+    def _raw(self, msg):
+        """ Sends raw data to the printer
+
+        This function has to be individually implemented by the implementations.
+        :param msg: message string to be sent to the printer
+        """
+        pass
 
     @staticmethod
     def _check_image_size(size):
-        """ Check and fix the size of the image to 32 bits """
+        """ Check and fix the size of the image to 32 bits
+
+        :param size: size of the image
+        :returns: tuple of image borders
+        :rtype: (int, int)
+        """
         if size % 32 == 0:
             return 0, 0
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
+                # TODO check behaviour of / in newer versions of python
                 return image_border / 2, image_border / 2
             else:
                 return image_border / 2, (image_border / 2) + 1
 
     def _print_image(self, line, size):
-        """ Print formatted image """
+        """ Print formatted image
+
+        :param line:
+        :param size:
+        """
         i = 0
         cont = 0
         pbuffer = ""
@@ -55,7 +77,11 @@ class Escpos(object):
                 cont = 0
 
     def _convert_image(self, im):
-        """ Parse image and prepare it to a printable format """
+        """ Parse image and prepare it to a printable format
+
+        :param im: image data
+        :raises: ImageSizeError
+        """
         pixels = []
         pix_line = ""
         im_left = ""
@@ -101,7 +127,10 @@ class Escpos(object):
         self._print_image(pix_line, img_size)
 
     def image(self, path_img):
-        """ Open image file """
+        """ Open image file
+
+        :param path_img: path to image
+        """
         im_open = Image.open(path_img)
 
         # Remove the alpha channel on transparent images
@@ -116,7 +145,10 @@ class Escpos(object):
         self._convert_image(im)
 
     def qr(self, text):
-        """ Print QR Code for the provided string """
+        """ Print QR Code for the provided string
+
+        :param text: text to generate a QR-Code from
+        """
         qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
         qr_code.add_data(text)
         qr_code.make(fit=True)
@@ -127,7 +159,13 @@ class Escpos(object):
         self._convert_image(im)
 
     def charcode(self, code):
-        """ Set Character Code Table """
+        """ Set Character Code Table
+
+        Sends the control sequence from constants.py to the printer with :py:meth:`escpos.printer._raw()`.
+
+        :param code: Name of CharCode
+        :raises: CharCodeError
+        """
         if code.upper() == "USA":
             self._raw(CHARCODE_PC437)
         elif code.upper() == "JIS":
@@ -146,8 +184,8 @@ class Escpos(object):
             self._raw(CHARCODE_GREEK)
         elif code.upper() == "HEBREW":
             self._raw(CHARCODE_HEBREW)
-        elif code.upper() == "LATVIAN":
-            self._raw(CHARCODE_PC755)
+        # elif code.upper() == "LATVIAN":  # this is not listed in the constants
+        #    self._raw(CHARCODE_PC755)
         elif code.upper() == "WPC1252":
             self._raw(CHARCODE_PC1252)
         elif code.upper() == "CIRILLIC2":
@@ -174,7 +212,16 @@ class Escpos(object):
             raise CharCodeError()
 
     def barcode(self, code, bc, width, height, pos, font):
-        """ Print Barcode """
+        """ Print Barcode
+
+        :param code: data for barcode
+        :param bc: barcode format, see constants.py
+        :param width: barcode width, has to be between 1 and 255
+        :param height: barcode height, has to be between 2 and 6
+        :param pos: position of text in barcode, default when nothing supplied is below
+        :param font: select font, default is font A
+        :raises: BarcodeSizeError, BarcodeTypeError, BarcodeCodeError
+        """
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
         # Height
@@ -225,14 +272,27 @@ class Escpos(object):
             raise BarcodeCodeError()
 
     def text(self, txt):
-        """ Print alpha-numeric text """
+        """ Print alpha-numeric text
+
+        The text has to be encoded in the currently selected codepage.
+        :param txt: text to be printed
+        :raises: TextError
+        """
         if txt:
             self._raw(txt)
         else:
             raise TextError()
 
     def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9):
-        """ Set text properties """
+        """ Set text properties by sending them to the printer
+
+        :param align: alignment of text
+        :param font: font A or B
+        :param text_type: add bold or underlined
+        :param width: text width, normal or double width
+        :param height: text height, normal or double height
+        :param density: print density
+        """
         # Width
         if height == 2 and width == 2:
             self._raw(TXT_NORMAL)
@@ -299,7 +359,10 @@ class Escpos(object):
             pass
 
     def cut(self, mode=''):
-        """ Cut paper """
+        """ Cut paper
+
+        :param mode: set to 'PART' for a partial cut
+        """
         # Fix the size between last line and cut
         # TODO: handle this with a line feed
         self._raw("\n\n\n\n\n\n")
@@ -309,7 +372,12 @@ class Escpos(object):
             self._raw(PAPER_FULL_CUT)
 
     def cashdraw(self, pin):
-        """ Send pulse to kick the cash drawer """
+        """ Send pulse to kick the cash drawer
+
+        Kick cash drawer on pin 2 or pin 5.
+        :param pin: pin number
+        :raises: CashDrawerError
+        """
         if pin == 2:
             self._raw(CD_KICK_2)
         elif pin == 5:
@@ -318,7 +386,10 @@ class Escpos(object):
             raise CashDrawerError()
 
     def hw(self, hw):
-        """ Hardware operations """
+        """ Hardware operations
+
+        :param hw: hardware action
+        """
         if hw.upper() == "INIT":
             self._raw(HW_INIT)
         elif hw.upper() == "SELECT":
@@ -329,10 +400,13 @@ class Escpos(object):
             pass
 
     def control(self, ctl, pos=4):
-        """ Feed control sequences """
+        """ Feed control sequences
+
+        :raises: TabPosError
+        """
         # Set tab positions
         if pos < 1 or pos > 16:
-            raise TabError()
+            raise TabPosError()
         else:
             self._raw("".join([CTL_SET_HT, hex(pos)]))
         # Set position

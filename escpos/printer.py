@@ -20,11 +20,11 @@ class Usb(Escpos):
 
     def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01):
         """
-        @param idVendor  : Vendor ID
-        @param idProduct : Product ID
-        @param interface : USB device interface
-        @param in_ep     : Input end point
-        @param out_ep    : Output end point
+        :param idVendor: Vendor ID
+        :param idProduct: Product ID
+        :param interface: USB device interface
+        :param in_ep: Input end point
+        :param out_ep: Output end point
         """
         self.idVendor = idVendor
         self.idProduct = idProduct
@@ -34,7 +34,7 @@ class Usb(Escpos):
         self.open()
 
     def open(self):
-        """ Search device on USB tree and set is as escpos device """
+        """ Search device on USB tree and set it as escpos device """
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
             print "Cable isn't plugged in"
