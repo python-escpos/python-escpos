@@ -85,7 +85,7 @@ class CashDrawerError(Error):
         return "Valid pin must be set to send pulse"
 
 
-class TabError(Error):
+class TabPosError(Error):
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg

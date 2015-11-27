@@ -37,21 +37,21 @@ class Escpos(object):
         """ Print formatted image """
         i = 0
         cont = 0
-        buffer = ""
+        pbuffer = ""
 
         self._raw(S_RASTER_N)
-        buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1] & 0xff, size[1] >> 8)
-        self._raw(buffer.decode('hex'))
-        buffer = ""
+        pbuffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1] & 0xff, size[1] >> 8)
+        self._raw(pbuffer.decode('hex'))
+        pbuffer = ""
 
         while i < len(line):
             hex_string = int(line[i:i+8], 2)
-            buffer += "%02X" % hex_string
+            pbuffer += "%02X" % hex_string
             i += 8
             cont += 1
             if cont % 4 == 0:
-                self._raw(buffer.decode("hex"))
-                buffer = ""
+                self._raw(pbuffer.decode("hex"))
+                pbuffer = ""
                 cont = 0
 
     def _convert_image(self, im):
@@ -231,7 +231,7 @@ class Escpos(object):
         else:
             raise TextError()
 
-    def set(self, align='left', font='a', type='normal', width=1, height=1, density=9):
+    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9):
         """ Set text properties """
         # Width
         if height == 2 and width == 2:
@@ -246,22 +246,22 @@ class Escpos(object):
         else:  # DEFAULT SIZE: NORMAL
             self._raw(TXT_NORMAL)
         # Type
-        if type.upper() == "B":
+        if text_type.upper() == "B":
             self._raw(TXT_BOLD_ON)
             self._raw(TXT_UNDERL_OFF)
-        elif type.upper() == "U":
+        elif text_type.upper() == "U":
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL_ON)
-        elif type.upper() == "U2":
+        elif text_type.upper() == "U2":
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL2_ON)
-        elif type.upper() == "BU":
+        elif text_type.upper() == "BU":
             self._raw(TXT_BOLD_ON)
             self._raw(TXT_UNDERL_ON)
-        elif type.upper() == "BU2":
+        elif text_type.upper() == "BU2":
             self._raw(TXT_BOLD_ON)
             self._raw(TXT_UNDERL2_ON)
-        elif type.upper == "NORMAL":
+        elif text_type.upper == "NORMAL":
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL_OFF)
         # Font
