@@ -12,41 +12,40 @@ except ImportError:
     from PIL import Image
 
 import qrcode
-import time
 
 from constants import *
 from exceptions import *
 
+
 class Escpos(object):
     """ ESC/POS Printer object """
-    device    = None
+    device = None
 
-
-    def _check_image_size(self, size):
+    @staticmethod
+    def _check_image_size(size):
         """ Check and fix the size of the image to 32 bits """
         if size % 32 == 0:
-            return (0, 0)
+            return 0, 0
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
-                return (image_border / 2, image_border / 2)
+                return image_border / 2, image_border / 2
             else:
-                return (image_border / 2, (image_border / 2) + 1)
-
+                return image_border / 2, (image_border / 2) + 1
 
     def _print_image(self, line, size):
         """ Print formatted image """
         i = 0
         cont = 0
         buffer = ""
-       
+
         self._raw(S_RASTER_N)
-        buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1]&0xff, size[1]>>8)
+        buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1] & 0xff, size[1] >> 8)
         self._raw(buffer.decode('hex'))
         buffer = ""
 
         while i < len(line):
-            hex_string = int(line[i:i+8],2)
+            hex_string = int(line[i:i+8], 2)
             buffer += "%02X" % hex_string
             i += 8
             cont += 1
@@ -55,19 +54,17 @@ class Escpos(object):
                 buffer = ""
                 cont = 0
 
-
     def _convert_image(self, im):
         """ Parse image and prepare it to a printable format """
-        pixels   = []
+        pixels = []
         pix_line = ""
-        im_left  = ""
+        im_left = ""
         im_right = ""
-        switch   = 0
-        img_size = [ 0, 0 ]
-
+        switch = 0
+        img_size = [0, 0]
 
         if im.size[0] > 512:
-            print  ("WARNING: Image is wider than 512 and could be truncated at print time ")
+            print ("WARNING: Image is wider than 512 and could be truncated at print time ")
         if im.size[1] > 0xffff:
             raise ImageSizeError()
 
@@ -87,7 +84,7 @@ class Escpos(object):
                 im_color = (RGB[0] + RGB[1] + RGB[2])
                 im_pattern = "1X0"
                 pattern_len = len(im_pattern)
-                switch = (switch - 1 ) * (-1)
+                switch = (switch - 1) * (-1)
                 for x in range(pattern_len):
                     if im_color <= (255 * 3 / pattern_len * (x+1)):
                         if im_pattern[x] == "X":
@@ -97,30 +94,28 @@ class Escpos(object):
                         break
                     elif (255 * 3 / pattern_len * pattern_len) < im_color <= (255 * 3):
                         pix_line += im_pattern[-1]
-                        break 
+                        break
             pix_line += im_right
             img_size[0] += im_border[1]
 
         self._print_image(pix_line, img_size)
 
-
-    def image(self,path_img):
+    def image(self, path_img):
         """ Open image file """
         im_open = Image.open(path_img)
 
-	# Remove the alpha channel on transparent images
-	if im_open.mode == 'RGBA':
-		im_open.load()
-		im = Image.new("RGB", im_open.size, (255, 255, 255))
-		im.paste(im_open, mask=im_open.split()[3])
-	else:
-	        im = im_open.convert("RGB")
+        # Remove the alpha channel on transparent images
+        if im_open.mode == 'RGBA':
+            im_open.load()
+            im = Image.new("RGB", im_open.size, (255, 255, 255))
+            im.paste(im_open, mask=im_open.split()[3])
+        else:
+            im = im_open.convert("RGB")
 
         # Convert the RGB image in printable image
         self._convert_image(im)
 
-
-    def qr(self,text):
+    def qr(self, text):
         """ Print QR Code for the provided string """
         qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
         qr_code.add_data(text)
@@ -131,8 +126,7 @@ class Escpos(object):
         # Convert the RGB image in printable image
         self._convert_image(im)
 
-
-    def charcode(self,code):
+    def charcode(self, code):
         """ Set Character Code Table """
         if code.upper() == "USA":
             self._raw(CHARCODE_PC437)
@@ -184,19 +178,19 @@ class Escpos(object):
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
         # Height
-        if height >=2 or height <=6:
+        if height >= 2 or height <= 6:
             self._raw(BARCODE_HEIGHT)
         else:
             raise BarcodeSizeError()
         # Width
-        if width >= 1 or width <=255:
+        if width >= 1 or width <= 255:
             self._raw(BARCODE_WIDTH)
         else:
             raise BarcodeSizeError()
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
-        else: # DEFAULT FONT: A
+        else:  # DEFAULT FONT: A
             self._raw(BARCODE_FONT_A)
         # Position
         if pos.upper() == "OFF":
@@ -205,9 +199,9 @@ class Escpos(object):
             self._raw(BARCODE_TXT_BTH)
         elif pos.upper() == "ABOVE":
             self._raw(BARCODE_TXT_ABV)
-        else:  # DEFAULT POSITION: BELOW 
+        else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-        # Type 
+        # Type
         if bc.upper() == "UPC-A":
             self._raw(BARCODE_UPC_A)
         elif bc.upper() == "UPC-E":
@@ -228,16 +222,14 @@ class Escpos(object):
         if code:
             self._raw(code)
         else:
-            raise exception.BarcodeCodeError()
+            raise BarcodeCodeError()
 
-        
     def text(self, txt):
         """ Print alpha-numeric text """
         if txt:
             self._raw(txt)
         else:
             raise TextError()
-
 
     def set(self, align='left', font='a', type='normal', width=1, height=1, density=9):
         """ Set text properties """
@@ -251,7 +243,7 @@ class Escpos(object):
         elif width == 2 and height != 2:
             self._raw(TXT_NORMAL)
             self._raw(TXT_2WIDTH)
-        else: # DEFAULT SIZE: NORMAL
+        else:  # DEFAULT SIZE: NORMAL
             self._raw(TXT_NORMAL)
         # Type
         if type.upper() == "B":
@@ -303,9 +295,8 @@ class Escpos(object):
             self._raw(PD_P37)
         elif density == 8:
             self._raw(PD_P50)
-        else:# DEFAULT: DOES NOTHING
+        else:  # DEFAULT: DOES NOTHING
             pass
-
 
     def cut(self, mode=''):
         """ Cut paper """
@@ -314,9 +305,8 @@ class Escpos(object):
         self._raw("\n\n\n\n\n\n")
         if mode.upper() == "PART":
             self._raw(PAPER_PART_CUT)
-        else: # DEFAULT MODE: FULL CUT
+        else:  # DEFAULT MODE: FULL CUT
             self._raw(PAPER_FULL_CUT)
-
 
     def cashdraw(self, pin):
         """ Send pulse to kick the cash drawer """
@@ -327,7 +317,6 @@ class Escpos(object):
         else:
             raise CashDrawerError()
 
-
     def hw(self, hw):
         """ Hardware operations """
         if hw.upper() == "INIT":
@@ -336,9 +325,8 @@ class Escpos(object):
             self._raw(HW_SELECT)
         elif hw.upper() == "RESET":
             self._raw(HW_RESET)
-        else: # DEFAULT: DOES NOTHING
+        else:  # DEFAULT: DOES NOTHING
             pass
-
 
     def control(self, ctl, pos=4):
         """ Feed control sequences """
@@ -346,7 +334,7 @@ class Escpos(object):
         if pos < 1 or pos > 16:
             raise TabError()
         else:
-            self._raw("".join([CTL_SET_HT,hex(pos)]))
+            self._raw("".join([CTL_SET_HT, hex(pos)]))
         # Set position
         if ctl.upper() == "LF":
             self._raw(CTL_LF)
