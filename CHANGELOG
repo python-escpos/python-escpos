@@ -22,3 +22,16 @@ CHANGELOG
 - Added charcode tables
 - Fixed Horizontal Tab
 - Fixed code tabulators
+
+* 2015-04-21 - Version 1.0.5
+- Merge pull request #45 from Krispy2009/master
+  . Raising the right error when wrong charcode is used
+  . Sent by Krispy2009@gmail.com
+
+* 2015-07-06 - Version 1.0.6
+- Merge pull request #53 from ldos/master
+  . Extended params for serial printers
+  . Sent by cafeteria.ldosalzira@gmail.com
+
+* 2015-08-22 - Version 1.0.7
+- Issue #57: Fixed transparent images
