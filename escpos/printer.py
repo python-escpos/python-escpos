@@ -176,6 +176,10 @@ class File(Escpos):
         if self.device is None:
             print("Could not open the specified file %s" % self.devfile)
 
+    def flush(self):
+        """Flush printing content"""
+        self.device.flush()
+
 
     def _raw(self, msg):
         """ Print any command sent in raw format """
