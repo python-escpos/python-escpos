@@ -26,12 +26,18 @@ CHANGELOG
 * 2015-04-21 - Version 1.0.5
 - Merge pull request #45 from Krispy2009/master
   . Raising the right error when wrong charcode is used
-  . Sent by Krispy2009@gmail.com
+  . Sent by Kristi <Krispy2009@gmail.com>
 
 * 2015-07-06 - Version 1.0.6
 - Merge pull request #53 from ldos/master
   . Extended params for serial printers
-  . Sent by cafeteria.ldosalzira@gmail.com
+  . Sent by ldos <cafeteria.ldosalzira@gmail.com>
 
 * 2015-08-22 - Version 1.0.7
 - Issue #57: Fixed transparent images
+
+* 2015-10-27 - Version 1.0.8
+- Merge pull request #59 from zouppen/master
+  . Support for images vertically longer than 256 pixels
+  . Sent by Joel Lehtonen <joel.lehtonen@koodilehto.fi>
+- Updated README
