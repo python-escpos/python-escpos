@@ -1,0 +1,77 @@
+python-escpos (1.0.8-2) unstable; urgency=low
+
+  * Imported source 
+  * First debianization
+
+ -- Christoph Heuel <mail@christoph-heuel.net>  Sat, 12 Dec 2015 19:13:33 +0100
+
+python-escpos (1.0.8-1) unstable; urgency=low
+
+  [ Manuel F Martinez ]
+  * Added donation message
+
+  [ Joel Lehtonen ]
+  * Support for images vertically longer than 256 pixels
+
+  [ Christoph Heuel ]
+  * Fix mixed tabs/space error
+
+  [ Hark ]
+  * Prevent crash when using libusb0 printers
+
+  [ Manuel F Martinez ]
+  * Updated README and documentation
+
+  [ Christoph Heuel ]
+  * Add flush function
+  * Debian packaging
+
+ -- Manuel F Martinez <manpaz@gmail.com>  Sat, 12 Dec 2015 20:59:53 +0100
+
+python-escyypos (1.0.7-1) unstable; urgency=low
+
+  [ Kristi ]
+  * Raising the right error when wrong charcode is used
+
+  [ Christoph Heuel ]
+  * After running 2to3 tool
+  * Fix for string operation
+  * Integer is needed, not float
+  * Add text wrapping
+
+  [ Manuel F Martinez ]
+  * Updated URL for the documentation
+  * Updated documentation URL to local wiki
+  * Updated setup URLs
+
+  [ Christoph Heuel ]
+  * Introduce new direct_image
+
+  [ Manuel F Martinez ]
+  * Fixed License version mismatch
+
+  [ Christoph Heuel ]
+  * Use unhexlify
+  * Hexlify text
+
+  [ Manuel F Martinez ]
+  * Updated accordingly to the wiki
+
+  [ ldos ]
+  * Extended params for serial printers
+
+  [ Manuel F Martinez ]
+  * Fixed issues with transparent images
+  * Updated project version
+
+ -- Manuel F Martinez <manpaz@gmail.com>  Sat, 12 Dec 2015 20:59:53 +0100
+
+python-escpos (1.0.4-1) unstable; urgency=medium
+
+  [ Manuel F Martinez ]
+  * Added density support
+  * Added quad support
+  * fixed code tabulators
+  * Updated version
+
+ -- Manuel F Martinez <manpaz@gmail.com>  Sat, 12 Dec 2015 20:59:53 +0100

@@ -1,0 +1,55 @@
+Source: python-escpos
+Section: unknown
+Priority: optional
+Maintainer: Christoph Heuel <mail@christoph-heuel.net>
+Build-Depends: debhelper (>= 9), dh-python
+Standards-Version: 3.9.5
+Homepage: https://github.com/braveheuel/python-escpos
+#Vcs-Git: git@github.com:braveheuel/python-escpos.git
+#Vcs-Browser: https://github.com/braveheuel/python-escpos
+
+Package: python-escpos
+Architecture: all
+Depends: ${misc:Depends}
+Description: Python library to manipulate ESC/POS Printers (Python 2)
+ Python ESC/POS is a library which lets the user have access to all
+ those printers handled by ESC/POS commands, as defined by Epson,
+ from a Python application.
+ .
+ The standard usage is send raw text to the printer, but in also 
+ helps the user to enhance the experience with those printers by
+ facilitating the bar code printing in many different standards,
+ as well as manipulating images so they can be printed as brand
+ logo or any other usage images migh have. 
+ .
+ Text can be aligned/justified and fonts can be changed by size,
+ type and weight.
+ .
+ Also, this module handles some hardware functionalities like, cut
+ paper, carrier return, printer reset and others concerned to the
+ carriage alignment.
+ .
+ This package covers Python 2 code.
+
+Package: python3-escpos
+Architecture: all
+Depends: ${misc:Depends}
+Description: Python library to manipulate ESC/POS Printers (Python 3)
+ Python ESC/POS is a library which lets the user have access to all
+ those printers handled by ESC/POS commands, as defined by Epson,
+ from a Python application.
+ .
+ The standard usage is send raw text to the printer, but in also 
+ helps the user to enhance the experience with those printers by
+ facilitating the bar code printing in many different standards,
+ as well as manipulating images so they can be printed as brand
+ logo or any other usage images migh have. 
+ .
+ Text can be aligned/justified and fonts can be changed by size,
+ type and weight.
+ .
+ Also, this module handles some hardware functionalities like, cut
+ paper, carrier return, printer reset and others concerned to the
+ carriage alignment.
+ .
+ This package covers Python 3 code.
