@@ -15,28 +15,28 @@ from .escpos import *
 from .constants import *
 from .exceptions import *
 
+
 class Usb(Escpos):
     """ Define USB printer """
 
     def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
         """
-        @param idVendor  : Vendor ID
-        @param idProduct : Product ID
-        @param interface : USB device interface
-        @param in_ep     : Input end point
-        @param out_ep    : Output end point
+        :param idVendor: Vendor ID
+        :param idProduct: Product ID
+        :param interface: USB device interface
+        :param in_ep: Input end point
+        :param out_ep: Output end point
         """
         Escpos.__init__(self, *args, **kwargs)
         self.idVendor  = idVendor
         self.idProduct = idProduct
         self.interface = interface
-        self.in_ep     = in_ep
-        self.out_ep    = out_ep
+        self.in_ep = in_ep
+        self.out_ep = out_ep
         self.open()
 
-
     def open(self):
-        """ Search device on USB tree and set is as escpos device """
+        """ Search device on USB tree and set it as escpos device """
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
             print("Cable isn't plugged in")
@@ -61,18 +61,15 @@ class Usb(Escpos):
         except usb.core.USBError as e:
             print("Could not set configuration: %s" % str(e))
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
         self.device.write(self.out_ep, msg, self.interface)
-
 
     def __del__(self):
         """ Release USB interface """
         if self.device:
             usb.util.dispose_resources(self.device)
         self.device = None
-
 
 
 class Serial(Escpos):
@@ -97,14 +94,12 @@ class Serial(Escpos):
         self.baudrate = baudrate
         self.bytesize = bytesize
         self.timeout  = timeout
-
         self.parity = parity
         self.stopbits = stopbits
         self.xonxoff = xonxoff
         self.dsrdtr = dsrdtr
 
         self.open()
-
 
     def open(self):
         """ Setup serial port and set is as escpos device """
@@ -118,17 +113,14 @@ class Serial(Escpos):
         else:
             print("Unable to open serial printer on: %s" % self.devfile)
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
         self.device.write(msg)
-
 
     def __del__(self):
         """ Close Serial interface """
         if self.device is not None:
             self.device.close()
-
 
 
 class Network(Escpos):
@@ -144,7 +136,6 @@ class Network(Escpos):
         self.port = port
         self.open()
 
-
     def open(self):
         """ Open TCP socket and set it as escpos device """
         self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -153,16 +144,13 @@ class Network(Escpos):
         if self.device is None:
             print("Could not open socket for %s" % self.host)
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
         self.device.send(msg)
 
-
     def __del__(self):
         """ Close TCP connection """
         self.device.close()
-
 
 
 class File(Escpos):
@@ -176,7 +164,6 @@ class File(Escpos):
         self.devfile = devfile
         self.open()
 
-
     def open(self):
         """ Open system file """
         self.device = open(self.devfile, "wb")
@@ -188,14 +175,12 @@ class File(Escpos):
         """Flush printing content"""
         self.device.flush()
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
         if type(msg) is str:
             self.device.write(msg.encode());
         else:
             self.device.write(msg);
-
 
     def __del__(self):
         """ Close system file """
