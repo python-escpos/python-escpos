@@ -23,7 +23,13 @@ setup(
         'Operating System :: GNU/Linux',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
-        'Topic :: System :: Pheripherals',
+        'Topic :: System :: Peripherals',
         'Topic :: Software Development :: Libraries :: Python Modules',
+    ],
+    install_requires=[
+        'pyusb',
+        'Pillow>=2.0',
+        'qrcode>=4.0',
+        'pyserial',
     ],
 )
