@@ -183,6 +183,7 @@ class Escpos(object):
                     i = 0
                     temp = 0
         self._raw(binascii.unhexlify(bytes(buf, "ascii")))
+        self._raw('\n')
 
     def qr(self, text):
         """ Print QR Code for the provided string
