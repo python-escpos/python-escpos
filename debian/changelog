@@ -1,3 +1,20 @@
+python-escpos (1.0.8-3) unstable; urgency=medium
+
+  [ Christoph Heuel ]
+  * Fix text wrapping error after image
+
+  [ Patrick Kanzler ]
+  * moved .hgignore to .gitignore
+  * REFACTOR chained boolean expression in escpos
+  * REFACTOR use new-style class for Escpos
+  * REFACTOR style and PEP8, fixes #66
+  * REFACTOR do not shadow built-ins
+  * ADD requirements.txt and requirements to setup.py
+  * DOC, IMPROVE improve docstrings and add abstract method _raw to Escpos
+  * FIX constant definition for PC1252
+
+ -- Christoph Heuel <mail@christoph-heuel.net>  Sun, 13 Dec 2015 14:27:27 +0100
+
 python-escpos (1.0.8-2) unstable; urgency=low
 
   * Imported source 
@@ -28,7 +45,7 @@ python-escpos (1.0.8-1) unstable; urgency=low
 
  -- Manuel F Martinez <manpaz@gmail.com>  Sat, 12 Dec 2015 20:59:53 +0100
 
-python-escyypos (1.0.7-1) unstable; urgency=low
+python-escpos (1.0.7-1) unstable; urgency=low
 
   [ Kristi ]
   * Raising the right error when wrong charcode is used
