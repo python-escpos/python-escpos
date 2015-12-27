@@ -12,30 +12,29 @@ import serial
 import socket
 
 from escpos import *
-from constants import *
 from exceptions import *
+
 
 class Usb(Escpos):
     """ Define USB printer """
 
     def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01):
         """
-        @param idVendor  : Vendor ID
-        @param idProduct : Product ID
-        @param interface : USB device interface
-        @param in_ep     : Input end point
-        @param out_ep    : Output end point
+        :param idVendor: Vendor ID
+        :param idProduct: Product ID
+        :param interface: USB device interface
+        :param in_ep: Input end point
+        :param out_ep: Output end point
         """
-        self.idVendor  = idVendor
+        self.idVendor = idVendor
         self.idProduct = idProduct
         self.interface = interface
-        self.in_ep     = in_ep
-        self.out_ep    = out_ep
+        self.in_ep = in_ep
+        self.out_ep = out_ep
         self.open()
 
-
     def open(self):
-        """ Search device on USB tree and set is as escpos device """
+        """ Search device on USB tree and set it as escpos device """
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
             print "Cable isn't plugged in"
@@ -52,7 +51,7 @@ class Usb(Escpos):
                 self.device.detach_kernel_driver(0)
             except usb.core.USBError as e:
                 if check_driver is not None:
-                    print "Could not detatch kernel driver: %s" % str(e)
+                    print "Could not detach kernel driver: %s" % str(e)
 
         try:
             self.device.set_configuration()
@@ -60,11 +59,9 @@ class Usb(Escpos):
         except usb.core.USBError as e:
             print "Could not set configuration: %s" % str(e)
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
         self.device.write(self.out_ep, msg, self.interface)
-
 
     def __del__(self):
         """ Release USB interface """
@@ -73,13 +70,12 @@ class Usb(Escpos):
         self.device = None
 
 
-
 class Serial(Escpos):
     """ Define Serial printer """
 
     def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1,
                  parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
-                 xonxoff=False , dsrdtr=True):
+                 xonxoff=False, dsrdtr=True):
         """
         @param devfile  : Device file under dev filesystem
         @param baudrate : Baud rate for serial transmission
@@ -91,10 +87,10 @@ class Serial(Escpos):
         @param xonxoff  : Software flow control
         @param dsrdtr   : Hardware flow control (False to enable RTS/CTS)
         """
-        self.devfile  = devfile
+        self.devfile = devfile
         self.baudrate = baudrate
         self.bytesize = bytesize
-        self.timeout  = timeout
+        self.timeout = timeout
         
         self.parity = parity
         self.stopbits = stopbits
@@ -102,7 +98,6 @@ class Serial(Escpos):
         self.dsrdtr = dsrdtr
         
         self.open()
-
 
     def open(self):
         """ Setup serial port and set is as escpos device """
@@ -116,11 +111,9 @@ class Serial(Escpos):
         else:
             print "Unable to open serial printer on: %s" % self.devfile
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
         self.device.write(msg)
-
 
     def __del__(self):
         """ Close Serial interface """
@@ -128,11 +121,10 @@ class Serial(Escpos):
             self.device.close()
 
 
-
 class Network(Escpos):
     """ Define Network printer """
 
-    def __init__(self,host,port=9100):
+    def __init__(self, host, port=9100):
         """
         @param host : Printer's hostname or IP address
         @param port : Port to write to
@@ -140,7 +132,6 @@ class Network(Escpos):
         self.host = host
         self.port = port
         self.open()
-
 
     def open(self):
         """ Open TCP socket and set it as escpos device """
@@ -150,16 +141,13 @@ class Network(Escpos):
         if self.device is None:
             print "Could not open socket for %s" % self.host
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
         self.device.send(msg)
 
-
     def __del__(self):
         """ Close TCP connection """
         self.device.close()
-
 
 
 class File(Escpos):
@@ -172,7 +160,6 @@ class File(Escpos):
         self.devfile = devfile
         self.open()
 
-
     def open(self):
         """ Open system file """
         self.device = open(self.devfile, "wb")
@@ -180,11 +167,9 @@ class File(Escpos):
         if self.device is None:
             print "Could not open the specified file %s" % self.devfile
 
-
     def _raw(self, msg):
         """ Print any command sent in raw format """
-        self.device.write(msg);
-
+        self.device.write(msg)
 
     def __del__(self):
         """ Close system file """
