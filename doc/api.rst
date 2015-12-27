@@ -1,32 +1,46 @@
-API reference
-=============
+escpos package
+==============
 
-The main class and abstract implementation of an Esc/Pos printer.
+Submodules
+----------
 
-escpos
-======
+escpos.constants module
+-----------------------
+
+.. automodule:: escpos.constants
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+escpos.escpos module
+--------------------
+
 .. automodule:: escpos.escpos
     :members:
     :undoc-members:
     :show-inheritance:
-    
-printer
-=======
+
+escpos.exceptions module
+------------------------
+
+.. automodule:: escpos.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+escpos.printer module
+---------------------
+
 .. automodule:: escpos.printer
     :members:
     :undoc-members:
     :show-inheritance:
 
-exceptions
-==========
-.. automodule:: escpos.exceptions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    
-constants
-=========
-.. automodule:: escpos.constants
+
+Module contents
+---------------
+
+.. automodule:: escpos
     :members:
     :undoc-members:
     :show-inheritance:
