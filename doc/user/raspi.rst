@@ -54,8 +54,8 @@ Installation
 If you have installed pyusb for libusb-1.0 then you need to:
 
 1. Download the latest file
-1. Decompress the file
-1. Install the library
+2. Decompress the file
+3. Install the library
 
 ::
 
