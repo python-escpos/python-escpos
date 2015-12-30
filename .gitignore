@@ -1,3 +1,7 @@
 *.py[cod]
 .DS_Store
 build
+escpos.egg-info
+MANIFEST
+dist
+.idea
