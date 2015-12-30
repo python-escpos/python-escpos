@@ -6,15 +6,14 @@
 @license: GNU GPL v3
 """
 
-try:
-    import Image
-except ImportError:
-    from PIL import Image
+from PIL import Image, ImageOps
 
+import struct
 import qrcode
 import time
 import textwrap
 import binascii
+import operator
 
 from .constants import *
 from .exceptions import *
@@ -59,99 +58,85 @@ class Escpos(object):
             else:
                 return (round(image_border / 2), round((image_border / 2) + 1))
 
-    def _print_image(self, line, size):
+    def _print_image(self, imagedata, n_rows, col_bytes):
         """ Print formatted image
+
 
         :param line:
         :param size:
         """
-        i = 0
-        cont = 0
-        pbuffer = ""
-
         self._raw(S_RASTER_N)
-        pbuffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1] & 0xff, size[1] >> 8)
-        self._raw(binascii.unhexlify(pbuffer))
+        pbuffer = struct.pack('<HH', col_bytes, n_rows)
+        self._raw(pbuffer)
+        self._raw(imagedata)
         pbuffer = ""
 
-        while i < len(line):
-            hex_string = int(line[i:i+8], 2)
-            pbuffer += "%02X" % hex_string
-            i += 8
-            cont += 1
-            if cont % 4 == 0:
-                self._raw(binascii.unhexlify(pbuffer))
-                pbuffer = ""
-                cont = 0
+    def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
+        """ Resizes and prints an arbitrarily sized image """
+        if isinstance(img, Image.Image):
+            im = img.convert("RGB")
+        else:
+            im = Image.open(img).convert("RGB")
 
-    def _convert_image(self, im):
-        """ Parse image and prepare it to a printable format
+        if histeq:
+            # Histogram equaliztion
+            h = im.histogram()
+            lut = []
+            for b in range(0, len(h), 256):
+                # step size
+                step = reduce(operator.add, h[b:b+256]) // 255
+                # create equalization lookup table
+                n = 0
+                for i in range(256):
+                    lut.append(n // step)
+                    n = n + h[i+b]
+            im = im.point(lut)
 
-        :param im: image data
-        :raises: ImageSizeError
-        """
-        pixels = []
+        if width:
+            ratio = float(width) / im.size[0]
+            newheight = int(ratio * im.size[1])
+
+            # Resize the image
+            im = im.resize((width, newheight), Image.ANTIALIAS)
+
+        if max_height and im.size[1] > max_height:
+            im = im.crop((0, 0, im.size[0], max_height))
+
+        # Divide into bands
+        current = 0
+        while current < im.size[1]:
+            self.image(im.crop((0, current, width or im.size[0],
+                                min(im.size[1], current + bandsize))))
+            current += bandsize
+
+    def image(self, im):
+        """ Parse image and prepare it to a printable format """
+        pixels   = []
         pix_line = ""
         im_left = ""
         im_right = ""
-        switch = 0
-        img_size = [0, 0]
+        switch   = 0
+        img_size = [ 0, 0 ]
 
-        if im.size[0] > 512:
-            print ("WARNING: Image is wider than 512 and could be truncated at print time ")
-        if im.size[1] > 0xffff:
+        if not isinstance(im, Image.Image):
+            im = Image.open(im)
+
+        im = im.convert("L")
+        im = ImageOps.invert(im)
+        im = im.convert("1")
+
+        if im.size[0] > 640:
+            print("WARNING: Image is wider than 640 and could be truncated at print time ")
+        if im.size[1] > 640:
             raise ImageSizeError()
+ 
+        orig_width, height = im.size
+        width = ((orig_width + 31) // 32) * 32
+        new_image = Image.new("1", (width, height))
+        new_image.paste(im, (0, 0, orig_width, height))
 
-        im_border = self._check_image_size(im.size[0])
-        for i in range(im_border[0]):
-            im_left += "0"
-        for i in range(im_border[1]):
-            im_right += "0"
-
-        for y in range(im.size[1]):
-            img_size[1] += 1
-            pix_line += im_left
-            img_size[0] += im_border[0]
-            for x in range(im.size[0]):
-                img_size[0] += 1
-                RGB = im.getpixel((x, y))
-                im_color = (RGB[0] + RGB[1] + RGB[2])
-                im_pattern = "1X0"
-                pattern_len = len(im_pattern)
-                switch = (switch - 1) * (-1)
-                for x in range(pattern_len):
-                    if im_color <= (255 * 3 / pattern_len * (x+1)):
-                        if im_pattern[x] == "X":
-                            pix_line += "%d" % switch
-                        else:
-                            pix_line += im_pattern[x]
-                        break
-                    elif (255 * 3 / pattern_len * pattern_len) < im_color <= (255 * 3):
-                        pix_line += im_pattern[-1]
-                        break
-            pix_line += im_right
-            img_size[0] += im_border[1]
-
-        self._print_image(pix_line, img_size)
-
-<<<<<<< HEAD
-    def image(self, path_img):
-        """ Open image file
-
-        :param path_img: path to image
-        """
-        im_open = Image.open(path_img)
-
-        # Remove the alpha channel on transparent images
-        if im_open.mode == 'RGBA':
-            im_open.load()
-            im = Image.new("RGB", im_open.size, (255, 255, 255))
-            im.paste(im_open, mask=im_open.split()[3])
-        else:
-            im = im_open.convert("RGB")
-
-        # Convert the RGB image in printable image
-        self._convert_image(im)
+        the_bytes = new_image.tobytes()
+        self._print_image(the_bytes, n_rows=height, col_bytes=width//8)
 
     def direct_image(self, image):
         """ Send image to printer"""
@@ -186,19 +171,26 @@ class Escpos(object):
         self._raw(binascii.unhexlify(bytes(buf, "ascii")))
         self._raw('\n')
 
-    def qr(self, text, error_correct=qrcode.constants.ERROR_CORRECT_M):
+    def qr(self, text, error_correction=qrcode.constants.ERROR_CORRECT_M):
         """ Print QR Code for the provided string
 
         :param text: text to generate a QR-Code from
         """
-        qr_code = qrcode.QRCode(version=4, box_size=4, border=1, error_correction=qrcode.constants.ERROR_CORRECT_H)
+        qr_code = qrcode.QRCode(version=4, box_size=4, border=1, error_correction=error_correction)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
-        im = qr_img._img.convert("RGB")
-
         # Convert the RGB image in printable image
-        self._convert_image(im)
+        im = qr_img._img.convert("1")
+        width = im.size[0]
+        height = im.size[1]
+        while width * 2 <= 640:
+             width *= 2
+             height *= 2
+
+        im = im.resize((width, height))
+        self.image(im)
+        self.text('\n')
 
     def charcode(self, code):
         """ Set Character Code Table
