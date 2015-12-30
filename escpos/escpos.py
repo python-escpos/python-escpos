@@ -134,6 +134,7 @@ class Escpos(object):
 
         self._print_image(pix_line, img_size)
 
+<<<<<<< HEAD
     def image(self, path_img):
         """ Open image file
 
@@ -185,12 +186,12 @@ class Escpos(object):
         self._raw(binascii.unhexlify(bytes(buf, "ascii")))
         self._raw('\n')
 
-    def qr(self, text):
+    def qr(self, text, error_correct=qrcode.constants.ERROR_CORRECT_M):
         """ Print QR Code for the provided string
 
         :param text: text to generate a QR-Code from
         """
-        qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
+        qr_code = qrcode.QRCode(version=4, box_size=4, border=1, error_correction=qrcode.constants.ERROR_CORRECT_H)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
@@ -278,7 +279,7 @@ class Escpos(object):
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
-        else:  # DEFAULT FONT: A
+        else: # DEFAULT FONT: A
             self._raw(BARCODE_FONT_A)
         # Position
         if pos.upper() == "OFF":
@@ -302,7 +303,7 @@ class Escpos(object):
             self._raw(BARCODE_CODE39)
         elif bc.upper() == "ITF":
             self._raw(BARCODE_ITF)
-        elif bc.upper() == "NW7":
+        elif bc.upper() in ("NW7", "CODABAR"):
             self._raw(BARCODE_NW7)
         else:
             raise BarcodeTypeError()
@@ -414,7 +415,7 @@ class Escpos(object):
         self._raw("\n\n\n\n\n\n")
         if mode.upper() == "PART":
             self._raw(PAPER_PART_CUT)
-        else:  # DEFAULT MODE: FULL CUT
+        else: # DEFAULT MODE: FULL CUT
             self._raw(PAPER_FULL_CUT)
 
     def cashdraw(self, pin):
@@ -442,7 +443,7 @@ class Escpos(object):
             self._raw(HW_SELECT)
         elif hw.upper() == "RESET":
             self._raw(HW_RESET)
-        else:  # DEFAULT: DOES NOTHING
+        else: # DEFAULT: DOES NOTHING
             pass
 
     def control(self, ctl, pos=4):
