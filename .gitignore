@@ -7,3 +7,7 @@ $~
 
 # temporary data
 temp
+
+# packaging and testing
+.tox/
+*.egg-info/
