@@ -2,12 +2,7 @@ language: python
 sudo: false
 cache: pip
 before_install:
-    - pip install codecov
-# install dependencies
-install:
-    - pip install --user -r requirements.txt
-after_success:
-    - codecov
+    - pip install tox
 # command to run tests
 script:
     - tox
