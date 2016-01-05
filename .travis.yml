@@ -1,0 +1,10 @@
+language: python
+sudo: false
+cache: pip
+before_install:
+    - pip install codecov
+after_success:
+    - codecov
+# command to run tests
+script:
+    - tox

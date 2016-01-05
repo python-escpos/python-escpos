@@ -10,18 +10,22 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 class Tox(TestCommand):
+    """proxy class that enables tox to be run with setup.py test"""
     user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
 
     def initialize_options(self):
+        """initialize the user-options"""
         TestCommand.initialize_options(self)
         self.tox_args = None
 
     def finalize_options(self):
+        """finalize user-options"""
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
     def run_tests(self):
+        """run tox and pass on user-options"""
         #import here, cause outside the eggs aren't loaded
         import tox
         import shlex
