@@ -1,9 +1,10 @@
 #!/usr/bin/python
-"""
-@author: Manuel F Martinez <manpaz@bashlinux.com>
-@organization: Bashlinux
-@copyright: Copyright (c) 2012 Bashlinux
-@license: GNU GPL v3
+""" This module contains the implentations of abstract base class :py:class:`Escpos`.
+
+:author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
+:organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
+:copyright: Copyright (c) 2012 Bashlinux
+:license: GNU GPL v3
 """
 
 import usb.core
@@ -17,7 +18,10 @@ from .exceptions import *
 
 
 class Usb(Escpos):
-    """ Define USB printer """
+    """ USB printer
+
+    This class describes a printer that natively speaks USB.
+    """
 
     def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
         """
@@ -62,7 +66,10 @@ class Usb(Escpos):
             print("Could not set configuration: %s" % str(e))
 
     def _raw(self, msg):
-        """ Print any command sent in raw format """
+        """ Print any command sent in raw format
+
+        :param msg: arbitrary code to be printed
+        """
         self.device.write(self.out_ep, msg, self.interface)
 
     def __del__(self):
@@ -73,21 +80,24 @@ class Usb(Escpos):
 
 
 class Serial(Escpos):
-    """ Define Serial printer """
+    """ Serial printer
+
+    This class describes a printer that is connected by serial interface.
+    """
 
     def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1,
                  parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
-                 xonxoff=False , dsrdtr=True, *args, **kwargs):
+                 xonxoff=False, dsrdtr=True, *args, **kwargs):
         """
-        @param devfile  : Device file under dev filesystem
-        @param baudrate : Baud rate for serial transmission
-        @param bytesize : Serial buffer size
-        @param timeout  : Read/Write timeout
 
-        @param parity   : Parity checking
-        @param stopbits : Number of stop bits
-        @param xonxoff  : Software flow control
-        @param dsrdtr   : Hardware flow control (False to enable RTS/CTS)
+        :param devfile:  Device file under dev filesystem
+        :param baudrate: Baud rate for serial transmission
+        :param bytesize: Serial buffer size
+        :param timeout:  Read/Write timeout
+        :param parity:   Parity checking
+        :param stopbits: Number of stop bits
+        :param xonxoff:  Software flow control
+        :param dsrdtr:   Hardware flow control (False to enable RTS/CTS)
         """
         Escpos.__init__(self, *args, **kwargs)
         self.devfile  = devfile
@@ -114,7 +124,10 @@ class Serial(Escpos):
             print("Unable to open serial printer on: %s" % self.devfile)
 
     def _raw(self, msg):
-        """ Print any command sent in raw format """
+        """ Print any command sent in raw format
+
+        :param msg: arbitrary code to be printed
+        """
         self.device.write(msg)
 
     def __del__(self):
@@ -124,12 +137,17 @@ class Serial(Escpos):
 
 
 class Network(Escpos):
-    """ Define Network printer """
+    """ Network printer
 
-    def __init__(self,host,port=9100, *args, **kwargs):
+    This class is used to attach to a networked printer. You can also use this in order to attach to a printer that
+    is forwarded with `netcat`.
+    """
+
+    def __init__(self, host, port=9100, *args, **kwargs):
         """
-        @param host : Printer's hostname or IP address
-        @param port : Port to write to
+
+        :param host : Printer's hostname or IP address
+        :param port : Port to write to
         """
         Escpos.__init__(self, *args, **kwargs)
         self.host = host
@@ -145,7 +163,10 @@ class Network(Escpos):
             print("Could not open socket for %s" % self.host)
 
     def _raw(self, msg):
-        """ Print any command sent in raw format """
+        """ Print any command sent in raw format
+
+        :param msg: arbitrary code to be printed
+        """
         self.device.send(msg)
 
     def __del__(self):
@@ -154,11 +175,17 @@ class Network(Escpos):
 
 
 class File(Escpos):
-    """ Define Generic file printer """
+    """ Generic file printer
+
+    This class is used for parallel port printer or other printers that are directly attached to the filesystem.
+    Note that you should stay away from using USB-to-Parallel-Adapter since they are unreliable
+    and produce arbitrary errors.
+    """
 
     def __init__(self, devfile="/dev/usb/lp0", *args, **kwargs):
         """
-        @param devfile : Device file under dev filesystem
+
+        :param devfile : Device file under dev filesystem
         """
         Escpos.__init__(self, *args, **kwargs)
         self.devfile = devfile
@@ -172,11 +199,14 @@ class File(Escpos):
             print("Could not open the specified file %s" % self.devfile)
 
     def flush(self):
-        """Flush printing content"""
+        """ Flush printing content """
         self.device.flush()
 
     def _raw(self, msg):
-        """ Print any command sent in raw format """
+        """ Print any command sent in raw format
+
+        :param msg: arbitrary code to be printed
+        """
         if type(msg) is str:
             self.device.write(msg.encode());
         else:

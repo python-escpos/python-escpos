@@ -25,8 +25,8 @@ sending my PayPal info so you can donate.
 
 Thank you!
 
-User Documentation:
--------------------
+User Documentation
+------------------
 
 .. toctree::
    :maxdepth: 1
@@ -39,13 +39,16 @@ User Documentation:
    user/todo
    user/usage
 
-API:
-----
+API
+---
 
 .. toctree::
    :maxdepth: 1
    
-   api
+   api/escpos
+   api/printer
+   api/constants
+   api/exceptions
 
 Indices and tables
 ==================

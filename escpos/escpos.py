@@ -1,9 +1,12 @@
 #!/usr/bin/python
-"""
-@author: Manuel F Martinez <manpaz@bashlinux.com>
-@organization: Bashlinux
-@copyright: Copyright (c) 2012 Bashlinux
-@license: GNU GPL v3
+""" Main class
+
+This module contains the abstract base class :py:class:`Escpos`.
+
+:author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
+:organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
+:copyright: Copyright (c) 2012 Bashlinux
+:license: GNU GPL v3
 """
 
 try:
@@ -22,10 +25,13 @@ from .exceptions import *
 from abc import ABCMeta, abstractmethod  # abstract base class support
 
 class Escpos(object):
-    """ ESC/POS Printer object """
+    """ ESC/POS Printer object
+
+    This class is the abstract base class for an esc/pos-printer. The printer implementations are children of this
+    class.
+    """
     __metaclass__ = ABCMeta
     device = None
-
 
     def __init__(self, columns=32):
         """ Initialize ESCPOS Printer
@@ -38,6 +44,7 @@ class Escpos(object):
         """ Sends raw data to the printer
 
         This function has to be individually implemented by the implementations.
+
         :param msg: message string to be sent to the printer
         """
         pass
@@ -88,7 +95,7 @@ class Escpos(object):
         """ Parse image and prepare it to a printable format
 
         :param im: image data
-        :raises: ImageSizeError
+        :raises: :py:exc:`~escpos.exceptions.ImageSizeError`
         """
         pixels = []
         pix_line = ""
@@ -135,9 +142,11 @@ class Escpos(object):
         self._print_image(pix_line, img_size)
 
     def image(self, path_img):
-        """ Open image file
+        """ Open and print an image file
 
-        :param path_img: path to image
+        Prints an image. The image is automatically adjusted in size in order to print it.
+
+        :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
         """
         im_open = Image.open(path_img)
 
@@ -153,7 +162,10 @@ class Escpos(object):
         self._convert_image(im)
 
     def direct_image(self, image):
-        """ Send image to printer"""
+        """ Send image to printer
+
+        :param image:
+        """
         mask = 0x80
         i = 0
         temp = 0
@@ -188,6 +200,9 @@ class Escpos(object):
     def qr(self, text):
         """ Print QR Code for the provided string
 
+        Prints a QR-code. The size has been adjusted to version 4, so it is small enough to be
+        printed but also big enough to be read by a smartphone.
+
         :param text: text to generate a QR-Code from
         """
         qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
@@ -202,10 +217,11 @@ class Escpos(object):
     def charcode(self, code):
         """ Set Character Code Table
 
-        Sends the control sequence from constants.py to the printer with :py:meth:`escpos.printer._raw()`.
+        Sends the control sequence from :py:mod:`escpos.constants` to the printer
+        with :py:meth:`escpos.printer.'implementation'._raw()`.
 
         :param code: Name of CharCode
-        :raises: CharCodeError
+        :raises: :py:exc:`~escpos.exceptions.CharCodeError`
         """
         if code.upper() == "USA":
             self._raw(CHARCODE_PC437)
@@ -255,13 +271,37 @@ class Escpos(object):
     def barcode(self, code, bc, width, height, pos, font):
         """ Print Barcode
 
-        :param code: data for barcode
-        :param bc: barcode format, see constants.py
+        :param code: alphanumeric data to be printed as bar code
+        :param bc: barcode format, possible values are:
+
+            * UPC-A
+            * UPC-E
+            * EAN13
+            * EAN8
+            * CODE39
+            * ITF
+            * NW7
+
+            If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
         :param width: barcode width, has to be between 1 and 255
+            *default*: 64
         :param height: barcode height, has to be between 2 and 6
-        :param pos: position of text in barcode, default when nothing supplied is below
-        :param font: select font, default is font A
-        :raises: BarcodeSizeError, BarcodeTypeError, BarcodeCodeError
+            *default*: 3
+        :param pos: where to place the text relative to the barcode, *default*: below
+
+            * ABOVE
+            * BELOW
+            * BOTH
+            * OFF
+
+        :param font: select font (see ESC/POS-documentation, the device often has two fonts), *default*: A
+
+            * A
+            * B
+
+        :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
+                 :py:exc:`~escpos.exceptions.BarcodeTypeError`,
+                 :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
@@ -316,28 +356,51 @@ class Escpos(object):
         """ Print alpha-numeric text
 
         The text has to be encoded in the currently selected codepage.
+
         :param txt: text to be printed
-        :raises: TextError
+        :raises: :py:exc:`~escpos.exceptions.TextError`
         """
         if txt:
             self._raw(txt)
         else:
+            # TODO: why is it problematic to print an empty string?
             raise TextError()
 
     def block_text(self, txt, columns=None):
-        '''Text is printed wrapped to specified columns'''
+        """ Text is printed wrapped to specified columns
+
+        :param txt: text to be printed
+        :param columns: amount of columns
+        :return: None
+        """
         colCount = self.columns if columns == None else columns
         self.text(textwrap.fill(txt, colCount))
 
     def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9):
         """ Set text properties by sending them to the printer
 
-        :param align: alignment of text
-        :param font: font A or B
-        :param text_type: add bold or underlined
-        :param width: text width, normal or double width
-        :param height: text height, normal or double height
-        :param density: print density
+        :param align: horizontal position for text, possible values are:
+
+            * CENTER
+            * LEFT
+            * RIGHT
+
+            *default*: LEFT
+        :param font: font type, possible values are A or B, *default*: A
+        :param text_type: text type, possible values are:
+
+            * B for bold
+            * U for underlined
+            * B2 for bold, version 2
+            * U2 for underlined, version 2
+            * BU for bold and underlined
+            * BU2 for bold and underlined, version 2
+            * NORMAL for normal text
+
+            *default*: NORMAL
+        :param width: text width, normal (1) or double width (2), *default*: 1
+        :param height: text height, normal (1) or double height (2), *default*: 2
+        :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
         """
         # Width
         if height == 2 and width == 2:
@@ -420,9 +483,10 @@ class Escpos(object):
     def cashdraw(self, pin):
         """ Send pulse to kick the cash drawer
 
-        Kick cash drawer on pin 2 or pin 5.
-        :param pin: pin number
-        :raises: CashDrawerError
+        Kick cash drawer on pin 2 or pin 5 according to parameter.
+
+        :param pin: pin number, 2 or 5
+        :raises: :py:exc:`~escpos.exceptions.CashDrawerError`
         """
         if pin == 2:
             self._raw(CD_KICK_2)
@@ -434,7 +498,11 @@ class Escpos(object):
     def hw(self, hw):
         """ Hardware operations
 
-        :param hw: hardware action
+        :param hw: hardware action, may be:
+
+            * INIT
+            * SELECT
+            * RESET
         """
         if hw.upper() == "INIT":
             self._raw(HW_INIT)
@@ -448,7 +516,16 @@ class Escpos(object):
     def control(self, ctl, pos=4):
         """ Feed control sequences
 
-        :raises: TabPosError
+        :param ctl: string for the following control sequences:
+
+            * LF *for Line Feed*
+            * FF *for Form Feed*
+            * CR *for Carriage Return*
+            * HT *for Horizontal Tab*
+            * VT *for Vertical Tab*
+
+        :param pos: integer between 1 and 16, controls the horizontal tab position
+        :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
         # Set tab positions
         if pos < 1 or pos > 16:

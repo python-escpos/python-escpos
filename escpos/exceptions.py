@@ -1,4 +1,22 @@
-""" ESC/POS Exceptions classes """
+""" ESC/POS Exceptions classes
+
+Result/Exit codes:
+
+    - `0`  = success
+    - `10` = No Barcode type defined :py:exc:`~escpos.exceptions.BarcodeTypeError`
+    - `20` = Barcode size values are out of range :py:exc:`~escpos.exceptions.BarcodeSizeError`
+    - `30` = Barcode text not supplied :py:exc:`~escpos.exceptions.BarcodeCodeError`
+    - `40` = Image height is too large :py:exc:`~escpos.exceptions.ImageSizeError`
+    - `50` = No string supplied to be printed :py:exc:`~escpos.exceptions.TextError`
+    - `60` = Invalid pin to send Cash Drawer pulse :py:exc:`~escpos.exceptions.CashDrawerError`
+    - `70` = Invalid number of tab positions :py:exc:`~escpos.exceptions.TabPosError`
+    - `80` = Invalid char code :py:exc:`~escpos.exceptions.CharCodeError`
+
+:author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
+:organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
+:copyright: Copyright (c) 2012 Bashlinux
+:license: GNU GPL v3
+"""
 
 
 class Error(Exception):
@@ -13,20 +31,14 @@ class Error(Exception):
     def __str__(self):
         return self.msg
 
-# Result/Exit codes
-# 0  = success
-# 10 = No Barcode type defined
-# 20 = Barcode size values are out of range
-# 30 = Barcode text not supplied
-# 40 = Image height is too large
-# 50 = No string supplied to be printed
-# 60 = Invalid pin to send Cash Drawer pulse
-# 70 = Invalid number of tab positions
-# 80 = Invalid char code
-
 
 class BarcodeTypeError(Error):
-    """No Barcode type defined """
+    """ No Barcode type defined.
+
+    This exception indicates that no known barcode-type has been entered. The barcode-type has to be
+    one of those specified in :py:meth:`escpos.escpos.Escpos.barcode`.
+    The returned error code is `10`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -37,7 +49,12 @@ class BarcodeTypeError(Error):
 
 
 class BarcodeSizeError(Error):
-    """ Barcode size is out of range """
+    """ Barcode size is out of range.
+
+    This exception indicates that the values for the barcode size are out of range.
+    The size of the barcode has to be in the range that is specified in :py:meth:`escpos.escpos.Escpos.barcode`.
+    The resulting returncode is `20`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -48,7 +65,11 @@ class BarcodeSizeError(Error):
 
 
 class BarcodeCodeError(Error):
-    """ No Barcode code was supplied """
+    """ No Barcode code was supplied.
+
+    No data for the barcode has been supplied in :py:meth:`escpos.escpos.Escpos.barcode`.
+    The returncode for this exception is `30`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -59,7 +80,10 @@ class BarcodeCodeError(Error):
 
 
 class ImageSizeError(Error):
-    """ Image height is longer than 255px and can't be printed """
+    """ Image height is longer than 255px and can't be printed.
+
+    The returncode for this exception is `40`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -70,7 +94,11 @@ class ImageSizeError(Error):
 
 
 class TextError(Error):
-    """ Test sting must be supplied to the text() method """
+    """ Text string must be supplied to the `text()` method.
+
+    This exception is raised when an empty string is passed to :py:meth:`escpos.escpos.Escpos.text`.
+    The returncode for this exception is `50`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -81,7 +109,11 @@ class TextError(Error):
 
 
 class CashDrawerError(Error):
-    """ Valid pin must be set to send pulse """
+    """ Valid pin must be set in order to send pulse.
+
+    A valid pin number has to be passed onto the method :py:meth:`escpos.escpos.Escpos.cashdraw`.
+    The returncode for this exception is `60`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -92,7 +124,11 @@ class CashDrawerError(Error):
 
 
 class TabPosError(Error):
-    """ Valid tab positions must be in the range 0 to 16 """
+    """ Valid tab positions must be in the range 0 to 16.
+
+    This exception is raised by :py:meth:`escpos.escpos.Escpos.control`.
+    The returncode for this exception is `70`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
@@ -103,11 +139,15 @@ class TabPosError(Error):
 
 
 class CharCodeError(Error):
-    """ Valid char code must be set """
+    """ Valid char code must be set.
+
+    The supplied charcode-name in :py:meth:`escpos.escpos.Escpos.charcode` is unknown.
+    Ths returncode for this exception is `80`.
+    """
     def __init__(self, msg=""):
         Error.__init__(self, msg)
         self.msg = msg
-        self.resultcode = 70
+        self.resultcode = 80
 
     def __str__(self):
         return "Valid char code must be set"

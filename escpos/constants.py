@@ -1,4 +1,14 @@
-""" ESC/POS Commands (Constants) """
+""" Set of ESC/POS Commands (Constants)
+
+This module contains constants that are described in the esc/pos-documentation.
+Since there is no definitive and unified specification for all esc/pos-like printers the constants could later be
+moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/escpos-php>`_.
+
+:author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
+:organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
+:copyright: Copyright (c) 2012 Bashlinux
+:license: GNU GPL v3
+"""
 
 # Feed control sequences
 CTL_LF     = '\x0a'               # Print and line feed

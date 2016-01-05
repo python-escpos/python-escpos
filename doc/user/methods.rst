@@ -2,7 +2,8 @@
 Methods
 *******
 
-.. note:: **TODO** Merge this page into the API-description.
+.. note:: **TODO** Merge this page with the API-description. (Make the API-description more pretty and then
+          replace this with the API-description.)
 
 Escpos class
 ------------
