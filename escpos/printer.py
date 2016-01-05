@@ -31,8 +31,8 @@ class Usb(Escpos):
         self.idVendor  = idVendor
         self.idProduct = idProduct
         self.interface = interface
-        self.in_ep = in_ep
-        self.out_ep = out_ep
+        self.in_ep     = in_ep
+        self.out_ep    = out_ep
         self.open()
 
     def open(self):
@@ -146,7 +146,7 @@ class Network(Escpos):
 
     def _raw(self, msg):
         """ Print any command sent in raw format """
-        self.device.send(msg)
+        self.device.sendall(msg)
 
     def __del__(self):
         """ Close TCP connection """
@@ -177,10 +177,7 @@ class File(Escpos):
 
     def _raw(self, msg):
         """ Print any command sent in raw format """
-        if type(msg) is str:
-            self.device.write(msg.encode());
-        else:
-            self.device.write(msg);
+        self.device.write(msg);
 
     def __del__(self):
         """ Close system file """
