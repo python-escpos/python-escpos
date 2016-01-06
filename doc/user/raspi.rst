@@ -7,6 +7,11 @@ This instructions were tested on Raspbian.
 Unless you have done any distro with libusb-1.0 on the Raspberry Pi, the
 following instructions should works fine on your raspberry distro.
 
+.. warning:: You should **never** directly connect an printer with RS232-interface (serial port) directly to
+    a Raspberry PI or similar interface (e.g. those simple USB-sticks without encasing). Those interfaces are
+    based on 5V- or 3,3V-logic (the latter in the case of Raspberry PI). Classical RS232 uses 12V-logic and would
+    **thus destroy your interface**. Connect both systems with an appropriate *level shifter*.
+
 Dependencies
 ------------
 
