@@ -399,7 +399,7 @@ class Escpos(object):
 
             *default*: NORMAL
         :param width: text width, normal (1) or double width (2), *default*: 1
-        :param height: text height, normal (1) or double height (2), *default*: 2
+        :param height: text height, normal (1) or double height (2), *default*: 1
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
         """
         # Width
