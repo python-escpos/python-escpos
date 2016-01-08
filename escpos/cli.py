@@ -90,7 +90,7 @@ def echo(args):  # pylint: disable=unused-argument
                 epson.barcode(data, bctype, 48, 2, '', '')
                 epson.set(align='left')
             else:
-                epson.text('%s\n' % line)
+                epson.text('{0}\n'.format(line))
     except KeyboardInterrupt:
         epson.cut()
 
@@ -143,7 +143,7 @@ def _test_barcodes():
     ):
         # TODO: Fix the library to restore old alignment somehow
         epson.set(align='center')
-        epson.text('\n%s\n' % name)
+        epson.text('\n{0}\n'.format(name))
         epson.barcode(data, name, 64, 2, '', '')
 
 
