@@ -153,6 +153,7 @@ class CharCodeError(Error):
     def __str__(self):
         return "Valid char code must be set"
 
+
 class USBNotFoundError(Error):
     """ Device wasn't found (probably not plugged in)
 

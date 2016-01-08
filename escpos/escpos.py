@@ -15,16 +15,15 @@ except ImportError:
     from PIL import Image
 
 import qrcode
-import time
 import textwrap
 import binascii
-import os
 import operator
 
 from .constants import *
 from .exceptions import *
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
+
 
 class Escpos(object):
     """ ESC/POS Printer object
@@ -64,9 +63,9 @@ class Escpos(object):
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
-                return (round(image_border / 2), round(image_border / 2))
+                return round(image_border / 2), round(image_border / 2)
             else:
-                return (round(image_border / 2), round((image_border / 2) + 1))
+                return round(image_border / 2), round((image_border / 2) + 1)
 
     def _print_image(self, line, size):
         """ Print formatted image
@@ -221,16 +220,16 @@ class Escpos(object):
         #self._raw(binascii.unhexlify(buf))
         for y in range(height):
             for x in range(width):
-                value = image.getpixel((x,y))
-                value = (value << 8) | value;
+                value = image.getpixel((x, y))
+                value |= (value << 8)
                 if value == 0:
                     temp |= mask
 
-                mask = mask >> 1
+                mask >>= 1
 
                 i += 1
                 if i == 8:
-                    buf +=   ("%02X" % temp)
+                    buf += ("%02X" % temp)
                     mask = 0x80
                     i = 0
                     temp = 0
@@ -413,7 +412,7 @@ class Escpos(object):
         :param columns: amount of columns
         :return: None
         """
-        colCount = self.columns if columns == None else columns
+        colCount = self.columns if columns is None else columns
         self.text(textwrap.fill(txt, colCount))
 
     def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9):

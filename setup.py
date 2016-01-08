@@ -5,9 +5,11 @@ import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
+
 def read(fname):
     """read file from same path as setup.py"""
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 class Tox(TestCommand):
     """proxy class that enables tox to be run with setup.py test"""
@@ -26,7 +28,7 @@ class Tox(TestCommand):
 
     def run_tests(self):
         """run tox and pass on user-options"""
-        #import here, cause outside the eggs aren't loaded
+        # import here, cause outside the eggs aren't loaded
         import tox
         import shlex
         args = self.tox_args

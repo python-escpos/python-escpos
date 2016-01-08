@@ -13,7 +13,6 @@ import serial
 import socket
 
 from .escpos import *
-from .constants import *
 from .exceptions import *
 
 
@@ -32,7 +31,7 @@ class Usb(Escpos):
         :param out_ep: Output end point
         """
         Escpos.__init__(self, *args, **kwargs)
-        self.idVendor  = idVendor
+        self.idVendor = idVendor
         self.idProduct = idProduct
         self.interface = interface
         self.in_ep = in_ep
@@ -100,10 +99,10 @@ class Serial(Escpos):
         :param dsrdtr:   Hardware flow control (False to enable RTS/CTS)
         """
         Escpos.__init__(self, *args, **kwargs)
-        self.devfile  = devfile
+        self.devfile = devfile
         self.baudrate = baudrate
         self.bytesize = bytesize
-        self.timeout  = timeout
+        self.timeout = timeout
         self.parity = parity
         self.stopbits = stopbits
         self.xonxoff = xonxoff
@@ -208,9 +207,9 @@ class File(Escpos):
         :param msg: arbitrary code to be printed
         """
         if type(msg) is str:
-            self.device.write(msg.encode());
+            self.device.write(msg.encode())
         else:
-            self.device.write(msg);
+            self.device.write(msg)
 
     def __del__(self):
         """ Close system file """
