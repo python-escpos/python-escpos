@@ -15,14 +15,15 @@ except ImportError:
     from PIL import Image
 
 import qrcode
-import time
 import textwrap
 import binascii
+import operator
 
 from .constants import *
 from .exceptions import *
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
+
 
 class Escpos(object):
     """ ESC/POS Printer object
@@ -62,9 +63,9 @@ class Escpos(object):
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
-                return (round(image_border / 2), round(image_border / 2))
+                return round(image_border / 2), round(image_border / 2)
             else:
-                return (round(image_border / 2), round((image_border / 2) + 1))
+                return round(image_border / 2), round((image_border / 2) + 1)
 
     def _print_image(self, line, size):
         """ Print formatted image
@@ -161,6 +162,44 @@ class Escpos(object):
         # Convert the RGB image in printable image
         self._convert_image(im)
 
+    def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
+        """ Resizes and prints an arbitrarily sized image """
+        if isinstance(img, (Image, Image.Image)):
+            im = img.convert("RGB")
+        else:
+            im = Image.open(img).convert("RGB")
+
+        if histeq:
+            # Histogram equaliztion
+            h = im.histogram()
+            lut = []
+            for b in range(0, len(h), 256):
+                # step size
+                step = reduce(operator.add, h[b:b+256]) / 255
+                # create equalization lookup table
+                n = 0
+                for i in range(256):
+                    lut.append(n / step)
+                    n = n + h[i+b]
+            im = im.point(lut)
+
+        if width:
+            ratio = float(width) / im.size[0]
+            newheight = int(ratio * im.size[1])
+
+            # Resize the image
+            im = im.resize((width, newheight), Image.ANTIALIAS)
+
+        if max_height and im.size[1] > max_height:
+            im = im.crop((0, 0, im.size[0], max_height))
+
+        # Divide into bands
+        current = 0
+        while current < im.size[1]:
+            self.image(im.crop((0, current, width or im.size[0],
+                                min(im.size[1], current + bandsize))))
+            current += bandsize
+
     def direct_image(self, image):
         """ Send image to printer
 
@@ -181,16 +220,16 @@ class Escpos(object):
         #self._raw(binascii.unhexlify(buf))
         for y in range(height):
             for x in range(width):
-                value = image.getpixel((x,y))
-                value = (value << 8) | value;
+                value = image.getpixel((x, y))
+                value |= (value << 8)
                 if value == 0:
                     temp |= mask
 
-                mask = mask >> 1
+                mask >>= 1
 
                 i += 1
                 if i == 8:
-                    buf +=   ("%02X" % temp)
+                    buf += ("%02X" % temp)
                     mask = 0x80
                     i = 0
                     temp = 0
@@ -205,7 +244,7 @@ class Escpos(object):
 
         :param text: text to generate a QR-Code from
         """
-        qr_code = qrcode.QRCode(version=4, box_size=4, border=1)
+        qr_code = qrcode.QRCode(version=4, box_size=4, border=1, error_correction=qrcode.constants.ERROR_CORRECT_H)
         qr_code.add_data(text)
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
@@ -268,7 +307,7 @@ class Escpos(object):
         else:
             raise CharCodeError()
 
-    def barcode(self, code, bc, width, height, pos, font):
+    def barcode(self, code, bc, height, width, pos, font):
         """ Print Barcode
 
         :param code: alphanumeric data to be printed as bar code
@@ -283,10 +322,10 @@ class Escpos(object):
             * NW7
 
             If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
-        :param width: barcode width, has to be between 1 and 255
-            *default*: 64
         :param height: barcode height, has to be between 2 and 6
             *default*: 3
+        :param width: barcode width, has to be between 1 and 255
+            *default*: 64
         :param pos: where to place the text relative to the barcode, *default*: below
 
             * ABOVE
@@ -306,15 +345,15 @@ class Escpos(object):
         # Align Bar Code()
         self._raw(TXT_ALIGN_CT)
         # Height
-        if height >= 2 or height <= 6:
-            self._raw(BARCODE_HEIGHT)
+        if 1 <= height <= 255:
+            self._raw(BARCODE_HEIGHT + chr(height))
         else:
-            raise BarcodeSizeError()
+            raise BarcodeSizeError("height = {height}".format(height=height))
         # Width
-        if width >= 1 or width <= 255:
-            self._raw(BARCODE_WIDTH)
+        if 2 <= width <= 6:
+            self._raw(BARCODE_WIDTH + chr(width))
         else:
-            raise BarcodeSizeError()
+            raise BarcodeSizeError("width = {width}".format(width=width))
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
@@ -342,10 +381,10 @@ class Escpos(object):
             self._raw(BARCODE_CODE39)
         elif bc.upper() == "ITF":
             self._raw(BARCODE_ITF)
-        elif bc.upper() == "NW7":
+        elif bc.upper() in ("NW7", "CODABAR"):
             self._raw(BARCODE_NW7)
         else:
-            raise BarcodeTypeError()
+            raise BarcodeTypeError(bc)
         # Print Code
         if code:
             self._raw(code)
@@ -373,7 +412,7 @@ class Escpos(object):
         :param columns: amount of columns
         :return: None
         """
-        colCount = self.columns if columns == None else columns
+        colCount = self.columns if columns is None else columns
         self.text(textwrap.fill(txt, colCount))
 
     def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9):
