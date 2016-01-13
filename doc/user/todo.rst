@@ -35,4 +35,9 @@ Design
 
 * use something similar to the `capabilities` in escpos-php
 
+Todos in the codebase
+~~~~~~~~~~~~~~~~~~~~~
+
+.. todolist::
+
 
