@@ -317,12 +317,28 @@ class Escpos(object):
     def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True):
         """ Print Barcode
 
+        This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
+        be supported by the unit. Currently you have to check manually whether your barcode text is correct. Uncorrect
+        barcodes may lead to unexpected printer behaviour.
+
         .. todo:: Add a method to check barcode codes. Alternatively or as an addition write explanations about each
-                  barcode-type.
+                  barcode-type. Research whether the check digits can be computed autmatically.
+
+        Use the parameters `height` and `width` for adjusting of the barcode size. Please take notice that the barcode
+        will not be printed if it is outside of the printable area. (Which should be impossible with this method, so
+        this information is probably more useful for debugging purposes.)
+
         .. todo:: On TM-T88II width from 1 to 6 is accepted. Try to acquire command reference and correct the code.
         .. todo:: Supplying pos does not have an effect for every barcode type. Check and document for which types this
                   is true.
 
+        If you do not want to center the barcode you can call the method with `align_ct=False`, which will disable
+        automatic centering. Please note that when you use center alignment, then the alignment of text will be changed
+        automatically to centered. You have to manually restore the alignment if necessary.
+
+        .. todo:: If further barcode-types are needed they could be rendered transparently as an image. (This could also
+                  be of help if the printer does not support types that others do.)
+        
         :param code: alphanumeric data to be printed as bar code
         :param bc: barcode format, possible values are:
 
