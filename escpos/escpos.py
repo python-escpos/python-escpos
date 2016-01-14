@@ -321,8 +321,8 @@ class Escpos(object):
                   value does not work.
         .. todo:: Add a method to check barcode codes.
         .. todo:: On TM-T88II width from 1 to 6 is accepted. Try to acquire command reference and correct the code.
-        .. todo:: Supplying pos has no effect in TM-T88II. Printed always below. Verify with other printers and , if
-                  necessary, turn this into an issue.
+        .. todo:: Supplying pos does not have an effect for every barcode type. Check and document for which types this
+                  is true.
 
         :param code: alphanumeric data to be printed as bar code
         :param bc: barcode format, possible values are:
