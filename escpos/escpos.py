@@ -147,6 +147,9 @@ class Escpos(object):
 
         Prints an image. The image is automatically adjusted in size in order to print it.
 
+        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
+                  check for bugs like these in the future.
+
         :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
         """
         im_open = Image.open(path_img)
@@ -163,7 +166,11 @@ class Escpos(object):
         self._convert_image(im)
 
     def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
-        """ Resizes and prints an arbitrarily sized image """
+        """ Resizes and prints an arbitrarily sized image
+
+        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
+                  check for bugs like these in the future.
+        """
         if isinstance(img, (Image, Image.Image)):
             im = img.convert("RGB")
         else:
@@ -310,6 +317,13 @@ class Escpos(object):
     def barcode(self, code, bc, height, width, pos, font):
         """ Print Barcode
 
+        .. todo:: Documentation tells about default values. In fact no default values exist and supplying a default
+                  value does not work.
+        .. todo:: Add a method to check barcode codes.
+        .. todo:: On TM-T88II width from 1 to 6 is accepted. Try to acquire command reference and correct the code.
+        .. todo:: Supplying pos has no effect in TM-T88II. Printed always below. Verify with other printers and , if
+                  necessary, turn this into an issue.
+
         :param code: alphanumeric data to be printed as bar code
         :param bc: barcode format, possible values are:
 
@@ -322,10 +336,10 @@ class Escpos(object):
             * NW7
 
             If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
-        :param height: barcode height, has to be between 2 and 6
-            *default*: 3
-        :param width: barcode width, has to be between 1 and 255
+        :param height: barcode height, has to be between 1 and 255
             *default*: 64
+        :param width: barcode width, has to be between 2 and 6
+            *default*: 3
         :param pos: where to place the text relative to the barcode, *default*: below
 
             * ABOVE
@@ -512,6 +526,7 @@ class Escpos(object):
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
         be attempted. Note however, that not all models can do a partial cut. See the documentation of
         your printer for details.
+        .. todo:: Check this function on TM-T88II.
 
         :param mode: set to 'PART' for a partial cut
         """
