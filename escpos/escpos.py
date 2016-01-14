@@ -147,6 +147,9 @@ class Escpos(object):
 
         Prints an image. The image is automatically adjusted in size in order to print it.
 
+        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
+                  check for bugs like these in the future.
+
         :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
         """
         im_open = Image.open(path_img)
@@ -163,7 +166,11 @@ class Escpos(object):
         self._convert_image(im)
 
     def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
-        """ Resizes and prints an arbitrarily sized image """
+        """ Resizes and prints an arbitrarily sized image
+
+        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
+                  check for bugs like these in the future.
+        """
         if isinstance(img, (Image, Image.Image)):
             im = img.convert("RGB")
         else:
@@ -307,9 +314,31 @@ class Escpos(object):
         else:
             raise CharCodeError()
 
-    def barcode(self, code, bc, height, width, pos, font):
+    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True):
         """ Print Barcode
 
+        This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
+        be supported by the unit. Currently you have to check manually whether your barcode text is correct. Uncorrect
+        barcodes may lead to unexpected printer behaviour.
+
+        .. todo:: Add a method to check barcode codes. Alternatively or as an addition write explanations about each
+                  barcode-type. Research whether the check digits can be computed autmatically.
+
+        Use the parameters `height` and `width` for adjusting of the barcode size. Please take notice that the barcode
+        will not be printed if it is outside of the printable area. (Which should be impossible with this method, so
+        this information is probably more useful for debugging purposes.)
+
+        .. todo:: On TM-T88II width from 1 to 6 is accepted. Try to acquire command reference and correct the code.
+        .. todo:: Supplying pos does not have an effect for every barcode type. Check and document for which types this
+                  is true.
+
+        If you do not want to center the barcode you can call the method with `align_ct=False`, which will disable
+        automatic centering. Please note that when you use center alignment, then the alignment of text will be changed
+        automatically to centered. You have to manually restore the alignment if necessary.
+
+        .. todo:: If further barcode-types are needed they could be rendered transparently as an image. (This could also
+                  be of help if the printer does not support types that others do.)
+        
         :param code: alphanumeric data to be printed as bar code
         :param bc: barcode format, possible values are:
 
@@ -322,11 +351,13 @@ class Escpos(object):
             * NW7
 
             If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
-        :param height: barcode height, has to be between 2 and 6
-            *default*: 3
-        :param width: barcode width, has to be between 1 and 255
+        :param height: barcode height, has to be between 1 and 255
             *default*: 64
-        :param pos: where to place the text relative to the barcode, *default*: below
+        :type height: int
+        :param width: barcode width, has to be between 2 and 6
+            *default*: 3
+        :type width: int
+        :param pos: where to place the text relative to the barcode, *default*: BELOW
 
             * ABOVE
             * BELOW
@@ -338,12 +369,17 @@ class Escpos(object):
             * A
             * B
 
+        :param align_ct: If this parameter is True the barcode will be centered. Otherwise no alignment command will be
+                         issued.
+        :type align_ct: bool
+
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
         # Align Bar Code()
-        self._raw(TXT_ALIGN_CT)
+        if align_ct:
+            self._raw(TXT_ALIGN_CT)
         # Height
         if 1 <= height <= 255:
             self._raw(BARCODE_HEIGHT + chr(height))
@@ -512,6 +548,7 @@ class Escpos(object):
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
         be attempted. Note however, that not all models can do a partial cut. See the documentation of
         your printer for details.
+        .. todo:: Check this function on TM-T88II.
 
         :param mode: set to 'PART' for a partial cut
         """
