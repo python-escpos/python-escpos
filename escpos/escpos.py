@@ -314,12 +314,11 @@ class Escpos(object):
         else:
             raise CharCodeError()
 
-    def barcode(self, code, bc, height, width, pos, font):
+    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True):
         """ Print Barcode
 
-        .. todo:: Documentation tells about default values. In fact no default values exist and supplying a default
-                  value does not work.
-        .. todo:: Add a method to check barcode codes.
+        .. todo:: Add a method to check barcode codes. Alternatively or as an addition write explanations about each
+                  barcode-type.
         .. todo:: On TM-T88II width from 1 to 6 is accepted. Try to acquire command reference and correct the code.
         .. todo:: Supplying pos does not have an effect for every barcode type. Check and document for which types this
                   is true.
@@ -338,9 +337,11 @@ class Escpos(object):
             If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
         :param height: barcode height, has to be between 1 and 255
             *default*: 64
+        :type height: int
         :param width: barcode width, has to be between 2 and 6
             *default*: 3
-        :param pos: where to place the text relative to the barcode, *default*: below
+        :type width: int
+        :param pos: where to place the text relative to the barcode, *default*: BELOW
 
             * ABOVE
             * BELOW
@@ -352,12 +353,17 @@ class Escpos(object):
             * A
             * B
 
+        :param align_ct: If this parameter is True the barcode will be centered. Otherwise no alignment command will be
+                         issued.
+        :type align_ct: bool
+
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
         # Align Bar Code()
-        self._raw(TXT_ALIGN_CT)
+        if align_ct:
+            self._raw(TXT_ALIGN_CT)
         # Height
         if 1 <= height <= 255:
             self._raw(BARCODE_HEIGHT + chr(height))
