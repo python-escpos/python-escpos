@@ -139,7 +139,17 @@ class Network(Escpos):
     """ Network printer
 
     This class is used to attach to a networked printer. You can also use this in order to attach to a printer that
-    is forwarded with `netcat`.
+    is forwarded with ``socat``.
+
+    If you have a local printer on parallel port ``/dev/usb/lp0`` then you could start ``socat`` with:
+
+    .. code-block:: none
+
+        socat -u TCP4-LISTEN:4242,reuseaddr,fork OPEN:/dev/usb/lp0
+
+    Then you should be able to attach to port ``4242`` with this class.
+    Otherwise the normal usecase would be to have a printer with ethernet interface. This type of printer should
+    work the same with this class. For the address of the printer check its manuals.
     """
 
     def __init__(self, host, port=9100, *args, **kwargs):
@@ -154,7 +164,7 @@ class Network(Escpos):
         self.open()
 
     def open(self):
-        """ Open TCP socket and set it as escpos device """
+        """ Open TCP socket with ``socket``-library and set it as escpos device """
         self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.device.connect((self.host, self.port))
 
