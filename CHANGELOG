@@ -41,3 +41,8 @@ CHANGELOG
   . Support for images vertically longer than 256 pixels
   . Sent by Joel Lehtonen <joel.lehtonen@koodilehto.fi>
 - Updated README
+
+* 2016-01-24 - Version 1.0.9
+- fix constant definition for PC1252
+- move documentation to Sphinx
+
