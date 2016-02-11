@@ -38,10 +38,10 @@ class Tox(TestCommand):
         sys.exit(errno)
 
 setup(
-    name='escpos',
-    version='1.0.9',
-    url='https://github.com/manpaz/python-escpos',
-    download_url='https://github.com/manpaz/python-escpos.git',
+    name='python-escpos',
+    version='1.0.9-dev',
+    url='https://github.com/python-escpos/python-escpos',
+    download_url='https://github.com/python-escpos/python-escpos/archive/master.zip',
     description='Python library to manipulate ESC/POS Printers',
     license='GNU GPL v3',
     long_description=read('README'),
@@ -71,6 +71,6 @@ setup(
         'qrcode>=4.0',
         'pyserial',
     ],
-    tests_require=['tox'],
+    tests_require=['tox', 'nose'],
     cmdclass={'test': Tox},
 )
