@@ -25,11 +25,12 @@ sending my PayPal info so you can donate.
 
 Thank you!
 
-User Documentation
-------------------
+Content
+-------
 
 .. toctree::
    :maxdepth: 1
+   :caption: User Documentation
 
    user/dependencies
    user/installation
@@ -39,12 +40,11 @@ User Documentation
    user/todo
    user/usage
 
-API
----
 
 .. toctree::
    :maxdepth: 1
-   
+   :caption: API Documentation
+
    api/escpos
    api/printer
    api/constants
