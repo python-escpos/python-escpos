@@ -451,7 +451,7 @@ class Escpos(object):
         colCount = self.columns if columns is None else columns
         self.text(textwrap.fill(txt, colCount))
 
-    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9):
+    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
@@ -541,6 +541,11 @@ class Escpos(object):
             self._raw(PD_P50)
         else:  # DEFAULT: DOES NOTHING
             pass
+        # Invert Printing
+        if invert == True:
+            self._raw(TXT_INVERT_ON)
+        else:
+            self._raw(TXT_INVERT_OFF)
 
     def cut(self, mode=''):
         """ Cut paper.

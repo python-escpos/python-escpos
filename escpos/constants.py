@@ -64,6 +64,8 @@ TXT_FONT_B     = ESC + '\x4d\x01'  # Font type B
 TXT_ALIGN_LT   = ESC + '\x61\x00'  # Left justification
 TXT_ALIGN_CT   = ESC + '\x61\x01'  # Centering
 TXT_ALIGN_RT   = ESC + '\x61\x02'  # Right justification
+TXT_INVERT_ON  = GS  + '\x42\x01'  # Inverse Printing ON
+TXT_INVERT_OFF = GS  + '\x42\x00'  # Inverse Printing OFF
 
 # Char code table
 CHARCODE_PC437  = ESC + '\x74\x00'  # USA: Standard Europe
