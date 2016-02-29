@@ -1,0 +1,14 @@
+# python temporary files
+*.pyc
+
+# editor autosaves, data and file browser files
+$~
+.idea/
+.directory
+
+# temporary data
+temp
+
+# packaging and testing
+.tox/
+*.egg-info/

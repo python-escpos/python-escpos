@@ -1,0 +1,8 @@
+language: python
+sudo: false
+cache: pip
+before_install:
+    - pip install tox
+# command to run tests
+script:
+    - tox
