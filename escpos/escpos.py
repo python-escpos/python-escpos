@@ -451,7 +451,7 @@ class Escpos(object):
         colCount = self.columns if columns is None else columns
         self.text(textwrap.fill(txt, colCount))
 
-    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9):
+    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
@@ -476,6 +476,8 @@ class Escpos(object):
         :param width: text width, normal (1) or double width (2), *default*: 1
         :param height: text height, normal (1) or double height (2), *default*: 1
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
+        :param invert: True enables white on black printing, *default*: False
+        :type invert: bool
         """
         # Width
         if height == 2 and width == 2:
@@ -541,6 +543,11 @@ class Escpos(object):
             self._raw(PD_P50)
         else:  # DEFAULT: DOES NOTHING
             pass
+        # Invert Printing
+        if invert:
+            self._raw(TXT_INVERT_ON)
+        else:
+            self._raw(TXT_INVERT_OFF)
 
     def cut(self, mode=''):
         """ Cut paper.
