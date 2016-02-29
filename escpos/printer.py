@@ -152,20 +152,23 @@ class Network(Escpos):
     work the same with this class. For the address of the printer check its manuals.
     """
 
-    def __init__(self, host, port=9100, *args, **kwargs):
+    def __init__(self, host, port=9100, timeout=60, *args, **kwargs):
         """
 
         :param host : Printer's hostname or IP address
         :param port : Port to write to
+        :param timeout : timeout in seconds for the socket-library
         """
         Escpos.__init__(self, *args, **kwargs)
         self.host = host
         self.port = port
+        self.timeout = timeout
         self.open()
 
     def open(self):
         """ Open TCP socket with ``socket``-library and set it as escpos device """
         self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.device.settimeout(self.timeout)
         self.device.connect((self.host, self.port))
 
         if self.device is None:
