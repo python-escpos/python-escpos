@@ -65,8 +65,8 @@ text("text")
 
 Prints raw text. Raises ``TextError`` exception.
 
-set("align", "font", "type", width, height, invert)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+set("align", "font", "type", width, height, invert, smooth, flip)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set text properties.
 * ``align`` set horizontal position for text, the possible values are:
@@ -80,6 +80,8 @@ Set text properties.
 * ``width`` is a numeric value, 1 is for regular size, and 2 is twice the standard size. *Default*: 1
 * ``height`` is a numeric value, 1 is for regular size and 2 is twice the standard size. *Default*: 1
 * ``invert`` is a boolean value, True enables white on black printing. *Default*: False
+* ``smooth`` is a boolean value, True enables text smoothing. *Default*: False
+* ``flip`` is a boolean value, True enables upside-down text. *Default*: False
 
 cut("mode")
 ^^^^^^^^^^^
