@@ -9,6 +9,11 @@ This module contains the abstract base class :py:class:`Escpos`.
 :license: GNU GPL v3
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+#from __future__ import unicode_literals
+
 try:
     import Image
 except ImportError:
@@ -63,9 +68,9 @@ class Escpos(object):
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
-                return round(image_border / 2), round(image_border / 2)
+                return image_border // 2, image_border // 2
             else:
-                return round(image_border / 2), round((image_border / 2) + 1)
+                return image_border // 2, (image_border // 2) + 1
 
     def _print_image(self, line, size):
         """ Print formatted image

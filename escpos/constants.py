@@ -10,6 +10,11 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 :license: GNU GPL v3
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+#from __future__ import unicode_literals
+
 # Control characters
 # as labelled in http://www.novopos.ch/client/EPSON/TM-T20/TM-T20_eng_qr.pdf
 NUL = '\x00'
