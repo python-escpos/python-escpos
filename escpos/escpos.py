@@ -208,9 +208,11 @@ class Escpos(object):
             current += bandsize
 
     def direct_image(self, image):
-        """ Send image to printer
+        """ Direct printing function for pictures
 
-        :param image:
+        This function is rather fragile and will fail when the Image object is not suited.
+
+        :param image: PIL image object, containing a 1-bit picture
         """
         mask = 0x80
         i = 0
