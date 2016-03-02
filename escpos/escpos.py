@@ -492,17 +492,21 @@ class Escpos(object):
             self._raw(TXT_2WIDTH)
         elif width == 1 and height == 1:
             self._raw(TXT_NORMAL)
-        else:
+        elif width >= 1 and width <= 8 and height >= 1 and height <= 8 and isinstance(width, int) and isinstance(height, int):
             self._raw(TXT_SIZE + chr(TXT_WIDTH[width] + TXT_HEIGHT[height]))
-        # Type
+        else:
+            raise SetVariableError()
+        # Upside down
         if flip == True:
             self._raw(TXT_FLIP_ON)
         else:
             self._raw(TXT_FLIP_OFF)
+        # Smoothing
         if smooth == True:
             self._raw(TXT_SMOOTH_ON)
         else:
             self._raw(TXT_SMOOTH_OFF)
+        # Type
         if text_type.upper() == "B":
             self._raw(TXT_BOLD_ON)
             self._raw(TXT_UNDERL_OFF)
