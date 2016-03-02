@@ -492,7 +492,7 @@ class Escpos(object):
             self._raw(TXT_2WIDTH)
         elif width == 1 and height == 1:
             self._raw(TXT_NORMAL)
-        elif width >= 1 and width <= 8 and height >= 1 and height <= 8 and isinstance(width, int) and isinstance(height, int):
+        elif 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and isinstance(height, int):
             self._raw(TXT_SIZE + chr(TXT_WIDTH[width] + TXT_HEIGHT[height]))
         else:
             raise SetVariableError()
