@@ -50,6 +50,27 @@ PAPER_PART_CUT = _CUT_PAPER('\x01')  # Partial cut paper
 # Text format
 # TODO: Acquire the "ESC/POS Application Programming Guide for Paper Roll
 #       Printers" and tidy up this stuff too.
+TXT_FLIP_ON    = ESC + '\x7b\x01'
+TXT_FLIP_OFF   = ESC + '\x7b\x00'
+TXT_SMOOTH_ON  = GS + '\x62\x01'
+TXT_SMOOTH_OFF = GS + '\x62\x00'
+TXT_SIZE       = GS + '!'
+TXT_WIDTH      = {1: 0x00,
+                  2: 0x10,
+                  3: 0x20,
+                  4: 0x30,
+                  5: 0x40,
+                  6: 0x50,
+                  7: 0x60,
+                  8: 0x70}
+TXT_HEIGHT     = {1: 0x00,
+                  2: 0x01,
+                  3: 0x02,
+                  4: 0x03,
+                  5: 0x04,
+                  6: 0x05,
+                  7: 0x06,
+                  8: 0x07}
 TXT_NORMAL     = ESC + '!\x00'     # Normal text
 TXT_2HEIGHT    = ESC + '!\x10'     # Double height text
 TXT_2WIDTH     = ESC + '!\x20'     # Double width text

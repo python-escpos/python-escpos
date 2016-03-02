@@ -451,7 +451,7 @@ class Escpos(object):
         colCount = self.columns if columns is None else columns
         self.text(textwrap.fill(txt, colCount))
 
-    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False):
+    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False, flip=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
@@ -466,31 +466,46 @@ class Escpos(object):
 
             * B for bold
             * U for underlined
-            * B2 for bold, version 2
             * U2 for underlined, version 2
             * BU for bold and underlined
             * BU2 for bold and underlined, version 2
             * NORMAL for normal text
 
             *default*: NORMAL
-        :param width: text width, normal (1) or double width (2), *default*: 1
-        :param height: text height, normal (1) or double height (2), *default*: 1
+        :param width: text width multiplier, decimal range 1-8,  *default*: 1
+        :param height: text height multiplier, decimal range 1-8, *default*: 1
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
         :param invert: True enables white on black printing, *default*: False
+        :param smooth: True enables text smoothing. Effective on 4x4 size text and larger, *default*: False
+        :param flip: True enables upside-down printing, *default*: False
         :type invert: bool
         """
         # Width
         if height == 2 and width == 2:
             self._raw(TXT_NORMAL)
             self._raw(TXT_4SQUARE)
-        elif height == 2 and width != 2:
+        elif height == 2 and width == 1:
             self._raw(TXT_NORMAL)
             self._raw(TXT_2HEIGHT)
-        elif width == 2 and height != 2:
+        elif width == 2 and height == 1:
             self._raw(TXT_NORMAL)
             self._raw(TXT_2WIDTH)
-        else:  # DEFAULT SIZE: NORMAL
+        elif width == 1 and height == 1:
             self._raw(TXT_NORMAL)
+        elif 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and isinstance(height, int):
+            self._raw(TXT_SIZE + chr(TXT_WIDTH[width] + TXT_HEIGHT[height]))
+        else:
+            raise SetVariableError()
+        # Upside down
+        if flip == True:
+            self._raw(TXT_FLIP_ON)
+        else:
+            self._raw(TXT_FLIP_OFF)
+        # Smoothing
+        if smooth == True:
+            self._raw(TXT_SMOOTH_ON)
+        else:
+            self._raw(TXT_SMOOTH_OFF)
         # Type
         if text_type.upper() == "B":
             self._raw(TXT_BOLD_ON)

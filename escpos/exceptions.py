@@ -12,6 +12,7 @@ Result/Exit codes:
     - `70` = Invalid number of tab positions :py:exc:`~escpos.exceptions.TabPosError`
     - `80` = Invalid char code :py:exc:`~escpos.exceptions.CharCodeError`
     - `90` = USB device not found :py:exc:`~escpos.exceptions.USBNotFoundError`
+    - `100` = Set variable out of range :py:exc:`~escpos.exceptions.SetVariableError`
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
@@ -167,3 +168,18 @@ class USBNotFoundError(Error):
 
     def __str__(self):
         return "USB device not found"
+
+
+class SetVariableError(Error):
+    """ A set method variable was out of range
+
+    Check set variables against minimum and maximum values
+    Ths returncode for this exception is `100`.
+    """
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 100
+
+    def __str__(self):
+        return "Set variable out of range"
