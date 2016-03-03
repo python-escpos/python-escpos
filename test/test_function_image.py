@@ -36,3 +36,15 @@ def test_function_image_with_50x50_png():
     """test the image function with 50x50.png (grayscale png)"""
     instance = printer.File(devfile=devfile)
     instance.image("test/50x50.png")
+
+@with_setup(setup_testfile, teardown_testfile)
+def test_function_image_with_255x255_png():
+    """test the image function with 255x255.png (grayscale png)"""
+    instance = printer.File(devfile=devfile)
+    instance.image("test/255x255.png")
+
+@with_setup(setup_testfile, teardown_testfile)
+def test_function_image_with_400x400_png():
+    """test the image function with 400x400.png (grayscale png)"""
+    instance = printer.File(devfile=devfile)
+    instance.image("test/400x400.png")
