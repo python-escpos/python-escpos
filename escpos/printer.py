@@ -10,7 +10,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-#from __future__ import unicode_literals
+from __future__ import unicode_literals
 
 import usb.core
 import usb.util
@@ -252,10 +252,7 @@ class File(Escpos):
         :param msg: arbitrary code to be printed
         :type msg: bytes
         """
-        if type(msg) is str:
-            self.device.write(msg.encode())
-        else:
-            self.device.write(msg)
+        self.device.write(msg)
 
     def __del__(self):
         """ Close system file """
