@@ -52,6 +52,7 @@ class Escpos(object):
         This function has to be individually implemented by the implementations.
 
         :param msg: message string to be sent to the printer
+        :type msg: bytes
         """
         pass
 
