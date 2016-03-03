@@ -83,7 +83,7 @@ class Escpos(object):
         """
         i = 0
         cont = 0
-        pbuffer = ""
+        pbuffer = b''
 
         self._raw(S_RASTER_N)
         pbuffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1] & 0xff, size[1] >> 8)
@@ -408,12 +408,12 @@ class Escpos(object):
             self._raw(TXT_ALIGN_CT)
         # Height
         if 1 <= height <= 255:
-            self._raw(BARCODE_HEIGHT + chr(height))
+            self._raw(BARCODE_HEIGHT + six.int2byte(height))
         else:
             raise BarcodeSizeError("height = {height}".format(height=height))
         # Width
         if 2 <= width <= 6:
-            self._raw(BARCODE_WIDTH + chr(width))
+            self._raw(BARCODE_WIDTH + six.int2byte(width))
         else:
             raise BarcodeSizeError("width = {width}".format(width=width))
         # Font
@@ -446,7 +446,7 @@ class Escpos(object):
 
         # Print Code
         if code:
-            self._raw(code)
+            self._raw(code.encode())
         else:
             raise BarcodeCodeError()
 
@@ -458,11 +458,13 @@ class Escpos(object):
 
         The text has to be encoded in the currently selected codepage.
 
+        .. todo:: rework this in order to proberly handle encoding
+
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
         if txt:
-            self._raw(txt)
+            self._raw(txt.encode())
         else:
             # TODO: why is it problematic to print an empty string?
             raise TextError()
@@ -602,7 +604,7 @@ class Escpos(object):
         """
         # Fix the size between last line and cut
         # TODO: handle this with a line feed
-        self._raw("\n\n\n\n\n\n")
+        self._raw(b"\n\n\n\n\n\n")
         if mode.upper() == "PART":
             self._raw(PAPER_PART_CUT)
         else:  # DEFAULT MODE: FULL CUT
@@ -659,7 +661,7 @@ class Escpos(object):
         if pos < 1 or pos > 16:
             raise TabPosError()
         else:
-            self._raw("".join([CTL_SET_HT, hex(pos)]))
+            self._raw(CTL_SET_HT + six.int2byte(pos))
         # Set position
         if ctl.upper() == "LF":
             self._raw(CTL_LF)
