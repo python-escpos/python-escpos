@@ -16,10 +16,7 @@ from __future__ import unicode_literals
 
 import six
 
-try:
-    import Image
-except ImportError:
-    from PIL import Image
+from PIL import Image
 
 import qrcode
 import textwrap
@@ -160,7 +157,10 @@ class Escpos(object):
 
         :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
         """
-        im_open = Image.open(path_img)
+        if not isinstance(path_img, Image.Image):
+            im_open = Image.open(path_img)
+        else:
+            im_open = path_img
 
         # Remove the alpha channel on transparent images
         if im_open.mode == 'RGBA':
@@ -179,7 +179,7 @@ class Escpos(object):
         .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
                   check for bugs like these in the future.
         """
-        if isinstance(img, (Image, Image.Image)):
+        if isinstance(img, Image.Image):
             im = img.convert("RGB")
         else:
             im = Image.open(img).convert("RGB")
