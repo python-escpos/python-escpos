@@ -70,6 +70,7 @@ setup(
         'Pillow>=2.0',
         'qrcode>=4.0',
         'pyserial',
+        'six',
     ],
     tests_require=['tox', 'nose'],
     cmdclass={'test': Tox},
