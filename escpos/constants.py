@@ -126,17 +126,71 @@ BARCODE_WIDTH  = GS + 'w'  # Barcode Width  [2-6]
 
 #NOTE: This isn't actually an ESC/POS command. It's the common prefix to the
 #      two "print bar code" commands:
-#      -  "GS k <type as integer> <data> NUL"
-#      -  "GS k <type as letter> <data length> <data>"
+#      -  Type A: "GS k <type as integer> <data> NUL"
+#      -  TYPE B: "GS k <type as letter> <data length> <data>"
 #      The latter command supports more barcode types
 _SET_BARCODE_TYPE = lambda m: GS + 'k' + m
-BARCODE_UPC_A  = _SET_BARCODE_TYPE('\x00')  # Barcode type UPC-A
-BARCODE_UPC_E  = _SET_BARCODE_TYPE('\x01')  # Barcode type UPC-E
-BARCODE_EAN13  = _SET_BARCODE_TYPE('\x02')  # Barcode type EAN13
-BARCODE_EAN8   = _SET_BARCODE_TYPE('\x03')  # Barcode type EAN8
-BARCODE_CODE39 = _SET_BARCODE_TYPE('\x04')  # Barcode type CODE39
-BARCODE_ITF    = _SET_BARCODE_TYPE('\x05')  # Barcode type ITF
-BARCODE_NW7    = _SET_BARCODE_TYPE('\x06')  # Barcode type NW7
+
+# Barcodes for type A
+BARCODE_A_UPC_A  = _SET_BARCODE_TYPE('\x00')  # Barcode type UPC-A
+BARCODE_A_UPC_E  = _SET_BARCODE_TYPE('\x01')  # Barcode type UPC-E
+BARCODE_A_EAN13  = _SET_BARCODE_TYPE('\x02')  # Barcode type EAN13
+BARCODE_A_EAN8   = _SET_BARCODE_TYPE('\x03')  # Barcode type EAN8
+BARCODE_A_CODE39 = _SET_BARCODE_TYPE('\x04')  # Barcode type CODE39
+BARCODE_A_ITF    = _SET_BARCODE_TYPE('\x05')  # Barcode type ITF
+BARCODE_A_NW7    = _SET_BARCODE_TYPE('\x06')  # Barcode type NW7
+
+# Barcodes for type B
+BARCODE_B_UPC_A  = _SET_BARCODE_TYPE('\x65')  # Barcode type UPC-A
+BARCODE_B_UPC_E  = _SET_BARCODE_TYPE('\x66')  # Barcode type UPC-E
+BARCODE_B_EAN13  = _SET_BARCODE_TYPE('\x67')  # Barcode type EAN13
+BARCODE_B_EAN8   = _SET_BARCODE_TYPE('\x68')  # Barcode type EAN8
+BARCODE_B_CODE39 = _SET_BARCODE_TYPE('\x69')  # Barcode type CODE39
+BARCODE_B_ITF    = _SET_BARCODE_TYPE('\x70')  # Barcode type ITF
+BARCODE_B_NW7    = _SET_BARCODE_TYPE('\x71')  # Barcode type NW7
+BARCODE_B_CODE93 = _SET_BARCODE_TYPE('\x72')  # Barcode type CODE93
+BARCODE_B_CODE128 = _SET_BARCODE_TYPE('\x73')  # Barcode type CODE128
+BARCODE_B_GS1_128 = _SET_BARCODE_TYPE('\x74')  # Barcode type GS1_128
+BARCODE_B_GS1_DATABAR_OMNI = _SET_BARCODE_TYPE('\x75')  # Barcode type GS1 DataBar Omnidirectional
+BARCODE_B_GS1_DATABAR_TRUNC = _SET_BARCODE_TYPE('\x76')  # Barcode type GS1 DataBar Truncated
+BARCODE_B_GS1_DATABAR_LIM = _SET_BARCODE_TYPE('\x77')  # Barcode type GS1 DataBar Limited
+BARCODE_B_GS1_DATABAR_EXP = _SET_BARCODE_TYPE('\x78')  # Barcode type GS1 DataBar Expanded
+
+# Constants to be used when the user is calling the function. All uppercase.
+BARCODE_TYPE_A = {
+    'UPC-A': BARCODE_A_UPC_A,
+    'UPC-E': BARCODE_A_UPC_E,
+    'EAN13': BARCODE_A_EAN13,
+    'EAN8': BARCODE_A_EAN8,
+    'CODE39': BARCODE_A_CODE39,
+    'ITF': BARCODE_A_ITF,
+    'NW7': BARCODE_A_NW7,
+    'CODEBAR': BARCODE_A_NW7,
+}
+
+BARCODE_TYPE_B = {
+    'UPC-A': BARCODE_B_UPC_A,
+    'UPC-E': BARCODE_B_UPC_E,
+    'EAN13': BARCODE_B_EAN13,
+    'EAN8': BARCODE_B_EAN8,
+    'CODE39': BARCODE_B_CODE39,
+    'ITF': BARCODE_B_ITF,
+    'NW7': BARCODE_B_NW7,
+    'CODEBAR': BARCODE_B_NW7,
+    'CODE93': BARCODE_B_CODE93,
+    'CODE128': BARCODE_B_CODE128,
+    'GS1_128': BARCODE_B_GS1_128,
+    'GS1 DATABAR OMNIDIRECTIONAL': BARCODE_B_GS1_DATABAR_OMNI,
+    'GS1 DATABAR TRUNCATED': BARCODE_B_GS1_DATABAR_TRUNC,
+    'GS1 DATABAR LIMITED': BARCODE_B_GS1_DATABAR_LIM,
+    'GS1 DATABAR EXPANDED': BARCODE_B_GS1_DATABAR_EXP,
+}
+
+BARCODE_TYPES = {
+    'A': BARCODE_TYPE_A,
+    'B': BARCODE_TYPE_B,
+}
+
 
 # Image format
 # NOTE: _PRINT_RASTER_IMG is the obsolete ESC/POS "print raster bit image"
