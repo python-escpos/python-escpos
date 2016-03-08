@@ -126,17 +126,51 @@ BARCODE_WIDTH  = GS + 'w'  # Barcode Width  [2-6]
 
 #NOTE: This isn't actually an ESC/POS command. It's the common prefix to the
 #      two "print bar code" commands:
-#      -  "GS k <type as integer> <data> NUL"
-#      -  "GS k <type as letter> <data length> <data>"
+#      -  Type A: "GS k <type as integer> <data> NUL"
+#      -  TYPE B: "GS k <type as letter> <data length> <data>"
 #      The latter command supports more barcode types
 _SET_BARCODE_TYPE = lambda m: GS + 'k' + m
-BARCODE_UPC_A  = _SET_BARCODE_TYPE('\x00')  # Barcode type UPC-A
-BARCODE_UPC_E  = _SET_BARCODE_TYPE('\x01')  # Barcode type UPC-E
-BARCODE_EAN13  = _SET_BARCODE_TYPE('\x02')  # Barcode type EAN13
-BARCODE_EAN8   = _SET_BARCODE_TYPE('\x03')  # Barcode type EAN8
-BARCODE_CODE39 = _SET_BARCODE_TYPE('\x04')  # Barcode type CODE39
-BARCODE_ITF    = _SET_BARCODE_TYPE('\x05')  # Barcode type ITF
-BARCODE_NW7    = _SET_BARCODE_TYPE('\x06')  # Barcode type NW7
+
+# Barcodes for printing function type A
+BARCODE_TYPE_A = {
+    'UPC-A':   _SET_BARCODE_TYPE(chr(0)),
+    'UPC-E':   _SET_BARCODE_TYPE(chr(1)),
+    'EAN13':   _SET_BARCODE_TYPE(chr(2)),
+    'EAN8':    _SET_BARCODE_TYPE(chr(3)),
+    'CODE39':  _SET_BARCODE_TYPE(chr(4)),
+    'ITF':     _SET_BARCODE_TYPE(chr(5)),
+    'NW7':     _SET_BARCODE_TYPE(chr(6)),
+    'CODABAR': _SET_BARCODE_TYPE(chr(6)), # Same as NW7
+}
+
+# Barcodes for printing function type B
+# The first 8 are the same barcodes as type A
+BARCODE_TYPE_B = {
+    'UPC-A':                       _SET_BARCODE_TYPE(chr(65)),
+    'UPC-E':                       _SET_BARCODE_TYPE(chr(66)),
+    'EAN13':                       _SET_BARCODE_TYPE(chr(67)),
+    'EAN8':                        _SET_BARCODE_TYPE(chr(68)),
+    'CODE39':                      _SET_BARCODE_TYPE(chr(69)),
+    'ITF':                         _SET_BARCODE_TYPE(chr(70)),
+    'NW7':                         _SET_BARCODE_TYPE(chr(71)),
+    'CODABAR':                     _SET_BARCODE_TYPE(chr(71)), # Same as NW7
+    'CODE93':                      _SET_BARCODE_TYPE(chr(72)),
+    # These are all the same barcode, but using different charcter sets
+    'CODE128A':                    _SET_BARCODE_TYPE(chr(73) + '{A'), # CODE128 character set A
+    'CODE128B':                    _SET_BARCODE_TYPE(chr(73) + '{B'), # CODE128 character set B
+    'CODE128C':                    _SET_BARCODE_TYPE(chr(73) + '{C'), # CODE128 character set C
+    'GS1-128':                     _SET_BARCODE_TYPE(chr(74)),
+    'GS1 DATABAR OMNIDIRECTIONAL': _SET_BARCODE_TYPE(chr(75)),
+    'GS1 DATABAR TRUNCATED':       _SET_BARCODE_TYPE(chr(76)),
+    'GS1 DATABAR LIMITED':         _SET_BARCODE_TYPE(chr(77)),
+    'GS1 DATABAR EXPANDED':        _SET_BARCODE_TYPE(chr(78)),
+}
+
+BARCODE_TYPES = {
+    'A': BARCODE_TYPE_A,
+    'B': BARCODE_TYPE_B,
+}
+
 
 # Image format
 # NOTE: _PRINT_RASTER_IMG is the obsolete ESC/POS "print raster bit image"

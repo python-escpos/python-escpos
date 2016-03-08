@@ -314,12 +314,13 @@ class Escpos(object):
         else:
             raise CharCodeError()
 
-    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True):
+    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True, function_type="A"):
         """ Print Barcode
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
         be supported by the unit. Currently you have to check manually whether your barcode text is correct. Uncorrect
-        barcodes may lead to unexpected printer behaviour.
+        barcodes may lead to unexpected printer behaviour. There are two forms of the barcode function. Type A is
+        default but has fewer barcodes, while type B has some more to choose from.
 
         .. todo:: Add a method to check barcode codes. Alternatively or as an addition write explanations about each
                   barcode-type. Research whether the check digits can be computed autmatically.
@@ -340,7 +341,7 @@ class Escpos(object):
                   be of help if the printer does not support types that others do.)
         
         :param code: alphanumeric data to be printed as bar code
-        :param bc: barcode format, possible values are:
+        :param bc: barcode format, possible values are for type A are:
 
             * UPC-A
             * UPC-E
@@ -349,6 +350,17 @@ class Escpos(object):
             * CODE39
             * ITF
             * NW7
+
+            Possible values for type B:
+
+            * All types from function type A
+            * CODE93
+            * CODE128
+            * GS1-128
+            * GS1 DataBar Omnidirectional
+            * GS1 DataBar Truncated
+            * GS1 DataBar Limited
+            * GS1 DataBar Expanded
 
             If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
         :param height: barcode height, has to be between 1 and 255
@@ -372,6 +384,10 @@ class Escpos(object):
         :param align_ct: If this parameter is True the barcode will be centered. Otherwise no alignment command will be
                          issued.
         :type align_ct: bool
+
+        :param function_type: Choose between ESCPOS function type A or B, depending on printer support and desired
+            barcode.
+            *default*: A
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
@@ -404,28 +420,28 @@ class Escpos(object):
             self._raw(BARCODE_TXT_ABV)
         else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-        # Type
-        if bc.upper() == "UPC-A":
-            self._raw(BARCODE_UPC_A)
-        elif bc.upper() == "UPC-E":
-            self._raw(BARCODE_UPC_E)
-        elif bc.upper() == "EAN13":
-            self._raw(BARCODE_EAN13)
-        elif bc.upper() == "EAN8":
-            self._raw(BARCODE_EAN8)
-        elif bc.upper() == "CODE39":
-            self._raw(BARCODE_CODE39)
-        elif bc.upper() == "ITF":
-            self._raw(BARCODE_ITF)
-        elif bc.upper() in ("NW7", "CODABAR"):
-            self._raw(BARCODE_NW7)
-        else:
-            raise BarcodeTypeError(bc)
+
+        bc_types = BARCODE_TYPES[function_type.upper()]
+        if bc.upper() not in bc_types.keys():
+            # TODO: Raise a better error, or fix the message of this error type
+            raise BarcodeTypeError("Barcode type {bc} not valid for barcode function type {function_type}".format(
+                bc=bc,
+                function_type=function_type,
+            ))
+
+        self._raw(bc_types[bc.upper()])
+
+        if function_type.upper() == "B":
+            self._raw(chr(len(code)))
+
         # Print Code
         if code:
             self._raw(code)
         else:
             raise BarcodeCodeError()
+
+        if function_type.upper() == "A":
+            self._raw("\x00")
 
     def text(self, txt):
         """ Print alpha-numeric text
