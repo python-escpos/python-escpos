@@ -131,63 +131,39 @@ BARCODE_WIDTH  = GS + 'w'  # Barcode Width  [2-6]
 #      The latter command supports more barcode types
 _SET_BARCODE_TYPE = lambda m: GS + 'k' + m
 
-# Barcodes for type A
-BARCODE_A_UPC_A  = _SET_BARCODE_TYPE(chr(0))  # Barcode type UPC-A
-BARCODE_A_UPC_E  = _SET_BARCODE_TYPE(chr(1))  # Barcode type UPC-E
-BARCODE_A_EAN13  = _SET_BARCODE_TYPE(chr(2))  # Barcode type EAN13
-BARCODE_A_EAN8   = _SET_BARCODE_TYPE(chr(3))  # Barcode type EAN8
-BARCODE_A_CODE39 = _SET_BARCODE_TYPE(chr(4))  # Barcode type CODE39
-BARCODE_A_ITF    = _SET_BARCODE_TYPE(chr(5))  # Barcode type ITF
-BARCODE_A_NW7    = _SET_BARCODE_TYPE(chr(6))  # Barcode type NW7
-
-# Barcodes for type B
-BARCODE_B_UPC_A             = _SET_BARCODE_TYPE(chr(65))  # Barcode type UPC-A
-BARCODE_B_UPC_E             = _SET_BARCODE_TYPE(chr(66))  # Barcode type UPC-E
-BARCODE_B_EAN13             = _SET_BARCODE_TYPE(chr(67))  # Barcode type EAN13
-BARCODE_B_EAN8              = _SET_BARCODE_TYPE(chr(68))  # Barcode type EAN8
-BARCODE_B_CODE39            = _SET_BARCODE_TYPE(chr(69))  # Barcode type CODE39
-BARCODE_B_ITF               = _SET_BARCODE_TYPE(chr(70))  # Barcode type ITF
-BARCODE_B_NW7               = _SET_BARCODE_TYPE(chr(71))  # Barcode type NW7
-BARCODE_B_CODE93            = _SET_BARCODE_TYPE(chr(72))  # Barcode type CODE93
-BARCODE_B_CODE128A          = _SET_BARCODE_TYPE(chr(73) + '{A')  # Barcode type CODE128 character set A
-BARCODE_B_CODE128B          = _SET_BARCODE_TYPE(chr(73) + '{B')  # Barcode type CODE128 character set B
-BARCODE_B_CODE128C          = _SET_BARCODE_TYPE(chr(73) + '{C')  # Barcode type CODE128 character set C
-BARCODE_B_GS1_128           = _SET_BARCODE_TYPE(chr(74))  # Barcode type GS1-128
-BARCODE_B_GS1_DATABAR_OMNI  = _SET_BARCODE_TYPE(chr(75))  # Barcode type GS1 DataBar Omnidirectional
-BARCODE_B_GS1_DATABAR_TRUNC = _SET_BARCODE_TYPE(chr(76))  # Barcode type GS1 DataBar Truncated
-BARCODE_B_GS1_DATABAR_LIM   = _SET_BARCODE_TYPE(chr(77))  # Barcode type GS1 DataBar Limited
-BARCODE_B_GS1_DATABAR_EXP   = _SET_BARCODE_TYPE(chr(78))  # Barcode type GS1 DataBar Expanded
-
-# Constants to be used when the user is calling the function. All uppercase.
+# Barcodes for printing function type A
 BARCODE_TYPE_A = {
-    'UPC-A': BARCODE_A_UPC_A,
-    'UPC-E': BARCODE_A_UPC_E,
-    'EAN13': BARCODE_A_EAN13,
-    'EAN8': BARCODE_A_EAN8,
-    'CODE39': BARCODE_A_CODE39,
-    'ITF': BARCODE_A_ITF,
-    'NW7': BARCODE_A_NW7,
-    'CODABAR': BARCODE_A_NW7,
+    'UPC-A':   _SET_BARCODE_TYPE(chr(0)),
+    'UPC-E':   _SET_BARCODE_TYPE(chr(1)),
+    'EAN13':   _SET_BARCODE_TYPE(chr(2)),
+    'EAN8':    _SET_BARCODE_TYPE(chr(3)),
+    'CODE39':  _SET_BARCODE_TYPE(chr(4)),
+    'ITF':     _SET_BARCODE_TYPE(chr(5)),
+    'NW7':     _SET_BARCODE_TYPE(chr(6)),
+    'CODABAR': _SET_BARCODE_TYPE(chr(6)), # Same as NW7
 }
 
+# Barcodes for printing function type B
+# The first 8 are the same barcodes as type A
 BARCODE_TYPE_B = {
-    'UPC-A': BARCODE_B_UPC_A,
-    'UPC-E': BARCODE_B_UPC_E,
-    'EAN13': BARCODE_B_EAN13,
-    'EAN8': BARCODE_B_EAN8,
-    'CODE39': BARCODE_B_CODE39,
-    'ITF': BARCODE_B_ITF,
-    'NW7': BARCODE_B_NW7,
-    'CODABAR': BARCODE_B_NW7,
-    'CODE93': BARCODE_B_CODE93,
-    'CODE128A': BARCODE_B_CODE128A,
-    'CODE128B': BARCODE_B_CODE128B,
-    'CODE128C': BARCODE_B_CODE128C,
-    'GS1-128': BARCODE_B_GS1_128,
-    'GS1 DATABAR OMNIDIRECTIONAL': BARCODE_B_GS1_DATABAR_OMNI,
-    'GS1 DATABAR TRUNCATED': BARCODE_B_GS1_DATABAR_TRUNC,
-    'GS1 DATABAR LIMITED': BARCODE_B_GS1_DATABAR_LIM,
-    'GS1 DATABAR EXPANDED': BARCODE_B_GS1_DATABAR_EXP,
+    'UPC-A':                       _SET_BARCODE_TYPE(chr(65)),
+    'UPC-E':                       _SET_BARCODE_TYPE(chr(66)),
+    'EAN13':                       _SET_BARCODE_TYPE(chr(67)),
+    'EAN8':                        _SET_BARCODE_TYPE(chr(68)),
+    'CODE39':                      _SET_BARCODE_TYPE(chr(69)),
+    'ITF':                         _SET_BARCODE_TYPE(chr(70)),
+    'NW7':                         _SET_BARCODE_TYPE(chr(71)),
+    'CODABAR':                     _SET_BARCODE_TYPE(chr(71)), # Same as NW7
+    'CODE93':                      _SET_BARCODE_TYPE(chr(72)),
+    # These are all the same barcode, but using different charcter sets
+    'CODE128A':                    _SET_BARCODE_TYPE(chr(73) + '{A'), # CODE128 character set A
+    'CODE128B':                    _SET_BARCODE_TYPE(chr(73) + '{B'), # CODE128 character set B
+    'CODE128C':                    _SET_BARCODE_TYPE(chr(73) + '{C'), # CODE128 character set C
+    'GS1-128':                     _SET_BARCODE_TYPE(chr(74)),
+    'GS1 DATABAR OMNIDIRECTIONAL': _SET_BARCODE_TYPE(chr(75)),
+    'GS1 DATABAR TRUNCATED':       _SET_BARCODE_TYPE(chr(76)),
+    'GS1 DATABAR LIMITED':         _SET_BARCODE_TYPE(chr(77)),
+    'GS1 DATABAR EXPANDED':        _SET_BARCODE_TYPE(chr(78)),
 }
 
 BARCODE_TYPES = {
