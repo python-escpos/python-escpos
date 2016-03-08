@@ -149,7 +149,9 @@ BARCODE_B_CODE39            = _SET_BARCODE_TYPE(chr(69))  # Barcode type CODE39
 BARCODE_B_ITF               = _SET_BARCODE_TYPE(chr(70))  # Barcode type ITF
 BARCODE_B_NW7               = _SET_BARCODE_TYPE(chr(71))  # Barcode type NW7
 BARCODE_B_CODE93            = _SET_BARCODE_TYPE(chr(72))  # Barcode type CODE93
-BARCODE_B_CODE128           = _SET_BARCODE_TYPE(chr(73))  # Barcode type CODE128
+BARCODE_B_CODE128A          = _SET_BARCODE_TYPE(chr(73) + '{A')  # Barcode type CODE128 character set A
+BARCODE_B_CODE128B          = _SET_BARCODE_TYPE(chr(73) + '{B')  # Barcode type CODE128 character set B
+BARCODE_B_CODE128C          = _SET_BARCODE_TYPE(chr(73) + '{C')  # Barcode type CODE128 character set C
 BARCODE_B_GS1_128           = _SET_BARCODE_TYPE(chr(74))  # Barcode type GS1-128
 BARCODE_B_GS1_DATABAR_OMNI  = _SET_BARCODE_TYPE(chr(75))  # Barcode type GS1 DataBar Omnidirectional
 BARCODE_B_GS1_DATABAR_TRUNC = _SET_BARCODE_TYPE(chr(76))  # Barcode type GS1 DataBar Truncated
@@ -178,7 +180,9 @@ BARCODE_TYPE_B = {
     'NW7': BARCODE_B_NW7,
     'CODABAR': BARCODE_B_NW7,
     'CODE93': BARCODE_B_CODE93,
-    'CODE128': BARCODE_B_CODE128,
+    'CODE128A': BARCODE_B_CODE128A,
+    'CODE128B': BARCODE_B_CODE128B,
+    'CODE128C': BARCODE_B_CODE128C,
     'GS1-128': BARCODE_B_GS1_128,
     'GS1 DATABAR OMNIDIRECTIONAL': BARCODE_B_GS1_DATABAR_OMNI,
     'GS1 DATABAR TRUNCATED': BARCODE_B_GS1_DATABAR_TRUNC,
