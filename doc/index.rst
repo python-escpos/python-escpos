@@ -40,6 +40,11 @@ Content
    user/todo
    user/usage
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Developer Documentation
+
+   dev/contributing
 
 .. toctree::
    :maxdepth: 1

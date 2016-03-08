@@ -64,4 +64,4 @@ The full project-documentation is available on `Read the Docs <https://python-es
 Contributing
 ------------
 
-This project is open for any contribution!
+This project is open for any contribution! Please see CONTRIBUTING.rst for more information.
