@@ -25,6 +25,7 @@ Content
    :caption: Developer Documentation
 
    dev/contributing
+   dev/changelog
 
 .. toctree::
    :maxdepth: 1
