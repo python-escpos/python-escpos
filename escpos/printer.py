@@ -20,6 +20,12 @@ class Usb(Escpos):
     """ USB printer
 
     This class describes a printer that natively speaks USB.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Usb
+        :parts: 1
+
     """
 
     def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
@@ -82,6 +88,12 @@ class Serial(Escpos):
     """ Serial printer
 
     This class describes a printer that is connected by serial interface.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Serial
+        :parts: 1
+
     """
 
     def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1,
@@ -150,6 +162,12 @@ class Network(Escpos):
     Then you should be able to attach to port ``4242`` with this class.
     Otherwise the normal usecase would be to have a printer with ethernet interface. This type of printer should
     work the same with this class. For the address of the printer check its manuals.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Network
+        :parts: 1
+
     """
 
     def __init__(self, host, port=9100, timeout=60, *args, **kwargs):
@@ -192,6 +210,12 @@ class File(Escpos):
     This class is used for parallel port printer or other printers that are directly attached to the filesystem.
     Note that you should stay away from using USB-to-Parallel-Adapter since they are unreliable
     and produce arbitrary errors.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.File
+        :parts: 1
+
     """
 
     def __init__(self, devfile="/dev/usb/lp0", *args, **kwargs):

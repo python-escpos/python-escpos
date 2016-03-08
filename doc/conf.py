@@ -35,6 +35,8 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
+    'sphinx.ext.graphviz',
+    'sphinx.ext.inheritance_diagram',
 ]
 
 # enable todos
