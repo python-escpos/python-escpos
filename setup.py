@@ -44,7 +44,7 @@ setup(
     download_url='https://github.com/python-escpos/python-escpos/archive/master.zip',
     description='Python library to manipulate ESC/POS Printers',
     license='GNU GPL v3',
-    long_description=read('README'),
+    long_description=read('README.rst'),
     author='Manuel F Martinez',
     author_email='manpaz@bashlinux.com',
     platforms=['linux'],
