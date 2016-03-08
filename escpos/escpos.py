@@ -421,7 +421,7 @@ class Escpos(object):
         else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
 
-        bc_types = BARCODE_TYPES[function_type]
+        bc_types = BARCODE_TYPES[function_type.upper()]
         if bc.upper() not in bc_types.keys():
             # TODO: Raise a better error, or fix the message of this error type
             raise BarcodeTypeError("Barcode type {bc} not valid for barcode function type {function_type}".format(
