@@ -12,3 +12,5 @@ temp
 # packaging and testing
 .tox/
 *.egg-info/
+build/
+dist/
