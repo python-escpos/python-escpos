@@ -39,7 +39,7 @@ class Tox(TestCommand):
 
 setup(
     name='python-escpos',
-    version='1.0.9-dev',
+    use_scm_version=True,
     url='https://github.com/python-escpos/python-escpos',
     download_url='https://github.com/python-escpos/python-escpos/archive/master.zip',
     description='Python library to manipulate ESC/POS Printers',
@@ -71,6 +71,9 @@ setup(
         'qrcode>=4.0',
         'pyserial',
         'six',
+    ],
+    setup_requires=[
+        'setuptools_scm',
     ],
     tests_require=['tox', 'nose'],
     cmdclass={'test': Tox},
