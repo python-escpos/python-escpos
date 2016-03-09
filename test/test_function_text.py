@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""very basic test cases that load the classes
+"""tests for the text printing function
 
 :author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -17,6 +17,8 @@ from nose.tools import with_setup
 import escpos.printer as printer
 import os
 
+import filecmp
+
 devfile = 'testfile'
 
 def setup_testfile():
@@ -32,7 +34,9 @@ def teardown_testfile():
     os.remove(devfile)
 
 @with_setup(setup_testfile, teardown_testfile)
-def test_instantiation():
-    """test the instantiation of a escpos-printer class and basic printing"""
+def test_function_text_dies_ist_ein_test_lf():
+    """test the text printing function with simple string and compare output"""
     instance = printer.File(devfile=devfile)
-    instance.text('This is a test\n')
+    instance.text('Dies ist ein Test.\n')
+    instance.flush()
+    assert(filecmp.cmp('test/Dies ist ein Test.LF.txt', devfile))

@@ -7,6 +7,11 @@
 :license: GNU GPL v3
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import usb.core
 import usb.util
 import serial
@@ -74,6 +79,7 @@ class Usb(Escpos):
         """ Print any command sent in raw format
 
         :param msg: arbitrary code to be printed
+        :type msg: bytes
         """
         self.device.write(self.out_ep, msg, self.interface)
 
@@ -138,6 +144,7 @@ class Serial(Escpos):
         """ Print any command sent in raw format
 
         :param msg: arbitrary code to be printed
+        :type msg: bytes
         """
         self.device.write(msg)
 
@@ -196,6 +203,7 @@ class Network(Escpos):
         """ Print any command sent in raw format
 
         :param msg: arbitrary code to be printed
+        :type msg: bytes
         """
         self.device.sendall(msg)
 
@@ -242,11 +250,9 @@ class File(Escpos):
         """ Print any command sent in raw format
 
         :param msg: arbitrary code to be printed
+        :type msg: bytes
         """
-        if type(msg) is str:
-            self.device.write(msg.encode())
-        else:
-            self.device.write(msg)
+        self.device.write(msg)
 
     def __del__(self):
         """ Close system file """

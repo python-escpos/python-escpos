@@ -9,10 +9,14 @@ This module contains the abstract base class :py:class:`Escpos`.
 :license: GNU GPL v3
 """
 
-try:
-    import Image
-except ImportError:
-    from PIL import Image
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import six
+
+from PIL import Image
 
 import qrcode
 import textwrap
@@ -47,6 +51,7 @@ class Escpos(object):
         This function has to be individually implemented by the implementations.
 
         :param msg: message string to be sent to the printer
+        :type msg: bytes
         """
         pass
 
@@ -63,9 +68,9 @@ class Escpos(object):
         else:
             image_border = 32 - (size % 32)
             if (image_border % 2) == 0:
-                return round(image_border / 2), round(image_border / 2)
+                return image_border // 2, image_border // 2
             else:
-                return round(image_border / 2), round((image_border / 2) + 1)
+                return image_border // 2, (image_border // 2) + 1
 
     def _print_image(self, line, size):
         """ Print formatted image
@@ -75,7 +80,7 @@ class Escpos(object):
         """
         i = 0
         cont = 0
-        pbuffer = ""
+        pbuffer = b''
 
         self._raw(S_RASTER_N)
         pbuffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1] & 0xff, size[1] >> 8)
@@ -152,7 +157,10 @@ class Escpos(object):
 
         :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
         """
-        im_open = Image.open(path_img)
+        if not isinstance(path_img, Image.Image):
+            im_open = Image.open(path_img)
+        else:
+            im_open = path_img
 
         # Remove the alpha channel on transparent images
         if im_open.mode == 'RGBA':
@@ -171,7 +179,7 @@ class Escpos(object):
         .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
                   check for bugs like these in the future.
         """
-        if isinstance(img, (Image, Image.Image)):
+        if isinstance(img, Image.Image):
             im = img.convert("RGB")
         else:
             im = Image.open(img).convert("RGB")
@@ -208,9 +216,11 @@ class Escpos(object):
             current += bandsize
 
     def direct_image(self, image):
-        """ Send image to printer
+        """ Direct printing function for pictures
 
-        :param image:
+        This function is rather fragile and will fail when the Image object is not suited.
+
+        :param image: PIL image object, containing a 1-bit picture
         """
         mask = 0x80
         i = 0
@@ -241,7 +251,7 @@ class Escpos(object):
                     i = 0
                     temp = 0
         self._raw(binascii.unhexlify(bytes(buf, "ascii")))
-        self._raw('\n')
+        self._raw(b'\n')
 
     def qr(self, text):
         """ Print QR Code for the provided string
@@ -398,12 +408,12 @@ class Escpos(object):
             self._raw(TXT_ALIGN_CT)
         # Height
         if 1 <= height <= 255:
-            self._raw(BARCODE_HEIGHT + chr(height))
+            self._raw(BARCODE_HEIGHT + six.int2byte(height))
         else:
             raise BarcodeSizeError("height = {height}".format(height=height))
         # Width
         if 2 <= width <= 6:
-            self._raw(BARCODE_WIDTH + chr(width))
+            self._raw(BARCODE_WIDTH + six.int2byte(width))
         else:
             raise BarcodeSizeError("width = {width}".format(width=width))
         # Font
@@ -436,7 +446,7 @@ class Escpos(object):
 
         # Print Code
         if code:
-            self._raw(code)
+            self._raw(code.encode())
         else:
             raise BarcodeCodeError()
 
@@ -448,11 +458,13 @@ class Escpos(object):
 
         The text has to be encoded in the currently selected codepage.
 
+        .. todo:: rework this in order to proberly handle encoding
+
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
         if txt:
-            self._raw(txt)
+            self._raw(txt.encode())
         else:
             # TODO: why is it problematic to print an empty string?
             raise TextError()
@@ -509,7 +521,7 @@ class Escpos(object):
         elif width == 1 and height == 1:
             self._raw(TXT_NORMAL)
         elif 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and isinstance(height, int):
-            self._raw(TXT_SIZE + chr(TXT_WIDTH[width] + TXT_HEIGHT[height]))
+            self._raw(TXT_SIZE + six.int2byte(TXT_WIDTH[width] + TXT_HEIGHT[height]))
         else:
             raise SetVariableError()
         # Upside down
@@ -592,7 +604,7 @@ class Escpos(object):
         """
         # Fix the size between last line and cut
         # TODO: handle this with a line feed
-        self._raw("\n\n\n\n\n\n")
+        self._raw(b"\n\n\n\n\n\n")
         if mode.upper() == "PART":
             self._raw(PAPER_PART_CUT)
         else:  # DEFAULT MODE: FULL CUT
@@ -649,7 +661,7 @@ class Escpos(object):
         if pos < 1 or pos > 16:
             raise TabPosError()
         else:
-            self._raw("".join([CTL_SET_HT, hex(pos)]))
+            self._raw(CTL_SET_HT + six.int2byte(pos))
         # Set position
         if ctl.upper() == "LF":
             self._raw(CTL_LF)
