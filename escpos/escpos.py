@@ -598,6 +598,7 @@ class Escpos(object):
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
         be attempted. Note however, that not all models can do a partial cut. See the documentation of
         your printer for details.
+        
         .. todo:: Check this function on TM-T88II.
 
         :param mode: set to 'PART' for a partial cut
