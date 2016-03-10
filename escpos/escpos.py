@@ -674,3 +674,26 @@ class Escpos(object):
             self._raw(CTL_HT)
         elif ctl.upper() == "VT":
             self._raw(CTL_VT)
+
+    def panel_buttons(self, enable=True):
+        """ Controls the panel buttons on the printer (e.g. FEED)
+
+        When enable is set to False the panel buttons on the printer will be disabled. Calling the method with
+        enable=True or without argument will enable the panel buttons.
+
+        If panel buttons are enabled, the function of the panel button, such as feeding, will be executed upon pressing
+        the button. If the panel buttons are disabled, pressing them will not have any effect.
+
+        This command is effective until the printer is initialized, reset or power-cycled. The default is enabled panel
+        buttons.
+
+        Some panel buttons will always work, especially when printer is opened. See for more information the manual
+        of your printer and the escpos-command-reference.
+
+        :param enable: controls the panel buttons
+        :rtype: None
+        """
+        if enable:
+            self._raw(PANEL_BUTTON_ON)
+        else:
+            self._raw(PANEL_BUTTON_OFF)
