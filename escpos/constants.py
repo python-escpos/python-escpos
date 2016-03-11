@@ -54,6 +54,11 @@ _CUT_PAPER = lambda m: GS + b'V' + m
 PAPER_FULL_CUT = _CUT_PAPER(b'\x00')  # Full cut paper
 PAPER_PART_CUT = _CUT_PAPER(b'\x01')  # Partial cut paper
 
+# Panel buttons (e.g. the FEED button)
+_PANEL_BUTTON = lambda n: ESC + b'c5' + six.int2byte(n)
+PANEL_BUTTON_ON = _PANEL_BUTTON(0)  # enable all panel buttons
+PANEL_BUTTON_OFF = _PANEL_BUTTON(1)  # disable all panel buttons
+
 # Text format
 # TODO: Acquire the "ESC/POS Application Programming Guide for Paper Roll
 #       Printers" and tidy up this stuff too.
