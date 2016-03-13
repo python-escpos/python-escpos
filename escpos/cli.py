@@ -6,7 +6,6 @@ import argparse
 import sys
 import serial
 from escpos import printer
-from escpos import constants
 
 parser = argparse.ArgumentParser(
     description='CLI for python-escpos',
