@@ -10,7 +10,7 @@ from escpos import constants
 
 parser = argparse.ArgumentParser(
     description='CLI for python-escpos',
-    epilog='To see help for escpos commands, run with a destination defined.',
+    epilog='To see help for escpos commands, run with a destination defined.'
 )
 dest_subparsers = parser.add_subparsers(
     title='Destination', 
@@ -97,12 +97,12 @@ parser_dest_serial.add_argument(
 parser_dest_serial.add_argument(
     '--parity',
     help='Parity checking',
-    choices=[serial.PARITY_NONE, serial.PARITY_EVEN, serial.PARITY_ODD, serial.PARITY_MARK, serial.PARITY_SPACE],
+    choices=[serial.PARITY_NONE, serial.PARITY_EVEN, serial.PARITY_ODD, serial.PARITY_MARK, serial.PARITY_SPACE]
 )
 parser_dest_serial.add_argument(
     '--stopbits',
     help='Number of stopbits',
-    choices=[serial.STOPBITS_ONE, serial.STOPBITS_ONE_POINT_FIVE, serial.STOPBITS_TWO],
+    choices=[serial.STOPBITS_ONE, serial.STOPBITS_ONE_POINT_FIVE, serial.STOPBITS_TWO]
 )
 parser_dest_serial.add_argument(
     '--xonxoff',
@@ -118,7 +118,7 @@ parser_dest_serial.add_argument(
 
 cmd_parser = argparse.ArgumentParser(
     description='Parser for escpos commands',
-    usage='{previous command parts} {espos command} ...',
+    usage='{previous command parts} {espos command} ...'
 )
 
 command_subparsers = cmd_parser.add_subparsers(
@@ -139,12 +139,12 @@ parser_command_barcode.set_defaults(func='barcode')
 parser_command_barcode.add_argument(
     '--code',
     help='Barcode data to print',
-    required=True,
+    required=True
 )
 parser_command_barcode.add_argument(
     '--bc',
     help='Barcode format',
-    required=True,
+    required=True
 )
 parser_command_barcode.add_argument(
     '--height',
@@ -169,7 +169,7 @@ parser_command_barcode.add_argument(
 parser_command_barcode.add_argument(
     '--align_ct',
     help='Align barcode center',
-    type=bool,
+    type=bool
 )
 parser_command_barcode.add_argument(
     '--function_type',
@@ -195,7 +195,7 @@ parser_command_block_text.add_argument(
 parser_command_block_text.add_argument(
     '--columns',
     help='Number of columns',
-    type=int,
+    type=int
 )
 
 parser_command_cut = command_subparsers.add_parser('cut', help='Cut the paper')
