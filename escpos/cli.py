@@ -1,213 +1,364 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""A simple command-line interface for common python-escpos functionality
-
-Usage: python -m escpos.cli --help
-
-Dependencies:
-- DavisGoglin/python-escpos or better
-- A file named weather.png (for the 'test' subcommand)
-
-Reasons for using the DavisGoglin/python-escpos fork:
-- image() accepts a PIL.Image object rather than requiring me to choose
-  between writing a temporary file to disk or calling a "private" method.
-- fullimage() allows me to print images of arbitrary length using slicing.
-
-How to print unsupported barcodes:
-    barcode -b 'BARCODE' -e 'code39' -E | convert -density 200% eps:- code.png
-    python test_escpos.py --images code.png
-
-Copyright (C) 2014 Stephan Sokolow (deitarion/SSokolow)
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
+#!/usr/bin/env python
 
 from __future__ import absolute_import
 
-__author__ = "Stephan Sokolow (deitarion/SSokolow)"
-__license__ = "MIT"
-
-import re
-
+import argparse
+import sys
+import serial
 from escpos import printer
+from escpos import constants
 
-epson = printer.Usb(0x0416, 0x5011)
-# TODO: Un-hardcode this
+parser = argparse.ArgumentParser(
+    description='CLI for python-escpos',
+    epilog='To see help for escpos commands, run with a destination defined.',
+)
+dest_subparsers = parser.add_subparsers(
+    title='Destination', 
+)
 
+parser_dest_file = dest_subparsers.add_parser('file', help='Print to a file')
+parser_dest_file.set_defaults(func=printer.File)
+parser_dest_file.add_argument(
+    '--devfile',
+    help='Destination file',
+    required=True
+)
 
-def _print_text_file(path):
-    """Print the given text file"""
-    epson.set(align='left')
-    with open(path, 'rU') as fobj:
-        for line in fobj:
-            epson.text(line)
+parser_dest_network = dest_subparsers.add_parser('network', help='Print to a network device')
+parser_dest_network.set_defaults(func=printer.Network)
+parser_dest_network.add_argument(
+    '--host',
+    help='Destination host',
+    required=True
+)
+parser_dest_network.add_argument(
+    '--port',
+    help='Destination port',
+    type=int
+)
+parser_dest_network.add_argument(
+    '--timeout',
+    help='Timeout in seconds',
+    type=int
+)
 
+parser_dest_usb = dest_subparsers.add_parser('usb', help='Print to a usb device')
+parser_dest_usb.set_defaults(func=printer.Usb)
+parser_dest_usb.add_argument(
+    '--idVendor',
+    help='USB Vendor ID',
+    required=True
+)
+parser_dest_usb.add_argument(
+    '--idProduct',
+    help='USB Device ID',
+    required=True
+)
+parser_dest_usb.add_argument(
+    '--interface',
+    help='USB device interface',
+    type=int
+)
+parser_dest_usb.add_argument(
+    '--in_ep',
+    help='Input end point',
+    type=int
+)
+parser_dest_usb.add_argument(
+    '--out_ep',
+    help='Output end point',
+    type=int
+)
 
-def _print_image_file(path):
-    """Print the given image file."""
-    epson.fullimage(path, histeq=False, width=384)
-
-
-def print_files(args):
-    """The 'print' subcommand"""
-    for path in args.paths:
-        if args.images:
-            _print_image_file(path)
-        else:
-            _print_text_file(path)
-    epson.cut()
-
-# {{{ 'echo' Subcommand
-
-KNOWN_BARCODE_TYPES = ['UPC-A', 'UPC-E', 'EAN13', 'ITF']
-re_barcode_escape = re.compile(r'^%(?P<type>\S+)\s(?P<data>[0-9X]+)$')
-
-
-def echo(args):  # pylint: disable=unused-argument
-    """TTY-like line-by-line keyboard-to-printer echo loop."""
-    try:
-        while True:
-            line = raw_input()
-            match = re_barcode_escape.match(line)
-            if match and match.group('type') in KNOWN_BARCODE_TYPES:
-                bctype, data = match.groups()
-                epson.barcode(data, bctype, 48, 2, '', '')
-                epson.set(align='left')
-            else:
-                epson.text('{0}\n'.format(line))
-    except KeyboardInterrupt:
-        epson.cut()
-
-# }}}
-# {{{ 'test' Subcommand
-
-from PIL import Image, ImageDraw
-
-
-def _stall_test(width, height):
-    """Generate a pattern to detect print glitches due to vertical stalling."""
-    img = Image.new('1', (width, height))
-    for pos in [(x, y) for y in range(0, height) for x in range(0, width)]:
-        img.putpixel(pos, not sum(pos) % 10)
-    return img
-
-
-def _test_basic():
-    """The original test code from python-escpos's Usage wiki page"""
-    epson.set(align='left')
-    # Print text
-    epson.text("TODO:\n")  # pylint: disable=fixme
-    epson.text("[ ] Task 1\n")
-    epson.text("[ ] Task 2\n")
-    # Print image
-    # TODO: Bundle an image so this can be used
-    # epson.image("weather.png")
-    # Print QR Code (must have a white border to be scanned)
-    epson.set(align='center')
-    epson.text("Scan to recall TODO list")  # pylint: disable=fixme
-    epson.qr("http://www.example.com/")
-    # Print barcode
-    epson.barcode('1234567890128', 'EAN13', 32, 2, '', '')
-    # Cut paper
-    epson.cut()
-
-
-def _test_barcodes():
-    """Print test barcodes for all ESCPOS-specified formats."""
-    for name, data in (
-            # pylint: disable=bad-continuation
-            ('UPC-A', '123456789012\x00'),
-            ('UPC-E', '02345036\x00'),
-            ('EAN13', '1234567890128\x00'),
-            ('EAN8', '12345670\x00'),
-            ('CODE39', 'BARCODE12345678\x00'),
-            ('ITF', '123456\x00'),
-            ('CODABAR', 'A40156B'),
-            # TODO: CODE93 and CODE128
-    ):
-        # TODO: Fix the library to restore old alignment somehow
-        epson.set(align='center')
-        epson.text('\n{0}\n'.format(name))
-        epson.barcode(data, name, 64, 2, '', '')
-
-
-def _test_patterns(width=384, height=255):
-    """Print a set of test patterns for raster image output."""
-    # Test our guess of the paper width
-    img = Image.new('1', (width, height), color=1)
-    draw = ImageDraw.Draw(img)
-    draw.polygon(((0, 0), img.size, (0, img.size[1])), fill=0)
-    epson.image(img)
-    del draw, img
-
-    # Test the consistency of printing large data and whether stall rate is
-    # affected by data rate
-    epson.image(_stall_test(width, height))
-    epson.image(_stall_test(width / 2, height))
+parser_dest_serial = dest_subparsers.add_parser(
+    'serial',
+    help='Print to a serial device'
+)
+parser_dest_serial.set_defaults(func=printer.Serial)
+parser_dest_serial.add_argument(
+    '--devfile',
+    help='Device file'
+)
+parser_dest_serial.add_argument(
+    '--baudrate',
+    help='Baudrate for serial transmission',
+    type=int
+)
+parser_dest_serial.add_argument(
+    '--bytesize',
+    help='Serial byte size',
+    type=int
+)
+parser_dest_serial.add_argument(
+    '--timeout',
+    help='Read/Write timeout in seconds',
+    type=int
+)
+parser_dest_serial.add_argument(
+    '--parity',
+    help='Parity checking',
+    choices=[serial.PARITY_NONE, serial.PARITY_EVEN, serial.PARITY_ODD, serial.PARITY_MARK, serial.PARITY_SPACE],
+)
+parser_dest_serial.add_argument(
+    '--stopbits',
+    help='Number of stopbits',
+    choices=[serial.STOPBITS_ONE, serial.STOPBITS_ONE_POINT_FIVE, serial.STOPBITS_TWO],
+)
+parser_dest_serial.add_argument(
+    '--xonxoff',
+    help='Software flow control',
+    type=bool
+)
+parser_dest_serial.add_argument(
+    '--dsrdtr',
+    help='Hardware flow control (False to enable RTS,CTS)',
+    type=bool
+)
 
 
-def test(args):
-    """The 'test' subcommand"""
-    if args.barcodes:
-        _test_barcodes()
-    elif args.patterns:
-        _test_patterns()
-    else:
-        _test_basic()
+cmd_parser = argparse.ArgumentParser(
+    description='Parser for escpos commands',
+    usage='{previous command parts} {espos command} ...',
+)
 
+command_subparsers = cmd_parser.add_subparsers(
+    title='ESCPOS Command', 
+)
 
-# }}}
+# From here on func needs to be a string, since we don't have a printer to work on yet
+parser_command_qr = command_subparsers.add_parser('qr', help='Print a QR code')
+parser_command_qr.set_defaults(func='qr')
+parser_command_qr.add_argument(
+    '--text',
+    help='Text to print as a qr code',
+    required=True
+)
 
-def main():
-    """Wrapped in a function for import and entry point compatibility"""
-    # pylint: disable=bad-continuation
+parser_command_barcode = command_subparsers.add_parser('barcode', help='Print a barcode')
+parser_command_barcode.set_defaults(func='barcode')
+parser_command_barcode.add_argument(
+    '--code',
+    help='Barcode data to print',
+    required=True,
+)
+parser_command_barcode.add_argument(
+    '--bc',
+    help='Barcode format',
+    required=True,
+)
+parser_command_barcode.add_argument(
+    '--height',
+    help='Barcode height in px',
+    type=int
+)
+parser_command_barcode.add_argument(
+    '--width',
+    help='Barcode width',
+    type=int
+) 
+parser_command_barcode.add_argument(
+    '--pos',
+    help='Label position',
+    choices=['BELOW', 'ABOVE', 'BOTH', 'OFF']
+)
+parser_command_barcode.add_argument(
+    '--font',
+    help='Label font',
+    choices=['A', 'B']
+)
+parser_command_barcode.add_argument(
+    '--align_ct',
+    help='Align barcode center',
+    type=bool,
+)
+parser_command_barcode.add_argument(
+    '--function_type',
+    help='ESCPOS function type',
+    choices=['A', 'B']
+)
 
-    import argparse
+parser_command_text = command_subparsers.add_parser('text', help='Print plain text')
+parser_command_text.set_defaults(func='text')
+parser_command_text.add_argument(
+    '--txt',
+    help='Text to print',
+    required=True
+)
 
-    parser = argparse.ArgumentParser(
-        description="Command-line interface to python-escpos")
-    subparsers = parser.add_subparsers(title='subcommands')
+parser_command_block_text = command_subparsers.add_parser('block_text', help='Print wrapped text')
+parser_command_block_text.set_defaults(func='block_text')
+parser_command_block_text.add_argument(
+    '--txt',
+    help='block_text to print',
+    required=True
+)
+parser_command_block_text.add_argument(
+    '--columns',
+    help='Number of columns',
+    type=int,
+)
 
-    echo_parser = subparsers.add_parser('echo', help='Echo the keyboard to '
-                                                     'the printer line-by-line (Exit with Ctrl+C)')
-    echo_parser.set_defaults(func=echo)
+parser_command_cut = command_subparsers.add_parser('cut', help='Cut the paper')
+parser_command_cut.set_defaults(func='cut')
+parser_command_cut.add_argument(
+    '--mode',
+    help='Type of cut',
+    choices=['FULL', 'PART']
+)
 
-    print_parser = subparsers.add_parser('print', help='Print the given files')
-    print_parser.add_argument('--images', action='store_true',
-                              help="Provided files are images rather than text files.")
-    print_parser.add_argument('paths', metavar='path', nargs='+')
-    print_parser.set_defaults(func=print_files)
+parser_command_cashdraw = command_subparsers.add_parser('cashdraw', help='Kick the cash drawer')
+parser_command_cashdraw.set_defaults(func='cashdraw')
+parser_command_cashdraw.add_argument(
+    '--pin',
+    help='Which PIN to kick',
+    choices=[2, 5]
+)
 
-    test_parser = subparsers.add_parser('test', help='Print test patterns')
-    test_modes = test_parser.add_mutually_exclusive_group()
-    test_modes.add_argument('--barcodes', action='store_true',
-                            help="Test supported barcode types (Warning: Some printers must be "
-                                 "reset after attempting an unsupported barcode type.)")
-    test_modes.add_argument('--patterns', action='store_true',
-                            help="Print test patterns")
-    test_parser.set_defaults(func=test)
+parser_command_image = command_subparsers.add_parser('image', help='Print an image')
+parser_command_image.set_defaults(func='image')
+parser_command_image.add_argument(
+    '--path_img',
+    help='Path to image',
+    required=True
+)
 
-    args = parser.parse_args()
-    args.func(args)
+parser_command_fullimage = command_subparsers.add_parser('fullimage', help='Print an fullimage')
+parser_command_fullimage.set_defaults(func='fullimage')
+parser_command_fullimage.add_argument(
+    '--img',
+    help='Path to img',
+    required=True
+)
+parser_command_fullimage.add_argument(
+    '--max_height',
+    help='Max height of image in px',
+    type=int
+)
+parser_command_fullimage.add_argument(
+    '--width',
+    help='Max width of image in px',
+    type=int
+)
+parser_command_fullimage.add_argument(
+    '--histeq',
+    help='Equalize the histrogram',
+    type=bool
+)
+parser_command_fullimage.add_argument(
+    '--bandsize',
+    help='Size of bands to divide into when printing',
+    type=int
+)
 
+# Not supported
+# parser_command_direct_image = command_subparsers.add_parser('direct_direct_image', help='Print an direct_image')
+# parser_command_direct_image.set_defaults(func='direct_image')
 
-if __name__ == '__main__':
-    main()
+parser_command_charcode = command_subparsers.add_parser('charcode', help='Set character code table')
+parser_command_charcode.set_defaults(func='charcode')
+parser_command_charcode.add_argument(
+    '--code',
+    help='Character code',
+    required=True
+)
 
-# vim: set sw=4 sts=4 :
+parser_command_set = command_subparsers.add_parser('set', help='Set text properties')
+parser_command_set.set_defaults(func='set')
+parser_command_set.add_argument(
+    '--align',
+    help='Horizontal alignment',
+    choices=['left', 'center', 'right']
+)
+parser_command_set.add_argument(
+    '--font',
+    help='Font choice',
+    choices=['left', 'center', 'right']
+)
+parser_command_set.add_argument(
+    '--text_type',
+    help='Text properties',
+    choices=['B', 'U', 'U2', 'BU', 'BU2', 'NORMAL']
+)
+parser_command_set.add_argument(
+    '--width',
+    help='Width multiplier',
+    type=int
+)
+parser_command_set.add_argument(
+    '--height',
+    help='Height multiplier',
+    type=int
+)
+parser_command_set.add_argument(
+    '--density',
+    help='Print density',
+    type=int
+)
+parser_command_set.add_argument(
+    '--invert',
+    help='White on black printing',
+    type=bool
+)
+parser_command_set.add_argument(
+    '--smooth',
+    help='Text smoothing. Effective on >= 4x4 text',
+    type=bool
+)
+parser_command_set.add_argument(
+    '--flip',
+    help='Text smoothing. Effective on >= 4x4 text',
+    type=bool
+)
+
+parser_command_hw = command_subparsers.add_parser('hw', help='Hardware operations')
+parser_command_hw.set_defaults(func='hw')
+parser_command_hw.add_argument(
+    '--hw',
+    help='Operation',
+    choices=['INIT', 'SELECT', 'RESET'],
+    required=True
+)
+
+parser_command_control = command_subparsers.add_parser('control', help='Control sequences')
+parser_command_control.set_defaults(func='control')
+parser_command_control.add_argument(
+    '--ctl',
+    help='Control sequence',
+    choices=['LF', 'FF', 'CR', 'HT', 'VT'],
+    required=True
+)
+parser_command_control.add_argument(
+    '--pos',
+    help='Horizontal tab position (1-4)',
+    type=int
+)
+
+parser_command_panel_buttons = command_subparsers.add_parser('panel_buttons', help='Disables panel buttons')
+parser_command_panel_buttons.set_defaults(func='panel_buttons')
+parser_command_panel_buttons.add_argument(
+    '--enable',
+    help='Feed button enabled',
+    type=bool,
+    required=True
+)
+
+# Get arguments along with function to pass them to
+args, rest = parser.parse_known_args()
+
+# filter out function name and non passed arguments
+func_args = dict((k, v) for k, v in vars(args).iteritems() if v and k != 'func')
+
+# define a printer
+p = args.func(**func_args)
+
+if not rest:
+    cmd_parser.print_help()
+    sys.exit(1)
+
+cmd_args = cmd_parser.parse_args(rest)
+
+# filter out function name and non passed arguments
+func_args = dict((k, v) for k, v in vars(cmd_args).iteritems() if v and k != 'func')
+
+# print command with args
+getattr(p, cmd_args.func)(**func_args)
