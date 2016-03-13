@@ -10,7 +10,8 @@ from escpos import constants
 
 parser = argparse.ArgumentParser(
     description='CLI for python-escpos',
-    epilog='To see help for escpos commands, run with a destination defined.'
+    epilog='To see help for escpos commands, run with a destination defined.',
+    usage='python -m escpos.cli destination_type [--args] command [--args]'
 )
 dest_subparsers = parser.add_subparsers(
     title='Destination', 
