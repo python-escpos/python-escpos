@@ -73,8 +73,7 @@ setup(
         'pyserial',
         'six',
         'appdirs',
-        'future',
-        'localconfig',
+        'pyyaml',
     ],
     setup_requires=[
         'setuptools_scm',

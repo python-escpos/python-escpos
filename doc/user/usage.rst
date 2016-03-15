@@ -127,14 +127,14 @@ You can create a configuration file for python-escpos. This will
 allow you to use the CLI, and skip some setup when using the library
 programically.
 
-The default configuration file is named ``config.ini``. For windows it is
-probably at::
+The default configuration file is named ``config.yaml``. It's in the YAML
+format. For windows it is probably at::
 
-    %appdata%/python-escpos/config.ini
+    %appdata%/python-escpos/config.yaml
 
 And for linux::
 
-        $HOME/.config/python-escpos/config.ini
+        $HOME/.config/python-escpos/config.yaml
 
 If you aren't sure, run::
 
@@ -157,7 +157,7 @@ To load the configured pritner, run::
 The printer section
 ^^^^^^^^^^^^^^^^^^^
 
-The ``[printer]`` configuration section defines a default printer to create.
+The ``printer`` configuration section defines a default printer to create.
 
 The only required paramter is ``type``. The value of this should be one of the
 printers defined in :doc:`/user/printers`.
@@ -166,16 +166,16 @@ The rest of the parameters are whatever you want to pass to the printer.
 
 An example file printer::
 
-        [printer]
-        type=File
-        devfile=/dev/someprinter
+        printer:
+                type: File
+                devfile: /dev/someprinter
 
 And for a network printer::
 
-        [printer]
-        type=network
-        host=127.0.0.1
-        port=9000
+        printer:
+                type: network
+                host: 127.0.0.1
+                port: 9000
 
 How to update your code for USB printers
 ----------------------------------------
