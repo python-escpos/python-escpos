@@ -72,7 +72,8 @@ setup(
         'qrcode>=4.0',
         'pyserial',
         'six',
-        'future',
+        'appdirs',
+        'localconfig',
     ],
     setup_requires=[
         'setuptools_scm',
