@@ -20,10 +20,8 @@ config_dirs = [
 ]
 
 for environ in ('HOME', 'XDG_CONFIG_HOME'):
-    try:
+    if environ in os.environ:
         config_dirs.append(os.environ[environ])
-    except (KeyError):
-        pass
 
 config_files = [os.path.join(x, y) for x, y in list(itertools.product(config_dirs, config_filenames))]
 
