@@ -5,7 +5,7 @@ import appdirs
 from localconfig import config
 
 from . import printer
-from .exceptions import *
+from . import exceptions
 
 class Config(object):
 
@@ -34,7 +34,7 @@ class Config(object):
 
         files_read = config.read(config_path)
         if not files_read:
-            raise ConfigNotFoundError('Couldn\'t read config at one or more of {config_path}'.format(
+            raise exceptions.ConfigNotFoundError('Couldn\'t read config at one or more of {config_path}'.format(
                 config_path="\n".join(config_path),
             ))
 
@@ -45,7 +45,7 @@ class Config(object):
             self._printer_name = self._printer_config.pop('type').title()
 
             if not self._printer_name or not hasattr(printer, self._printer_name):
-                raise ConfigSyntaxError('Printer type "{printer_name}" is invalid'.format(
+                raise exceptions.ConfigSyntaxError('Printer type "{printer_name}" is invalid'.format(
                     printer_name=self._printer_name,
                 ))
 
