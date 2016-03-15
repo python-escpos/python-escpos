@@ -120,6 +120,63 @@ on USB interface
     # Cut paper
     Epson.cut()
 
+Configuration File
+------------------
+
+You can create a configuration file for python-escpos. This will
+allow you to use the CLI, and skip some setup when using the library
+programically.
+
+The default configuration file is named ``config.ini``. For windows it is
+probably at::
+
+    %appdata%/python-escpos/config.ini
+
+And for linux::
+
+        $HOME/.config/python-escpos/config.ini
+
+If you aren't sure, run::
+
+        from escpos import config
+        c = config.Config()
+        c.load()
+
+If it can't find the configuration file in the default location, it will tell
+you where it's looking. You can always pass a path or a list of paths to
+search to the ``load()`` method.
+
+
+To load the configured pritner, run::
+
+        from escpos import config
+        c = config.Config()
+        printer = c.printer()
+
+
+The printer section
+^^^^^^^^^^^^^^^^^^^
+
+The ``[printer]`` configuration section defines a default printer to create.
+
+The only required paramter is ``type``. The value of this should be one of the
+printers defined in :doc:`/user/printers`.
+
+The rest of the parameters are whatever you want to pass to the printer.
+
+An example file printer::
+
+        [printer]
+        type=File
+        devfile=/dev/someprinter
+
+And for a network printer::
+
+        [printer]
+        type=network
+        host=127.0.0.1
+        port=9000
+
 How to update your code for USB printers
 ----------------------------------------
 
