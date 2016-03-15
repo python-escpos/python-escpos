@@ -5,4 +5,5 @@ pyserial
 sphinx-rtd-theme
 setuptools-scm
 appdirs
+future
 localconfig

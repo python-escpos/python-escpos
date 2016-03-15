@@ -73,6 +73,7 @@ setup(
         'pyserial',
         'six',
         'appdirs',
+        'future',
         'localconfig',
     ],
     setup_requires=[
