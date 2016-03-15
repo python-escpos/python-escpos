@@ -6,103 +6,58 @@ import argparse
 import sys
 import serial
 import six
+import os
+import itertools
+from ConfigParser import ConfigParser
 from escpos import printer
+
+config_filenames = [
+    '.python-escpos',
+    'python-escpos.ini'
+]
+config_dirs = [
+    os.path.join(os.environ['HOME'], '.config')
+]
+
+for environ in ('HOME', 'XDG_CONFIG_HOME'):
+    try:
+        config_dirs.append(os.environ[environ])
+    except (KeyError):
+        pass
+
+config_files = [os.path.join(x, y) for x, y in list(itertools.product(config_dirs, config_filenames))]
+
+config = ConfigParser()
+files_read = config.read(config_files)
+if not files_read:
+    raise Exception('Couldn\'t find config files at {config_files}'.format(
+        config_files=config_files,
+    ))
+
+if 'printer' not in config.sections():
+    raise Exception('Couldn\'t find [printer] config section in config_file(s): {files}'.format(
+        files="\n".join(files_read),
+    ))
+
+printer_config = dict(config.items('printer'))
+printer_name = printer_config.pop('type').title()
+
+if not hasattr(printer, printer_name):
+    raise Exception('Couldn\'t find printer type {printer_name}'.format(
+        printer_name=printer_name,
+    ))
+
+try:
+    target_printer = getattr(printer, printer_name)(**printer_config)
+except TypeError as e:
+    raise Exception('Unable to create {printer_name} printer: {error}'.format(
+        printer_name=printer_name,
+        error=str(e),
+    ))
 
 parser = argparse.ArgumentParser(
     description='CLI for python-escpos',
-    epilog='To see help for escpos commands, run with a destination defined.',
-)
-
-parser_dest_file = parser.add_argument_group('File Destination')
-parser_dest_file.set_defaults(func=printer.File)
-parser_dest_file.add_argument(
-    '--file-devfile',
-    help='Destination file',
-)
-
-parser_dest_network = parser.add_argument_group('Network Destination')
-parser_dest_network.set_defaults(func=printer.Network)
-parser_dest_network.add_argument(
-    '--host',
-    help='Destination host',
-)
-parser_dest_network.add_argument(
-    '--port',
-    help='Destination port',
-    type=int
-)
-parser_dest_network.add_argument(
-    '--network-timeout',
-    help='Timeout in seconds',
-    type=int
-)
-
-parser_dest_usb = parser.add_argument_group('USB Destination')
-parser_dest_usb.set_defaults(func=printer.Usb)
-parser_dest_usb.add_argument(
-    '--idVendor',
-    help='USB Vendor ID',
-)
-parser_dest_usb.add_argument(
-    '--idProduct',
-    help='USB Device ID',
-)
-parser_dest_usb.add_argument(
-    '--interface',
-    help='USB device interface',
-    type=int
-)
-parser_dest_usb.add_argument(
-    '--in_ep',
-    help='In endpoint',
-    type=int
-)
-parser_dest_usb.add_argument(
-    '--out_ep',
-    help='Out endpoint',
-    type=int
-)
-
-parser_dest_serial = parser.add_argument_group('Serial Destination')
-parser_dest_serial.set_defaults(func=printer.Serial)
-parser_dest_serial.add_argument(
-    '--serial-devfile',
-    help='Destination device file',
-)
-parser_dest_serial.add_argument(
-    '--baudrate',
-    help='Baudrate for serial transmission',
-    type=int
-)
-parser_dest_serial.add_argument(
-    '--bytesize',
-    help='Serial byte size',
-    type=int
-)
-parser_dest_serial.add_argument(
-    '--serial-timeout',
-    help='Read/Write timeout in seconds',
-    type=int
-)
-parser_dest_serial.add_argument(
-    '--parity',
-    help='Parity checking',
-    choices=[serial.PARITY_NONE, serial.PARITY_EVEN, serial.PARITY_ODD, serial.PARITY_MARK, serial.PARITY_SPACE]
-)
-parser_dest_serial.add_argument(
-    '--stopbits',
-    help='Number of stopbits',
-    choices=[serial.STOPBITS_ONE, serial.STOPBITS_ONE_POINT_FIVE, serial.STOPBITS_TWO]
-)
-parser_dest_serial.add_argument(
-    '--xonxoff',
-    help='Software flow control',
-    type=bool
-)
-parser_dest_serial.add_argument(
-    '--dsrdtr',
-    help='Hardware flow control (False to enable RTS,CTS)',
-    type=bool
+    epilog='Printer configuration is defined in the python-escpos config file.',
 )
 
 command_subparsers = parser.add_subparsers(
@@ -329,59 +284,8 @@ parser_command_panel_buttons.add_argument(
 # Get only arguments actually passed
 args = dict([k, v] for k, v in six.iteritems(vars(parser.parse_args())) if v)
 
-# Argparse doesn't tell us what came in which group, so we need to check
-# Is it better to dig into parser for this, or keep a hardcoded list?
-group_args = {
-    'File': ('file_devfile', ),
-    'Network': ('host', 'port', 'network_timeout' ),
-    'Usb': ('idVendor', 'idProduct', 'interface', 'in_ep', 'out_ep' ),
-    'Serial': ('serial_devfile', 'baudrate', 'serial_timeout', 'parity', 'stopbits', 'xonxoff', 'dstdtr' ),
-}
-
-argument_translations = {
-    'file_devfile': 'devfile',
-    'serial_devfile': 'devfile',
-    'network_timeout': 'timeout',
-    'serial_timeout': 'timeout',
-}
-
-# To be found
-target_printer = None
-printer_arguments = {}
-
 target_command = args.pop('func')
-command_arguments = {}
-
-# Find the printer that matches the arguments sent
-for printer_group, arguments in six.iteritems(group_args):
-    # See if there were any arguments passed that match this group
-    passed_args = dict([[k, v] for k, v in six.iteritems(args) if k in arguments])
-    if not passed_args:
-        # Nope
-        continue
-    # We found a printer
-    target_printer = printer_group
-    break
-
-if not target_printer:
-    raise Exception('No printer matches passed arguments')
-
-# Sort the arguments into printer or escpos command
-for arg, value in six.iteritems(args):
-    # This one belongs to the printer
-    if arg in group_args[target_printer]:
-        # Translate it if we need to
-        if arg in argument_translations.keys():
-            target_argument = argument_translations[arg]
-            printer_arguments[target_argument] = value
-        else:
-            printer_arguments[arg] = value
-    else:
-        # This belongs to the escpos command
-        command_arguments[arg] = value
-
-# Create a printer
-p = getattr(printer, target_printer)(**printer_arguments)
+command_arguments = args
 
 # print command with args
-getattr(p, target_command)(**command_arguments)
+getattr(target_printer, target_command)(**command_arguments)
