@@ -7,55 +7,14 @@ import sys
 import serial
 import six
 import os
-import itertools
-from ConfigParser import ConfigParser
-from escpos import printer
+from . import printer, config
 
-config_filenames = [
-    '.python-escpos',
-    'python-escpos.ini'
-]
-config_dirs = [
-    os.path.join(os.environ['HOME'], '.config')
-]
-
-for environ in ('HOME', 'XDG_CONFIG_HOME'):
-    if environ in os.environ:
-        config_dirs.append(os.environ[environ])
-
-config_files = [os.path.join(x, y) for x, y in list(itertools.product(config_dirs, config_filenames))]
-
-config = ConfigParser()
-files_read = config.read(config_files)
-if not files_read:
-    raise Exception('Couldn\'t find config files at {config_files}'.format(
-        config_files=config_files,
-    ))
-
-if 'printer' not in config.sections():
-    raise Exception('Couldn\'t find [printer] config section in config_file(s): {files}'.format(
-        files="\n".join(files_read),
-    ))
-
-printer_config = dict(config.items('printer'))
-printer_name = printer_config.pop('type').title()
-
-if not hasattr(printer, printer_name):
-    raise Exception('Couldn\'t find printer type {printer_name}'.format(
-        printer_name=printer_name,
-    ))
-
-try:
-    target_printer = getattr(printer, printer_name)(**printer_config)
-except TypeError as e:
-    raise Exception('Unable to create {printer_name} printer: {error}'.format(
-        printer_name=printer_name,
-        error=str(e),
-    ))
+c = config.Config()
+printer = c.printer()
 
 parser = argparse.ArgumentParser(
     description='CLI for python-escpos',
-    epilog='Printer configuration is defined in the python-escpos config file.',
+    epilog='Printer configuration is defined in the python-escpos config file. See documentation for details.',
 )
 
 command_subparsers = parser.add_subparsers(
@@ -279,11 +238,15 @@ parser_command_panel_buttons.add_argument(
     required=True
 )
 
-# Get only arguments actually passed
-args = dict([k, v] for k, v in six.iteritems(vars(parser.parse_args())) if v)
 
-target_command = args.pop('func')
-command_arguments = args
+if not printer:
+    raise Exception('No printers loaded from config')
+
+# Get only arguments actually passed
+args_dict = vars(parser.parse_args())
+command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v)
+
+target_command = command_arguments.pop('func')
 
 # print command with args
-getattr(target_printer, target_command)(**command_arguments)
+getattr(printer, target_command)(**command_arguments)
