@@ -1,3 +1,9 @@
+""" ESC/POS configuration manager.
+
+This module contains the implentations of abstract base class :py:class:`Config`.
+
+"""
+
 from __future__ import absolute_import
 
 import os
@@ -8,7 +14,11 @@ from . import printer
 from . import exceptions
 
 class Config(object):
+    """  Configuration handler class.
 
+    This class loads configuration from a default or specificed directory. It
+    can create your defined printer and return it to you.
+    """
     _app_name = 'python-escpos'
     _config_file = 'config.yaml'
 
@@ -20,6 +30,12 @@ class Config(object):
         self._printer_config = None
 
     def load(self, config_path=None):
+        """ Load and parse the configuration file using pyyaml
+
+        :param config_path: An optional file path, file handle, or byte string
+            for the configuration file.
+
+        """
         if not config_path:
             config_path = os.path.join(
                 appdirs.user_config_dir(self._app_name),
@@ -47,6 +63,11 @@ class Config(object):
         self._has_loaded = True
 
     def printer(self):
+        """ Returns a printer that was defined in the config, or None.
+
+        This method loads the default config if one hasn't beeen already loaded.
+
+        """
         if not self._has_loaded:
             self.load()
 
