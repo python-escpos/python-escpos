@@ -43,12 +43,16 @@ class Config(object):
             )
 
         try:
-            config = yaml.safe_load(f)
+            if isinstance(config_path, file):
+                config = yaml.safe_load(config_path)
+            else:
+                with open(config_path, 'rb') as f:
+                    config = yaml.safe_load(f)
         except EnvironmentError as e:
             raise exceptions.ConfigNotFoundError('Couldn\'t read config at one or more of {config_path}'.format(
                 config_path="\n".join(config_path),
             ))
-        except yaml.ParserError as e:
+        except yaml.YAMLError as e:
             raise exceptions.ConfigSyntaxError('Error parsing YAML')
 
         if 'printer' in config:
