@@ -27,8 +27,7 @@ class Config(object):
             )
 
         try:
-            with open(config_path) as f:
-                config = yaml.load(f)
+            config = yaml.safe_load(f)
         except EnvironmentError as e:
             raise exceptions.ConfigNotFoundError('Couldn\'t read config at one or more of {config_path}'.format(
                 config_path="\n".join(config_path),
