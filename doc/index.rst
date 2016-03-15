@@ -35,6 +35,7 @@ Content
    api/printer
    api/constants
    api/exceptions
+   api/config
 
 Indices and tables
 ==================
