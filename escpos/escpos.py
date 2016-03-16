@@ -442,7 +442,7 @@ class Escpos(object):
         self._raw(bc_types[bc.upper()])
 
         if function_type.upper() == "B":
-            self._raw(chr(len(code)))
+            self._raw(six.int2byte(len(code)))
 
         # Print Code
         if code:
