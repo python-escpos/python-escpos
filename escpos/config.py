@@ -49,8 +49,8 @@ class Config(object):
                 with open(config_path, 'rb') as f:
                     config = yaml.safe_load(f)
         except EnvironmentError as e:
-            raise exceptions.ConfigNotFoundError('Couldn\'t read config at one or more of {config_path}'.format(
-                config_path="\n".join(config_path),
+            raise exceptions.ConfigNotFoundError('Couldn\'t read config at {config_path}'.format(
+                config_path=str(config_path),
             ))
         except yaml.YAMLError as e:
             raise exceptions.ConfigSyntaxError('Error parsing YAML')
