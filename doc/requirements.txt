@@ -4,5 +4,3 @@ qrcode>=4.0
 pyserial
 sphinx-rtd-theme
 setuptools-scm
-appdirs
-pyyaml
