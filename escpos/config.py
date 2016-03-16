@@ -48,7 +48,7 @@ class Config(object):
             else:
                 with open(config_path, 'rb') as f:
                     config = yaml.safe_load(f)
-        except EnvironmentError as e:
+        except EnvironmentError:
             raise exceptions.ConfigNotFoundError('Couldn\'t read config at {config_path}'.format(
                 config_path=str(config_path),
             ))

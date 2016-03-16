@@ -3,11 +3,8 @@
 from __future__ import absolute_import
 
 import argparse
-import sys
-import serial
 import six
-import os
-from . import printer, config
+from . import config
 
 # Used in demo method
 # Key: The name of escpos function and the argument passed on the CLI. Some
