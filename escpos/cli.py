@@ -11,7 +11,7 @@ from . import config
 # Key: The name of escpos function and the argument passed on the CLI. Some
 #   manual translation is done in the case of barcodes_a -> barcode.
 # Value: A list of dictionaries to pass to the escpos function as arguments.
-demo_functions = {
+DEMO_FUNCTIONS = {
     'text': [
         {'txt': 'Hello, World!',}
     ],
@@ -20,32 +20,32 @@ demo_functions = {
         {'text': 'https://en.wikipedia.org/'}
     ],
     'barcodes_a': [
-        {'bc': 'UPC-A',  'code': '13243546576'},
-        {'bc': 'UPC-E',  'code': '132435'},
-        {'bc': 'EAN13',  'code': '1324354657687'},
-        {'bc': 'EAN8',   'code': '13243546'},
+        {'bc': 'UPC-A', 'code': '13243546576'},
+        {'bc': 'UPC-E', 'code': '132435'},
+        {'bc': 'EAN13', 'code': '1324354657687'},
+        {'bc': 'EAN8', 'code': '13243546'},
         {'bc': 'CODE39', 'code': '*TEST*'},
-        {'bc': 'ITF',    'code': '55867492279103'},
-        {'bc': 'NW7',    'code': 'A00000000A'},
+        {'bc': 'ITF', 'code': '55867492279103'},
+        {'bc': 'NW7', 'code': 'A00000000A'},
     ],
     'barcodes_b': [
-        {'bc': 'UPC-A',                       'code': '13243546576',          'function_type': 'B'},
-        {'bc': 'UPC-E',                       'code': '132435',               'function_type': 'B'},
-        {'bc': 'EAN13',                       'code': '1324354657687',        'function_type': 'B'},
-        {'bc': 'EAN8',                        'code': '13243546',             'function_type': 'B'},
-        {'bc': 'CODE39',                      'code': '*TEST*',               'function_type': 'B'},
-        {'bc': 'ITF',                         'code': '55867492279103',       'function_type': 'B'},
-        {'bc': 'NW7',                         'code': 'A00000000A',           'function_type': 'B'},
-        {'bc': 'CODE93',                      'code': 'A00000000A',           'function_type': 'B'},
-        {'bc': 'CODE93',                      'code': '1324354657687',        'function_type': 'B'},
-        {'bc': 'CODE128A',                    'code': '*TEST*',               'function_type': 'B'},
-        {'bc': 'CODE128B',                    'code': '*TEST*',               'function_type': 'B'},
-        {'bc': 'CODE128C',                    'code': '*TEST*',               'function_type': 'B'},
-        {'bc': 'GS1-128',                     'code': '00123456780000000001', 'function_type': 'B'},
-        {'bc': 'GS1 DataBar Omnidirectional', 'code': '0000000000000',        'function_type': 'B'},
-        {'bc': 'GS1 DataBar Truncated',       'code': '0000000000000',        'function_type': 'B'},
-        {'bc': 'GS1 DataBar Limited',         'code': '0000000000000',        'function_type': 'B'},
-        {'bc': 'GS1 DataBar Expanded',        'code': '00AAAAAAA',            'function_type': 'B'},
+        {'bc': 'UPC-A', 'code': '13243546576', 'function_type': 'B'},
+        {'bc': 'UPC-E', 'code': '132435', 'function_type': 'B'},
+        {'bc': 'EAN13', 'code': '1324354657687', 'function_type': 'B'},
+        {'bc': 'EAN8', 'code': '13243546', 'function_type': 'B'},
+        {'bc': 'CODE39', 'code': '*TEST*', 'function_type': 'B'},
+        {'bc': 'ITF', 'code': '55867492279103', 'function_type': 'B'},
+        {'bc': 'NW7', 'code': 'A00000000A', 'function_type': 'B'},
+        {'bc': 'CODE93', 'code': 'A00000000A', 'function_type': 'B'},
+        {'bc': 'CODE93', 'code': '1324354657687', 'function_type': 'B'},
+        {'bc': 'CODE128A', 'code': '*TEST*', 'function_type': 'B'},
+        {'bc': 'CODE128B', 'code': '*TEST*', 'function_type': 'B'},
+        {'bc': 'CODE128C', 'code': '*TEST*', 'function_type': 'B'},
+        {'bc': 'GS1-128', 'code': '00123456780000000001', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Omnidirectional', 'code': '0000000000000', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Truncated', 'code': '0000000000000', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Limited', 'code': '0000000000000', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Expanded', 'code': '00AAAAAAA', 'function_type': 'B'},
     ]
 }
 
@@ -53,15 +53,16 @@ def main():
     """
 
     Handles loading of configuration and creating and processing of command
-    line arguments. Called when run from a CLI. 
-    
+    line arguments. Called when run from a CLI.
+
     """
-    c = config.Config()
-    printer = c.printer()
+    saved_config = config.Config()
+    printer = saved_config.printer()
 
     parser = argparse.ArgumentParser(
         description='CLI for python-escpos',
-        epilog='Printer configuration is defined in the python-escpos config file. See documentation for details.',
+        epilog='Printer configuration is defined in the python-escpos config'
+        'file. See documentation for details.',
     )
 
     command_subparsers = parser.add_subparsers(
@@ -128,7 +129,8 @@ def main():
         required=True
     )
 
-    parser_command_block_text = command_subparsers.add_parser('block_text', help='Print wrapped text')
+    parser_command_block_text = command_subparsers.add_parser('block_text',
+                                                              help='Print wrapped text')
     parser_command_block_text.set_defaults(func='block_text')
     parser_command_block_text.add_argument(
         '--txt',
@@ -194,10 +196,12 @@ def main():
     )
 
     # Not supported
-    # parser_command_direct_image = command_subparsers.add_parser('direct_direct_image', help='Print an direct_image')
+    # parser_command_direct_image = command_subparsers.add_parser('direct_direct_image',
+    # help='Print an direct_image')
     # parser_command_direct_image.set_defaults(func='direct_image')
 
-    parser_command_charcode = command_subparsers.add_parser('charcode', help='Set character code table')
+    parser_command_charcode = command_subparsers.add_parser('charcode',
+                                                            help='Set character code table')
     parser_command_charcode.set_defaults(func='charcode')
     parser_command_charcode.add_argument(
         '--code',
@@ -276,7 +280,8 @@ def main():
         type=int
     )
 
-    parser_command_panel_buttons = command_subparsers.add_parser('panel_buttons', help='Disables panel buttons')
+    parser_command_panel_buttons = command_subparsers.add_parser('panel_buttons',
+                                                                 help='Disables panel buttons')
     parser_command_panel_buttons.set_defaults(func='panel_buttons')
     parser_command_panel_buttons.add_argument(
         '--enable',
@@ -285,7 +290,8 @@ def main():
         required=True
     )
 
-    parser_command_demo = command_subparsers.add_parser('demo', help='Demonstrates various functions')
+    parser_command_demo = command_subparsers.add_parser('demo',
+                                                        help='Demonstrates various functions')
     parser_command_demo.set_defaults(func='demo')
     demo_group = parser_command_demo.add_mutually_exclusive_group()
     demo_group.add_argument(
@@ -331,8 +337,8 @@ def main():
 
 def demo(printer, **kwargs):
     """
-    Prints specificed demos. Called when CLI is passed `demo`. This function 
-    uses the demo_functions dictionary.
+    Prints specificed demos. Called when CLI is passed `demo`. This function
+    uses the DEMO_FUNCTIONS dictionary.
 
     :param printer: A printer from escpos.printer
     :param kwargs: A dict with a key for each function you want to test. It's
@@ -345,7 +351,7 @@ def demo(printer, **kwargs):
             .replace('barcodes_a', 'barcode')
             .replace('barcodes_b', 'barcode')
         )
-        for params in demo_functions[demo_choice]:
+        for params in DEMO_FUNCTIONS[demo_choice]:
             command(**params)
 
 if __name__ == '__main__':
