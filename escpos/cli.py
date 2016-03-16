@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 import argparse
+import sys
 import six
 from . import config
 
@@ -308,12 +309,16 @@ def main():
         action='store_true',
     )
 
+    # Get only arguments actually passed
+    args_dict = vars(parser.parse_args())
+    if not args_dict:
+        parser.print_help()
+        sys.exit()
+    command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v)
+
     if not printer:
         raise Exception('No printers loaded from config')
 
-    # Get only arguments actually passed
-    args_dict = vars(parser.parse_args())
-    command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v)
 
     target_command = command_arguments.pop('func')
 
