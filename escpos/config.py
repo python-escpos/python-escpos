@@ -43,11 +43,11 @@ class Config(object):
             )
 
         try:
-            if isinstance(config_path, file):
-                config = yaml.safe_load(config_path)
-            else:
+            if isinstance(config_path, str):
                 with open(config_path, 'rb') as f:
                     config = yaml.safe_load(f)
+            else:
+                config = yaml.safe_load(config_path)
         except EnvironmentError:
             raise exceptions.ConfigNotFoundError('Couldn\'t read config at {config_path}'.format(
                 config_path=str(config_path),
