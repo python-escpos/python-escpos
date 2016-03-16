@@ -451,7 +451,7 @@ class Escpos(object):
             raise BarcodeCodeError()
 
         if function_type.upper() == "A":
-            self._raw("\x00")
+            self._raw(NUL)
 
     def text(self, txt):
         """ Print alpha-numeric text
