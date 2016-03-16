@@ -52,7 +52,7 @@ class Config(object):
             raise exceptions.ConfigNotFoundError('Couldn\'t read config at {config_path}'.format(
                 config_path=str(config_path),
             ))
-        except yaml.YAMLError as e:
+        except yaml.YAMLError:
             raise exceptions.ConfigSyntaxError('Error parsing YAML')
 
         if 'printer' in config:
