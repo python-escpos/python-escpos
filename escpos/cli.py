@@ -9,6 +9,10 @@ import six
 import os
 from . import printer, config
 
+# Used in demo method
+# Key: The name of escpos function and the argument passed on the CLI. Some
+#   manual translation is done in the case of barcodes_a -> barcode.
+# Value: A list of dictionaries to pass to the escpos function as arguments.
 demo_functions = {
     'text': [
         {'txt': 'Hello, World!',}
@@ -48,6 +52,12 @@ demo_functions = {
 }
 
 def main():
+    """
+
+    Handles loading of configuration and creating and processing of command
+    line arguments. Called when run from a CLI. 
+    
+    """
     c = config.Config()
     printer = c.printer()
 
@@ -318,6 +328,14 @@ def main():
         globals()[target_command](**command_arguments)
 
 def demo(printer, **kwargs):
+    """
+    Prints specificed demos. Called when CLI is passed `demo`. This function 
+    uses the demo_functions dictionary.
+
+    :param printer: A printer from escpos.printer
+    :param kwargs: A dict with a key for each function you want to test. It's
+        in this format since it usually comes from argparse.
+    """
     for demo_choice in kwargs.keys():
         command = getattr(
             printer,
