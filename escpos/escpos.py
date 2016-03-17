@@ -83,7 +83,7 @@ class Escpos(object):
         pbuffer = b''
 
         self._raw(S_RASTER_N)
-        pbuffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1] & 0xff, size[1] >> 8)
+        pbuffer = "%02X%02X%02X%02X" % (((size[0]//size[1])//8), 0, size[1] & 0xff, size[1] >> 8)
         self._raw(binascii.unhexlify(pbuffer))
         pbuffer = ""
 
