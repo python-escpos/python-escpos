@@ -253,22 +253,85 @@ class Escpos(object):
         self._raw(binascii.unhexlify(bytes(buf, "ascii")))
         self._raw(b'\n')
 
-    def qr(self, text):
+    def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2, native=False):
         """ Print QR Code for the provided string
 
-        Prints a QR-code. The size has been adjusted to version 4, so it is small enough to be
-        printed but also big enough to be read by a smartphone.
-
-        :param text: text to generate a QR-Code from
+        :param content: The content of the code. Numeric data will be more efficiently compacted.
+        :param ec: Error-correction level to use. One of QR_ECLEVEL_L (default), QR_ECLEVEL_M, QR_ECLEVEL_Q or QR_ECLEVEL_H. Higher error correction results in a less compact code.
+        :param size: Pixel size to use. Must be 1-16 (default 3)
+        :param model: QR code model to use. Must be one of QR_MODEL_1, QR_MODEL_2 (default) or QR_MICRO (not supported by all printers).
+        :param native: True to render the code on the printer, False to render the code as an image and send it to the printer (Default)
         """
-        qr_code = qrcode.QRCode(version=4, box_size=4, border=1, error_correction=qrcode.constants.ERROR_CORRECT_H)
-        qr_code.add_data(text)
-        qr_code.make(fit=True)
-        qr_img = qr_code.make_image()
-        im = qr_img._img.convert("RGB")
+        # Basic validation
+        if not ec in [QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q]:
+            raise ValueError("Invalid error correction level")
+        if not 1 <= size <= 16:
+            raise ValueError("Invalid block size (must be 1-16)")
+        if not model in [QR_MODEL_1, QR_MODEL_2, QR_MICRO]:
+            raise ValueError("Invalid QR model (must be one of QR_MODEL_1, QR_MODEL_2, QR_MICRO)")
+        if content == "":
+            # Handle edge case by printing nothing.
+            return
+        if not native:
+            # Map ESC/POS error correction levels to python 'qrcode' library constant and render to an image
+            if model != QR_MODEL_2:
+                raise ValueError("Invalid QR mocel for qrlib rendering (must be QR_MODEL_2)")
+            python_qr_ec = {
+                     QR_ECLEVEL_H: qrcode.constants.ERROR_CORRECT_H,
+                     QR_ECLEVEL_L: qrcode.constants.ERROR_CORRECT_L,
+                     QR_ECLEVEL_M: qrcode.constants.ERROR_CORRECT_M,
+                     QR_ECLEVEL_Q: qrcode.constants.ERROR_CORRECT_Q
+                     }
+            qr_code = qrcode.QRCode(version=None, box_size=size, border=1, error_correction=python_qr_ec[ec])
+            qr_code.add_data(content)
+            qr_code.make(fit=True)
+            qr_img = qr_code.make_image()
+            im = qr_img._img.convert("RGB")
+            # Convert the RGB image in printable image
+            self._convert_image(im)
+            return
+        # Native 2D code printing
+        cn = b'1' # Code type for QR code
+        # Select model: 1, 2 or micro.
+        self._send_2d_code_data(six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0));
+        # Set dot size.
+        self._send_2d_code_data(six.int2byte(67), cn, six.int2byte(size));
+        # Set error correction level: L, M, Q, or H
+        self._send_2d_code_data(six.int2byte(69), cn, six.int2byte(48 + ec));
+        # Send content & print
+        self._send_2d_code_data(six.int2byte(80), cn, content, b'0');
+        self._send_2d_code_data(six.int2byte(81), cn, b'', b'0');
 
-        # Convert the RGB image in printable image
-        self._convert_image(im)
+    def _send_2d_code_data(self, fn, cn, data, m=''):
+        """ Wrapper for GS ( k, to calculate and send correct data length.
+
+        :param fn: Function to use.
+        :param cn: Output code type. Affects available data.
+        :param data: Data to send.
+        :param m: Modifier/variant for function. Often '0' where used.
+        """
+        if len(m) > 1 or len(cn) != 1 or len(fn) != 1:
+            raise ValueError("cn and fn must be one byte each.")
+        header = self._int_low_high(len(data) + len(m) + 2, 2);
+        self._raw(GS + b'(k' + header + cn + fn + m + data)
+    
+    @staticmethod
+    def _int_low_high(inp_number, out_bytes):
+        """ Generate multiple bytes for a number: In lower and higher parts, or more parts as needed.
+        
+        :param inp_number: Input number
+        :param out_bytes: The number of bytes to output (1 - 4).
+        """
+        max_input = (256 << (out_bytes * 8) - 1);
+        if not 1 <= out_bytes <= 4:
+            raise ValueError("Can only output 1-4 byes")
+        if not 0 <= inp_number <= max_input:
+            raise ValueError("Number too large. Can only output up to {0} in {1} byes".format(max_input, out_bytes))
+        outp = b'';
+        for _ in range(0, out_bytes):
+            outp += six.int2byte(inp_number % 256)
+            inp_number = inp_number // 256
+        return outp
 
     def charcode(self, code):
         """ Set Character Code Table
