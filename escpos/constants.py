@@ -183,6 +183,16 @@ BARCODE_TYPES = {
     'B': BARCODE_TYPE_B,
 }
 
+## QRCode error correction levels
+QR_ECLEVEL_L = 0;
+QR_ECLEVEL_M = 1;
+QR_ECLEVEL_Q = 2;
+QR_ECLEVEL_H = 3;
+    
+## QRcode models
+QR_MODEL_1 = 1;
+QR_MODEL_2 = 2;
+QR_MICRO = 3;
 
 # Image format
 # NOTE: _PRINT_RASTER_IMG is the obsolete ESC/POS "print raster bit image"
