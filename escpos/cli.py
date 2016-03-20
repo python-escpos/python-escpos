@@ -290,6 +290,14 @@ def main():
         required=True
     )
 
+    parser_command_raw = command_subparsers.add_parser('raw', help='Raw text')
+    parser_command_raw.set_defaults(func='_raw')
+    parser_command_raw.add_argument(
+        '--msg',
+        help='Raw data to send',
+        required=True
+    )
+
     parser_command_demo = command_subparsers.add_parser('demo',
                                                         help='Demonstrates various functions')
     parser_command_demo.set_defaults(func='demo')
