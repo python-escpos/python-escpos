@@ -257,17 +257,18 @@ class Escpos(object):
         """ Print QR Code for the provided string
 
         :param content: The content of the code. Numeric data will be more efficiently compacted.
-        :param ec: Error-correction level to use. One of QR_ECLEVEL_L (default), QR_ECLEVEL_M, QR_ECLEVEL_Q or QR_ECLEVEL_H. Higher error correction results in a less compact code.
+        :param ec: Error-correction level to use. One of QR_ECLEVEL_L (default), QR_ECLEVEL_M, QR_ECLEVEL_Q or QR_ECLEVEL_H.
+            Higher error correction results in a less compact code.
         :param size: Pixel size to use. Must be 1-16 (default 3)
         :param model: QR code model to use. Must be one of QR_MODEL_1, QR_MODEL_2 (default) or QR_MICRO (not supported by all printers).
         :param native: True to render the code on the printer, False to render the code as an image and send it to the printer (Default)
         """
         # Basic validation
-        if not ec in [QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q]:
+        if ec not in [QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q]:
             raise ValueError("Invalid error correction level")
         if not 1 <= size <= 16:
             raise ValueError("Invalid block size (must be 1-16)")
-        if not model in [QR_MODEL_1, QR_MODEL_2, QR_MICRO]:
+        if model not in [QR_MODEL_1, QR_MODEL_2, QR_MICRO]:
             raise ValueError("Invalid QR model (must be one of QR_MODEL_1, QR_MODEL_2, QR_MICRO)")
         if content == "":
             # Handle edge case by printing nothing.
