@@ -299,10 +299,10 @@ class Escpos(object):
         # Set error correction level: L, M, Q, or H
         self._send_2d_code_data(six.int2byte(69), cn, six.int2byte(48 + ec));
         # Send content & print
-        self._send_2d_code_data(six.int2byte(80), cn, content, b'0');
+        self._send_2d_code_data(six.int2byte(80), cn, content.encode('utf-8'), b'0');
         self._send_2d_code_data(six.int2byte(81), cn, b'', b'0');
 
-    def _send_2d_code_data(self, fn, cn, data, m=''):
+    def _send_2d_code_data(self, fn, cn, data, m=b''):
         """ Wrapper for GS ( k, to calculate and send correct data length.
 
         :param fn: Function to use.
