@@ -361,6 +361,7 @@ def demo(printer, **kwargs):
         )
         for params in DEMO_FUNCTIONS[demo_choice]:
             command(**params)
+        printer.cut()
 
 if __name__ == '__main__':
     main()
