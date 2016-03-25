@@ -14,6 +14,10 @@ python-escpos - Python library to manipulate ESC/POS Printers
     :target: https://landscape.io/github/python-escpos/python-escpos/master
     :alt: Code Health
 
+.. image:: https://codecov.io/github/python-escpos/python-escpos/coverage.svg?branch=master
+    :target: https://codecov.io/github/python-escpos/python-escpos?branch=master
+    :alt: Code Coverage
+
 .. image:: https://readthedocs.org/projects/python-escpos/badge/?version=stable
     :target: http://python-escpos.readthedocs.org/en/latest/?badge=stable
     :alt: Documentation Status

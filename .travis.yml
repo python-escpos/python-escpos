@@ -10,7 +10,7 @@ matrix:
   - python: 3.5
     env: TOXENV=py35
 before_install:
-    - pip install tox
-# command to run tests
+    - pip install tox codecov
 script:
     - tox
+    - codecov
