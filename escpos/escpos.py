@@ -176,9 +176,14 @@ class Escpos(object):
     def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
         """ Resizes and prints an arbitrarily sized image
 
+        .. warning:: The image-printing-API is currently under development. Please do not consider this method part
+                     of the API. It might be subject to change without further notice.
+
         .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
                   check for bugs like these in the future.
         """
+        print("WARNING: The image-printing-API is currently under development. Please do not consider this "
+              "function part of the API yet.")
         if isinstance(img, Image.Image):
             im = img.convert("RGB")
         else:
@@ -218,10 +223,15 @@ class Escpos(object):
     def direct_image(self, image):
         """ Direct printing function for pictures
 
+        .. warning:: The image-printing-API is currently under development. Please do not consider this method part
+                     of the API. It might be subject to change without further notice.
+
         This function is rather fragile and will fail when the Image object is not suited.
 
         :param image: PIL image object, containing a 1-bit picture
         """
+        print("WARNING: The image-printing-API is currently under development. Please do not consider this "
+              "function part of the API yet.")
         mask = 0x80
         i = 0
         temp = 0
