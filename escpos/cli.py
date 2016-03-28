@@ -406,18 +406,20 @@ def main():
 
     """
 
-    # Load the configuration and defined printer
-    saved_config = config.Config()
-    printer = saved_config.printer()
-
     parser = argparse.ArgumentParser(
         description='CLI for python-escpos',
         epilog='Printer configuration is defined in the python-escpos config'
         'file. See documentation for details.',
     )
 
-    # Everything runs off of a subparser so we can use the format
-    #cli [subparser] -args
+    # Allow config file location to be passed
+    parser.add_argument(
+        '-c', '--config',
+        help='Altnerate path to the configuration file',
+    )
+
+    # Everything interesting runs off of a subparser so we can use the format
+    # cli [subparser] -args
     command_subparsers = parser.add_subparsers(
         title='ESCPOS Command',
     )
@@ -462,6 +464,15 @@ def main():
         parser.print_help()
         sys.exit()
     command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v)
+
+    # If there was a config path passed, grab it
+    config_path = command_arguments.pop('config', None)
+
+    # Load the configuration and defined printer
+    saved_config = config.Config()
+    saved_config.load(config_path)
+    printer = saved_config.printer()
+
 
     if not printer:
         raise Exception('No printers loaded from config')
