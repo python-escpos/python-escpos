@@ -46,8 +46,349 @@ DEMO_FUNCTIONS = {
         {'bc': 'GS1 DataBar Truncated', 'code': '0000000000000', 'function_type': 'B'},
         {'bc': 'GS1 DataBar Limited', 'code': '0000000000000', 'function_type': 'B'},
         {'bc': 'GS1 DataBar Expanded', 'code': '00AAAAAAA', 'function_type': 'B'},
-    ]
+    ],
 }
+
+# Used to build the CLI
+# A list of dictionaries. Each dict is a CLI argument.
+# Keys:
+# parser: A dict of args for command_parsers.add_parser
+# defaults: A dict of args for subparser.set_defaults
+# arguments: A list of dicts of args for subparser.add_argument
+ESCPOS_COMMANDS = [
+    {
+        'parser': {
+            'name': 'qr',
+            'help': 'Print a QR code',
+        },
+        'defaults': {
+            'func': 'qr',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--text',),
+                'help': 'Text to print as a qr code',
+                'required': True,
+            }
+        ],
+    },
+    {
+        'parser': {
+            'name': 'barcode',
+            'help': 'Print a barcode',
+        },
+        'defaults': {
+            'func': 'barcode',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--code',),
+                'help': 'Barcode data to print',
+                'required': True,
+            },
+            {
+                'option_strings': ('--bc',),
+                'help': 'Barcode format',
+                'required': True,
+            },
+            {
+                'option_strings': ('--height',),
+                'help': 'Barcode height in px',
+                'type': int,
+            },
+            {
+                'option_strings': ('--width',),
+                'help': 'Barcode width',
+                'type': int,
+            },
+            {
+                'option_strings': ('--pos',),
+                'help': 'Label position',
+                'choices': ['BELOW', 'ABOVE', 'BOTH', 'OFF'],
+            },
+            {
+                'option_strings': ('--font',),
+                'help': 'Label font',
+                'choices': ['A', 'B'],
+            },
+            {
+                'option_strings': ('--align_ct',),
+                'help': 'Align barcode center',
+                'type': bool,
+            },
+            {
+                'option_strings': ('--function_type',),
+                'help': 'ESCPOS function type',
+                'choices': ['A', 'B'],
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'text',
+            'help': 'Print plain text',
+        },
+        'defaults': {
+            'func': 'text',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--text',),
+                'help': 'Text to print as a qr code',
+                'required': True,
+            }
+        ],
+    },
+    {
+        'parser': {
+            'name': 'block_text',
+            'help': 'Print wrapped text',
+        },
+        'defaults': {
+            'func': 'block_text',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--txt',),
+                'help': 'block_text to print',
+                'required': True,
+            },
+            {
+                'option_strings': ('--columns',),
+                'help': 'Number of columns',
+                'type': int,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'cut',
+            'help': 'Cut the paper',
+        },
+        'defaults': {
+            'func': 'cut',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--mode',),
+                'help': 'Type of cut',
+                'choices': ['FULL', 'PART'],
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'cashdraw',
+            'help': 'Kick the cash drawer',
+        },
+        'defaults': {
+            'func': 'cashdraw',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--pin',),
+                'help': 'Which PIN to kick',
+                'choices': [2, 5],
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'image',
+            'help': 'Print an image',
+        },
+        'defaults': {
+            'func': 'image',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--path_img',),
+                'help': 'Path to image',
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'fullimage',
+            'help': 'Print a fullimage',
+        },
+        'defaults': {
+            'func': 'fullimage',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--img',),
+                'help': 'Path to img',
+                'required': True,
+            },
+            {
+                'option_strings': ('--max_height',),
+                'help': 'Max height of image in px',
+                'type': int,
+            },
+            {
+                'option_strings': ('--width',),
+                'help': 'Max width of image in px',
+                'type': int,
+            },
+            {
+                'option_strings': ('--histeq',),
+                'help': 'Equalize the histrogram',
+                'type': bool,
+            },
+            {
+                'option_strings': ('--bandsize',),
+                'help': 'Size of bands to divide into when printing',
+                'type': int,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'charcode',
+            'help': 'Set character code table',
+        },
+        'defaults': {
+            'func': 'charcode',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--code',),
+                'help': 'Character code',
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'set',
+            'help': 'Set text properties',
+        },
+        'defaults': {
+            'func': 'set',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--align',),
+                'help': 'Horizontal alignment',
+                'choices': ['left', 'center', 'right'],
+            },
+            {
+                'option_strings': ('--font',),
+                'help': 'Font choice',
+                'choices': ['left', 'center', 'right'],
+            },
+            {
+                'option_strings': ('--text_type',),
+                'help': 'Text properties',
+                'choices': ['B', 'U', 'U2', 'BU', 'BU2', 'NORMAL'],
+            },
+            {
+                'option_strings': ('--width',),
+                'help': 'Width multiplier',
+                'type': int,
+            },
+            {
+                'option_strings': ('--height',),
+                'help': 'Height multiplier',
+                'type': int,
+            },
+            {
+                'option_strings': ('--density',),
+                'help': 'Print density',
+                'type': int,
+            },
+            {
+                'option_strings': ('--invert',),
+                'help': 'White on black printing',
+                'type': bool,
+            },
+            {
+                'option_strings': ('--smooth',),
+                'help': 'Text smoothing. Effective on >:  4x4 text',
+                'type': bool,
+            },
+            {
+                'option_strings': ('--flip',),
+                'help': 'Text smoothing. Effective on >:  4x4 text',
+                'type': bool,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'hw',
+            'help': 'Hardware operations',
+        },
+        'defaults': {
+            'func': 'hw',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--hw',),
+                'help': 'Operation',
+                'choices': ['INIT', 'SELECT', 'RESET'],
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'control',
+            'help': 'Control sequences',
+        },
+        'defaults': {
+            'func': 'control',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--ctl',),
+                'help': 'Control sequence',
+                'choices': ['LF', 'FF', 'CR', 'HT', 'VT'],
+                'required': True,
+            },
+            {
+                'option_strings': ('--pos',),
+                'help': 'Horizontal tab position (1-4)',
+                'type': int,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'panel_buttons',
+            'help': 'Controls panel buttons',
+        },
+        'defaults': {
+            'func': 'panel_buttons',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--enable',),
+                'help': 'Feed button enabled',
+                'type': bool,
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'raw',
+            'help': 'Raw data',
+        },
+        'defaults': {
+            'func': '_raw',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--msg',),
+                'help': 'Raw data to send',
+                'required': True,
+            },
+        ],
+    },
+]
 
 def main():
     """
@@ -56,6 +397,8 @@ def main():
     line arguments. Called when run from a CLI.
 
     """
+
+    # Load the configuration and defined printer
     saved_config = config.Config()
     printer = saved_config.printer()
 
@@ -65,239 +408,21 @@ def main():
         'file. See documentation for details.',
     )
 
+    # Everything runs off of a subparser so we can use the format
+    #cli [subparser] -args
     command_subparsers = parser.add_subparsers(
         title='ESCPOS Command',
     )
 
-    # From here on func needs to be a string, since we don't have a printer to work on yet
-    parser_command_qr = command_subparsers.add_parser('qr', help='Print a QR code')
-    parser_command_qr.set_defaults(func='qr')
-    parser_command_qr.add_argument(
-        '--text',
-        help='Text to print as a qr code',
-        required=True
-    )
+    # Build the ESCPOS command arguments
+    for command in ESCPOS_COMMANDS:
+        parser_command = command_subparsers.add_parser(**command['parser'])
+        parser_command.set_defaults(**command['defaults'])
+        for argument in command['arguments']:
+            option_strings = argument.pop('option_strings')
+            parser_command.add_argument(*option_strings, **argument)
 
-    parser_command_barcode = command_subparsers.add_parser('barcode', help='Print a barcode')
-    parser_command_barcode.set_defaults(func='barcode')
-    parser_command_barcode.add_argument(
-        '--code',
-        help='Barcode data to print',
-        required=True
-    )
-    parser_command_barcode.add_argument(
-        '--bc',
-        help='Barcode format',
-        required=True
-    )
-    parser_command_barcode.add_argument(
-        '--height',
-        help='Barcode height in px',
-        type=int
-    )
-    parser_command_barcode.add_argument(
-        '--width',
-        help='Barcode width',
-        type=int
-    )
-    parser_command_barcode.add_argument(
-        '--pos',
-        help='Label position',
-        choices=['BELOW', 'ABOVE', 'BOTH', 'OFF']
-    )
-    parser_command_barcode.add_argument(
-        '--font',
-        help='Label font',
-        choices=['A', 'B']
-    )
-    parser_command_barcode.add_argument(
-        '--align_ct',
-        help='Align barcode center',
-        type=bool
-    )
-    parser_command_barcode.add_argument(
-        '--function_type',
-        help='ESCPOS function type',
-        choices=['A', 'B']
-    )
-
-    parser_command_text = command_subparsers.add_parser('text', help='Print plain text')
-    parser_command_text.set_defaults(func='text')
-    parser_command_text.add_argument(
-        '--txt',
-        help='Text to print',
-        required=True
-    )
-
-    parser_command_block_text = command_subparsers.add_parser('block_text',
-                                                              help='Print wrapped text')
-    parser_command_block_text.set_defaults(func='block_text')
-    parser_command_block_text.add_argument(
-        '--txt',
-        help='block_text to print',
-        required=True
-    )
-    parser_command_block_text.add_argument(
-        '--columns',
-        help='Number of columns',
-        type=int
-    )
-
-    parser_command_cut = command_subparsers.add_parser('cut', help='Cut the paper')
-    parser_command_cut.set_defaults(func='cut')
-    parser_command_cut.add_argument(
-        '--mode',
-        help='Type of cut',
-        choices=['FULL', 'PART']
-    )
-
-    parser_command_cashdraw = command_subparsers.add_parser('cashdraw', help='Kick the cash drawer')
-    parser_command_cashdraw.set_defaults(func='cashdraw')
-    parser_command_cashdraw.add_argument(
-        '--pin',
-        help='Which PIN to kick',
-        choices=[2, 5]
-    )
-
-    parser_command_image = command_subparsers.add_parser('image', help='Print an image')
-    parser_command_image.set_defaults(func='image')
-    parser_command_image.add_argument(
-        '--path_img',
-        help='Path to image',
-        required=True
-    )
-
-    parser_command_fullimage = command_subparsers.add_parser('fullimage', help='Print an fullimage')
-    parser_command_fullimage.set_defaults(func='fullimage')
-    parser_command_fullimage.add_argument(
-        '--img',
-        help='Path to img',
-        required=True
-    )
-    parser_command_fullimage.add_argument(
-        '--max_height',
-        help='Max height of image in px',
-        type=int
-    )
-    parser_command_fullimage.add_argument(
-        '--width',
-        help='Max width of image in px',
-        type=int
-    )
-    parser_command_fullimage.add_argument(
-        '--histeq',
-        help='Equalize the histrogram',
-        type=bool
-    )
-    parser_command_fullimage.add_argument(
-        '--bandsize',
-        help='Size of bands to divide into when printing',
-        type=int
-    )
-
-    # Not supported
-    # parser_command_direct_image = command_subparsers.add_parser('direct_direct_image',
-    # help='Print an direct_image')
-    # parser_command_direct_image.set_defaults(func='direct_image')
-
-    parser_command_charcode = command_subparsers.add_parser('charcode',
-                                                            help='Set character code table')
-    parser_command_charcode.set_defaults(func='charcode')
-    parser_command_charcode.add_argument(
-        '--code',
-        help='Character code',
-        required=True
-    )
-
-    parser_command_set = command_subparsers.add_parser('set', help='Set text properties')
-    parser_command_set.set_defaults(func='set')
-    parser_command_set.add_argument(
-        '--align',
-        help='Horizontal alignment',
-        choices=['left', 'center', 'right']
-    )
-    parser_command_set.add_argument(
-        '--font',
-        help='Font choice',
-        choices=['left', 'center', 'right']
-    )
-    parser_command_set.add_argument(
-        '--text_type',
-        help='Text properties',
-        choices=['B', 'U', 'U2', 'BU', 'BU2', 'NORMAL']
-    )
-    parser_command_set.add_argument(
-        '--width',
-        help='Width multiplier',
-        type=int
-    )
-    parser_command_set.add_argument(
-        '--height',
-        help='Height multiplier',
-        type=int
-    )
-    parser_command_set.add_argument(
-        '--density',
-        help='Print density',
-        type=int
-    )
-    parser_command_set.add_argument(
-        '--invert',
-        help='White on black printing',
-        type=bool
-    )
-    parser_command_set.add_argument(
-        '--smooth',
-        help='Text smoothing. Effective on >= 4x4 text',
-        type=bool
-    )
-    parser_command_set.add_argument(
-        '--flip',
-        help='Text smoothing. Effective on >= 4x4 text',
-        type=bool
-    )
-
-    parser_command_hw = command_subparsers.add_parser('hw', help='Hardware operations')
-    parser_command_hw.set_defaults(func='hw')
-    parser_command_hw.add_argument(
-        '--hw',
-        help='Operation',
-        choices=['INIT', 'SELECT', 'RESET'],
-        required=True
-    )
-
-    parser_command_control = command_subparsers.add_parser('control', help='Control sequences')
-    parser_command_control.set_defaults(func='control')
-    parser_command_control.add_argument(
-        '--ctl',
-        help='Control sequence',
-        choices=['LF', 'FF', 'CR', 'HT', 'VT'],
-        required=True
-    )
-    parser_command_control.add_argument(
-        '--pos',
-        help='Horizontal tab position (1-4)',
-        type=int
-    )
-
-    parser_command_panel_buttons = command_subparsers.add_parser('panel_buttons',
-                                                                 help='Disables panel buttons')
-    parser_command_panel_buttons.set_defaults(func='panel_buttons')
-    parser_command_panel_buttons.add_argument(
-        '--enable',
-        help='Feed button enabled',
-        type=bool,
-        required=True
-    )
-
-    parser_command_raw = command_subparsers.add_parser('raw', help='Raw text')
-    parser_command_raw.set_defaults(func='_raw')
-    parser_command_raw.add_argument(
-        '--msg',
-        help='Raw data to send',
-        required=True
-    )
-
+    # Build any custom arguments
     parser_command_demo = command_subparsers.add_parser('demo',
                                                         help='Demonstrates various functions')
     parser_command_demo.set_defaults(func='demo')
