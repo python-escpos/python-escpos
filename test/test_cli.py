@@ -57,8 +57,9 @@ class TestCLI:
             fhandle.close()
 
     def teardown(self):
-        """ Destroy printer file """
+        """ Destroy printer file and env """
         os.remove(DEVFILE)
+        self.env.clear()
 
     def test_cli_help(self):
         """ Test getting help from cli """
