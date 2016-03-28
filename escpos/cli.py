@@ -13,7 +13,7 @@ from . import config
 # Value: A list of dictionaries to pass to the escpos function as arguments.
 DEMO_FUNCTIONS = {
     'text': [
-        {'txt': 'Hello, World!',}
+        {'txt': 'Hello, World!\n',}
     ],
     'qr': [
         {'text': 'This tests a QR code'},
