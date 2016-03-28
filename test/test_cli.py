@@ -83,7 +83,7 @@ class TestCLI:
         assert DEVFILE_NAME in result.files_updated.keys()
         assert_equals(
             result.files_updated[DEVFILE_NAME].bytes,
-            test_text
+            test_text + '\n'
         )
 
     def test_cli_text_inavlid_args(self):
