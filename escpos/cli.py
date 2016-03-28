@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+""" CLI
+
+This module acts as a command line interface for python-escpos. It mirrors
+closely the available ESCPOS commands while adding a couple extra ones for convience.
+
+It requires you to have a configuration file. See documentation for details.
+
+"""
 
 from __future__ import absolute_import
 
