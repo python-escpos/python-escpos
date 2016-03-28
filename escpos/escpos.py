@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#  -*- coding: utf-8 -*-
 """ Main class
 
 This module contains the abstract base class :py:class:`Escpos`.
@@ -37,6 +38,10 @@ class Escpos(object):
 
         :param columns: Text columns used by the printer. Defaults to 32."""
         self.columns = columns
+
+    def __del__(self):
+        """ call self.close upon deletion """
+        self.close()
 
     @abstractmethod
     def _raw(self, msg):
@@ -620,3 +625,89 @@ class Escpos(object):
             self._raw(PANEL_BUTTON_ON)
         else:
             self._raw(PANEL_BUTTON_OFF)
+
+
+class EscposIO(object):
+    """ESC/POS Printer IO object
+
+    Allows the class to be used together with the `with`-statement. You have to define a printer instance
+    and assign it to the EsposIO-class.
+    This example explains the usage:
+
+    .. code-block:: Python
+
+        with EscposIO(printer.Serial('/dev/ttyUSB0')) as p:
+            p.set(font='a', height=2, align='center', text_type='bold')
+            p.printer.set(align='left')
+            p.printer.image('logo.gif')
+            p.writelines('Big line\\n', font='b')
+            p.writelines('Привет')
+            p.writelines('BIG TEXT', width=2)
+
+    After the `with`-statement the printer automatically cuts the paper if `autocut` is `True`.
+    """
+
+    def __init__(self, printer, autocut=True, autoclose=True, **kwargs):
+        """
+        :param printer: An EscPos-printer object
+        :type printer: escpos.Escpos
+        :param autocut: If True, paper is automatically cut after the `with`-statement *default*: True
+        :param kwargs: These arguments will be passed to :py:meth:`escpos.Escpos.set()`
+        """
+        self.printer = printer
+        self.params = kwargs
+        self.autocut = autocut
+        self.autoclose = autoclose
+
+    def set(self, **kwargs):
+        """ Set the printer-parameters
+
+        Controls which parameters will be passed to :py:meth:`Escpos.set() <escpos.escpos.Escpos.set()>`.
+        For more information on the parameters see the :py:meth:`set() <escpos.escpos.Escpos.set()>`-methods
+        documentation. These parameters can also be passed with this class' constructor or the
+        :py:meth:`~escpos.escpos.EscposIO.writelines()`-method.
+
+        :param kwargs: keyword-parameters that will be passed to :py:meth:`Escpos.set() <escpos.escpos.Escpos.set()>`
+        """
+        self.params.update(kwargs)
+
+    def writelines(self, text, **kwargs):
+        params = dict(self.params)
+        params.update(kwargs)
+
+        if isinstance(text, six.text_type):
+            lines = text.split('\n')
+        elif isinstance(text, list) or isinstance(text, tuple):
+            lines = text
+        else:
+            lines = ["{0}".format(text), ]
+
+        # TODO check unicode handling
+        # TODO flush? or on print? (this should prob rather be handled by the _raw-method)
+        for line in lines:
+            self.printer.set(**params)
+            if isinstance(text, six.text_type):
+                self.printer.text(u"{0}\n".format(line))
+            else:
+                self.printer.text("{0}\n".format(line))
+
+    def close(self):
+        """ called upon closing the `with`-statement
+        """
+        self.printer.close()
+
+    def __enter__(self, **kwargs):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        """
+
+        If :py:attr:`autocut <escpos.escpos.EscposIO.autocut>` is `True` (set by this class' constructor),
+        then :py:meth:`printer.cut() <escpos.escpos.Escpos.cut()>` will be called here.
+        """
+        if not (type is not None and issubclass(type, Exception)):
+            if self.autocut:
+                self.printer.cut()
+
+        if self.autoclose:
+            self.close()

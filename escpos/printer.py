@@ -1,5 +1,6 @@
 #!/usr/bin/python
-""" This module contains the implentations of abstract base class :py:class:`Escpos`.
+#  -*- coding: utf-8 -*-
+""" This module contains the implementations of abstract base class :py:class:`Escpos`.
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
@@ -82,7 +83,7 @@ class Usb(Escpos):
         """
         self.device.write(self.out_ep, msg, self.interface)
 
-    def __del__(self):
+    def close(self):
         """ Release USB interface """
         if self.device:
             usb.util.dispose_resources(self.device)
@@ -147,7 +148,7 @@ class Serial(Escpos):
         """
         self.device.write(msg)
 
-    def __del__(self):
+    def close(self):
         """ Close Serial interface """
         if self.device is not None:
             self.device.flush()
@@ -207,7 +208,7 @@ class Network(Escpos):
         """
         self.device.sendall(msg)
 
-    def __del__(self):
+    def close(self):
         """ Close TCP connection """
         self.device.shutdown(socket.SHUT_RDWR)
         self.device.close()
@@ -255,7 +256,7 @@ class File(Escpos):
         """
         self.device.write(msg)
 
-    def __del__(self):
+    def close(self):
         """ Close system file """
         self.device.flush()
         self.device.close()
@@ -294,3 +295,6 @@ class Dummy(Escpos):
     def output(self):
         """ Get the data that was sent to this printer """
         return b''.join(self._output_list)
+
+    def close(self):
+        pass

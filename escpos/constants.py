@@ -1,3 +1,4 @@
+#  -*- coding: utf-8 -*-
 """ Set of ESC/POS Commands (Constants)
 
 This module contains constants that are described in the esc/pos-documentation.
