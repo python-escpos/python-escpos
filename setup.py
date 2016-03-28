@@ -78,6 +78,6 @@ setup(
     setup_requires=[
         'setuptools_scm',
     ],
-    tests_require=['tox', 'nose'],
+    tests_require=['tox', 'nose', 'scripttest'],
     cmdclass={'test': Tox},
 )

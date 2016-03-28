@@ -141,8 +141,8 @@ ESCPOS_COMMANDS = [
         },
         'arguments': [
             {
-                'option_strings': ('--text',),
-                'help': 'Text to print as a qr code',
+                'option_strings': ('--txt',),
+                'help': 'Plain text to print',
                 'required': True,
             }
         ],
