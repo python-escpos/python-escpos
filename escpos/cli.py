@@ -15,6 +15,9 @@ import sys
 import six
 from . import config
 
+# A list of functions that work better with a newline to be sent after them.
+REQUIRES_NEWLINE = ('qr', 'barcode', 'text', 'block_text')
+
 # Used in demo method
 # Key: The name of escpos function and the argument passed on the CLI. Some
 #   manual translation is done in the case of barcodes_a -> barcode.
@@ -477,12 +480,13 @@ def main():
     if not printer:
         raise Exception('No printers loaded from config')
 
-
     target_command = command_arguments.pop('func')
 
     if hasattr(printer, target_command):
         # print command with args
         getattr(printer, target_command)(**command_arguments)
+        if target_command in REQUIRES_NEWLINE:
+            printer.text("\n")
     else:
         command_arguments['printer'] = printer
         globals()[target_command](**command_arguments)
