@@ -24,6 +24,8 @@ printer:
 )
 
 class TestCLI:
+    """ Contains setups, teardowns, and tests for CLI
+    """
 
     @classmethod
     def setup_class(cls):
