@@ -32,6 +32,14 @@ class TestCLI:
     """ Contains setups, teardowns, and tests for CLI
     """
 
+    def __init__(self):
+        """ Initalize the tests.
+        Just define some vars here since most of them get set during
+        setup_class and teardown_class
+        """
+        self.env = None
+        self.default_args = None
+
     @staticmethod
     def setup_class():
         """ Create a config file to read from """
