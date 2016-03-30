@@ -47,8 +47,8 @@ class Config(object):
 
         try:
             if isinstance(config_path, str):
-                with open(config_path, 'rb') as f:
-                    config = yaml.safe_load(f)
+                with open(config_path, 'rb') as config_file:
+                    config = yaml.safe_load(config_file)
             else:
                 config = yaml.safe_load(config_path)
         except EnvironmentError:
@@ -63,9 +63,11 @@ class Config(object):
             self._printer_name = self._printer_config.pop('type').title()
 
             if not self._printer_name or not hasattr(printer, self._printer_name):
-                raise exceptions.ConfigSyntaxError('Printer type "{printer_name}" is invalid'.format(
-                    printer_name=self._printer_name,
-                ))
+                raise exceptions.ConfigSyntaxError(
+                    'Printer type "{printer_name}" is invalid'.format(
+                        printer_name=self._printer_name,
+                    )
+                )
 
         self._has_loaded = True
 
@@ -79,7 +81,7 @@ class Config(object):
             self.load()
 
         if not self._printer:
-            # We could catch init errors and make them a ConfigSyntaxError, 
+            # We could catch init errors and make them a ConfigSyntaxError,
             # but I'll just let them pass
             self._printer = getattr(printer, self._printer_name)(**self._printer_config)
 
