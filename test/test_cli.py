@@ -32,14 +32,14 @@ class TestCLI:
     """ Contains setups, teardowns, and tests for CLI
     """
 
-    @classmethod
-    def setup_class(cls):
+    @staticmethod
+    def setup_class():
         """ Create a config file to read from """
         with open(CONFIGFILE, 'w') as config:
             config.write(CONFIG_YAML)
 
-    @classmethod
-    def teardown_class(cls):
+    @staticmethod
+    def teardown_class():
         """ Remove config file """
         os.remove(CONFIGFILE)
 
