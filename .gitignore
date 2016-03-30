@@ -12,5 +12,10 @@ temp
 # packaging and testing
 .tox/
 *.egg-info/
+.eggs/
 build/
 dist/
+.coverage
+
+# testing temporary directories
+test/test-cli-output/
