@@ -46,11 +46,15 @@ class Config(object):
             )
 
         try:
-            if isinstance(config_path, str):
+            # First check if it's file like. If it is, pyyaml can load it.
+            # I'm checking type instead of catching excpetions to keep the
+            # exception handling simple
+            if hasattr(config_path, 'read'):
+                config = yaml.safe_load(config_path)
+            else:
+                # If it isn't, it's a path. We have to open it first.
                 with open(config_path, 'rb') as config_file:
                     config = yaml.safe_load(config_file)
-            else:
-                config = yaml.safe_load(config_path)
         except EnvironmentError:
             raise exceptions.ConfigNotFoundError('Couldn\'t read config at {config_path}'.format(
                 config_path=str(config_path),
@@ -72,13 +76,17 @@ class Config(object):
         self._has_loaded = True
 
     def printer(self):
-        """ Returns a printer that was defined in the config, or None.
+        """ Returns a printer that was defined in the config, or throws an
+        exception.
 
         This method loads the default config if one hasn't beeen already loaded.
 
         """
         if not self._has_loaded:
             self.load()
+
+        if not self._printer_name:
+            raise exceptions.ConfigSectionMissingError('printer')
 
         if not self._printer:
             # We could catch init errors and make them a ConfigSyntaxError,
