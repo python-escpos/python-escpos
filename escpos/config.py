@@ -26,6 +26,23 @@ class Config(object):
     _config_file = 'config.yaml'
 
     def __init__(self):
+        """ Initialize configuration.
+
+        Remember to add anything that needs to be reset between configurations
+        to self._reset_config
+        """
+        self._has_loaded = False
+        self._printer = None
+
+        self._printer_name = None
+        self._printer_config = None
+
+    def _reset_config(self):
+        """ Clear the loaded configuration.
+
+        If we are loading a changed config, we don't want to have leftover
+        data.
+        """
         self._has_loaded = False
         self._printer = None
 
@@ -39,6 +56,9 @@ class Config(object):
             for the configuration file.
 
         """
+
+        self._reset_config()
+
         if not config_path:
             config_path = os.path.join(
                 appdirs.user_config_dir(self._app_name),
