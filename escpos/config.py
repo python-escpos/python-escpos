@@ -67,7 +67,7 @@ class Config(object):
 
         try:
             # First check if it's file like. If it is, pyyaml can load it.
-            # I'm checking type instead of catching excpetions to keep the
+            # I'm checking type instead of catching exceptions to keep the
             # exception handling simple
             if hasattr(config_path, 'read'):
                 config = yaml.safe_load(config_path)
