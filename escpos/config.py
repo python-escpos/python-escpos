@@ -72,7 +72,8 @@ class Config(object):
             if hasattr(config_path, 'read'):
                 config = yaml.safe_load(config_path)
             else:
-                # If it isn't, it's a path. We have to open it first.
+                # If it isn't, it's a path. We have to open it first, otherwise
+                # pyyaml will try to read it as yaml
                 with open(config_path, 'rb') as config_file:
                     config = yaml.safe_load(config_file)
         except EnvironmentError:
