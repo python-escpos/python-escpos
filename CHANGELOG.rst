@@ -2,6 +2,38 @@
 Changelog
 *********
 
+2016-06-24 - Version 2.0.0 - "Attitude Adjuster"
+------------------------------------------------
+
+This version is based on the original version of python-escpos by Manuel F Martinez. However, many contributions have
+greatly improved the old codebase. Since this version does not completely match the interface of the version published
+on PyPi and has many improvements, it will be released as version 2.0.0.
+
+changes
+^^^^^^^
+- refactor complete code in order to be compatible with Python 2 and 3
+- modernize packaging
+- add testing and CI
+- merge various forks into codebase, fixing multiple issues with barcode-, QR-printing, cashdraw and structure
+- improve the documentation
+- extend support of barcode-codes to type B
+- add function to disable panel-buttons
+- the text-functions are now intended for unicode, the driver will automatically encode the string based on the selected
+  codepage
+- the image-functions are now much more flexible
+- added a CLI
+- restructured the constants
+
+contributors
+^^^^^^^^^^^^
+- Thomas van den Berg
+- Michael Billington
+- Nate Bookham
+- Davis Goglin
+- Christoph Heuel
+- Patrick Kanzler
+- Qian LinFeng
+
 2016-01-24 - Version 1.0.9
 --------------------------
 
