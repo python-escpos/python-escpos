@@ -41,13 +41,13 @@ class Escpos:
         buffer = ""
        
         self._raw(S_RASTER_N)
-        buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1]&0xff, size[1]>>8)
+        buffer = "{0:02X}{1:02X}{2:02X}{3:02X}".format(((size[0]/size[1])/8), 0, size[1]&0xff, size[1]>>8)
         self._raw(buffer.decode('hex'))
         buffer = ""
 
         while i < len(line):
             hex_string = int(line[i:i+8],2)
-            buffer += "%02X" % hex_string
+            buffer += "{0:02X}".format(hex_string)
             i += 8
             cont += 1
             if cont % 4 == 0:
@@ -91,7 +91,7 @@ class Escpos:
                 for x in range(pattern_len):
                     if im_color <= (255 * 3 / pattern_len * (x+1)):
                         if im_pattern[x] == "X":
-                            pix_line += "%d" % switch
+                            pix_line += "{0:d}".format(switch)
                         else:
                             pix_line += im_pattern[x]
                         break
