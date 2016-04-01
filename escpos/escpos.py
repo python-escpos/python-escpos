@@ -83,13 +83,13 @@ class Escpos(object):
         pbuffer = b''
 
         self._raw(S_RASTER_N)
-        pbuffer = "%02X%02X%02X%02X" % (((size[0]//size[1])//8), 0, size[1] & 0xff, size[1] >> 8)
+        pbuffer = "{0:02X}{1:02X}{2:02X}{3:02X}".format(((size[0]//size[1])//8), 0, size[1] & 0xff, size[1] >> 8)
         self._raw(binascii.unhexlify(pbuffer))
         pbuffer = ""
 
         while i < len(line):
             hex_string = int(line[i:i+8], 2)
-            pbuffer += "%02X" % hex_string
+            pbuffer += "{0:02X}".format(hex_string)
             i += 8
             cont += 1
             if cont % 4 == 0:
@@ -135,7 +135,7 @@ class Escpos(object):
                 for x in range(pattern_len):
                     if im_color <= (255 * 3 / pattern_len * (x+1)):
                         if im_pattern[x] == "X":
-                            pix_line += "%d" % switch
+                            pix_line += "{0:d}".format(switch)
                         else:
                             pix_line += im_pattern[x]
                         break
@@ -240,10 +240,10 @@ class Escpos(object):
         self._raw(S_RASTER_N)
         headerX = int(width / 8)
         headerY = height
-        buf = "%02X" % (headerX & 0xff)
-        buf += "%02X" % ((headerX >> 8) & 0xff)
-        buf += "%02X" % (headerY & 0xff)
-        buf += "%02X" % ((headerY >> 8) & 0xff)
+        buf = "{0:02X}".format((headerX & 0xff))
+        buf += "{0:02X}".format(((headerX >> 8) & 0xff))
+        buf += "{0:02X}".format((headerY & 0xff))
+        buf += "{0:02X}".format(((headerY >> 8) & 0xff))
         #self._raw(binascii.unhexlify(buf))
         for y in range(height):
             for x in range(width):
@@ -256,7 +256,7 @@ class Escpos(object):
 
                 i += 1
                 if i == 8:
-                    buf += ("%02X" % temp)
+                    buf += ("{0:02X}".format(temp))
                     mask = 0x80
                     i = 0
                     temp = 0
