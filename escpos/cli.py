@@ -1,213 +1,527 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""A simple command-line interface for common python-escpos functionality
+#!/usr/bin/env python
+""" CLI
 
-Usage: python -m escpos.cli --help
+This module acts as a command line interface for python-escpos. It mirrors
+closely the available ESCPOS commands while adding a couple extra ones for convience.
 
-Dependencies:
-- DavisGoglin/python-escpos or better
-- A file named weather.png (for the 'test' subcommand)
+It requires you to have a configuration file. See documentation for details.
 
-Reasons for using the DavisGoglin/python-escpos fork:
-- image() accepts a PIL.Image object rather than requiring me to choose
-  between writing a temporary file to disk or calling a "private" method.
-- fullimage() allows me to print images of arbitrary length using slicing.
-
-How to print unsupported barcodes:
-    barcode -b 'BARCODE' -e 'code39' -E | convert -density 200% eps:- code.png
-    python test_escpos.py --images code.png
-
-Copyright (C) 2014 Stephan Sokolow (deitarion/SSokolow)
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-__author__ = "Stephan Sokolow (deitarion/SSokolow)"
-__license__ = "MIT"
+import argparse
+import sys
+import six
+from . import config
 
-import re
+# Must be defined before it's used in DEMO_FUNCTIONS
+def str_to_bool(string):
+    """ Used as a type in argparse so that we get back a proper
+    bool instead of always True
+    """
+    return string.lower() in ('y', 'yes', '1', 'true')
 
-from escpos import printer
+# A list of functions that work better with a newline to be sent after them.
+REQUIRES_NEWLINE = ('qr', 'barcode', 'text', 'block_text')
 
-epson = printer.Usb(0x0416, 0x5011)
-# TODO: Un-hardcode this
+# Used in demo method
+# Key: The name of escpos function and the argument passed on the CLI. Some
+#   manual translation is done in the case of barcodes_a -> barcode.
+# Value: A list of dictionaries to pass to the escpos function as arguments.
+DEMO_FUNCTIONS = {
+    'text': [
+        {'txt': 'Hello, World!\n',}
+    ],
+    'qr': [
+        {'text': 'This tests a QR code'},
+        {'text': 'https://en.wikipedia.org/'}
+    ],
+    'barcodes_a': [
+        {'bc': 'UPC-A', 'code': '13243546576'},
+        {'bc': 'UPC-E', 'code': '132435'},
+        {'bc': 'EAN13', 'code': '1324354657687'},
+        {'bc': 'EAN8', 'code': '1324354'},
+        {'bc': 'CODE39', 'code': 'TEST'},
+        {'bc': 'ITF', 'code': '55867492279103'},
+        {'bc': 'NW7', 'code': 'A00000000A'},
+    ],
+    'barcodes_b': [
+        {'bc': 'UPC-A', 'code': '13243546576', 'function_type': 'B'},
+        {'bc': 'UPC-E', 'code': '132435', 'function_type': 'B'},
+        {'bc': 'EAN13', 'code': '1324354657687', 'function_type': 'B'},
+        {'bc': 'EAN8', 'code': '1324354', 'function_type': 'B'},
+        {'bc': 'CODE39', 'code': 'TEST', 'function_type': 'B'},
+        {'bc': 'ITF', 'code': '55867492279103', 'function_type': 'B'},
+        {'bc': 'NW7', 'code': 'A00000000A', 'function_type': 'B'},
+        {'bc': 'CODE93', 'code': 'A00000000A', 'function_type': 'B'},
+        {'bc': 'CODE93', 'code': '1324354657687', 'function_type': 'B'},
+        {'bc': 'CODE128A', 'code': 'TEST', 'function_type': 'B'},
+        {'bc': 'CODE128B', 'code': 'TEST', 'function_type': 'B'},
+        {'bc': 'CODE128C', 'code': 'TEST', 'function_type': 'B'},
+        {'bc': 'GS1-128', 'code': '00123456780000000001', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Omnidirectional', 'code': '0000000000000', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Truncated', 'code': '0000000000000', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Limited', 'code': '0000000000000', 'function_type': 'B'},
+        {'bc': 'GS1 DataBar Expanded', 'code': '00AAAAAAA', 'function_type': 'B'},
+    ],
+}
 
-
-def _print_text_file(path):
-    """Print the given text file"""
-    epson.set(align='left')
-    with open(path, 'rU') as fobj:
-        for line in fobj:
-            epson.text(line)
-
-
-def _print_image_file(path):
-    """Print the given image file."""
-    epson.fullimage(path, histeq=False, width=384)
-
-
-def print_files(args):
-    """The 'print' subcommand"""
-    for path in args.paths:
-        if args.images:
-            _print_image_file(path)
-        else:
-            _print_text_file(path)
-    epson.cut()
-
-# {{{ 'echo' Subcommand
-
-KNOWN_BARCODE_TYPES = ['UPC-A', 'UPC-E', 'EAN13', 'ITF']
-re_barcode_escape = re.compile(r'^%(?P<type>\S+)\s(?P<data>[0-9X]+)$')
-
-
-def echo(args):  # pylint: disable=unused-argument
-    """TTY-like line-by-line keyboard-to-printer echo loop."""
-    try:
-        while True:
-            line = raw_input()
-            match = re_barcode_escape.match(line)
-            if match and match.group('type') in KNOWN_BARCODE_TYPES:
-                bctype, data = match.groups()
-                epson.barcode(data, bctype, 48, 2, '', '')
-                epson.set(align='left')
-            else:
-                epson.text('{0}\n'.format(line))
-    except KeyboardInterrupt:
-        epson.cut()
-
-# }}}
-# {{{ 'test' Subcommand
-
-from PIL import Image, ImageDraw
-
-
-def _stall_test(width, height):
-    """Generate a pattern to detect print glitches due to vertical stalling."""
-    img = Image.new('1', (width, height))
-    for pos in [(x, y) for y in range(0, height) for x in range(0, width)]:
-        img.putpixel(pos, not sum(pos) % 10)
-    return img
-
-
-def _test_basic():
-    """The original test code from python-escpos's Usage wiki page"""
-    epson.set(align='left')
-    # Print text
-    epson.text("TODO:\n")  # pylint: disable=fixme
-    epson.text("[ ] Task 1\n")
-    epson.text("[ ] Task 2\n")
-    # Print image
-    # TODO: Bundle an image so this can be used
-    # epson.image("weather.png")
-    # Print QR Code (must have a white border to be scanned)
-    epson.set(align='center')
-    epson.text("Scan to recall TODO list")  # pylint: disable=fixme
-    epson.qr("http://www.example.com/")
-    # Print barcode
-    epson.barcode('1234567890128', 'EAN13', 32, 2, '', '')
-    # Cut paper
-    epson.cut()
-
-
-def _test_barcodes():
-    """Print test barcodes for all ESCPOS-specified formats."""
-    for name, data in (
-            # pylint: disable=bad-continuation
-            ('UPC-A', '123456789012\x00'),
-            ('UPC-E', '02345036\x00'),
-            ('EAN13', '1234567890128\x00'),
-            ('EAN8', '12345670\x00'),
-            ('CODE39', 'BARCODE12345678\x00'),
-            ('ITF', '123456\x00'),
-            ('CODABAR', 'A40156B'),
-            # TODO: CODE93 and CODE128
-    ):
-        # TODO: Fix the library to restore old alignment somehow
-        epson.set(align='center')
-        epson.text('\n{0}\n'.format(name))
-        epson.barcode(data, name, 64, 2, '', '')
-
-
-def _test_patterns(width=384, height=255):
-    """Print a set of test patterns for raster image output."""
-    # Test our guess of the paper width
-    img = Image.new('1', (width, height), color=1)
-    draw = ImageDraw.Draw(img)
-    draw.polygon(((0, 0), img.size, (0, img.size[1])), fill=0)
-    epson.image(img)
-    del draw, img
-
-    # Test the consistency of printing large data and whether stall rate is
-    # affected by data rate
-    epson.image(_stall_test(width, height))
-    epson.image(_stall_test(width / 2, height))
-
-
-def test(args):
-    """The 'test' subcommand"""
-    if args.barcodes:
-        _test_barcodes()
-    elif args.patterns:
-        _test_patterns()
-    else:
-        _test_basic()
-
-
-# }}}
+# Used to build the CLI
+# A list of dictionaries. Each dict is a CLI argument.
+# Keys:
+# parser: A dict of args for command_parsers.add_parser
+# defaults: A dict of args for subparser.set_defaults
+# arguments: A list of dicts of args for subparser.add_argument
+ESCPOS_COMMANDS = [
+    {
+        'parser': {
+            'name': 'qr',
+            'help': 'Print a QR code',
+        },
+        'defaults': {
+            'func': 'qr',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--text',),
+                'help': 'Text to print as a qr code',
+                'required': True,
+            }
+        ],
+    },
+    {
+        'parser': {
+            'name': 'barcode',
+            'help': 'Print a barcode',
+        },
+        'defaults': {
+            'func': 'barcode',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--code',),
+                'help': 'Barcode data to print',
+                'required': True,
+            },
+            {
+                'option_strings': ('--bc',),
+                'help': 'Barcode format',
+                'required': True,
+            },
+            {
+                'option_strings': ('--height',),
+                'help': 'Barcode height in px',
+                'type': int,
+            },
+            {
+                'option_strings': ('--width',),
+                'help': 'Barcode width',
+                'type': int,
+            },
+            {
+                'option_strings': ('--pos',),
+                'help': 'Label position',
+                'choices': ['BELOW', 'ABOVE', 'BOTH', 'OFF'],
+            },
+            {
+                'option_strings': ('--font',),
+                'help': 'Label font',
+                'choices': ['A', 'B'],
+            },
+            {
+                'option_strings': ('--align_ct',),
+                'help': 'Align barcode center',
+                'type': str_to_bool,
+            },
+            {
+                'option_strings': ('--function_type',),
+                'help': 'ESCPOS function type',
+                'choices': ['A', 'B'],
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'text',
+            'help': 'Print plain text',
+        },
+        'defaults': {
+            'func': 'text',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--txt',),
+                'help': 'Plain text to print',
+                'required': True,
+            }
+        ],
+    },
+    {
+        'parser': {
+            'name': 'block_text',
+            'help': 'Print wrapped text',
+        },
+        'defaults': {
+            'func': 'block_text',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--txt',),
+                'help': 'block_text to print',
+                'required': True,
+            },
+            {
+                'option_strings': ('--columns',),
+                'help': 'Number of columns',
+                'type': int,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'cut',
+            'help': 'Cut the paper',
+        },
+        'defaults': {
+            'func': 'cut',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--mode',),
+                'help': 'Type of cut',
+                'choices': ['FULL', 'PART'],
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'cashdraw',
+            'help': 'Kick the cash drawer',
+        },
+        'defaults': {
+            'func': 'cashdraw',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--pin',),
+                'help': 'Which PIN to kick',
+                'choices': [2, 5],
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'image',
+            'help': 'Print an image',
+        },
+        'defaults': {
+            'func': 'image',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--path_img',),
+                'help': 'Path to image',
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'fullimage',
+            'help': 'Print a fullimage',
+        },
+        'defaults': {
+            'func': 'fullimage',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--img',),
+                'help': 'Path to img',
+                'required': True,
+            },
+            {
+                'option_strings': ('--max_height',),
+                'help': 'Max height of image in px',
+                'type': int,
+            },
+            {
+                'option_strings': ('--width',),
+                'help': 'Max width of image in px',
+                'type': int,
+            },
+            {
+                'option_strings': ('--histeq',),
+                'help': 'Equalize the histrogram',
+                'type': str_to_bool,
+            },
+            {
+                'option_strings': ('--bandsize',),
+                'help': 'Size of bands to divide into when printing',
+                'type': int,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'charcode',
+            'help': 'Set character code table',
+        },
+        'defaults': {
+            'func': 'charcode',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--code',),
+                'help': 'Character code',
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'set',
+            'help': 'Set text properties',
+        },
+        'defaults': {
+            'func': 'set',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--align',),
+                'help': 'Horizontal alignment',
+                'choices': ['left', 'center', 'right'],
+            },
+            {
+                'option_strings': ('--font',),
+                'help': 'Font choice',
+                'choices': ['left', 'center', 'right'],
+            },
+            {
+                'option_strings': ('--text_type',),
+                'help': 'Text properties',
+                'choices': ['B', 'U', 'U2', 'BU', 'BU2', 'NORMAL'],
+            },
+            {
+                'option_strings': ('--width',),
+                'help': 'Width multiplier',
+                'type': int,
+            },
+            {
+                'option_strings': ('--height',),
+                'help': 'Height multiplier',
+                'type': int,
+            },
+            {
+                'option_strings': ('--density',),
+                'help': 'Print density',
+                'type': int,
+            },
+            {
+                'option_strings': ('--invert',),
+                'help': 'White on black printing',
+                'type': str_to_bool,
+            },
+            {
+                'option_strings': ('--smooth',),
+                'help': 'Text smoothing. Effective on >:  4x4 text',
+                'type': str_to_bool,
+            },
+            {
+                'option_strings': ('--flip',),
+                'help': 'Text smoothing. Effective on >:  4x4 text',
+                'type': str_to_bool,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'hw',
+            'help': 'Hardware operations',
+        },
+        'defaults': {
+            'func': 'hw',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--hw',),
+                'help': 'Operation',
+                'choices': ['INIT', 'SELECT', 'RESET'],
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'control',
+            'help': 'Control sequences',
+        },
+        'defaults': {
+            'func': 'control',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--ctl',),
+                'help': 'Control sequence',
+                'choices': ['LF', 'FF', 'CR', 'HT', 'VT'],
+                'required': True,
+            },
+            {
+                'option_strings': ('--pos',),
+                'help': 'Horizontal tab position (1-4)',
+                'type': int,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'panel_buttons',
+            'help': 'Controls panel buttons',
+        },
+        'defaults': {
+            'func': 'panel_buttons',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--enable',),
+                'help': 'Feed button enabled',
+                'type': str_to_bool,
+                'required': True,
+            },
+        ],
+    },
+    {
+        'parser': {
+            'name': 'raw',
+            'help': 'Raw data',
+        },
+        'defaults': {
+            'func': '_raw',
+        },
+        'arguments': [
+            {
+                'option_strings': ('--msg',),
+                'help': 'Raw data to send',
+                'required': True,
+            },
+        ],
+    },
+]
 
 def main():
-    """Wrapped in a function for import and entry point compatibility"""
-    # pylint: disable=bad-continuation
+    """
 
-    import argparse
+    Handles loading of configuration and creating and processing of command
+    line arguments. Called when run from a CLI.
+
+    """
 
     parser = argparse.ArgumentParser(
-        description="Command-line interface to python-escpos")
-    subparsers = parser.add_subparsers(title='subcommands')
+        description='CLI for python-escpos',
+        epilog='Printer configuration is defined in the python-escpos config'
+        'file. See documentation for details.',
+    )
 
-    echo_parser = subparsers.add_parser('echo', help='Echo the keyboard to '
-                                                     'the printer line-by-line (Exit with Ctrl+C)')
-    echo_parser.set_defaults(func=echo)
+    parser.register('type', 'bool', str_to_bool)
 
-    print_parser = subparsers.add_parser('print', help='Print the given files')
-    print_parser.add_argument('--images', action='store_true',
-                              help="Provided files are images rather than text files.")
-    print_parser.add_argument('paths', metavar='path', nargs='+')
-    print_parser.set_defaults(func=print_files)
+    # Allow config file location to be passed
+    parser.add_argument(
+        '-c', '--config',
+        help='Altnerate path to the configuration file',
+    )
 
-    test_parser = subparsers.add_parser('test', help='Print test patterns')
-    test_modes = test_parser.add_mutually_exclusive_group()
-    test_modes.add_argument('--barcodes', action='store_true',
-                            help="Test supported barcode types (Warning: Some printers must be "
-                                 "reset after attempting an unsupported barcode type.)")
-    test_modes.add_argument('--patterns', action='store_true',
-                            help="Print test patterns")
-    test_parser.set_defaults(func=test)
+    # Everything interesting runs off of a subparser so we can use the format
+    # cli [subparser] -args
+    command_subparsers = parser.add_subparsers(
+        title='ESCPOS Command',
+    )
 
-    args = parser.parse_args()
-    args.func(args)
+    # Build the ESCPOS command arguments
+    for command in ESCPOS_COMMANDS:
+        parser_command = command_subparsers.add_parser(**command['parser'])
+        parser_command.set_defaults(**command['defaults'])
+        for argument in command['arguments']:
+            option_strings = argument.pop('option_strings')
+            parser_command.add_argument(*option_strings, **argument)
 
+    # Build any custom arguments
+    parser_command_demo = command_subparsers.add_parser('demo',
+                                                        help='Demonstrates various functions')
+    parser_command_demo.set_defaults(func='demo')
+    demo_group = parser_command_demo.add_mutually_exclusive_group()
+    demo_group.add_argument(
+        '--barcodes-a',
+        help='Print demo barcodes for function type A',
+        action='store_true',
+    )
+    demo_group.add_argument(
+        '--barcodes-b',
+        help='Print demo barcodes for function type B',
+        action='store_true',
+    )
+    demo_group.add_argument(
+        '--qr',
+        help='Print some demo QR codes',
+        action='store_true',
+    )
+    demo_group.add_argument(
+        '--text',
+        help='Print some demo text',
+        action='store_true',
+    )
+
+    # Get only arguments actually passed
+    args_dict = vars(parser.parse_args())
+    if not args_dict:
+        parser.print_help()
+        sys.exit()
+    command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v is not None)
+
+    # If there was a config path passed, grab it
+    config_path = command_arguments.pop('config', None)
+
+    # Load the configuration and defined printer
+    saved_config = config.Config()
+    saved_config.load(config_path)
+    printer = saved_config.printer()
+
+
+    if not printer:
+        raise Exception('No printers loaded from config')
+
+    target_command = command_arguments.pop('func')
+
+    if hasattr(printer, target_command):
+        # print command with args
+        getattr(printer, target_command)(**command_arguments)
+        if target_command in REQUIRES_NEWLINE:
+            printer.text("\n")
+    else:
+        command_arguments['printer'] = printer
+        globals()[target_command](**command_arguments)
+
+def demo(printer, **kwargs):
+    """
+    Prints specificed demos. Called when CLI is passed `demo`. This function
+    uses the DEMO_FUNCTIONS dictionary.
+
+    :param printer: A printer from escpos.printer
+    :param kwargs: A dict with a key for each function you want to test. It's
+        in this format since it usually comes from argparse.
+    """
+    for demo_choice in kwargs.keys():
+        command = getattr(
+            printer,
+            demo_choice
+            .replace('barcodes_a', 'barcode')
+            .replace('barcodes_b', 'barcode')
+        )
+        for params in DEMO_FUNCTIONS[demo_choice]:
+            command(**params)
+        printer.cut()
 
 if __name__ == '__main__':
     main()
-
-# vim: set sw=4 sts=4 :

@@ -151,6 +151,7 @@ class Serial(Escpos):
     def __del__(self):
         """ Close Serial interface """
         if self.device is not None:
+            self.device.flush()
             self.device.close()
 
 
@@ -209,6 +210,7 @@ class Network(Escpos):
 
     def __del__(self):
         """ Close TCP connection """
+        self.device.shutdown(socket.SHUT_RDWR)
         self.device.close()
 
 
@@ -256,4 +258,5 @@ class File(Escpos):
 
     def __del__(self):
         """ Close system file """
+        self.device.flush()
         self.device.close()

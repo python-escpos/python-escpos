@@ -72,10 +72,12 @@ setup(
         'qrcode>=4.0',
         'pyserial',
         'six',
+        'appdirs',
+        'pyyaml',
     ],
     setup_requires=[
         'setuptools_scm',
     ],
-    tests_require=['tox', 'nose'],
+    tests_require=['tox', 'nose', 'scripttest'],
     cmdclass={'test': Tox},
 )

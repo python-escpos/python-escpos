@@ -13,6 +13,9 @@ Result/Exit codes:
     - `80` = Invalid char code :py:exc:`~escpos.exceptions.CharCodeError`
     - `90` = USB device not found :py:exc:`~escpos.exceptions.USBNotFoundError`
     - `100` = Set variable out of range :py:exc:`~escpos.exceptions.SetVariableError`
+    - `200` = Configuration not found :py:exc:`~escpos.exceptions.ConfigNotFoundError`
+    - `210` = Configuration syntax error :py:exc:`~escpos.exceptions.ConfigSyntaxError`
+    - `220` = Configuration section not found :py:exc:`~escpos.exceptions.ConfigSectionMissingError`
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
@@ -188,3 +191,48 @@ class SetVariableError(Error):
 
     def __str__(self):
         return "Set variable out of range"
+
+
+# Configuration errors
+
+class ConfigNotFoundError(Error):
+    """ The configuration file was not found
+
+    The default or passed configuration file could not be read
+    Ths returncode for this exception is `200`.
+    """
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 200
+
+    def __str__(self):
+        return "Configuration not found ({msg})".format(msg=self.msg)
+
+class ConfigSyntaxError(Error):
+    """ The configuration file is invalid
+
+    The syntax is incorrect
+    Ths returncode for this exception is `210`.
+    """
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 210
+
+    def __str__(self):
+        return "Configuration syntax is invalid ({msg})".format(msg=self.msg)
+
+class ConfigSectionMissingError(Error):
+    """ The configuration file is missing a section
+
+    The part of the config asked for doesn't exist in the loaded configuration
+    Ths returncode for this exception is `220`.
+    """
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 220
+
+    def __str__(self):
+        return "Configuration section is missing ({msg})".format(msg=self.msg)
