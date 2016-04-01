@@ -18,6 +18,13 @@ import sys
 import six
 from . import config
 
+# Must be defined before it's used in DEMO_FUNCTIONS
+def str_to_bool(string):
+    """ Used as a type in argparse so that we get back a proper
+    bool instead of always True
+    """
+    return string.lower() in ('y', 'yes', '1', 'true')
+
 # A list of functions that work better with a newline to be sent after them.
 REQUIRES_NEWLINE = ('qr', 'barcode', 'text', 'block_text')
 
@@ -128,7 +135,7 @@ ESCPOS_COMMANDS = [
             {
                 'option_strings': ('--align_ct',),
                 'help': 'Align barcode center',
-                'type': bool,
+                'type': str_to_bool,
             },
             {
                 'option_strings': ('--function_type',),
@@ -249,7 +256,7 @@ ESCPOS_COMMANDS = [
             {
                 'option_strings': ('--histeq',),
                 'help': 'Equalize the histrogram',
-                'type': bool,
+                'type': str_to_bool,
             },
             {
                 'option_strings': ('--bandsize',),
@@ -316,17 +323,17 @@ ESCPOS_COMMANDS = [
             {
                 'option_strings': ('--invert',),
                 'help': 'White on black printing',
-                'type': bool,
+                'type': str_to_bool,
             },
             {
                 'option_strings': ('--smooth',),
                 'help': 'Text smoothing. Effective on >:  4x4 text',
-                'type': bool,
+                'type': str_to_bool,
             },
             {
                 'option_strings': ('--flip',),
                 'help': 'Text smoothing. Effective on >:  4x4 text',
-                'type': bool,
+                'type': str_to_bool,
             },
         ],
     },
@@ -381,7 +388,7 @@ ESCPOS_COMMANDS = [
             {
                 'option_strings': ('--enable',),
                 'help': 'Feed button enabled',
-                'type': bool,
+                'type': str_to_bool,
                 'required': True,
             },
         ],
@@ -417,6 +424,8 @@ def main():
         epilog='Printer configuration is defined in the python-escpos config'
         'file. See documentation for details.',
     )
+
+    parser.register('type', 'bool', str_to_bool)
 
     # Allow config file location to be passed
     parser.add_argument(
@@ -469,7 +478,7 @@ def main():
     if not args_dict:
         parser.print_help()
         sys.exit()
-    command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v)
+    command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v is not None)
 
     # If there was a config path passed, grab it
     config_path = command_arguments.pop('config', None)
