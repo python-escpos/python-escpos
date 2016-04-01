@@ -52,13 +52,13 @@ class Usb(Escpos):
                 self.device.detach_kernel_driver(0)
             except usb.core.USBError as e:
                 if check_driver is not None:
-                    print "Could not detatch kernel driver: %s" % str(e)
+                    print "Could not detatch kernel driver: {0!s}".format(str(e))
 
         try:
             self.device.set_configuration()
             self.device.reset()
         except usb.core.USBError as e:
-            print "Could not set configuration: %s" % str(e)
+            print "Could not set configuration: {0!s}".format(str(e))
 
 
     def _raw(self, msg):
@@ -114,7 +114,7 @@ class Serial(Escpos):
         if self.device is not None:
             print "Serial printer enabled"
         else:
-            print "Unable to open serial printer on: %s" % self.devfile
+            print "Unable to open serial printer on: {0!s}".format(self.devfile)
 
 
     def _raw(self, msg):
@@ -148,7 +148,7 @@ class Network(Escpos):
         self.device.connect((self.host, self.port))
 
         if self.device is None:
-            print "Could not open socket for %s" % self.host
+            print "Could not open socket for {0!s}".format(self.host)
 
 
     def _raw(self, msg):
@@ -178,7 +178,7 @@ class File(Escpos):
         self.device = open(self.devfile, "wb")
 
         if self.device is None:
-            print "Could not open the specified file %s" % self.devfile
+            print "Could not open the specified file {0!s}".format(self.devfile)
 
 
     def _raw(self, msg):
