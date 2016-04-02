@@ -669,7 +669,7 @@ class Escpos(object):
         :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
         # Set tab positions
-        if pos < 1 or pos > 16:
+        if not (1 <= pos <= 16):
             raise TabPosError()
         else:
             self._raw(CTL_SET_HT + six.int2byte(pos))
