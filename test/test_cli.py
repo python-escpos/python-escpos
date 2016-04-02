@@ -28,6 +28,7 @@ printer:
     testfile=DEVFILE,
 )
 
+
 class TestCLI:
     """ Contains setups, teardowns, and tests for CLI
     """
