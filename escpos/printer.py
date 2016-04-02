@@ -17,7 +17,7 @@ import usb.util
 import serial
 import socket
 
-from .escpos import *
+from .escpos import Escpos
 from .exceptions import *
 
 
