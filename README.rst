@@ -58,7 +58,7 @@ The basic usage is:
 
     """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
     Epson = escpos.Escpos(0x04b8,0x0202,0)
-    Epson.text("Hello World")
+    Epson.text("Hello World\n")
     Epson.image("logo.gif")
     Epson.barcode('1324354657687','EAN13',64,2,'','')
     Epson.cut()
