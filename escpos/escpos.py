@@ -14,14 +14,8 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import six
-
-from PIL import Image
-
 import qrcode
 import textwrap
-import binascii
-import operator
 
 from .constants import *
 from .exceptions import *
@@ -55,98 +49,6 @@ class Escpos(object):
         """
         pass
 
-    @staticmethod
-    def _check_image_size(size):
-        """ Check and fix the size of the image to 32 bits
-
-        :param size: size of the image
-        :returns: tuple of image borders
-        :rtype: (int, int)
-        """
-        if size % 32 == 0:
-            return 0, 0
-        else:
-            image_border = 32 - (size % 32)
-            if (image_border % 2) == 0:
-                return image_border // 2, image_border // 2
-            else:
-                return image_border // 2, (image_border // 2) + 1
-
-    def _print_image(self, line, size):
-        """ Print formatted image
-
-        :param line:
-        :param size:
-        """
-        i = 0
-        cont = 0
-        pbuffer = b''
-
-        self._raw(S_RASTER_N)
-        pbuffer = "{0:02X}{1:02X}{2:02X}{3:02X}".format(((size[0]//size[1])//8), 0, size[1] & 0xff, size[1] >> 8)
-        self._raw(binascii.unhexlify(pbuffer))
-        pbuffer = ""
-
-        while i < len(line):
-            hex_string = int(line[i:i+8], 2)
-            pbuffer += "{0:02X}".format(hex_string)
-            i += 8
-            cont += 1
-            if cont % 4 == 0:
-                self._raw(binascii.unhexlify(pbuffer))
-                pbuffer = ""
-                cont = 0
-
-    def _convert_image(self, im):
-        """ Parse image and prepare it to a printable format
-
-        :param im: image data
-        :raises: :py:exc:`~escpos.exceptions.ImageSizeError`
-        """
-        pixels = []
-        pix_line = ""
-        im_left = ""
-        im_right = ""
-        switch = 0
-        img_size = [0, 0]
-
-        if im.size[0] > 512:
-            print ("WARNING: Image is wider than 512 and could be truncated at print time ")
-        if im.size[1] > 0xffff:
-            raise ImageSizeError()
-
-        im_border = self._check_image_size(im.size[0])
-        for i in range(im_border[0]):
-            im_left += "0"
-        for i in range(im_border[1]):
-            im_right += "0"
-
-        for y in range(im.size[1]):
-            img_size[1] += 1
-            pix_line += im_left
-            img_size[0] += im_border[0]
-            for x in range(im.size[0]):
-                img_size[0] += 1
-                RGB = im.getpixel((x, y))
-                im_color = (RGB[0] + RGB[1] + RGB[2])
-                im_pattern = "1X0"
-                pattern_len = len(im_pattern)
-                switch = (switch - 1) * (-1)
-                for x in range(pattern_len):
-                    if im_color <= (255 * 3 / pattern_len * (x+1)):
-                        if im_pattern[x] == "X":
-                            pix_line += "{0:d}".format(switch)
-                        else:
-                            pix_line += im_pattern[x]
-                        break
-                    elif (255 * 3 / pattern_len * pattern_len) < im_color <= (255 * 3):
-                        pix_line += im_pattern[-1]
-                        break
-            pix_line += im_right
-            img_size[0] += im_border[1]
-
-        self._print_image(pix_line, img_size)
-
     def image(self, path_img):
         """ Open and print an image file
 
@@ -157,111 +59,7 @@ class Escpos(object):
 
         :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
         """
-        if not isinstance(path_img, Image.Image):
-            im_open = Image.open(path_img)
-        else:
-            im_open = path_img
-
-        # Remove the alpha channel on transparent images
-        if im_open.mode == 'RGBA':
-            im_open.load()
-            im = Image.new("RGB", im_open.size, (255, 255, 255))
-            im.paste(im_open, mask=im_open.split()[3])
-        else:
-            im = im_open.convert("RGB")
-
-        # Convert the RGB image in printable image
-        self._convert_image(im)
-
-    def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
-        """ Resizes and prints an arbitrarily sized image
-
-        .. warning:: The image-printing-API is currently under development. Please do not consider this method part
-                     of the API. It might be subject to change without further notice.
-
-        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
-                  check for bugs like these in the future.
-        """
-        print("WARNING: The image-printing-API is currently under development. Please do not consider this "
-              "function part of the API yet.")
-        if isinstance(img, Image.Image):
-            im = img.convert("RGB")
-        else:
-            im = Image.open(img).convert("RGB")
-
-        if histeq:
-            # Histogram equaliztion
-            h = im.histogram()
-            lut = []
-            for b in range(0, len(h), 256):
-                # step size
-                step = reduce(operator.add, h[b:b+256]) / 255
-                # create equalization lookup table
-                n = 0
-                for i in range(256):
-                    lut.append(n / step)
-                    n = n + h[i+b]
-            im = im.point(lut)
-
-        if width:
-            ratio = float(width) / im.size[0]
-            newheight = int(ratio * im.size[1])
-
-            # Resize the image
-            im = im.resize((width, newheight), Image.ANTIALIAS)
-
-        if max_height and im.size[1] > max_height:
-            im = im.crop((0, 0, im.size[0], max_height))
-
-        # Divide into bands
-        current = 0
-        while current < im.size[1]:
-            self.image(im.crop((0, current, width or im.size[0],
-                                min(im.size[1], current + bandsize))))
-            current += bandsize
-
-    def direct_image(self, image):
-        """ Direct printing function for pictures
-
-        .. warning:: The image-printing-API is currently under development. Please do not consider this method part
-                     of the API. It might be subject to change without further notice.
-
-        This function is rather fragile and will fail when the Image object is not suited.
-
-        :param image: PIL image object, containing a 1-bit picture
-        """
-        print("WARNING: The image-printing-API is currently under development. Please do not consider this "
-              "function part of the API yet.")
-        mask = 0x80
-        i = 0
-        temp = 0
-
-        (width, height) = image.size
-        self._raw(S_RASTER_N)
-        header_x = int(width / 8)
-        header_y = height
-        buf = "{0:02X}".format((header_x & 0xff))
-        buf += "{0:02X}".format(((header_x >> 8) & 0xff))
-        buf += "{0:02X}".format((header_y & 0xff))
-        buf += "{0:02X}".format(((header_y >> 8) & 0xff))
-        #self._raw(binascii.unhexlify(buf))
-        for y in range(height):
-            for x in range(width):
-                value = image.getpixel((x, y))
-                value |= (value << 8)
-                if value == 0:
-                    temp |= mask
-
-                mask >>= 1
-
-                i += 1
-                if i == 8:
-                    buf += ("{0:02X}".format(temp))
-                    mask = 0x80
-                    i = 0
-                    temp = 0
-        self._raw(binascii.unhexlify(bytes(buf, "ascii")))
-        self._raw(b'\n')
+        pass
 
     def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2, native=False):
         """ Print QR Code for the provided string
