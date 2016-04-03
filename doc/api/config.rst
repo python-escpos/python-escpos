@@ -1,5 +1,5 @@
 Config
----------
+------
 Module :py:mod:`escpos.config`
 
 .. automodule:: escpos.config

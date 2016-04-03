@@ -238,12 +238,12 @@ class Escpos(object):
 
         (width, height) = image.size
         self._raw(S_RASTER_N)
-        headerX = int(width / 8)
-        headerY = height
-        buf = "{0:02X}".format((headerX & 0xff))
-        buf += "{0:02X}".format(((headerX >> 8) & 0xff))
-        buf += "{0:02X}".format((headerY & 0xff))
-        buf += "{0:02X}".format(((headerY >> 8) & 0xff))
+        header_x = int(width / 8)
+        header_y = height
+        buf = "{0:02X}".format((header_x & 0xff))
+        buf += "{0:02X}".format(((header_x >> 8) & 0xff))
+        buf += "{0:02X}".format((header_y & 0xff))
+        buf += "{0:02X}".format(((header_y >> 8) & 0xff))
         #self._raw(binascii.unhexlify(buf))
         for y in range(height):
             for x in range(width):
@@ -550,8 +550,8 @@ class Escpos(object):
         :param columns: amount of columns
         :return: None
         """
-        colCount = self.columns if columns is None else columns
-        self.text(textwrap.fill(txt, colCount))
+        col_count = self.columns if columns is None else columns
+        self.text(textwrap.fill(txt, col_count))
 
     def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False, flip=False):
         """ Set text properties by sending them to the printer
@@ -733,7 +733,7 @@ class Escpos(object):
         :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
         # Set tab positions
-        if pos < 1 or pos > 16:
+        if not (1 <= pos <= 16):
             raise TabPosError()
         else:
             self._raw(CTL_SET_HT + six.int2byte(pos))

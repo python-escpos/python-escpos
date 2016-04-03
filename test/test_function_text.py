@@ -21,6 +21,7 @@ import filecmp
 
 devfile = 'testfile'
 
+
 def setup_testfile():
     """create a testfile as devfile"""
     fhandle = open(devfile, 'a')
@@ -29,9 +30,11 @@ def setup_testfile():
     finally:
         fhandle.close()
 
+
 def teardown_testfile():
     """destroy testfile again"""
     os.remove(devfile)
+
 
 @with_setup(setup_testfile, teardown_testfile)
 def test_function_text_dies_ist_ein_test_lf():
