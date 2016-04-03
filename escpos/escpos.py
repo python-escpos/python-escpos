@@ -21,7 +21,7 @@ from .constants import *
 from .exceptions import *
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
-
+from escpos.image import EscposImage
 
 class Escpos(object):
     """ ESC/POS Printer object
@@ -49,17 +49,53 @@ class Escpos(object):
         """
         pass
 
-    def image(self, path_img):
-        """ Open and print an image file
+    def image(self, img_source, high_density_vertical = True, high_density_horizontal = True, impl = "graphics"):
+        """ Print an image
 
-        Prints an image. The image is automatically adjusted in size in order to print it.
+        :param img_source: PIL image or filename to load: `jpg`, `gif`, `png` or `bmp`
+        
+        """       
+        im = EscposImage(img_source)
+        
+        if impl == "bitImageRaster":
+            # GS v 0, raster format bit image
+            density_byte = (0 if high_density_vertical else 1) + (0 if high_density_horizontal else 2)
+            header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) + self._int_low_high(im.height, 2);
+            self._raw(header + im.to_raster_format())
+        
+        if impl == "graphics":
+            # GS ( L raster format graphics
+            img_header = self._int_low_high(im.width, 2) + self._int_low_high(im.height, 2);
+            tone = b'0';
+            colors = b'1';
+            ym = six.int2byte(1 if high_density_vertical else 2)
+            xm = six.int2byte(1 if high_density_horizontal else 2)
+            header = tone + xm + ym + colors + img_header
+            raster_data = im.to_raster_format()
+            self._image_send_graphics_data(b'0', b'p', header + raster_data);
+            self._image_send_graphics_data(b'0', b'2', b'');
+        
+        if impl == "bitImageColumn":
+            # ESC *, column format bit image
+            density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0);
+            header = ESC + b"*" + six.int2byte(density_byte) + self._int_low_high( im.width, 2 );
+            outp = []
+            outp.append(ESC + b"3" + six.int2byte(16)) # Adjust line-feed size
+            for blob in im.to_column_format(high_density_vertical):
+                outp.append(header + blob + b"\n")
+            outp.append(ESC + b"2"); # Reset line-feed size
+            self._raw(b''.join(outp))
 
-        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
-                  check for bugs like these in the future.
-
-        :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
+    def _image_send_graphics_data(self, m, fn, data):
         """
-        pass
+        Wrapper for GS ( L, to calculate and send correct data length.
+        
+        :param m: Modifier//variant for function. Usually '0'
+        :param fn: Function number to use, as byte
+        :param data: Data to send
+        """
+        header = self._int_low_high(len(data) + 2, 2);
+        self._raw(GS + b'(L' + header + m + fn + data)
 
     def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2, native=False):
         """ Print QR Code for the provided string
@@ -84,7 +120,7 @@ class Escpos(object):
         if not native:
             # Map ESC/POS error correction levels to python 'qrcode' library constant and render to an image
             if model != QR_MODEL_2:
-                raise ValueError("Invalid QR mocel for qrlib rendering (must be QR_MODEL_2)")
+                raise ValueError("Invalid QR model for qrlib rendering (must be QR_MODEL_2)")
             python_qr_ec = {
                      QR_ECLEVEL_H: qrcode.constants.ERROR_CORRECT_H,
                      QR_ECLEVEL_L: qrcode.constants.ERROR_CORRECT_L,
@@ -97,7 +133,7 @@ class Escpos(object):
             qr_img = qr_code.make_image()
             im = qr_img._img.convert("RGB")
             # Convert the RGB image in printable image
-            self._convert_image(im)
+            self.image(im)
             return
         # Native 2D code printing
         cn = b'1' # Code type for QR code

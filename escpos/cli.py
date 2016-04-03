@@ -37,8 +37,8 @@ DEMO_FUNCTIONS = {
         {'txt': 'Hello, World!\n',}
     ],
     'qr': [
-        {'text': 'This tests a QR code'},
-        {'text': 'https://en.wikipedia.org/'}
+        {'content': 'This tests a QR code'},
+        {'content': 'https://en.wikipedia.org/'}
     ],
     'barcodes_a': [
         {'bc': 'UPC-A', 'code': '13243546576'},
@@ -87,7 +87,7 @@ ESCPOS_COMMANDS = [
         },
         'arguments': [
             {
-                'option_strings': ('--text',),
+                'option_strings': ('--content',),
                 'help': 'Text to print as a qr code',
                 'required': True,
             }
@@ -223,10 +223,26 @@ ESCPOS_COMMANDS = [
         },
         'arguments': [
             {
-                'option_strings': ('--path_img',),
+                'option_strings': ('--img_source',),
                 'help': 'Path to image',
                 'required': True,
             },
+            {
+                'option_strings': ('--impl',),
+                'help': 'Implementation to use',
+                'choices': ['bitImageRaster', 'bitImageColumn', 'graphics'],
+            },
+            {
+                'option_strings': ('--high_density_horizontal',),
+                'help': 'Image density (horizontal)',
+                'type': str_to_bool,
+            },     
+            {
+                'option_strings': ('--high_density_vertical',),
+                'help': 'Image density (vertical)',
+                'type': str_to_bool,
+            },      
+                      
         ],
     },
     {

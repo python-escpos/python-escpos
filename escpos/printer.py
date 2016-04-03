@@ -20,7 +20,6 @@ import socket
 from .escpos import Escpos
 from .exceptions import *
 
-
 class Usb(Escpos):
     """ USB printer
 
@@ -260,3 +259,37 @@ class File(Escpos):
         """ Close system file """
         self.device.flush()
         self.device.close()
+
+class Dummy(Escpos):
+    """ Dummy printer
+
+    This class is used for saving commands to a variable, for use in situations where
+    there is no need to send commands to an actual printer. This includes
+    generating print jobs for later use, or testing output.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+
+        :param devfile : Device file under dev filesystem
+        """
+        Escpos.__init__(self, *args, **kwargs)
+        self._output_list = []
+
+    def _raw(self, msg):
+        """ Print any command sent in raw format
+
+        :param msg: arbitrary code to be printed
+        :type msg: bytes
+        """
+        self._output_list.append(msg)
+
+    @property
+    def output(self):
+        return b''.join(self._output_list)
