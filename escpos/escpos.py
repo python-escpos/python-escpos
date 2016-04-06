@@ -49,7 +49,7 @@ class Escpos(object):
         """
         pass
 
-    def image(self, img_source, high_density_vertical = True, high_density_horizontal = True, impl = "graphics"):
+    def image(self, img_source, high_density_vertical = True, high_density_horizontal = True, impl = "bitImageRaster"):
         """ Print an image
 
         :param img_source: PIL image or filename to load: `jpg`, `gif`, `png` or `bmp`
