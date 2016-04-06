@@ -292,4 +292,5 @@ class Dummy(Escpos):
 
     @property
     def output(self):
+        """ Get the data that was sent to this printer """
         return b''.join(self._output_list)

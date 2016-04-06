@@ -2,9 +2,6 @@
 
 This module contains the image format handler :py:class:`EscposImage`.
 
-The class is designed to efficiently delegate image processing to
-PIL, rather than spend CPU cycles looping over pixels.
-
 :author: `Michael Billington <michael.billington@gmail.com>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 Michael Billington <michael.billington@gmail.com>
@@ -14,6 +11,13 @@ PIL, rather than spend CPU cycles looping over pixels.
 from PIL import Image, ImageOps
 
 class EscposImage(object):
+    """
+    Load images in, and output ESC/POS formats.
+
+    The class is designed to efficiently delegate image processing to
+    PIL, rather than spend CPU cycles looping over pixels.
+    """
+
     def __init__(self, img_source):
         """
         Load in an image
