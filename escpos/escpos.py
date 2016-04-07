@@ -60,25 +60,25 @@ class Escpos(object):
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
             density_byte = (0 if high_density_vertical else 1) + (0 if high_density_horizontal else 2)
-            header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) + self._int_low_high(im.height, 2);
+            header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) + self._int_low_high(im.height, 2)
             self._raw(header + im.to_raster_format())
         
         if impl == "graphics":
             # GS ( L raster format graphics
-            img_header = self._int_low_high(im.width, 2) + self._int_low_high(im.height, 2);
-            tone = b'0';
-            colors = b'1';
+            img_header = self._int_low_high(im.width, 2) + self._int_low_high(im.height, 2)
+            tone = b'0'
+            colors = b'1'
             ym = six.int2byte(1 if high_density_vertical else 2)
             xm = six.int2byte(1 if high_density_horizontal else 2)
             header = tone + xm + ym + colors + img_header
             raster_data = im.to_raster_format()
-            self._image_send_graphics_data(b'0', b'p', header + raster_data);
-            self._image_send_graphics_data(b'0', b'2', b'');
+            self._image_send_graphics_data(b'0', b'p', header + raster_data)
+            self._image_send_graphics_data(b'0', b'2', b'')
         
         if impl == "bitImageColumn":
             # ESC *, column format bit image
-            density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0);
-            header = ESC + b"*" + six.int2byte(density_byte) + self._int_low_high( im.width, 2 );
+            density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0)
+            header = ESC + b"*" + six.int2byte(density_byte) + self._int_low_high( im.width, 2 )
             outp = []
             outp.append(ESC + b"3" + six.int2byte(16)) # Adjust line-feed size
             for blob in im.to_column_format(high_density_vertical):
@@ -94,7 +94,7 @@ class Escpos(object):
         :param fn: Function number to use, as byte
         :param data: Data to send
         """
-        header = self._int_low_high(len(data) + 2, 2);
+        header = self._int_low_high(len(data) + 2, 2)
         self._raw(GS + b'(L' + header + m + fn + data)
 
     def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2, native=False):
@@ -138,14 +138,14 @@ class Escpos(object):
         # Native 2D code printing
         cn = b'1' # Code type for QR code
         # Select model: 1, 2 or micro.
-        self._send_2d_code_data(six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0));
+        self._send_2d_code_data(six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0))
         # Set dot size.
-        self._send_2d_code_data(six.int2byte(67), cn, six.int2byte(size));
+        self._send_2d_code_data(six.int2byte(67), cn, six.int2byte(size))
         # Set error correction level: L, M, Q, or H
-        self._send_2d_code_data(six.int2byte(69), cn, six.int2byte(48 + ec));
+        self._send_2d_code_data(six.int2byte(69), cn, six.int2byte(48 + ec))
         # Send content & print
-        self._send_2d_code_data(six.int2byte(80), cn, content.encode('utf-8'), b'0');
-        self._send_2d_code_data(six.int2byte(81), cn, b'', b'0');
+        self._send_2d_code_data(six.int2byte(80), cn, content.encode('utf-8'), b'0')
+        self._send_2d_code_data(six.int2byte(81), cn, b'', b'0')
 
     def _send_2d_code_data(self, fn, cn, data, m=b''):
         """ Wrapper for GS ( k, to calculate and send correct data length.
@@ -157,7 +157,7 @@ class Escpos(object):
         """
         if len(m) > 1 or len(cn) != 1 or len(fn) != 1:
             raise ValueError("cn and fn must be one byte each.")
-        header = self._int_low_high(len(data) + len(m) + 2, 2);
+        header = self._int_low_high(len(data) + len(m) + 2, 2)
         self._raw(GS + b'(k' + header + cn + fn + m + data)
     
     @staticmethod
@@ -167,12 +167,12 @@ class Escpos(object):
         :param inp_number: Input number
         :param out_bytes: The number of bytes to output (1 - 4).
         """
-        max_input = (256 << (out_bytes * 8) - 1);
+        max_input = (256 << (out_bytes * 8) - 1)
         if not 1 <= out_bytes <= 4:
             raise ValueError("Can only output 1-4 byes")
         if not 0 <= inp_number <= max_input:
             raise ValueError("Number too large. Can only output up to {0} in {1} byes".format(max_input, out_bytes))
-        outp = b'';
+        outp = b''
         for _ in range(0, out_bytes):
             outp += six.int2byte(inp_number % 256)
             inp_number = inp_number // 256
