@@ -59,7 +59,7 @@ class Escpos(object):
         
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
-            density_byte = (0 if high_density_vertical else 1) + (0 if high_density_horizontal else 2)
+            density_byte = (0 if high_density_horizontal else 1) + (0 if high_density_vertical else 2)
             header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) + self._int_low_high(im.height, 2)
             self._raw(header + im.to_raster_format())
         
