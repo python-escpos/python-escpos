@@ -10,7 +10,7 @@ In order to reduce the amount of work for everyone please try to adhere to good 
 The pull requests and issues will be prefilled with templates. Please fill in your information where applicable.
 
 This project uses `semantic versioning <http://semver.org/>`_ and tries to adhere to the proposed rules as
-good as possible.
+well as possible.
 
 Style-Guide
 -----------
@@ -44,20 +44,19 @@ The checks by Landscape and QuantifiedCode that run on every PR will provide you
 
 GIT
 ^^^
-The master-branch contains code that always builds. Releases are tags on the master branch.
-Currently, development happens in a separate branch, because we refactored basically the whole code.
-Please branch of the HEAD of the current development-branch and create a pull request to development with your changes.
+The master-branch contains code that has been released to PyPi. A release is marked with a tag
+corresponding to the version. Issues are closed when they have been resolved in a released version
+of the package.
 
-Try to group your commits into logical units. Before creating your pull request consider rebasing your branch to the
-HEAD of the branch that you developed against. You can also regroup your commits during this rebase with the
-feature `squash` of interactive rebasing. You may also do so after creating your PR, but please put up a notice
-that you have force-pushed your changes into your feature-branch.
-A force-push should never occur directly on the master- or development-branch.
+When you have a change to make, begin by creating a new branch from the HEAD of `python-escpos/development`.
+Name your branch to indicate what you are trying to achieve. Good branch names might
+be `improve/text-handling`, `feature/enable-color-printing`.
 
-When you create a branch please name your branch after what you are trying to achieve, e.g. when you add a new
-feature that enables color printing, you could name the branch `feature/enable-color-printing`. This makes the log more
-readable.
-Imagine you improve text handling, then you could name your branch `improve/text-handling`.
+Please try to group your commits into logical units. If you need to tidy up your branch, you can make use of a
+git feature called an 'interactive rebase' before making a pull request. A small, self-contained change-set is
+easier to review, and improves the chance of your code being merged.
+Please also make sure that before creating your PR, your branch is rebased on a recent commit or you merged a recent
+commit into your branch. This way you can ensure that your PR is without merge conflicts.
 
 Docstrings
 ^^^^^^^^^^
