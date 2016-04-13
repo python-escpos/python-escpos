@@ -12,70 +12,88 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from nose.tools import with_setup
-
+from nose.tools import raises
 import escpos.printer as printer
-import os
 from escpos.constants import QR_ECLEVEL_H, QR_MODEL_1
 
-devfile = 'testfile'
 
-
-def setup_testfile():
-    """create a testfile as devfile"""
-    fhandle = open(devfile, 'a')
-    try:
-        os.utime(devfile, None)
-    finally:
-        fhandle.close()
-
-
-def teardown_testfile():
-    """destroy testfile again"""
-    os.remove(devfile)
-
-
-@with_setup(setup_testfile, teardown_testfile)
-def test_function_qr_defaults():
-    """test QR code with defaults"""
-    instance = printer.File(devfile=devfile)
+def test_defaults():
+    """Test QR code with defaults"""
+    instance = printer.Dummy()
     instance.qr("1234", native=True)
-    instance.flush()
-    with open(devfile, "rb") as f:
-        assert(f.read() == b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x03\x1d(k\x03\x001E0\x1d(k\x07\x001P01234\x1d(k\x03\x001Q0')
+    expected = b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x03\x1d(k\x03\x001E0\x1d' \
+        b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
+    assert(instance.output == expected)
 
-@with_setup(setup_testfile, teardown_testfile)
-def test_function_qr_empty():
-    """test QR printing blank code"""
-    instance = printer.File(devfile=devfile)
+
+def test_empty():
+    """Test QR printing blank code"""
+    instance = printer.Dummy()
     instance.qr("", native=True)
-    instance.flush()
-    with open(devfile, "rb") as f:
-        assert(f.read() == b'')
+    assert(instance.output == b'')
 
-@with_setup(setup_testfile, teardown_testfile)
-def test_function_qr_ec():
-    """test QR error correction setting"""
-    instance = printer.File(devfile=devfile)
+
+def test_ec():
+    """Test QR error correction setting"""
+    instance = printer.Dummy()
     instance.qr("1234", native=True, ec=QR_ECLEVEL_H)
-    instance.flush()
-    with open(devfile, "rb") as f:
-        assert(f.read() == b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x03\x1d(k\x03\x001E3\x1d(k\x07\x001P01234\x1d(k\x03\x001Q0')
+    expected = b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x03\x1d(k\x03\x001E3\x1d' \
+        b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
+    assert(instance.output == expected)
 
-@with_setup(setup_testfile, teardown_testfile)
-def test_function_qr_size():
-    """test QR box size"""
-    instance = printer.File(devfile=devfile)
+
+def test_size():
+    """Test QR box size"""
+    instance = printer.Dummy()
     instance.qr("1234", native=True, size=7)
-    instance.flush()
-    with open(devfile, "rb") as f:
-        assert(f.read() == b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x07\x1d(k\x03\x001E0\x1d(k\x07\x001P01234\x1d(k\x03\x001Q0')
+    expected = b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x07\x1d(k\x03\x001E0\x1d' \
+        b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
+    assert(instance.output == expected)
 
-@with_setup(setup_testfile, teardown_testfile)
-def test_function_qr_model():
-    """test QR model"""
-    instance = printer.File(devfile=devfile)
+
+def test_model():
+    """Test QR model"""
+    instance = printer.Dummy()
     instance.qr("1234", native=True, model=QR_MODEL_1)
-    instance.flush()
-    with open(devfile, "rb") as f:
-        assert(f.read() == b'\x1d(k\x04\x001A1\x00\x1d(k\x03\x001C\x03\x1d(k\x03\x001E0\x1d(k\x07\x001P01234\x1d(k\x03\x001Q0')
+    expected = b'\x1d(k\x04\x001A1\x00\x1d(k\x03\x001C\x03\x1d(k\x03\x001E0\x1d' \
+        b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
+    assert(instance.output == expected)
+
+
+@raises(ValueError)
+def test_invalid_ec():
+    """Test invalid QR error correction"""
+    instance = printer.Dummy()
+    instance.qr("1234", native=True, ec=-1)
+
+
+@raises(ValueError)
+def test_invalid_size():
+    """Test invalid QR size"""
+    instance = printer.Dummy()
+    instance.qr("1234", native=True, size=0)
+
+
+@raises(ValueError)
+def test_invalid_model():
+    """Test invalid QR model"""
+    instance = printer.Dummy()
+    instance.qr("1234", native=True, model="Hello")
+
+
+def test_image():
+    """Test QR as image"""
+    instance = printer.Dummy()
+    instance.qr("1", native=False, size=1)
+    print(instance.output)
+    expected = b'\x1dv0\x00\x03\x00\x17\x00\x00\x00\x00\x7f]\xfcA\x19\x04]it]et' \
+        b']ItA=\x04\x7fU\xfc\x00\x0c\x00y~t4\x7f =\xa84j\xd9\xf0\x05\xd4\x90\x00' \
+        b'i(\x7f<\xa8A \xd8]\'\xc4]y\xf8]E\x80Ar\x94\x7fR@\x00\x00\x00'
+    assert(instance.output == expected)
+
+
+@raises(ValueError)
+def test_image_invalid_model():
+    """Test unsupported QR model as image"""
+    instance = printer.Dummy()
+    instance.qr("1234", native=False, model=QR_MODEL_1)

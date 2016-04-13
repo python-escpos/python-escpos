@@ -14,20 +14,14 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import six
-
-from PIL import Image
-
 import qrcode
 import textwrap
-import binascii
-import operator
 
 from .constants import *
 from .exceptions import *
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
-
+from escpos.image import EscposImage
 
 class Escpos(object):
     """ ESC/POS Printer object
@@ -55,213 +49,52 @@ class Escpos(object):
         """
         pass
 
-    @staticmethod
-    def _check_image_size(size):
-        """ Check and fix the size of the image to 32 bits
+    def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster"):
+        """ Print an image
 
-        :param size: size of the image
-        :returns: tuple of image borders
-        :rtype: (int, int)
+        :param img_source: PIL image or filename to load: `jpg`, `gif`, `png` or `bmp`
+        
+        """       
+        im = EscposImage(img_source)
+        
+        if impl == "bitImageRaster":
+            # GS v 0, raster format bit image
+            density_byte = (0 if high_density_horizontal else 1) + (0 if high_density_vertical else 2)
+            header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) + self._int_low_high(im.height, 2)
+            self._raw(header + im.to_raster_format())
+        
+        if impl == "graphics":
+            # GS ( L raster format graphics
+            img_header = self._int_low_high(im.width, 2) + self._int_low_high(im.height, 2)
+            tone = b'0'
+            colors = b'1'
+            ym = six.int2byte(1 if high_density_vertical else 2)
+            xm = six.int2byte(1 if high_density_horizontal else 2)
+            header = tone + xm + ym + colors + img_header
+            raster_data = im.to_raster_format()
+            self._image_send_graphics_data(b'0', b'p', header + raster_data)
+            self._image_send_graphics_data(b'0', b'2', b'')
+        
+        if impl == "bitImageColumn":
+            # ESC *, column format bit image
+            density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0)
+            header = ESC + b"*" + six.int2byte(density_byte) + self._int_low_high(im.width, 2)
+            outp = [ESC + b"3" + six.int2byte(16)]  # Adjust line-feed size
+            for blob in im.to_column_format(high_density_vertical):
+                outp.append(header + blob + b"\n")
+            outp.append(ESC + b"2")  # Reset line-feed size
+            self._raw(b''.join(outp))
+
+    def _image_send_graphics_data(self, m, fn, data):
         """
-        if size % 32 == 0:
-            return 0, 0
-        else:
-            image_border = 32 - (size % 32)
-            if (image_border % 2) == 0:
-                return image_border // 2, image_border // 2
-            else:
-                return image_border // 2, (image_border // 2) + 1
-
-    def _print_image(self, line, size):
-        """ Print formatted image
-
-        :param line:
-        :param size:
+        Wrapper for GS ( L, to calculate and send correct data length.
+        
+        :param m: Modifier//variant for function. Usually '0'
+        :param fn: Function number to use, as byte
+        :param data: Data to send
         """
-        i = 0
-        cont = 0
-        pbuffer = b''
-
-        self._raw(S_RASTER_N)
-        pbuffer = "{0:02X}{1:02X}{2:02X}{3:02X}".format(((size[0]//size[1])//8), 0, size[1] & 0xff, size[1] >> 8)
-        self._raw(binascii.unhexlify(pbuffer))
-        pbuffer = ""
-
-        while i < len(line):
-            hex_string = int(line[i:i+8], 2)
-            pbuffer += "{0:02X}".format(hex_string)
-            i += 8
-            cont += 1
-            if cont % 4 == 0:
-                self._raw(binascii.unhexlify(pbuffer))
-                pbuffer = ""
-                cont = 0
-
-    def _convert_image(self, im):
-        """ Parse image and prepare it to a printable format
-
-        :param im: image data
-        :raises: :py:exc:`~escpos.exceptions.ImageSizeError`
-        """
-        pixels = []
-        pix_line = ""
-        im_left = ""
-        im_right = ""
-        switch = 0
-        img_size = [0, 0]
-
-        if im.size[0] > 512:
-            print ("WARNING: Image is wider than 512 and could be truncated at print time ")
-        if im.size[1] > 0xffff:
-            raise ImageSizeError()
-
-        im_border = self._check_image_size(im.size[0])
-        for i in range(im_border[0]):
-            im_left += "0"
-        for i in range(im_border[1]):
-            im_right += "0"
-
-        for y in range(im.size[1]):
-            img_size[1] += 1
-            pix_line += im_left
-            img_size[0] += im_border[0]
-            for x in range(im.size[0]):
-                img_size[0] += 1
-                RGB = im.getpixel((x, y))
-                im_color = (RGB[0] + RGB[1] + RGB[2])
-                im_pattern = "1X0"
-                pattern_len = len(im_pattern)
-                switch = (switch - 1) * (-1)
-                for x in range(pattern_len):
-                    if im_color <= (255 * 3 / pattern_len * (x+1)):
-                        if im_pattern[x] == "X":
-                            pix_line += "{0:d}".format(switch)
-                        else:
-                            pix_line += im_pattern[x]
-                        break
-                    elif (255 * 3 / pattern_len * pattern_len) < im_color <= (255 * 3):
-                        pix_line += im_pattern[-1]
-                        break
-            pix_line += im_right
-            img_size[0] += im_border[1]
-
-        self._print_image(pix_line, img_size)
-
-    def image(self, path_img):
-        """ Open and print an image file
-
-        Prints an image. The image is automatically adjusted in size in order to print it.
-
-        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
-                  check for bugs like these in the future.
-
-        :param path_img: complete filename and path to image of type `jpg`, `gif`, `png` or `bmp`
-        """
-        if not isinstance(path_img, Image.Image):
-            im_open = Image.open(path_img)
-        else:
-            im_open = path_img
-
-        # Remove the alpha channel on transparent images
-        if im_open.mode == 'RGBA':
-            im_open.load()
-            im = Image.new("RGB", im_open.size, (255, 255, 255))
-            im.paste(im_open, mask=im_open.split()[3])
-        else:
-            im = im_open.convert("RGB")
-
-        # Convert the RGB image in printable image
-        self._convert_image(im)
-
-    def fullimage(self, img, max_height=860, width=512, histeq=True, bandsize=255):
-        """ Resizes and prints an arbitrarily sized image
-
-        .. warning:: The image-printing-API is currently under development. Please do not consider this method part
-                     of the API. It might be subject to change without further notice.
-
-        .. todo:: Seems to be broken. Write test that simply executes function with a dummy printer in order to
-                  check for bugs like these in the future.
-        """
-        print("WARNING: The image-printing-API is currently under development. Please do not consider this "
-              "function part of the API yet.")
-        if isinstance(img, Image.Image):
-            im = img.convert("RGB")
-        else:
-            im = Image.open(img).convert("RGB")
-
-        if histeq:
-            # Histogram equaliztion
-            h = im.histogram()
-            lut = []
-            for b in range(0, len(h), 256):
-                # step size
-                step = reduce(operator.add, h[b:b+256]) / 255
-                # create equalization lookup table
-                n = 0
-                for i in range(256):
-                    lut.append(n / step)
-                    n = n + h[i+b]
-            im = im.point(lut)
-
-        if width:
-            ratio = float(width) / im.size[0]
-            newheight = int(ratio * im.size[1])
-
-            # Resize the image
-            im = im.resize((width, newheight), Image.ANTIALIAS)
-
-        if max_height and im.size[1] > max_height:
-            im = im.crop((0, 0, im.size[0], max_height))
-
-        # Divide into bands
-        current = 0
-        while current < im.size[1]:
-            self.image(im.crop((0, current, width or im.size[0],
-                                min(im.size[1], current + bandsize))))
-            current += bandsize
-
-    def direct_image(self, image):
-        """ Direct printing function for pictures
-
-        .. warning:: The image-printing-API is currently under development. Please do not consider this method part
-                     of the API. It might be subject to change without further notice.
-
-        This function is rather fragile and will fail when the Image object is not suited.
-
-        :param image: PIL image object, containing a 1-bit picture
-        """
-        print("WARNING: The image-printing-API is currently under development. Please do not consider this "
-              "function part of the API yet.")
-        mask = 0x80
-        i = 0
-        temp = 0
-
-        (width, height) = image.size
-        self._raw(S_RASTER_N)
-        header_x = int(width / 8)
-        header_y = height
-        buf = "{0:02X}".format((header_x & 0xff))
-        buf += "{0:02X}".format(((header_x >> 8) & 0xff))
-        buf += "{0:02X}".format((header_y & 0xff))
-        buf += "{0:02X}".format(((header_y >> 8) & 0xff))
-        #self._raw(binascii.unhexlify(buf))
-        for y in range(height):
-            for x in range(width):
-                value = image.getpixel((x, y))
-                value |= (value << 8)
-                if value == 0:
-                    temp |= mask
-
-                mask >>= 1
-
-                i += 1
-                if i == 8:
-                    buf += ("{0:02X}".format(temp))
-                    mask = 0x80
-                    i = 0
-                    temp = 0
-        self._raw(binascii.unhexlify(bytes(buf, "ascii")))
-        self._raw(b'\n')
+        header = self._int_low_high(len(data) + 2, 2)
+        self._raw(GS + b'(L' + header + m + fn + data)
 
     def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2, native=False):
         """ Print QR Code for the provided string
@@ -286,7 +119,7 @@ class Escpos(object):
         if not native:
             # Map ESC/POS error correction levels to python 'qrcode' library constant and render to an image
             if model != QR_MODEL_2:
-                raise ValueError("Invalid QR mocel for qrlib rendering (must be QR_MODEL_2)")
+                raise ValueError("Invalid QR model for qrlib rendering (must be QR_MODEL_2)")
             python_qr_ec = {
                      QR_ECLEVEL_H: qrcode.constants.ERROR_CORRECT_H,
                      QR_ECLEVEL_L: qrcode.constants.ERROR_CORRECT_L,
@@ -299,19 +132,19 @@ class Escpos(object):
             qr_img = qr_code.make_image()
             im = qr_img._img.convert("RGB")
             # Convert the RGB image in printable image
-            self._convert_image(im)
+            self.image(im)
             return
         # Native 2D code printing
-        cn = b'1' # Code type for QR code
+        cn = b'1'  # Code type for QR code
         # Select model: 1, 2 or micro.
-        self._send_2d_code_data(six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0));
+        self._send_2d_code_data(six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0))
         # Set dot size.
-        self._send_2d_code_data(six.int2byte(67), cn, six.int2byte(size));
+        self._send_2d_code_data(six.int2byte(67), cn, six.int2byte(size))
         # Set error correction level: L, M, Q, or H
-        self._send_2d_code_data(six.int2byte(69), cn, six.int2byte(48 + ec));
+        self._send_2d_code_data(six.int2byte(69), cn, six.int2byte(48 + ec))
         # Send content & print
-        self._send_2d_code_data(six.int2byte(80), cn, content.encode('utf-8'), b'0');
-        self._send_2d_code_data(six.int2byte(81), cn, b'', b'0');
+        self._send_2d_code_data(six.int2byte(80), cn, content.encode('utf-8'), b'0')
+        self._send_2d_code_data(six.int2byte(81), cn, b'', b'0')
 
     def _send_2d_code_data(self, fn, cn, data, m=b''):
         """ Wrapper for GS ( k, to calculate and send correct data length.
@@ -323,7 +156,7 @@ class Escpos(object):
         """
         if len(m) > 1 or len(cn) != 1 or len(fn) != 1:
             raise ValueError("cn and fn must be one byte each.")
-        header = self._int_low_high(len(data) + len(m) + 2, 2);
+        header = self._int_low_high(len(data) + len(m) + 2, 2)
         self._raw(GS + b'(k' + header + cn + fn + m + data)
     
     @staticmethod
@@ -333,12 +166,12 @@ class Escpos(object):
         :param inp_number: Input number
         :param out_bytes: The number of bytes to output (1 - 4).
         """
-        max_input = (256 << (out_bytes * 8) - 1);
+        max_input = (256 << (out_bytes * 8) - 1)
         if not 1 <= out_bytes <= 4:
             raise ValueError("Can only output 1-4 byes")
         if not 0 <= inp_number <= max_input:
             raise ValueError("Number too large. Can only output up to {0} in {1} byes".format(max_input, out_bytes))
-        outp = b'';
+        outp = b''
         for _ in range(0, out_bytes):
             outp += six.int2byte(inp_number % 256)
             inp_number = inp_number // 256
