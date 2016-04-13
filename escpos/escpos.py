@@ -49,7 +49,7 @@ class Escpos(object):
         """
         pass
 
-    def image(self, img_source, high_density_vertical = True, high_density_horizontal = True, impl = "bitImageRaster"):
+    def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster"):
         """ Print an image
 
         :param img_source: PIL image or filename to load: `jpg`, `gif`, `png` or `bmp`
@@ -78,12 +78,11 @@ class Escpos(object):
         if impl == "bitImageColumn":
             # ESC *, column format bit image
             density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0)
-            header = ESC + b"*" + six.int2byte(density_byte) + self._int_low_high( im.width, 2 )
-            outp = []
-            outp.append(ESC + b"3" + six.int2byte(16)) # Adjust line-feed size
+            header = ESC + b"*" + six.int2byte(density_byte) + self._int_low_high(im.width, 2)
+            outp = [ESC + b"3" + six.int2byte(16)]  # Adjust line-feed size
             for blob in im.to_column_format(high_density_vertical):
                 outp.append(header + blob + b"\n")
-            outp.append(ESC + b"2"); # Reset line-feed size
+            outp.append(ESC + b"2")  # Reset line-feed size
             self._raw(b''.join(outp))
 
     def _image_send_graphics_data(self, m, fn, data):
@@ -136,7 +135,7 @@ class Escpos(object):
             self.image(im)
             return
         # Native 2D code printing
-        cn = b'1' # Code type for QR code
+        cn = b'1'  # Code type for QR code
         # Select model: 1, 2 or micro.
         self._send_2d_code_data(six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0))
         # Set dot size.

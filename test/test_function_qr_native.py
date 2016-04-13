@@ -16,6 +16,7 @@ from nose.tools import raises
 import escpos.printer as printer
 from escpos.constants import QR_ECLEVEL_H, QR_MODEL_1
 
+
 def test_defaults():
     """Test QR code with defaults"""
     instance = printer.Dummy()
@@ -24,11 +25,13 @@ def test_defaults():
         b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
     assert(instance.output == expected)
 
+
 def test_empty():
     """Test QR printing blank code"""
     instance = printer.Dummy()
     instance.qr("", native=True)
     assert(instance.output == b'')
+
 
 def test_ec():
     """Test QR error correction setting"""
@@ -38,6 +41,7 @@ def test_ec():
         b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
     assert(instance.output == expected)
 
+
 def test_size():
     """Test QR box size"""
     instance = printer.Dummy()
@@ -45,6 +49,7 @@ def test_size():
     expected = b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x07\x1d(k\x03\x001E0\x1d' \
         b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
     assert(instance.output == expected)
+
 
 def test_model():
     """Test QR model"""
@@ -54,11 +59,13 @@ def test_model():
         b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
     assert(instance.output == expected)
 
+
 @raises(ValueError)
 def test_invalid_ec():
     """Test invalid QR error correction"""
     instance = printer.Dummy()
     instance.qr("1234", native=True, ec=-1)
+
 
 @raises(ValueError)
 def test_invalid_size():
@@ -66,11 +73,13 @@ def test_invalid_size():
     instance = printer.Dummy()
     instance.qr("1234", native=True, size=0)
 
+
 @raises(ValueError)
 def test_invalid_model():
     """Test invalid QR model"""
     instance = printer.Dummy()
     instance.qr("1234", native=True, model="Hello")
+
 
 def test_image():
     """Test QR as image"""
@@ -81,6 +90,7 @@ def test_image():
         b']ItA=\x04\x7fU\xfc\x00\x0c\x00y~t4\x7f =\xa84j\xd9\xf0\x05\xd4\x90\x00' \
         b'i(\x7f<\xa8A \xd8]\'\xc4]y\xf8]E\x80Ar\x94\x7fR@\x00\x00\x00'
     assert(instance.output == expected)
+
 
 @raises(ValueError)
 def test_image_invalid_model():

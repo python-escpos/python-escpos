@@ -10,6 +10,7 @@ This module contains the image format handler :py:class:`EscposImage`.
 
 from PIL import Image, ImageOps
 
+
 class EscposImage(object):
     """
     Load images in, and output ESC/POS formats.
@@ -64,7 +65,7 @@ class EscposImage(object):
         _, height_pixels = self._im.size
         return height_pixels
 
-    def to_column_format(self, high_density_vertical = True):
+    def to_column_format(self, high_density_vertical=True):
         """
         Extract slices of an image as equal-sized blobs of column-format data.
 

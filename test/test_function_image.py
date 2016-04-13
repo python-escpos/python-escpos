@@ -7,8 +7,14 @@
 :license: GNU GPL v3
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import escpos.printer as printer
 from PIL import Image
+
 
 # Raster format print
 def test_bit_image_black():
@@ -24,6 +30,7 @@ def test_bit_image_black():
     instance.image(im, impl="bitImageRaster")
     assert(instance.output == b'\x1dv0\x00\x01\x00\x01\x00\x80')
 
+
 def test_bit_image_white():
     """
     Test printing solid white bit image (raster)
@@ -31,6 +38,7 @@ def test_bit_image_white():
     instance = printer.Dummy()
     instance.image('test/resources/canvas_white.png', impl="bitImageRaster")
     assert(instance.output == b'\x1dv0\x00\x01\x00\x01\x00\x00')
+
 
 def test_bit_image_both():
     """
@@ -40,6 +48,7 @@ def test_bit_image_both():
     instance.image('test/resources/black_white.png', impl="bitImageRaster")
     assert(instance.output == b'\x1dv0\x00\x01\x00\x02\x00\xc0\x00')
 
+
 def test_bit_image_transparent():
     """
     Test printing black/transparent bit image (raster)
@@ -47,6 +56,7 @@ def test_bit_image_transparent():
     instance = printer.Dummy()
     instance.image('test/resources/black_transparent.png', impl="bitImageRaster")
     assert(instance.output == b'\x1dv0\x00\x01\x00\x02\x00\xc0\x00')
+
 
 # Column format print
 def test_bit_image_colfmt_black():
@@ -57,6 +67,7 @@ def test_bit_image_colfmt_black():
     instance.image('test/resources/canvas_black.png', impl="bitImageColumn")
     assert(instance.output == b'\x1b3\x10\x1b*!\x01\x00\x80\x00\x00\x0a\x1b2')
 
+
 def test_bit_image_colfmt_white():
     """
     Test printing solid white bit image (column format)
@@ -64,6 +75,7 @@ def test_bit_image_colfmt_white():
     instance = printer.Dummy()
     instance.image('test/resources/canvas_white.png', impl="bitImageColumn")
     assert(instance.output == b'\x1b3\x10\x1b*!\x01\x00\x00\x00\x00\x0a\x1b2')
+
 
 def test_bit_image_colfmt_both():
     """
@@ -73,6 +85,7 @@ def test_bit_image_colfmt_both():
     instance.image('test/resources/black_white.png', impl="bitImageColumn")
     assert(instance.output == b'\x1b3\x10\x1b*!\x02\x00\x80\x00\x00\x80\x00\x00\x0a\x1b2')
 
+
 def test_bit_image_colfmt_transparent():
     """
     Test printing black/transparent bit image (column format)
@@ -80,6 +93,7 @@ def test_bit_image_colfmt_transparent():
     instance = printer.Dummy()
     instance.image('test/resources/black_transparent.png', impl="bitImageColumn")
     assert(instance.output == b'\x1b3\x10\x1b*!\x02\x00\x80\x00\x00\x80\x00\x00\x0a\x1b2')
+
 
 # Graphics print
 def test_graphics_black():
@@ -90,6 +104,7 @@ def test_graphics_black():
     instance.image('test/resources/canvas_black.png', impl="graphics")
     assert(instance.output == b'\x1d(L\x0b\x000p0\x01\x011\x01\x00\x01\x00\x80\x1d(L\x02\x0002')
 
+
 def test_graphics_white():
     """
     Test printing solid white graphics
@@ -98,6 +113,7 @@ def test_graphics_white():
     instance.image('test/resources/canvas_white.png', impl="graphics")
     assert(instance.output == b'\x1d(L\x0b\x000p0\x01\x011\x01\x00\x01\x00\x00\x1d(L\x02\x0002')
 
+
 def test_graphics_both():
     """
     Test printing black/white graphics
@@ -105,6 +121,7 @@ def test_graphics_both():
     instance = printer.Dummy()
     instance.image('test/resources/black_white.png', impl="graphics")
     assert(instance.output == b'\x1d(L\x0c\x000p0\x01\x011\x02\x00\x02\x00\xc0\x00\x1d(L\x02\x0002')
+
 
 def test_graphics_transparent():
     """
