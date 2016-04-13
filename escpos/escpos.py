@@ -23,13 +23,13 @@ from .exceptions import *
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
 
+@six.add_metaclass(ABCMeta)
 class Escpos(object):
     """ ESC/POS Printer object
 
     This class is the abstract base class for an esc/pos-printer. The printer implementations are children of this
     class.
     """
-    __metaclass__ = ABCMeta
     device = None
 
     def __init__(self, columns=32):
