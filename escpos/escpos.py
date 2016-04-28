@@ -41,7 +41,7 @@ class Escpos:
         buffer = ""
        
         self._raw(S_RASTER_N)
-        buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1], 0)
+        buffer = "%02X%02X%02X%02X" % (((size[0]/size[1])/8), 0, size[1]&0xff, size[1]>>8)
         self._raw(buffer.decode('hex'))
         buffer = ""
 
@@ -68,7 +68,7 @@ class Escpos:
 
         if im.size[0] > 512:
             print  ("WARNING: Image is wider than 512 and could be truncated at print time ")
-        if im.size[1] > 255:
+        if im.size[1] > 0xffff:
             raise ImageSizeError()
 
         im_border = self._check_image_size(im.size[0])
@@ -107,7 +107,15 @@ class Escpos:
     def image(self,path_img):
         """ Open image file """
         im_open = Image.open(path_img)
-        im = im_open.convert("RGB")
+
+	# Remove the alpha channel on transparent images
+	if im_open.mode == 'RGBA':
+		im_open.load()
+		im = Image.new("RGB", im_open.size, (255, 255, 255))
+		im.paste(im_open, mask=im_open.split()[3])
+	else:
+	        im = im_open.convert("RGB")
+
         # Convert the RGB image in printable image
         self._convert_image(im)
 
@@ -119,6 +127,7 @@ class Escpos:
         qr_code.make(fit=True)
         qr_img = qr_code.make_image()
         im = qr_img._img.convert("RGB")
+
         # Convert the RGB image in printable image
         self._convert_image(im)
 
