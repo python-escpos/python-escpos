@@ -52,8 +52,24 @@ class Escpos(object):
     def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster"):
         """ Print an image
 
+        You can select whether the printer should print in high density or not. The default value is high density.
+        When printing in low density, the image will be stretched.
+
+        Esc/Pos supplies several commands for printing. This function supports three of them. Please try to vary the
+        implementations if you have any problems. For example the printer `IT80-002` will have trouble aligning
+        images that are not printed in Column-mode.
+
+        The available printing implementations are:
+
+            * `bitImageRaster`: prints with the `GS v 0`-command
+            * `graphics`: prints with the `GS ( L`-command
+            * `bitImageColumn`: prints with the `ESC *`-command
+
         :param img_source: PIL image or filename to load: `jpg`, `gif`, `png` or `bmp`
-        
+        :param high_density_vertical: print in high density in vertical direction *default:* True
+        :param high_density_horizontal: print in high density in horizontal direction *default:* True
+        :param impl: choose image printing mode between `bitImageRaster`, `graphics` or `bitImageColumn`
+
         """       
         im = EscposImage(img_source)
         
