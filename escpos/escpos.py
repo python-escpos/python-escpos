@@ -457,7 +457,7 @@ class Escpos(object):
         elif text_type.upper() == "BU2":
             self._raw(TXT_BOLD_ON)
             self._raw(TXT_UNDERL2_ON)
-        elif text_type.upper == "NORMAL":
+        elif text_type.upper() == "NORMAL":
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL_OFF)
         # Font
