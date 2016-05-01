@@ -19,7 +19,7 @@ python-escpos - Python library to manipulate ESC/POS Printers
     :alt: Code Coverage
 
 .. image:: https://readthedocs.org/projects/python-escpos/badge/?version=stable
-    :target: http://python-escpos.readthedocs.org/en/latest/?badge=stable
+    :target: http://python-escpos.readthedocs.io/en/latest/?badge=stable
     :alt: Documentation Status
 
 
@@ -63,7 +63,7 @@ The basic usage is:
     Epson.barcode('1324354657687','EAN13',64,2,'','')
     Epson.cut()
 
-The full project-documentation is available on `Read the Docs <https://python-escpos.readthedocs.org>`_.
+The full project-documentation is available on `Read the Docs <https://python-escpos.readthedocs.io>`_.
 
 Contributing
 ------------
