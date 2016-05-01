@@ -177,6 +177,33 @@ And for a network printer::
                 host: 127.0.0.1
                 port: 9000
 
+Advanced Usage: Print from binary blob
+--------------------------------------
+
+Imagine you have a file with ESC/POS-commands in binary form. This could be useful for testing capabilities of your
+printer with a known working combination of commands.
+You can print this data with the following code, using the standard methods of python-escpos. (This is an
+advantage of the fact that `_raw()` accepts binary strings.)
+
+::
+
+    from escpos import printer
+    p = printer.Serial()  # adapt this to your printer model
+
+    file = open("binary-blob.bin", "rb")  # read in the file containing your commands in binary-mode
+    data = file.read()
+    file.close()
+
+    p._raw(data)
+
+That's all, the printer should then print your data. You can also use this technique to let others reproduce an issue
+that you have found. (Just "print" your commands to a File-printer on your local filesystem.)
+However, please keep in mind, that often it is easier and better to just supply the code that you are using.
+
+Here you can download an example, that will print a set of common barcodes:
+
+    * :download:`barcode.bin </download/barcode.bin>` by `@mike42 <https://github.com/mike42>`_
+
 How to update your code for USB printers
 ----------------------------------------
 
