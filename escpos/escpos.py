@@ -32,6 +32,7 @@ class Escpos(object):
     class.
     """
     device = None
+    codepage = None
 
     def __init__(self, columns=32):
         """ Initialize ESCPOS Printer
@@ -207,48 +208,71 @@ class Escpos(object):
         :param code: Name of CharCode
         :raises: :py:exc:`~escpos.exceptions.CharCodeError`
         """
+        # TODO improve this (rather unhandy code)
+        # TODO check the codepages
         if code.upper() == "USA":
             self._raw(CHARCODE_PC437)
+            self.codepage = 'cp437'
         elif code.upper() == "JIS":
             self._raw(CHARCODE_JIS)
+            self.codepage = 'cp932'
         elif code.upper() == "MULTILINGUAL":
             self._raw(CHARCODE_PC850)
+            self.codepage = 'cp850'
         elif code.upper() == "PORTUGUESE":
             self._raw(CHARCODE_PC860)
+            self.codepage = 'cp860'
         elif code.upper() == "CA_FRENCH":
             self._raw(CHARCODE_PC863)
+            self.codepage = 'cp863'
         elif code.upper() == "NORDIC":
             self._raw(CHARCODE_PC865)
+            self.codepage = 'cp865'
         elif code.upper() == "WEST_EUROPE":
             self._raw(CHARCODE_WEU)
+            self.codepage = 'latin_1'
         elif code.upper() == "GREEK":
             self._raw(CHARCODE_GREEK)
+            self.codepage = 'cp737'
         elif code.upper() == "HEBREW":
             self._raw(CHARCODE_HEBREW)
+            self.codepage = 'cp862'
         # elif code.upper() == "LATVIAN":  # this is not listed in the constants
         #    self._raw(CHARCODE_PC755)
+        #    self.codepage = 'cp'
         elif code.upper() == "WPC1252":
             self._raw(CHARCODE_PC1252)
+            self.codepage = 'cp1252'
         elif code.upper() == "CIRILLIC2":
             self._raw(CHARCODE_PC866)
+            self.codepage = 'cp866'
         elif code.upper() == "LATIN2":
             self._raw(CHARCODE_PC852)
+            self.codepage = 'cp852'
         elif code.upper() == "EURO":
             self._raw(CHARCODE_PC858)
+            self.codepage = 'cp858'
         elif code.upper() == "THAI42":
             self._raw(CHARCODE_THAI42)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI11":
             self._raw(CHARCODE_THAI11)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI13":
             self._raw(CHARCODE_THAI13)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI14":
             self._raw(CHARCODE_THAI14)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI16":
             self._raw(CHARCODE_THAI16)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI17":
             self._raw(CHARCODE_THAI17)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI18":
             self._raw(CHARCODE_THAI18)
+            self.codepage = 'cp874'
         else:
             raise CharCodeError()
 
@@ -385,20 +409,24 @@ class Escpos(object):
         """ Print alpha-numeric text
 
         The text has to be encoded in the currently selected codepage.
-
-        .. todo:: rework this in order to proberly handle encoding
+        The input text has to be encoded in unicode.
 
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
         if txt:
-            self._raw(txt.encode())
+            if self.codepage:
+                self._raw(txt.encode(self.codepage))
+            else:
+                self._raw(txt.encode())
         else:
             # TODO: why is it problematic to print an empty string?
             raise TextError()
 
     def block_text(self, txt, columns=None):
         """ Text is printed wrapped to specified columns
+
+        Text has to be encoded in unicode.
 
         :param txt: text to be printed
         :param columns: amount of columns
