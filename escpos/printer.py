@@ -19,7 +19,7 @@ import serial
 import socket
 
 from .escpos import Escpos
-from .exceptions import *
+from .exceptions import USBNotFoundError
 
 
 class Usb(Escpos):
