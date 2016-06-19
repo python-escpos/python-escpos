@@ -1,3 +1,4 @@
+#  -*- coding: utf-8 -*-
 """ ESC/POS Exceptions classes
 
 Result/Exit codes:

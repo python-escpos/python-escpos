@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#  -*- coding: utf-8 -*-
 """ Main class
 
 This module contains the abstract base class :py:class:`Escpos`.
@@ -31,12 +32,17 @@ class Escpos(object):
     class.
     """
     device = None
+    codepage = None
 
     def __init__(self, columns=32):
         """ Initialize ESCPOS Printer
 
         :param columns: Text columns used by the printer. Defaults to 32."""
         self.columns = columns
+
+    def __del__(self):
+        """ call self.close upon deletion """
+        self.close()
 
     @abstractmethod
     def _raw(self, msg):
@@ -202,48 +208,71 @@ class Escpos(object):
         :param code: Name of CharCode
         :raises: :py:exc:`~escpos.exceptions.CharCodeError`
         """
+        # TODO improve this (rather unhandy code)
+        # TODO check the codepages
         if code.upper() == "USA":
             self._raw(CHARCODE_PC437)
+            self.codepage = 'cp437'
         elif code.upper() == "JIS":
             self._raw(CHARCODE_JIS)
+            self.codepage = 'cp932'
         elif code.upper() == "MULTILINGUAL":
             self._raw(CHARCODE_PC850)
+            self.codepage = 'cp850'
         elif code.upper() == "PORTUGUESE":
             self._raw(CHARCODE_PC860)
+            self.codepage = 'cp860'
         elif code.upper() == "CA_FRENCH":
             self._raw(CHARCODE_PC863)
+            self.codepage = 'cp863'
         elif code.upper() == "NORDIC":
             self._raw(CHARCODE_PC865)
+            self.codepage = 'cp865'
         elif code.upper() == "WEST_EUROPE":
             self._raw(CHARCODE_WEU)
+            self.codepage = 'latin_1'
         elif code.upper() == "GREEK":
             self._raw(CHARCODE_GREEK)
+            self.codepage = 'cp737'
         elif code.upper() == "HEBREW":
             self._raw(CHARCODE_HEBREW)
+            self.codepage = 'cp862'
         # elif code.upper() == "LATVIAN":  # this is not listed in the constants
         #    self._raw(CHARCODE_PC755)
+        #    self.codepage = 'cp'
         elif code.upper() == "WPC1252":
             self._raw(CHARCODE_PC1252)
+            self.codepage = 'cp1252'
         elif code.upper() == "CIRILLIC2":
             self._raw(CHARCODE_PC866)
+            self.codepage = 'cp866'
         elif code.upper() == "LATIN2":
             self._raw(CHARCODE_PC852)
+            self.codepage = 'cp852'
         elif code.upper() == "EURO":
             self._raw(CHARCODE_PC858)
+            self.codepage = 'cp858'
         elif code.upper() == "THAI42":
             self._raw(CHARCODE_THAI42)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI11":
             self._raw(CHARCODE_THAI11)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI13":
             self._raw(CHARCODE_THAI13)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI14":
             self._raw(CHARCODE_THAI14)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI16":
             self._raw(CHARCODE_THAI16)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI17":
             self._raw(CHARCODE_THAI17)
+            self.codepage = 'cp874'
         elif code.upper() == "THAI18":
             self._raw(CHARCODE_THAI18)
+            self.codepage = 'cp874'
         else:
             raise CharCodeError()
 
@@ -380,20 +409,24 @@ class Escpos(object):
         """ Print alpha-numeric text
 
         The text has to be encoded in the currently selected codepage.
-
-        .. todo:: rework this in order to proberly handle encoding
+        The input text has to be encoded in unicode.
 
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
         if txt:
-            self._raw(txt.encode())
+            if self.codepage:
+                self._raw(txt.encode(self.codepage))
+            else:
+                self._raw(txt.encode())
         else:
             # TODO: why is it problematic to print an empty string?
             raise TextError()
 
     def block_text(self, txt, columns=None):
         """ Text is printed wrapped to specified columns
+
+        Text has to be encoded in unicode.
 
         :param txt: text to be printed
         :param columns: amount of columns
@@ -620,3 +653,89 @@ class Escpos(object):
             self._raw(PANEL_BUTTON_ON)
         else:
             self._raw(PANEL_BUTTON_OFF)
+
+
+class EscposIO(object):
+    """ESC/POS Printer IO object
+
+    Allows the class to be used together with the `with`-statement. You have to define a printer instance
+    and assign it to the EsposIO-class.
+    This example explains the usage:
+
+    .. code-block:: Python
+
+        with EscposIO(printer.Serial('/dev/ttyUSB0')) as p:
+            p.set(font='a', height=2, align='center', text_type='bold')
+            p.printer.set(align='left')
+            p.printer.image('logo.gif')
+            p.writelines('Big line\\n', font='b')
+            p.writelines('Привет')
+            p.writelines('BIG TEXT', width=2)
+
+    After the `with`-statement the printer automatically cuts the paper if `autocut` is `True`.
+    """
+
+    def __init__(self, printer, autocut=True, autoclose=True, **kwargs):
+        """
+        :param printer: An EscPos-printer object
+        :type printer: escpos.Escpos
+        :param autocut: If True, paper is automatically cut after the `with`-statement *default*: True
+        :param kwargs: These arguments will be passed to :py:meth:`escpos.Escpos.set()`
+        """
+        self.printer = printer
+        self.params = kwargs
+        self.autocut = autocut
+        self.autoclose = autoclose
+
+    def set(self, **kwargs):
+        """ Set the printer-parameters
+
+        Controls which parameters will be passed to :py:meth:`Escpos.set() <escpos.escpos.Escpos.set()>`.
+        For more information on the parameters see the :py:meth:`set() <escpos.escpos.Escpos.set()>`-methods
+        documentation. These parameters can also be passed with this class' constructor or the
+        :py:meth:`~escpos.escpos.EscposIO.writelines()`-method.
+
+        :param kwargs: keyword-parameters that will be passed to :py:meth:`Escpos.set() <escpos.escpos.Escpos.set()>`
+        """
+        self.params.update(kwargs)
+
+    def writelines(self, text, **kwargs):
+        params = dict(self.params)
+        params.update(kwargs)
+
+        if isinstance(text, six.text_type):
+            lines = text.split('\n')
+        elif isinstance(text, list) or isinstance(text, tuple):
+            lines = text
+        else:
+            lines = ["{0}".format(text), ]
+
+        # TODO check unicode handling
+        # TODO flush? or on print? (this should prob rather be handled by the _raw-method)
+        for line in lines:
+            self.printer.set(**params)
+            if isinstance(text, six.text_type):
+                self.printer.text(u"{0}\n".format(line))
+            else:
+                self.printer.text("{0}\n".format(line))
+
+    def close(self):
+        """ called upon closing the `with`-statement
+        """
+        self.printer.close()
+
+    def __enter__(self, **kwargs):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        """
+
+        If :py:attr:`autocut <escpos.escpos.EscposIO.autocut>` is `True` (set by this class' constructor),
+        then :py:meth:`printer.cut() <escpos.escpos.Escpos.cut()>` will be called here.
+        """
+        if not (type is not None and issubclass(type, Exception)):
+            if self.autocut:
+                self.printer.cut()
+
+        if self.autoclose:
+            self.close()
