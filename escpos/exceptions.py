@@ -210,6 +210,7 @@ class ConfigNotFoundError(Error):
     def __str__(self):
         return "Configuration not found ({msg})".format(msg=self.msg)
 
+
 class ConfigSyntaxError(Error):
     """ The configuration file is invalid
 
@@ -223,6 +224,7 @@ class ConfigSyntaxError(Error):
 
     def __str__(self):
         return "Configuration syntax is invalid ({msg})".format(msg=self.msg)
+
 
 class ConfigSectionMissingError(Error):
     """ The configuration file is missing a section

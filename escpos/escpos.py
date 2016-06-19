@@ -24,6 +24,7 @@ from .exceptions import *
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
 
+
 @six.add_metaclass(ABCMeta)
 class Escpos(object):
     """ ESC/POS Printer object
@@ -122,11 +123,14 @@ class Escpos(object):
         """ Print QR Code for the provided string
 
         :param content: The content of the code. Numeric data will be more efficiently compacted.
-        :param ec: Error-correction level to use. One of QR_ECLEVEL_L (default), QR_ECLEVEL_M, QR_ECLEVEL_Q or QR_ECLEVEL_H.
+        :param ec: Error-correction level to use. One of QR_ECLEVEL_L (default), QR_ECLEVEL_M, QR_ECLEVEL_Q or
+            QR_ECLEVEL_H.
             Higher error correction results in a less compact code.
         :param size: Pixel size to use. Must be 1-16 (default 3)
-        :param model: QR code model to use. Must be one of QR_MODEL_1, QR_MODEL_2 (default) or QR_MICRO (not supported by all printers).
-        :param native: True to render the code on the printer, False to render the code as an image and send it to the printer (Default)
+        :param model: QR code model to use. Must be one of QR_MODEL_1, QR_MODEL_2 (default) or QR_MICRO (not supported
+            by all printers).
+        :param native: True to render the code on the printer, False to render the code as an image and send it to the
+            printer (Default)
         """
         # Basic validation
         if ec not in [QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q]:
@@ -143,11 +147,11 @@ class Escpos(object):
             if model != QR_MODEL_2:
                 raise ValueError("Invalid QR model for qrlib rendering (must be QR_MODEL_2)")
             python_qr_ec = {
-                     QR_ECLEVEL_H: qrcode.constants.ERROR_CORRECT_H,
-                     QR_ECLEVEL_L: qrcode.constants.ERROR_CORRECT_L,
-                     QR_ECLEVEL_M: qrcode.constants.ERROR_CORRECT_M,
-                     QR_ECLEVEL_Q: qrcode.constants.ERROR_CORRECT_Q
-                     }
+                QR_ECLEVEL_H: qrcode.constants.ERROR_CORRECT_H,
+                QR_ECLEVEL_L: qrcode.constants.ERROR_CORRECT_L,
+                QR_ECLEVEL_M: qrcode.constants.ERROR_CORRECT_M,
+                QR_ECLEVEL_Q: qrcode.constants.ERROR_CORRECT_Q
+            }
             qr_code = qrcode.QRCode(version=None, box_size=size, border=1, error_correction=python_qr_ec[ec])
             qr_code.add_data(content)
             qr_code.make(fit=True)
@@ -435,7 +439,8 @@ class Escpos(object):
         col_count = self.columns if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
-    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False, flip=False):
+    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False,
+            flip=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:

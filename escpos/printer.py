@@ -21,6 +21,7 @@ import socket
 from .escpos import Escpos
 from .exceptions import *
 
+
 class Usb(Escpos):
     """ USB printer
 
@@ -260,6 +261,7 @@ class File(Escpos):
         """ Close system file """
         self.device.flush()
         self.device.close()
+
 
 class Dummy(Escpos):
     """ Dummy printer

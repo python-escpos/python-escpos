@@ -16,6 +16,7 @@ import yaml
 from . import printer
 from . import exceptions
 
+
 class Config(object):
     """  Configuration handler class.
 
@@ -115,4 +116,3 @@ class Config(object):
             self._printer = getattr(printer, self._printer_name)(**self._printer_config)
 
         return self._printer
-

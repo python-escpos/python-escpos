@@ -18,6 +18,7 @@ import sys
 import six
 from . import config
 
+
 # Must be defined before it's used in DEMO_FUNCTIONS
 def str_to_bool(string):
     """ Used as a type in argparse so that we get back a proper
@@ -34,7 +35,7 @@ REQUIRES_NEWLINE = ('qr', 'barcode', 'text', 'block_text')
 # Value: A list of dictionaries to pass to the escpos function as arguments.
 DEMO_FUNCTIONS = {
     'text': [
-        {'txt': 'Hello, World!\n',}
+        {'txt': 'Hello, World!\n', }
     ],
     'qr': [
         {'content': 'This tests a QR code'},
@@ -427,6 +428,7 @@ ESCPOS_COMMANDS = [
     },
 ]
 
+
 def main():
     """
 
@@ -504,7 +506,6 @@ def main():
     saved_config.load(config_path)
     printer = saved_config.printer()
 
-
     if not printer:
         raise Exception('No printers loaded from config')
 
@@ -518,6 +519,7 @@ def main():
     else:
         command_arguments['printer'] = printer
         globals()[target_command](**command_arguments)
+
 
 def demo(printer, **kwargs):
     """

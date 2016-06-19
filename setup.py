@@ -3,7 +3,7 @@
 import os
 import sys
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
+from setuptools.command.test import test as test_command
 
 
 def read(fname):
@@ -11,18 +11,18 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-class Tox(TestCommand):
+class Tox(test_command):
     """proxy class that enables tox to be run with setup.py test"""
     user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
 
     def initialize_options(self):
         """initialize the user-options"""
-        TestCommand.initialize_options(self)
+        test_command.initialize_options(self)
         self.tox_args = None
 
     def finalize_options(self):
         """finalize user-options"""
-        TestCommand.finalize_options(self)
+        test_command.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 

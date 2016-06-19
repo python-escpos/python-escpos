@@ -31,21 +31,21 @@ FS  = b'\x1c'
 GS  = b'\x1d'
 
 # Feed control sequences
-CTL_LF = b'\n'             # Print and line feed
-CTL_FF = b'\f'             # Form feed
-CTL_CR = b'\r'             # Carriage return
-CTL_HT = b'\t'             # Horizontal tab
-CTL_SET_HT = ESC + b'\x44' # Set horizontal tab positions
-CTL_VT = b'\v'             # Vertical tab
+CTL_LF = b'\n'              # Print and line feed
+CTL_FF = b'\f'              # Form feed
+CTL_CR = b'\r'              # Carriage return
+CTL_HT = b'\t'              # Horizontal tab
+CTL_SET_HT = ESC + b'\x44'  # Set horizontal tab positions
+CTL_VT = b'\v'              # Vertical tab
 
 # Printer hardware
 HW_INIT   = ESC + b'@'             # Clear data in buffer and reset modes
 HW_SELECT = ESC + b'=\x01'         # Printer select
 
-HW_RESET  = ESC + b'\x3f\x0a\x00'  # Reset printer hardware
-                                  # (TODO: Where is this specified?)
+HW_RESET  = ESC + b'\x3f\x0a\x00'   # Reset printer hardware
+                                    # (TODO: Where is this specified?)
 
-#{ Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
+# Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
 _CASH_DRAWER = lambda m, t1='', t2='': ESC + b'p' + m + six.int2byte(t1) + six.int2byte(t2)
 CD_KICK_2 = _CASH_DRAWER(b'\x00', 50, 50)  # Sends a pulse to pin 2 []
 CD_KICK_5 = _CASH_DRAWER(b'\x01', 50, 50)  # Sends a pulse to pin 5 []
@@ -137,7 +137,7 @@ BARCODE_FONT_B = _SET_HRI_FONT(b'\x01')  # Font type B for HRI barcode chars
 BARCODE_HEIGHT = GS + b'h'  # Barcode Height [1-255]
 BARCODE_WIDTH  = GS + b'w'  # Barcode Width  [2-6]
 
-#NOTE: This isn't actually an ESC/POS command. It's the common prefix to the
+# NOTE: This isn't actually an ESC/POS command. It's the common prefix to the
 #      two "print bar code" commands:
 #      -  Type A: "GS k <type as integer> <data> NUL"
 #      -  TYPE B: "GS k <type as letter> <data length> <data>"
@@ -184,13 +184,13 @@ BARCODE_TYPES = {
     'B': BARCODE_TYPE_B,
 }
 
-## QRCode error correction levels
+# QRCode error correction levels
 QR_ECLEVEL_L = 0
 QR_ECLEVEL_M = 1
 QR_ECLEVEL_Q = 2
 QR_ECLEVEL_H = 3
     
-## QRcode models
+# QRcode models
 QR_MODEL_1 = 1
 QR_MODEL_2 = 2
 QR_MICRO = 3
@@ -205,12 +205,12 @@ S_RASTER_2H = _PRINT_RASTER_IMG(b'\x02')  # Set raster image double height
 S_RASTER_Q  = _PRINT_RASTER_IMG(b'\x03')  # Set raster image quadruple
 
 # Printing Density
-PD_N50          = GS + b'\x7c\x00'  # Printing Density -50%
-PD_N37          = GS + b'\x7c\x01'  # Printing Density -37.5%
-PD_N25          = GS + b'\x7c\x02'  # Printing Density -25%
-PD_N12          = GS + b'\x7c\x03'  # Printing Density -12.5%
-PD_0            = GS + b'\x7c\x04'  # Printing Density  0%
-PD_P50          = GS + b'\x7c\x08'  # Printing Density +50%
-PD_P37          = GS + b'\x7c\x07'  # Printing Density +37.5%
-PD_P25          = GS + b'\x7c\x06'  # Printing Density +25%
-PD_P12          = GS + b'\x7c\x05'  # Printing Density +12.5%
+PD_N50 = GS + b'\x7c\x00'  # Printing Density -50%
+PD_N37 = GS + b'\x7c\x01'  # Printing Density -37.5%
+PD_N25 = GS + b'\x7c\x02'  # Printing Density -25%
+PD_N12 = GS + b'\x7c\x03'  # Printing Density -12.5%
+PD_0   = GS + b'\x7c\x04'  # Printing Density  0%
+PD_P50 = GS + b'\x7c\x08'  # Printing Density +50%
+PD_P37 = GS + b'\x7c\x07'  # Printing Density +37.5%
+PD_P25 = GS + b'\x7c\x06'  # Printing Density +25%
+PD_P12 = GS + b'\x7c\x05'  # Printing Density +12.5%
