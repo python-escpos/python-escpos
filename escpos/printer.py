@@ -277,8 +277,6 @@ class Dummy(Escpos):
 
     def __init__(self, *args, **kwargs):
         """
-
-        :param devfile : Device file under dev filesystem
         """
         Escpos.__init__(self, *args, **kwargs)
         self._output_list = []

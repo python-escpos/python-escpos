@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 
 import escpos.printer as printer
 import escpos.escpos as escpos
-import os
+
 
 def test_with_statement():
     """Use with statement"""

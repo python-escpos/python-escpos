@@ -54,4 +54,4 @@ def _load_and_check_img(filename, width_expected, height_expected, raster_format
     i = 0 
     for row in im.to_column_format(False):
         assert(row == column_format_expected[i])
-        i = i + 1
+        i += 1

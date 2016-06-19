@@ -196,7 +196,7 @@ class Escpos(object):
         outp = b''
         for _ in range(0, out_bytes):
             outp += six.int2byte(inp_number % 256)
-            inp_number = inp_number // 256
+            inp_number //= 256
         return outp
 
     def charcode(self, code):
@@ -481,12 +481,12 @@ class Escpos(object):
         else:
             raise SetVariableError()
         # Upside down
-        if flip == True:
+        if flip:
             self._raw(TXT_FLIP_ON)
         else:
             self._raw(TXT_FLIP_OFF)
         # Smoothing
-        if smooth == True:
+        if smooth:
             self._raw(TXT_SMOOTH_ON)
         else:
             self._raw(TXT_SMOOTH_OFF)
