@@ -1,6 +1,10 @@
 language: python
 sudo: false
 cache: pip
+addons:
+  apt:
+    packages:
+      - graphviz
 matrix:
   include:
     - python: 2.7
@@ -19,6 +23,8 @@ matrix:
       env: TOXENV=pypy
     - python: pypy3
       env: TOXENV=pypy3
+    - python: 2.7
+      env: TOXENV=docs
   allow_failures:
     - python: 3.5-dev
     - python: nightly

@@ -2,8 +2,16 @@
 
 import os
 import sys
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as test_command
+
+
+base_dir = os.path.dirname(__file__)
+src_dir = os.path.join(base_dir, "src")
+
+# When executing the setup.py, we need to be able to import ourselves, this
+# means that we need to add the src/ directory to the sys.path.
+sys.path.insert(0, src_dir)
 
 
 def read(fname):
@@ -58,9 +66,8 @@ setup(
         'receipt,',
     ],
     platforms='any',
-    packages=[
-        'escpos',
-    ],
+    package_dir={"": "src"},
+    packages=find_packages(where="src", exclude=["tests", "tests.*"]),
     package_data={'': ['COPYING']},
     classifiers=[
         'Development Status :: 4 - Beta',
