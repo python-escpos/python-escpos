@@ -81,6 +81,7 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: System :: Peripherals',
         'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Office/Business :: Financial :: Point-Of-Sale',
     ],
     install_requires=[
         'pyusb',
