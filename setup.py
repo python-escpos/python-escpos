@@ -104,4 +104,9 @@ setup(
     ],
     tests_require=['tox', 'nose', 'scripttest'],
     cmdclass={'test': Tox},
+    entry_points={
+        'console_scripts': [
+            'python-escpos = escpos.cli:main'
+        ]
+    },
 )
