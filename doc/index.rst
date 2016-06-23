@@ -36,6 +36,7 @@ Content
    api/constants
    api/exceptions
    api/config
+   api/image
 
 Indices and tables
 ==================
