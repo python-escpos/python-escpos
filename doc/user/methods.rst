@@ -2,7 +2,8 @@
 Methods
 *******
 
-.. note:: **TODO** Merge this page into the API-description.
+.. note:: **TODO** Merge this page with the API-description. (Make the API-description more pretty and then
+          replace this with the API-description.)
 
 Escpos class
 ------------
@@ -35,7 +36,7 @@ barcode("code", "barcode\_type", width, height, "position", "font")
 Prints a barcode.
 
 * ``code`` is an alphanumeric code to be printed as bar code
-* ``barcode_type`` must be one of the following type of codes:
+* ``barcode_type`` must be one of the following type of codes for function type A:
    
   * UPC-A
   * UPC-E
@@ -44,7 +45,19 @@ Prints a barcode.
   * CODE39
   * ITF
   * NW7
-   
+
+  And for function type B:
+
+  * Any type above
+  * CODE93
+  * CODE128
+  * GS1-128
+  * GS1 DataBar Omnidirectional
+  * GS1 DataBar Truncated
+  * GS1 DataBar Limited
+  * GS1 DataBar Expanded
+
+
 * ``width`` is a numeric value in the range between (1,255) *Default:* 64
 * ``height`` is a numeric value in the range between (2,6) *Default:* 3
 * ``position`` is where to place the code around the bars, could be one of the following values:
@@ -57,15 +70,22 @@ Prints a barcode.
 * ``font`` is one of the 2 type of fonts, values could be:
   
   * A
-  * B > *Default:* A Raises ``BarcodeTypeError``, ``BarcodeSizeError``, ``BarcodeCodeError`` exceptions.
+  * B > *Default:* A
+
+*  ``fuction_type`` chooses between ESCPOS function type A or B. A is default, B has more barcode options. Choose which one based upon your printer support and require barcode.
+
+  * A
+  * B > *Default* A
+
+* Raises ``BarcodeTypeError``, ``BarcodeSizeError``, ``BarcodeCodeError`` exceptions.
     
 text("text")
 ^^^^^^^^^^^^
 
 Prints raw text. Raises ``TextError`` exception.
 
-set("align", "font", "type", width, height)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+set("align", "font", "type", width, height, invert, smooth, flip)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set text properties.
 * ``align`` set horizontal position for text, the possible values are:
@@ -78,6 +98,9 @@ Set text properties.
 * ``type`` type could be ``B`` (Bold), ``U`` (Underline) or ``normal``. *Default:* normal
 * ``width`` is a numeric value, 1 is for regular size, and 2 is twice the standard size. *Default*: 1
 * ``height`` is a numeric value, 1 is for regular size and 2 is twice the standard size. *Default*: 1
+* ``invert`` is a boolean value, True enables white on black printing. *Default*: False
+* ``smooth`` is a boolean value, True enables text smoothing. *Default*: False
+* ``flip`` is a boolean value, True enables upside-down text. *Default*: False
 
 cut("mode")
 ^^^^^^^^^^^

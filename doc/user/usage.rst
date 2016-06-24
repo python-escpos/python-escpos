@@ -120,6 +120,90 @@ on USB interface
     # Cut paper
     Epson.cut()
 
+Configuration File
+------------------
+
+You can create a configuration file for python-escpos. This will
+allow you to use the CLI, and skip some setup when using the library
+programically.
+
+The default configuration file is named ``config.yaml``. It's in the YAML
+format. For windows it is probably at::
+
+    %appdata%/python-escpos/config.yaml
+
+And for linux::
+
+        $HOME/.config/python-escpos/config.yaml
+
+If you aren't sure, run::
+
+        from escpos import config
+        c = config.Config()
+        c.load()
+
+If it can't find the configuration file in the default location, it will tell
+you where it's looking. You can always pass a path or a list of paths to
+search to the ``load()`` method.
+
+
+To load the configured pritner, run::
+
+        from escpos import config
+        c = config.Config()
+        printer = c.printer()
+
+
+The printer section
+^^^^^^^^^^^^^^^^^^^
+
+The ``printer`` configuration section defines a default printer to create.
+
+The only required paramter is ``type``. The value of this should be one of the
+printers defined in :doc:`/user/printers`.
+
+The rest of the parameters are whatever you want to pass to the printer.
+
+An example file printer::
+
+        printer:
+                type: File
+                devfile: /dev/someprinter
+
+And for a network printer::
+
+        printer:
+                type: network
+                host: 127.0.0.1
+                port: 9000
+
+Advanced Usage: Print from binary blob
+--------------------------------------
+
+Imagine you have a file with ESC/POS-commands in binary form. This could be useful for testing capabilities of your
+printer with a known working combination of commands.
+You can print this data with the following code, using the standard methods of python-escpos. (This is an
+advantage of the fact that `_raw()` accepts binary strings.)
+
+::
+
+    from escpos import printer
+    p = printer.Serial()  # adapt this to your printer model
+
+    file = open("binary-blob.bin", "rb")  # read in the file containing your commands in binary-mode
+    data = file.read()
+    file.close()
+
+    p._raw(data)
+
+That's all, the printer should then print your data. You can also use this technique to let others reproduce an issue
+that you have found. (Just "print" your commands to a File-printer on your local filesystem.)
+However, please keep in mind, that often it is easier and better to just supply the code that you are using.
+
+Here you can download an example, that will print a set of common barcodes:
+
+    * :download:`barcode.bin </download/barcode.bin>` by `@mike42 <https://github.com/mike42>`_
+
 How to update your code for USB printers
 ----------------------------------------
 
