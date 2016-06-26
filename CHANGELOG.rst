@@ -2,6 +2,17 @@
 Changelog
 *********
 
+2016-??-?? - Version 2.?.? - "But Who's Counting?"
+--------------------------------------------------
+
+changes
+^^^^^^^
+- packaging: configured the coverage-analysis codecov.io
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
+
 2016-06-24 - Version 2.0.0 - "Attitude Adjuster"
 ------------------------------------------------
 
