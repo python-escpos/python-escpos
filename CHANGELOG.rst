@@ -9,6 +9,7 @@ changes
 ^^^^^^^
 - packaging: configured the coverage-analysis codecov.io
 - GitHub: improved issues-template
+- documentation: add troubleshooting tip to network-interface
 
 contributors
 ^^^^^^^^^^^^
