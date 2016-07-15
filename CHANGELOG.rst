@@ -8,6 +8,7 @@ Changelog
 changes
 ^^^^^^^
 - packaging: configured the coverage-analysis codecov.io
+- GitHub: improved issues-template
 
 contributors
 ^^^^^^^^^^^^

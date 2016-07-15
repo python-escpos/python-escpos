@@ -19,4 +19,6 @@ I have:
 
  **python-escpos version:** 0.0.0
 
+ **python version:** 0.0
+
  **operating system:**
