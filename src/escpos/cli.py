@@ -17,6 +17,7 @@ import argparse
 import sys
 import six
 from . import config
+from . import version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
@@ -448,7 +449,7 @@ def main():
     # Allow config file location to be passed
     parser.add_argument(
         '-c', '--config',
-        help='Altnerate path to the configuration file',
+        help='Alternate path to the configuration file',
     )
 
     # Everything interesting runs off of a subparser so we can use the format
@@ -491,12 +492,22 @@ def main():
         action='store_true',
     )
 
+    parser_command_version = command_subparsers.add_parser('version',
+                                                           help='Print the version of python-escpos')
+    parser_command_version.set_defaults(version=True)
+
     # Get only arguments actually passed
     args_dict = vars(parser.parse_args())
     if not args_dict:
         parser.print_help()
         sys.exit()
     command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v is not None)
+
+    # If version should be printed, do this, then exit
+    print_version = command_arguments.pop('version', None)
+    if print_version:
+        print(version.version)
+        sys.exit()
 
     # If there was a config path passed, grab it
     config_path = command_arguments.pop('config', None)
