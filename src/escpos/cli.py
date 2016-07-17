@@ -456,7 +456,10 @@ def main():
     # cli [subparser] -args
     command_subparsers = parser.add_subparsers(
         title='ESCPOS Command',
+        dest='parser',
     )
+    # fix inconsistencies in the behaviour of some versions of argparse
+    command_subparsers.required = False   # force 'required' testing
 
     # Build the ESCPOS command arguments
     for command in ESCPOS_COMMANDS:
@@ -521,6 +524,9 @@ def main():
         raise Exception('No printers loaded from config')
 
     target_command = command_arguments.pop('func')
+
+    # remove helper-argument 'parser' from dict
+    command_arguments.pop('parser', None)
 
     if hasattr(printer, target_command):
         # print command with args
