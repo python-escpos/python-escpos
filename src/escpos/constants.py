@@ -102,26 +102,98 @@ TXT_INVERT_ON  = GS  + b'\x42\x01'  # Inverse Printing ON
 TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
 
 # Char code table
-CHARCODE_PC437  = ESC + b'\x74\x00'  # USA: Standard Europe
-CHARCODE_JIS    = ESC + b'\x74\x01'  # Japanese Katakana
-CHARCODE_PC850  = ESC + b'\x74\x02'  # Multilingual
-CHARCODE_PC860  = ESC + b'\x74\x03'  # Portuguese
-CHARCODE_PC863  = ESC + b'\x74\x04'  # Canadian-French
-CHARCODE_PC865  = ESC + b'\x74\x05'  # Nordic
-CHARCODE_WEU    = ESC + b'\x74\x06'  # Simplified Kanji, Hirakana
-CHARCODE_GREEK  = ESC + b'\x74\x07'  # Simplified Kanji
-CHARCODE_HEBREW = ESC + b'\x74\x08'  # Simplified Kanji
-CHARCODE_PC1252 = ESC + b'\x74\x11'  # Western European Windows Code Set
-CHARCODE_PC866  = ESC + b'\x74\x12'  # Cirillic #2
-CHARCODE_PC852  = ESC + b'\x74\x13'  # Latin 2
-CHARCODE_PC858  = ESC + b'\x74\x14'  # Euro
-CHARCODE_THAI42 = ESC + b'\x74\x15'  # Thai character code 42
-CHARCODE_THAI11 = ESC + b'\x74\x16'  # Thai character code 11
-CHARCODE_THAI13 = ESC + b'\x74\x17'  # Thai character code 13
-CHARCODE_THAI14 = ESC + b'\x74\x18'  # Thai character code 14
-CHARCODE_THAI16 = ESC + b'\x74\x19'  # Thai character code 16
-CHARCODE_THAI17 = ESC + b'\x74\x1a'  # Thai character code 17
-CHARCODE_THAI18 = ESC + b'\x74\x1b'  # Thai character code 18
+CHARCODE = {
+    'PC437':
+        [ESC + b'\x74\x00', 'cp437'],  # PC437 USA
+    'KATAKANA':
+        [ESC + b'\x74\x01', 'katakana'],  # KATAKANA (JAPAN)
+    'PC850':
+        [ESC + b'\x74\x02', 'cp850'],  # PC850 Multilingual
+    'PC860':
+        [ESC + b'\x74\x03', 'cp860'],  # PC860 Portuguese
+    'PC863':
+        [ESC + b'\x74\x04', 'cp863'],  # PC863 Canadian-French
+    'PC865':
+        [ESC + b'\x74\x05', 'cp865'],  # PC865 Nordic
+    'KANJI6':
+        [ESC + b'\x74\x06', ''],  # One-pass Kanji, Hiragana
+    'KANJI7':
+        [ESC + b'\x74\x07', ''],  # One-pass Kanji
+    'KANJI8':
+        [ESC + b'\x74\x08', ''],  # One-pass Kanji
+    'PC851':
+        [ESC + b'\x74\x0b', 'cp851'],  # PC851 Greek
+    'PC853':
+        [ESC + b'\x74\x0c', 'cp853'],  # PC853 Turkish
+    'PC857':
+        [ESC + b'\x74\x0d', 'cp857'],  # PC857 Turkish
+    'PC737':
+        [ESC + b'\x74\x0e', 'cp737'],  # PC737 Greek
+    '8859_7':
+        [ESC + b'\x74\x0f', 'iso8859_7'],  # ISO8859-7 Greek
+    'WPC1252':
+        [ESC + b'\x74\x10', 'cp1252'],  # WPC1252
+    'PC866':
+        [ESC + b'\x74\x11', 'cp866'],  # PC866 Cyrillic #2
+    'PC852':
+        [ESC + b'\x74\x12', 'cp852'],  # PC852 Latin2
+    'PC858':
+        [ESC + b'\x74\x13', 'cp858'],  # PC858 Euro
+    'KU42':
+        [ESC + b'\x74\x14', ''],  # KU42 Thai
+    'TIS11':
+        [ESC + b'\x74\x15', ''],  # TIS11 Thai
+    'TIS18':
+        [ESC + b'\x74\x1a', ''],  # TIS18 Thai
+    'TCVN3':
+        [ESC + b'\x74\x1e', ''],  # TCVN3 Vietnamese
+    'TCVN3B':
+        [ESC + b'\x74\x1f', ''],  # TCVN3 Vietnamese
+    'PC720':
+        [ESC + b'\x74\x20', 'cp720'],  # PC720 Arabic
+    'WPC775':
+        [ESC + b'\x74\x21', ''],  # WPC775 Baltic Rim
+    'PC855':
+        [ESC + b'\x74\x22', 'cp855'],  # PC855 Cyrillic
+    'PC861':
+        [ESC + b'\x74\x23', 'cp861'],  # PC861 Icelandic
+    'PC862':
+        [ESC + b'\x74\x24', 'cp862'],  # PC862 Hebrew
+    'PC864':
+        [ESC + b'\x74\x25', 'cp864'],  # PC864 Arabic
+    'PC869':
+        [ESC + b'\x74\x26', 'cp869'],  # PC869 Greek
+    '8859_2':
+        [ESC + b'\x74\x27', 'iso8859_2'],  # ISO8859-2 Latin2
+    '8859_9':
+        [ESC + b'\x74\x28', 'iso8859_9'],  # ISO8859-2 Latin9
+    'PC1098':
+        [ESC + b'\x74\x29', 'cp1098'],  # PC1098 Farsi
+    'PC1118':
+        [ESC + b'\x74\x2a', 'cp1118'],  # PC1118 Lithuanian
+    'PC1119':
+        [ESC + b'\x74\x2b', 'cp1119'],  # PC1119 Lithuanian
+    'PC1125':
+        [ESC + b'\x74\x2c', 'cp1125'],  # PC1125 Ukrainian
+    'WPC1250':
+        [ESC + b'\x74\x2d', 'cp1250'],  # WPC1250 Latin2
+    'WPC1251':
+        [ESC + b'\x74\x2e', 'cp1251'],  # WPC1251 Cyrillic
+    'WPC1253':
+        [ESC + b'\x74\x2f', 'cp1253'],  # WPC1253 Greek
+    'WPC1254':
+        [ESC + b'\x74\x30', 'cp1254'],  # WPC1254 Turkish
+    'WPC1255':
+        [ESC + b'\x74\x31', 'cp1255'],  # WPC1255 Hebrew
+    'WPC1256':
+        [ESC + b'\x74\x32', 'cp1256'],  # WPC1256 Arabic
+    'WPC1257':
+        [ESC + b'\x74\x33', 'cp1257'],  # WPC1257 Baltic Rim
+    'WPC1258':
+        [ESC + b'\x74\x34', 'cp1258'],  # WPC1258 Vietnamese
+    'KZ1048':
+        [ESC + b'\x74\x35', 'kz1048'],  # KZ-1048 Kazakhstan
+}
 
 # Barcode format
 _SET_BARCODE_TXT_POS = lambda n: GS + b'H' + n
