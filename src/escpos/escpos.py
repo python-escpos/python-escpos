@@ -20,6 +20,7 @@ import textwrap
 
 from .constants import *
 from .exceptions import *
+from .magicencode import MagicEncode
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
@@ -33,13 +34,13 @@ class Escpos(object):
     class.
     """
     device = None
-    codepage = None
 
-    def __init__(self, columns=32):
+    def __init__(self, columns=32, **kwargs):
         """ Initialize ESCPOS Printer
 
         :param columns: Text columns used by the printer. Defaults to 32."""
         self.columns = columns
+        self.magic = MagicEncode(**kwargs)
 
     def __del__(self):
         """ call self.close upon deletion """
@@ -203,82 +204,21 @@ class Escpos(object):
             inp_number //= 256
         return outp
 
-    def charcode(self, code):
+    def charcode(self, code="AUTO"):
         """ Set Character Code Table
 
-        Sends the control sequence from :py:mod:`escpos.constants` to the printer
-        with :py:meth:`escpos.printer.'implementation'._raw()`.
+        Sets the control sequence from ``CHARCODE`` in :py:mod:`escpos.constants` as active. It will be sent with
+        the next text sequence. If you set the variable code to ``AUTO`` it will try to automatically guess the
+        right codepage. (This is the standard behaviour.)
 
         :param code: Name of CharCode
         :raises: :py:exc:`~escpos.exceptions.CharCodeError`
         """
-        # TODO improve this (rather unhandy code)
-        # TODO check the codepages
-        if code.upper() == "USA":
-            self._raw(CHARCODE_PC437)
-            self.codepage = 'cp437'
-        elif code.upper() == "JIS":
-            self._raw(CHARCODE_JIS)
-            self.codepage = 'cp932'
-        elif code.upper() == "MULTILINGUAL":
-            self._raw(CHARCODE_PC850)
-            self.codepage = 'cp850'
-        elif code.upper() == "PORTUGUESE":
-            self._raw(CHARCODE_PC860)
-            self.codepage = 'cp860'
-        elif code.upper() == "CA_FRENCH":
-            self._raw(CHARCODE_PC863)
-            self.codepage = 'cp863'
-        elif code.upper() == "NORDIC":
-            self._raw(CHARCODE_PC865)
-            self.codepage = 'cp865'
-        elif code.upper() == "WEST_EUROPE":
-            self._raw(CHARCODE_WEU)
-            self.codepage = 'latin_1'
-        elif code.upper() == "GREEK":
-            self._raw(CHARCODE_GREEK)
-            self.codepage = 'cp737'
-        elif code.upper() == "HEBREW":
-            self._raw(CHARCODE_HEBREW)
-            self.codepage = 'cp862'
-        # elif code.upper() == "LATVIAN":  # this is not listed in the constants
-        #    self._raw(CHARCODE_PC755)
-        #    self.codepage = 'cp'
-        elif code.upper() == "WPC1252":
-            self._raw(CHARCODE_PC1252)
-            self.codepage = 'cp1252'
-        elif code.upper() == "CIRILLIC2":
-            self._raw(CHARCODE_PC866)
-            self.codepage = 'cp866'
-        elif code.upper() == "LATIN2":
-            self._raw(CHARCODE_PC852)
-            self.codepage = 'cp852'
-        elif code.upper() == "EURO":
-            self._raw(CHARCODE_PC858)
-            self.codepage = 'cp858'
-        elif code.upper() == "THAI42":
-            self._raw(CHARCODE_THAI42)
-            self.codepage = 'cp874'
-        elif code.upper() == "THAI11":
-            self._raw(CHARCODE_THAI11)
-            self.codepage = 'cp874'
-        elif code.upper() == "THAI13":
-            self._raw(CHARCODE_THAI13)
-            self.codepage = 'cp874'
-        elif code.upper() == "THAI14":
-            self._raw(CHARCODE_THAI14)
-            self.codepage = 'cp874'
-        elif code.upper() == "THAI16":
-            self._raw(CHARCODE_THAI16)
-            self.codepage = 'cp874'
-        elif code.upper() == "THAI17":
-            self._raw(CHARCODE_THAI17)
-            self.codepage = 'cp874'
-        elif code.upper() == "THAI18":
-            self._raw(CHARCODE_THAI18)
-            self.codepage = 'cp874'
+        if code.upper() == "AUTO":
+            self.magic.force_encoding = False
         else:
-            raise CharCodeError()
+            self.magic.encoding = self.magic.codepage_sequence(code)
+            self.magic.force_encoding = True
 
     def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True, function_type="A"):
         """ Print Barcode
@@ -418,14 +358,8 @@ class Escpos(object):
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
-        if txt:
-            if self.codepage:
-                self._raw(txt.encode(self.codepage))
-            else:
-                self._raw(txt.encode())
-        else:
-            # TODO: why is it problematic to print an empty string?
-            raise TextError()
+        txt = six.text_type(txt)
+        self._raw(self.magic.encode_text(txt=txt))
 
     def block_text(self, txt, columns=None):
         """ Text is printed wrapped to specified columns
