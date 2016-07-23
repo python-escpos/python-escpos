@@ -11,6 +11,7 @@ import os
 import sys
 from scripttest import TestFileEnvironment
 from nose.tools import assert_equals
+import escpos
 
 TEST_DIR = os.path.abspath('test/test-cli-output')
 
@@ -29,7 +30,7 @@ printer:
 )
 
 
-class TestCLI:
+class TestCLI():
     """ Contains setups, teardowns, and tests for CLI
     """
 
@@ -60,8 +61,7 @@ class TestCLI:
         )
 
         self.default_args = (
-            sys.executable,
-            '-mescpos.cli',
+            'python-escpos',
             '-c',
             CONFIGFILE,
         )
@@ -79,9 +79,15 @@ class TestCLI:
 
     def test_cli_help(self):
         """ Test getting help from cli """
-        result = self.env.run(sys.executable, '-mescpos.cli', '-h')
+        result = self.env.run('python-escpos', '-h')
         assert not result.stderr
         assert 'usage' in result.stdout
+
+    def test_cli_version(self):
+        """ Test the version string """
+        result = self.env.run('python-escpos', 'version')
+        assert not result.stderr
+        assert_equals(escpos.__version__, result.stdout.strip())
 
     def test_cli_text(self):
         """ Make sure text returns what we sent it """

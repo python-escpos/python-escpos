@@ -2,6 +2,21 @@
 Changelog
 *********
 
+2016-07-23 - Version 2.1.0 - "But Who's Counting?"
+--------------------------------------------------
+
+changes
+^^^^^^^
+- packaging: configured the coverage-analysis codecov.io
+- GitHub: improved issues-template
+- documentation: add troubleshooting tip to network-interface
+- the module, cli and documentation is now aware of the version of python-escpos
+- the cli does now support basic tabcompletion
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
+
 2016-06-24 - Version 2.0.0 - "Attitude Adjuster"
 ------------------------------------------------
 
