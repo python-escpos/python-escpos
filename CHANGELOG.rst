@@ -10,6 +10,7 @@ changes
 - packaging: configured the coverage-analysis codecov.io
 - GitHub: improved issues-template
 - documentation: add troubleshooting tip to network-interface
+- the module, cli and documentation is now aware of the version of python-escpos
 
 contributors
 ^^^^^^^^^^^^

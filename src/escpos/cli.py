@@ -17,6 +17,7 @@ import argparse
 import sys
 import six
 from . import config
+from . import version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
@@ -448,14 +449,17 @@ def main():
     # Allow config file location to be passed
     parser.add_argument(
         '-c', '--config',
-        help='Altnerate path to the configuration file',
+        help='Alternate path to the configuration file',
     )
 
     # Everything interesting runs off of a subparser so we can use the format
     # cli [subparser] -args
     command_subparsers = parser.add_subparsers(
         title='ESCPOS Command',
+        dest='parser',
     )
+    # fix inconsistencies in the behaviour of some versions of argparse
+    command_subparsers.required = False   # force 'required' testing
 
     # Build the ESCPOS command arguments
     for command in ESCPOS_COMMANDS:
@@ -491,12 +495,22 @@ def main():
         action='store_true',
     )
 
+    parser_command_version = command_subparsers.add_parser('version',
+                                                           help='Print the version of python-escpos')
+    parser_command_version.set_defaults(version=True)
+
     # Get only arguments actually passed
     args_dict = vars(parser.parse_args())
     if not args_dict:
         parser.print_help()
         sys.exit()
     command_arguments = dict([k, v] for k, v in six.iteritems(args_dict) if v is not None)
+
+    # If version should be printed, do this, then exit
+    print_version = command_arguments.pop('version', None)
+    if print_version:
+        print(version.version)
+        sys.exit()
 
     # If there was a config path passed, grab it
     config_path = command_arguments.pop('config', None)
@@ -510,6 +524,9 @@ def main():
         raise Exception('No printers loaded from config')
 
     target_command = command_arguments.pop('func')
+
+    # remove helper-argument 'parser' from dict
+    command_arguments.pop('parser', None)
 
     if hasattr(printer, target_command):
         # print command with args

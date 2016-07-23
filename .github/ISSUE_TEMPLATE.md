@@ -17,6 +17,8 @@ I have:
 <!-- Replace examples with your info -->
  **Printer:** Manufacturer Model XVI
 
+<!-- since version 2.0.1 you can type 'python-escpos version' in your shell.
+Alternatively you could use '__version__' in module escpos. -->
  **python-escpos version:** 0.0.0
 
  **python version:** 0.0
