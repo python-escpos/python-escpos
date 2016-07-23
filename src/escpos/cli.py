@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# PYTHON_ARGCOMPLETE_OK
 """ CLI
 
 This module acts as a command line interface for python-escpos. It mirrors
@@ -14,6 +15,11 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import argparse
+try:
+    import argcomplete
+except ImportError:
+    # this CLI works nevertheless without argcomplete
+    pass  # noqa
 import sys
 import six
 from . import config
@@ -498,6 +504,10 @@ def main():
     parser_command_version = command_subparsers.add_parser('version',
                                                            help='Print the version of python-escpos')
     parser_command_version.set_defaults(version=True)
+
+    # hook in argcomplete
+    if 'argcomplete' in globals():
+        argcomplete.autocomplete(parser)
 
     # Get only arguments actually passed
     args_dict = vars(parser.parse_args())

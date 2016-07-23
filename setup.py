@@ -110,6 +110,8 @@ setup(
         'six',
         'appdirs',
         'pyyaml',
+        'argparse',
+        'argcomplete',
     ],
     setup_requires=[
         'setuptools_scm',
