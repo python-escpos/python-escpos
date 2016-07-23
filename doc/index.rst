@@ -12,7 +12,6 @@ Content
    :maxdepth: 1
    :caption: User Documentation
 
-   user/dependencies
    user/installation
    user/methods
    user/printers
