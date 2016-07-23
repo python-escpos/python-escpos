@@ -18,6 +18,7 @@ build/
 dist/
 .coverage
 src/escpos/version.py
+.hypothesis
 
 # testing temporary directories
 test/test-cli-output/
