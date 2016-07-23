@@ -2,7 +2,7 @@
 Changelog
 *********
 
-2016-??-?? - Version 2.?.? - "But Who's Counting?"
+2016-07-23 - Version 2.1.0 - "But Who's Counting?"
 --------------------------------------------------
 
 changes
@@ -11,6 +11,7 @@ changes
 - GitHub: improved issues-template
 - documentation: add troubleshooting tip to network-interface
 - the module, cli and documentation is now aware of the version of python-escpos
+- the cli does now support basic tabcompletion
 
 contributors
 ^^^^^^^^^^^^
