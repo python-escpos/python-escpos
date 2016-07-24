@@ -178,9 +178,6 @@ class MagicEncode(object):
 
 # todo emoticons mit charmap encoden
 # todo Escpos liste von unterdrückten charcodes mitgeben
-# todo Doku anpassen
-# todo Changelog schreiben
-
 
 TXT_ENC_KATAKANA_MAP = {
     # Maps UTF-8 Katakana symbols to KATAKANA Page Codes
