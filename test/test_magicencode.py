@@ -100,3 +100,12 @@ def test_magic_encode_force_encoding():
     me.set_encoding(encoding='KATAKANA', force_encoding=True)
     assert me.encoding == 'KATAKANA'
     assert me.force_encoding is True
+
+
+# TODO Idee für unittest: hypothesis-strings erzeugen, in encode_text werfen
+# Ergebnis durchgehen: Vorkommnisse von Stuersequenzen suchen und daran den Text splitten in ein sortiertes dict mit Struktur:
+# encoding: textfolge
+# das alles wieder in unicode dekodieren mit den codepages und dann zusammenbauen
+# fertigen String mit hypothesis-string vergleichen (Achtung bei katana-conversion. Die am besten auch auf den hypothesis-string
+# anwenden)
+# TODO bei nicht kodierbarem Zeichen Fehler werfen! Als Option das verhalten von jetzt hinzufügen
