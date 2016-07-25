@@ -93,12 +93,22 @@ def test_magic_encode_constants_getter():
             assert name == MagicEncode.codepage_name(key)
         assert MagicEncode.codepage_sequence(key) == CHARCODE[key][0]
 
-def test_magic_encode_force_encoding():
+@given(st.text())
+def test_magic_encode_force_encoding(text):
     """test whether force_encoding works as expected"""
     me = MagicEncode()
     assert me.force_encoding is False
-    me.set_encoding(encoding='KATAKANA', force_encoding=True)
-    assert me.encoding == 'KATAKANA'
+    me.set_encoding(encoding='PC850', force_encoding=True)
+    assert me.encoding == 'PC850'
+    assert me.force_encoding is True
+    try:
+        me.encode_text(text)
+    except UnicodeEncodeError:
+        # we discard these errors as they are to be expected
+        # what we want to check here is, whether encoding or codepage will switch through some of the magic code
+        # being called accidentally
+        pass
+    assert me.encoding == 'PC850'
     assert me.force_encoding is True
 
 
@@ -109,3 +119,5 @@ def test_magic_encode_force_encoding():
 # fertigen String mit hypothesis-string vergleichen (Achtung bei katana-conversion. Die am besten auch auf den hypothesis-string
 # anwenden)
 # TODO bei nicht kodierbarem Zeichen Fehler werfen! Als Option das verhalten von jetzt hinzufügen
+# TODO tests sollten eigentlich nicht gehen, wenn encode_char gerufen wird (extra_char ist nicht definiert)
+# TODO verhalten bei leerem String festlegen und testen

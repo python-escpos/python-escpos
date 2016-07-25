@@ -106,7 +106,7 @@ CHARCODE = {
     'PC437':
         [ESC + b'\x74\x00', 'cp437'],  # PC437 USA
     'KATAKANA':
-        [ESC + b'\x74\x01', 'katakana'],  # KATAKANA (JAPAN)
+        [ESC + b'\x74\x01', ''],  # KATAKANA (JAPAN)
     'PC850':
         [ESC + b'\x74\x02', 'cp850'],  # PC850 Multilingual
     'PC860':

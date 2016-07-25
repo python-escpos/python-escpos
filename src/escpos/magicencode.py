@@ -143,7 +143,7 @@ class MagicEncode(object):
         # make sure the right codepage is set in the printer
         buffer = self.codepage_sequence(self.encoding)
         if self.force_encoding:
-            buffer += txt.encode(self.codepage)
+            buffer += txt.encode(self.codepage_name(self.encoding))
         else:
             for c in txt:
                 buffer += self.encode_char(c)
@@ -178,6 +178,7 @@ class MagicEncode(object):
 
 # todo emoticons mit charmap encoden
 # todo Escpos liste von unterdrückten charcodes mitgeben
+# TODO Sichtbarkeit der Methode anpassen (Eigentlich braucht man nur die set_encode und die encode_text)
 
 TXT_ENC_KATAKANA_MAP = {
     # Maps UTF-8 Katakana symbols to KATAKANA Page Codes
