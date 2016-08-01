@@ -7,9 +7,11 @@ Changelog
 
 changes
 ^^^^^^^
+- rename variable interface in USB-class to timeout
 
 contributors
 ^^^^^^^^^^^^
+- Renato Lorenzi
 
 2016-07-23 - Version 2.1.0 - "But Who's Counting?"
 --------------------------------------------------
