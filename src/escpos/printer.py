@@ -34,18 +34,18 @@ class Usb(Escpos):
 
     """
 
-    def __init__(self, idVendor, idProduct, interface=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
+    def __init__(self, idVendor, idProduct, timeout=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
         """
         :param idVendor: Vendor ID
         :param idProduct: Product ID
-        :param interface: USB device interface
+        :param timeout: Is the time limit of the USB operation. Default without timeout.
         :param in_ep: Input end point
         :param out_ep: Output end point
         """
         Escpos.__init__(self, *args, **kwargs)
         self.idVendor = idVendor
         self.idProduct = idProduct
-        self.interface = interface
+        self.timeout = timeout
         self.in_ep = in_ep
         self.out_ep = out_ep
         self.open()
@@ -82,7 +82,7 @@ class Usb(Escpos):
         :param msg: arbitrary code to be printed
         :type msg: bytes
         """
-        self.device.write(self.out_ep, msg, self.interface)
+        self.device.write(self.out_ep, msg, self.timeout)
 
     def close(self):
         """ Release USB interface """
