@@ -2,7 +2,7 @@
 Changelog
 *********
 
-2016-??-?? - Version 2.1.? - "Contents May Differ"
+2016-08-02 - Version 2.1.1 - "Contents May Differ"
 --------------------------------------------------
 
 changes
