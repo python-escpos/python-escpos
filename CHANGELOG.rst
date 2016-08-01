@@ -2,6 +2,19 @@
 Changelog
 *********
 
+2016-??-?? - Version 2.1.? - "Contents May Differ"
+--------------------------------------------------
+
+changes
+^^^^^^^
+- rename variable interface in USB-class to timeout
+- add support for hypothesis and move pypy3 to the allowed failures (pypy3 is not supported by hypothesis)
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
+- Renato Lorenzi
+
 2016-07-23 - Version 2.1.0 - "But Who's Counting?"
 --------------------------------------------------
 

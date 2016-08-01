@@ -28,6 +28,7 @@ matrix:
   allow_failures:
     - python: 3.5-dev
     - python: nightly
+    - python: pypy3
 before_install:
     - pip install tox codecov
 script:
