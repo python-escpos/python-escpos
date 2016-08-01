@@ -116,7 +116,7 @@ setup(
     setup_requires=[
         'setuptools_scm',
     ],
-    tests_require=['tox', 'nose', 'scripttest'],
+    tests_require=['tox', 'nose', 'scripttest', 'mock', 'hypothesis'],
     cmdclass={'test': Tox},
     entry_points={
         'console_scripts': [
