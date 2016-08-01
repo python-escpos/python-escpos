@@ -168,10 +168,7 @@ BARCODE_TYPE_B = {
     'NW7':                         _SET_BARCODE_TYPE(71),
     'CODABAR':                     _SET_BARCODE_TYPE(71),  # Same as NW7
     'CODE93':                      _SET_BARCODE_TYPE(72),
-    # These are all the same barcode, but using different charcter sets
-    'CODE128A':                    _SET_BARCODE_TYPE(73) + b'{A',  # CODE128 character set A
-    'CODE128B':                    _SET_BARCODE_TYPE(73) + b'{B',  # CODE128 character set B
-    'CODE128C':                    _SET_BARCODE_TYPE(73) + b'{C',  # CODE128 character set C
+    'CODE128':                     _SET_BARCODE_TYPE(73),
     'GS1-128':                     _SET_BARCODE_TYPE(74),
     'GS1 DATABAR OMNIDIRECTIONAL': _SET_BARCODE_TYPE(75),
     'GS1 DATABAR TRUNCATED':       _SET_BARCODE_TYPE(76),
