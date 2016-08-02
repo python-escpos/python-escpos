@@ -12,34 +12,16 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from nose.tools import with_setup
+import mock
+from hypothesis import given
+import hypothesis.strategies as st
 
 import escpos.printer as printer
-import os
 
-import filecmp
-
-devfile = 'testfile'
-
-
-def setup_testfile():
-    """create a testfile as devfile"""
-    fhandle = open(devfile, 'a')
-    try:
-        os.utime(devfile, None)
-    finally:
-        fhandle.close()
-
-
-def teardown_testfile():
-    """destroy testfile again"""
-    os.remove(devfile)
-
-
-@with_setup(setup_testfile, teardown_testfile)
-def test_function_text_dies_ist_ein_test_lf():
+@given(text=st.text())
+def test_function_text_dies_ist_ein_test_lf(text):
     """test the text printing function with simple string and compare output"""
-    instance = printer.File(devfile=devfile)
-    instance.text('Dies ist ein Test.\n')
-    instance.flush()
-    assert(filecmp.cmp('test/Dies ist ein Test.LF.txt', devfile))
+    instance = printer.Dummy()
+    instance.magic.encode_text = mock.Mock()
+    instance.text(text)
+    instance.magic.encode_text.assert_called_with(txt=text)

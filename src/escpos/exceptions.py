@@ -87,7 +87,7 @@ class BarcodeCodeError(Error):
         self.resultcode = 30
 
     def __str__(self):
-        return "No Barcode code was supplied"
+        return "No Barcode code was supplied ({msg})".format(msg=self.msg)
 
 
 class ImageSizeError(Error):
@@ -101,7 +101,7 @@ class ImageSizeError(Error):
         self.resultcode = 40
 
     def __str__(self):
-        return "Image height is longer than 255px and can't be printed"
+        return "Image height is longer than 255px and can't be printed ({msg})".format(msg=self.msg)
 
 
 class TextError(Error):
@@ -116,7 +116,7 @@ class TextError(Error):
         self.resultcode = 50
 
     def __str__(self):
-        return "Text string must be supplied to the text() method"
+        return "Text string must be supplied to the text() method ({msg})".format(msg=self.msg)
 
 
 class CashDrawerError(Error):
@@ -131,7 +131,7 @@ class CashDrawerError(Error):
         self.resultcode = 60
 
     def __str__(self):
-        return "Valid pin must be set to send pulse"
+        return "Valid pin must be set to send pulse ({msg})".format(msg=self.msg)
 
 
 class TabPosError(Error):
@@ -146,7 +146,7 @@ class TabPosError(Error):
         self.resultcode = 70
 
     def __str__(self):
-        return "Valid tab positions must be in the range 0 to 16"
+        return "Valid tab positions must be in the range 0 to 16 ({msg})".format(msg=self.msg)
 
 
 class CharCodeError(Error):
@@ -161,7 +161,7 @@ class CharCodeError(Error):
         self.resultcode = 80
 
     def __str__(self):
-        return "Valid char code must be set"
+        return "Valid char code must be set ({msg})".format(msg=self.msg)
 
 
 class USBNotFoundError(Error):
@@ -176,7 +176,7 @@ class USBNotFoundError(Error):
         self.resultcode = 90
 
     def __str__(self):
-        return "USB device not found"
+        return "USB device not found ({msg})".format(msg=self.msg)
 
 
 class SetVariableError(Error):
@@ -191,7 +191,7 @@ class SetVariableError(Error):
         self.resultcode = 100
 
     def __str__(self):
-        return "Set variable out of range"
+        return "Set variable out of range ({msg})".format(msg=self.msg)
 
 
 # Configuration errors
