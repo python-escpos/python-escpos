@@ -229,13 +229,15 @@ class File(Escpos):
 
     """
 
-    def __init__(self, devfile="/dev/usb/lp0", *args, **kwargs):
+    def __init__(self, devfile="/dev/usb/lp0", auto_flush=True, *args, **kwargs):
         """
 
         :param devfile : Device file under dev filesystem
+        :param auto_flush: automatically call flush after every call of _raw()
         """
         Escpos.__init__(self, *args, **kwargs)
         self.devfile = devfile
+        self.auto_flush = auto_flush
         self.open()
 
     def open(self):
@@ -256,6 +258,8 @@ class File(Escpos):
         :type msg: bytes
         """
         self.device.write(msg)
+        if self.auto_flush:
+            self.flush()
 
     def close(self):
         """ Close system file """

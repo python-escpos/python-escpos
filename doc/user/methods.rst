@@ -88,6 +88,7 @@ set("align", "font", "type", width, height, invert, smooth, flip)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set text properties.
+
 * ``align`` set horizontal position for text, the possible values are:
    
   * CENTER
@@ -106,6 +107,7 @@ cut("mode")
 ^^^^^^^^^^^
 
 Cut paper.
+
 * ``mode`` set a full or partial cut. *Default:* full
 
 **Partial cut is not implemented in all printers.**
@@ -132,6 +134,7 @@ control("align")
 ^^^^^^^^^^^^^^^^
 
 Carrier feed and tabs.
+
 * ``align`` is a string which takes any of the following values:
   
   * LF *for Line Feed*
