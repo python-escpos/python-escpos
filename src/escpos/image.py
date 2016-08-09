@@ -8,6 +8,12 @@ This module contains the image format handler :py:class:`EscposImage`.
 :license: GNU GPL v3
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import math
 from PIL import Image, ImageOps
 
 
@@ -29,6 +35,9 @@ class EscposImage(object):
             img_original = img_source
         else:
             img_original = Image.open(img_source)
+
+        # store image for eventual further processing (splitting)
+        self.img_original = img_original
 
         # Convert to white RGB background, paste over white background
         # to strip alpha.
@@ -88,3 +97,21 @@ class EscposImage(object):
         Convert image to raster-format binary
         """
         return self._im.tobytes()
+
+    def split(self, fragment_height):
+        """
+        Split an image into multiple fragments after fragment_height pixels
+
+        :param fragment_height: height of fragment
+        :return: list of PIL objects
+        """
+        passes = int(math.ceil(self.height/fragment_height))
+        fragments = []
+        for n in range(0, passes):
+            left = 0
+            right = self.width
+            upper = n * fragment_height
+            lower = min((n + 1) * fragment_height, self.height)
+            box = (left, upper, right, lower)
+            fragments.append(self.img_original.crop(box))
+        return fragments
