@@ -56,7 +56,8 @@ class Escpos(object):
         """
         pass
 
-    def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster"):
+    def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster",
+              fragment_height=1024):
         """ Print an image
 
         You can select whether the printer should print in high density or not. The default value is high density.
@@ -76,9 +77,20 @@ class Escpos(object):
         :param high_density_vertical: print in high density in vertical direction *default:* True
         :param high_density_horizontal: print in high density in horizontal direction *default:* True
         :param impl: choose image printing mode between `bitImageRaster`, `graphics` or `bitImageColumn`
+        :param fragment_height: Images larger than this will be split into multiple fragments *default:* 1024
 
         """       
         im = EscposImage(img_source)
+
+        if im.height > fragment_height:
+            fragments = im.split(fragment_height)
+            for fragment in fragments:
+                self.image(fragment,
+                           high_density_vertical=high_density_vertical,
+                           high_density_horizontal=high_density_horizontal,
+                           impl=impl,
+                           fragment_height=fragment_height)
+            return
         
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
