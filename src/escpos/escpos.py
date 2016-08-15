@@ -157,7 +157,7 @@ class Escpos(object):
         if not native:
             # Map ESC/POS error correction levels to python 'qrcode' library constant and render to an image
             if model != QR_MODEL_2:
-                raise ValueError("Invalid QR model for python-qrcode rendering (must be QR_MODEL_2)")
+                raise ValueError("Invalid QR model for qrlib rendering (must be QR_MODEL_2)")
             python_qr_ec = {
                 QR_ECLEVEL_H: qrcode.constants.ERROR_CORRECT_H,
                 QR_ECLEVEL_L: qrcode.constants.ERROR_CORRECT_L,
@@ -168,7 +168,8 @@ class Escpos(object):
             qr_code.add_data(content)
             qr_code.make(fit=True)
             qr_img = qr_code.make_image()
-            im = qr_img.convert("RGB")  # Convert the RGB image in printable image
+            im = qr_img._img.convert("RGB")
+            # Convert the RGB image in printable image
             self.image(im)
             return
         # Native 2D code printing
