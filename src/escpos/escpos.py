@@ -23,6 +23,7 @@ from .exceptions import *
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
+from escpos.capabilities import get_profile
 
 
 @six.add_metaclass(ABCMeta)
@@ -35,11 +36,11 @@ class Escpos(object):
     device = None
     codepage = None
 
-    def __init__(self, columns=32):
+    def __init__(self, profile=None):
         """ Initialize ESCPOS Printer
 
-        :param columns: Text columns used by the printer. Defaults to 32."""
-        self.columns = columns
+        :param profile: Printer profile"""
+        self.profile = get_profile(profile)
 
     def __del__(self):
         """ call self.close upon deletion """
@@ -439,7 +440,7 @@ class Escpos(object):
             # TODO: why is it problematic to print an empty string?
             raise TextError()
 
-    def block_text(self, txt, columns=None):
+    def block_text(self, txt, font=None, columns=None):
         """ Text is printed wrapped to specified columns
 
         Text has to be encoded in unicode.
@@ -448,7 +449,7 @@ class Escpos(object):
         :param columns: amount of columns
         :return: None
         """
-        col_count = self.columns if columns is None else columns
+        col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
     def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False,
