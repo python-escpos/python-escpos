@@ -101,6 +101,13 @@ TXT_ALIGN_RT   = ESC + b'\x61\x02'  # Right justification
 TXT_INVERT_ON  = GS  + b'\x42\x01'  # Inverse Printing ON
 TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
 
+# Spacing
+LINESPACING_FUNCS = {
+  60: ESC + b'A',  # line_spacing/60 of an inch, 0 <= line_spacing <= 85
+  360: ESC + b'+', # line_spacing/360 of an inch, 0 <= line_spacing <= 255
+  180: ESC + b'3', # line_spacing/180 of an inch, 0 <= line_spacing <= 255
+}
+
 # Char code table
 CHARCODE_PC437  = ESC + b'\x74\x00'  # USA: Standard Europe
 CHARCODE_JIS    = ESC + b'\x74\x01'  # Japanese Katakana
