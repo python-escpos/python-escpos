@@ -55,10 +55,17 @@ _CUT_PAPER = lambda m: GS + b'V' + m
 PAPER_FULL_CUT = _CUT_PAPER(b'\x00')  # Full cut paper
 PAPER_PART_CUT = _CUT_PAPER(b'\x01')  # Partial cut paper
 
+# Beep
+BEEP = b'\x07'
+
 # Panel buttons (e.g. the FEED button)
 _PANEL_BUTTON = lambda n: ESC + b'c5' + six.int2byte(n)
 PANEL_BUTTON_ON = _PANEL_BUTTON(0)  # enable all panel buttons
 PANEL_BUTTON_OFF = _PANEL_BUTTON(1)  # disable all panel buttons
+
+# Sheet modes
+SHEET_SLIP_MODE = ESC + b'\x63\x30\x04'  # slip paper
+SHEET_ROLL_MODE = ESC + b'\x63\x30\x01'  # paper roll
 
 # Text format
 # TODO: Acquire the "ESC/POS Application Programming Guide for Paper Roll
@@ -100,6 +107,11 @@ TXT_ALIGN_CT   = ESC + b'\x61\x01'  # Centering
 TXT_ALIGN_RT   = ESC + b'\x61\x02'  # Right justification
 TXT_INVERT_ON  = GS  + b'\x42\x01'  # Inverse Printing ON
 TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
+
+# Text colors
+TXT_COLOR_BLACK = ESC + b'\x72\x00'  # Default Color
+TXT_COLOR_RED = ESC + b'\x72\x01'    # Alternative Color (Usually Red)
+
 
 # Char code table
 CHARCODE_PC437  = ESC + b'\x74\x00'  # USA: Standard Europe
