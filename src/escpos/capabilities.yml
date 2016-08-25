@@ -1,0 +1,68 @@
+# Many recent Epson-branded thermal receipt printers.
+default:
+    columns: 42
+
+    barcodeB: true
+    bitImage: true
+    graphics: true
+    starCommands: false
+    qrCode: true
+    codePages:
+        - cp437
+        # ...
+        #
+
+# Designed for non-Epson printers sold online. Without knowing
+# their character encoding table, only CP437 output is assumed,
+# and graphics() calls will be disabled, as it usually prints junk
+# on these models.
+simple:
+    codePages:
+      - cp437
+    graphics: false
+
+
+# Profile for Star-branded printers.
+star:
+    inherits: default
+    starCommands: true
+
+
+epson:
+    inherits: default
+    manufacturer: "Epson"
+
+
+"P-822D":
+    inherits: default
+    graphics: false
+
+
+"TM-T88IIIP":
+    inherits: epson
+    columns:
+        a: 42
+        b: 56
+
+"TM-P80":
+    inherits: epson
+    defaultColumnConfig: default
+    columnConfigs:
+        default: {'a': 48, 'b': 64, 'kanji': 24}
+        '42_emulation': {'a': 42, 'b': 60, 'kanji': 21}
+
+"TM-P60II 2":
+    inherits: epson
+    columnConfigs:
+        '58mm_paper': {'a': 35, 'b': 42, 'c': 52}
+        '60mm_paper': {'a': 36, 'b': 43, 'c': 54}
+
+"TM-P20 2":
+    inherits: epson
+    # Has 5 fonts!
+
+"TM-T90":
+    inherits: epson
+    colors:
+        - black
+        - red
