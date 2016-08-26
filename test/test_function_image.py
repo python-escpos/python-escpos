@@ -130,3 +130,12 @@ def test_graphics_transparent():
     instance = printer.Dummy()
     instance.image('test/resources/black_transparent.png', impl="graphics")
     assert(instance.output == b'\x1d(L\x0c\x000p0\x01\x011\x02\x00\x02\x00\xc0\x00\x1d(L\x02\x0002')
+
+
+def test_large_graphics():
+    """
+    Test whether 'large' graphics that induce a fragmentation are handled correctly.
+    """
+    instance = printer.Dummy()
+    instance.image('test/resources/black_white.png', impl="bitImageRaster", fragment_height=1)
+    assert(instance.output == b'\x1dv0\x00\x01\x00\x01\x00\xc0\x1dv0\x00\x01\x00\x01\x00\x00')

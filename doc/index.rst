@@ -18,6 +18,7 @@ Content
    user/raspi
    user/todo
    user/usage
+   user/barcode
 
 .. toctree::
    :maxdepth: 1

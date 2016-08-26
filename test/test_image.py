@@ -43,6 +43,20 @@ def test_image_white():
         _load_and_check_img('canvas_white.' + img_format, 1, 1, b'\x00', [b'\x00'])
 
 
+def test_split():
+    """
+    test whether the split-function works as expected
+    """
+    im = EscposImage('test/resources/black_white.png')
+    (upper_part, lower_part) = im.split(1)
+    upper_part = EscposImage(upper_part)
+    lower_part = EscposImage(lower_part)
+    assert(upper_part.width == lower_part.width == 2)
+    assert(upper_part.height == lower_part.height == 1)
+    assert(upper_part.to_raster_format() == b'\xc0')
+    assert(lower_part.to_raster_format() == b'\x00')
+
+
 def _load_and_check_img(filename, width_expected, height_expected, raster_format_expected, column_format_expected):
     """
     Load an image, and test whether raster & column formatted output, sizes, etc match expectations.

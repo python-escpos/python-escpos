@@ -24,6 +24,7 @@ from .magicencode import MagicEncode
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
+from escpos.capabilities import get_profile
 
 
 @six.add_metaclass(ABCMeta)
@@ -35,11 +36,11 @@ class Escpos(object):
     """
     device = None
 
-    def __init__(self, columns=32, **kwargs):
+    def __init__(self, profile=None, **kwargs):
         """ Initialize ESCPOS Printer
 
-        :param columns: Text columns used by the printer. Defaults to 32."""
-        self.columns = columns
+        :param profile: Printer profile"""
+        self.profile = get_profile(profile)
         self.magic = MagicEncode(**kwargs)
 
     def __del__(self):
@@ -57,7 +58,8 @@ class Escpos(object):
         """
         pass
 
-    def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster"):
+    def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster",
+              fragment_height=1024):
         """ Print an image
 
         You can select whether the printer should print in high density or not. The default value is high density.
@@ -77,9 +79,20 @@ class Escpos(object):
         :param high_density_vertical: print in high density in vertical direction *default:* True
         :param high_density_horizontal: print in high density in horizontal direction *default:* True
         :param impl: choose image printing mode between `bitImageRaster`, `graphics` or `bitImageColumn`
+        :param fragment_height: Images larger than this will be split into multiple fragments *default:* 1024
 
         """       
         im = EscposImage(img_source)
+
+        if im.height > fragment_height:
+            fragments = im.split(fragment_height)
+            for fragment in fragments:
+                self.image(fragment,
+                           high_density_vertical=high_density_vertical,
+                           high_density_horizontal=high_density_horizontal,
+                           impl=impl,
+                           fragment_height=fragment_height)
+            return
         
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
@@ -362,7 +375,7 @@ class Escpos(object):
         txt = six.text_type(txt)
         self._raw(self.magic.encode_text(txt=txt))
 
-    def block_text(self, txt, columns=None):
+    def block_text(self, txt, font=None, columns=None):
         """ Text is printed wrapped to specified columns
 
         Text has to be encoded in unicode.
@@ -371,7 +384,7 @@ class Escpos(object):
         :param columns: amount of columns
         :return: None
         """
-        col_count = self.columns if columns is None else columns
+        col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
     def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False,

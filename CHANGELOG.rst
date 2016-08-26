@@ -1,7 +1,8 @@
 *********
 Changelog
 *********
-2016-08-?? - Version 2.?.? - "Death and Gravity"
+
+2016-08-?? - Version 2.?.? - "?"
 ------------------------------------------------
 
 changes
@@ -13,6 +14,32 @@ contributors
 ^^^^^^^^^^^^
 - Patrick Kanzler (with code by Frédéric Van der Essen)
 
+
+2016-08-10 - Version 2.1.3 - "Ethics Gradient"
+----------------------------------------------
+
+changes
+^^^^^^^
+- configure readthedocs and travis
+- update doc with hint on image preprocessing
+- add fix for printing large images (by splitting them into multiple images)
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
+
+2016-08-02 - Version 2.1.2 - "Death and Gravity"
+------------------------------------------------
+
+changes
+^^^^^^^
+- fix File-printer: flush after every call of _raw()
+- fix lists in documentation
+- fix CODE128: by adding the control character to the barcode-selection-sequence the barcode became unusable
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
 
 2016-08-02 - Version 2.1.1 - "Contents May Differ"
 --------------------------------------------------

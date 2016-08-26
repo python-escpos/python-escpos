@@ -218,3 +218,34 @@ Here you can download an example, that will print a set of common barcodes:
 
     * :download:`barcode.bin </download/barcode.bin>` by `@mike42 <https://github.com/mike42>`_
 
+Hint: preprocess printing
+-------------------------
+
+Printing images directly to the printer is rather slow.
+One factor that slows down the process is the transmission over e.g. serial port.
+
+Apart from configuring your printer to use the maximum baudrate (in the case of serial-printers), there is not much
+that you can do.
+However you could use the :py:class:`escpos.printer.Dummy`-printer to preprocess your image.
+This is probably best explained by an example:
+
+.. code-block:: Python
+
+   from escpos.printer import Serial, Dummy
+
+   p = Serial()
+   d = Dummy()
+
+   # create ESC/POS for the print job, this should go really fast
+   d.text("This is my image:\n")
+   d.image("funny_cat.png")
+   d.cut()
+
+   # send code to printer
+   p._raw(d.output)
+
+This way you could also store the code in a file and print later.
+You could then for example print the code from another process than your main-program and thus reduce the waiting time.
+(Of course this will not make the printer print faster.)
+
+
