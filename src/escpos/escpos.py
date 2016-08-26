@@ -573,9 +573,9 @@ class Escpos(object):
         There are different commands for setting the line spacing, using
         a different denominator:
 
-        + line_spacing/360 of an inch, 0 <= line_spacing <= 255
-        3 line_spacing/180 of an inch, 0 <= line_spacing <= 255
-        A line_spacing/60 of an inch, 0 <= line_spacing <= 85
+        '+'' line_spacing/360 of an inch, 0 <= line_spacing <= 255
+        '3' line_spacing/180 of an inch, 0 <= line_spacing <= 255
+        'A' line_spacing/60 of an inch, 0 <= line_spacing <= 85
 
         Some printers may not support all of them. The most commonly
         available command (using a divisor of 180) is chosen.
