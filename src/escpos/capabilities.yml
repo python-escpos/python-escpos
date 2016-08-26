@@ -1,3 +1,24 @@
+# Description of the format
+abstract:
+    # Defines non-standard code pages that the printer supports, but
+    # that we won't find in Python's encoding system. If you define one
+    # here, don't forget to add it to codePageMap to assign it to a slot.
+    customCodePages:
+        sample:
+
+    # This maps the indexed code page slots to code page names.
+    # Often, the slot assignment is the same, but the device only
+    # supports a subset.
+    codePageMap:
+        0: "CP437"
+        1: "CP932"
+        3: "sample"
+
+    # Maybe not all of the codepages in the map are supported. This
+    # is for subprofiles to select which ones the device knows.
+    codePages: [sample, cp932]
+
+
 # Many recent Epson-branded thermal receipt printers.
 default:
     columns: 42
@@ -7,10 +28,96 @@ default:
     graphics: true
     starCommands: false
     qrCode: true
-    codePages:
-        - cp437
-        # ...
-        #
+
+    customCodePages:
+        TCVN-3-1: [
+            "                ",
+            "                ",
+            "        ăâêôơưđ ",
+            "     àảãáạ ằẳẵắ ",
+            "      ặầẩẫấậè ẻẽ",
+            "éẹềểễếệìỉ   ĩíịò",
+            " ỏõóọồổỗốộờởỡớợù",
+            " ủũúụừửữứựỳỷỹýỵ ",
+        ]
+        TCVN-3-2: [
+            "                ",
+            "                ",
+            " ĂÂ    Ð  ÊÔƠƯ  ",
+            "     ÀẢÃÁẠ ẰẲẴẮ ",
+            "      ẶẦẨẪẤẬÈ ẺẼ",
+            "ÉẸỀỂỄẾỆÌỈ   ĨÍỊÒ",
+            " ỎÕÓỌỒỔỖỐỘỜỞỠỚỢÙ",
+            " ỦŨÚỤỪỬỮỨỰỲỶỸÝỴ "
+        ]
+
+
+    # Commented-out slots are TODO (might just need uncomment, might
+    # need verification/research)
+    codePageMap:
+        0: "CP437"
+        1: "CP932"
+        2: "CP850"
+        3: "CP860"
+        4: "CP863"
+        5: "CP865"
+        #6: // Hiragana
+        #7: // One-pass printing Kanji characters
+        #8: // Page 8 [One-pass printing Kanji characters]
+        11: "CP851"
+        12: "CP853"
+        13: "CP857"
+        14: "CP737"
+        15: "ISO8859_7"
+        16: "CP1252"
+        17: "CP866"
+        18: "CP852"
+        19: "CP858"
+        #20: // Thai Character Code 42
+        #21: // Thai Character Code 1"
+        #22: // Thai Character Code 13
+        #23: // Thai Character Code 14
+        #24: // Thai Character Code 16
+        #25: // Thai Character Code 17
+        #26: // Thai Character Code 18
+        30: 'TCVN-3-1', # TCVN-3: Vietnamese
+        31: 'TCVN-3-2', # TCVN-3: Vietnamese
+        32: "CP720"
+        33: "CP775"
+        34: "CP855"
+        35: "CP861"
+        36: "CP862"
+        37: "CP864"
+        38: "CP869"
+        39: "ISO8859_2"
+        40: "ISO8859_15"
+        41: "CP1098"
+        42: "CP774"
+        43: "CP772"
+        44: "CP1125"
+        45: "CP1250"
+        46: "CP1251"
+        47: "CP1253"
+        48: "CP1254"
+        49: "CP1255"
+        50: "CP1256"
+        51: "CP1257"
+        52: "CP1258"
+        53: "RK1048"
+        #66: // Devanagari
+        #67: // Bengali
+        #68: // Tamil
+        #69: // Telugu
+        #70: // Assamese
+        #71: // Oriya
+        #72: // Kannada
+        #73: // Malayalam
+        #74: // Gujarati
+        #75: // Punjabi
+        #82: // Marathi
+        #254:
+        #255:
+
 
 # Designed for non-Epson printers sold online. Without knowing
 # their character encoding table, only CP437 output is assumed,
@@ -38,11 +145,41 @@ epson:
     graphics: false
 
 
-"TM-T88IIIP":
+# http://support.epostraders.co.uk/support-files/documents/3/l7O-TM-T88II_TechnicalRefGuide.pdf
+"TM-T88II":
     inherits: epson
     columns:
         a: 42
         b: 56
+    codePages:
+        - PC437 # 0
+        - Katakana # 1
+        - PC850 # 2
+        - PC860 # 3
+        - PC863 # 4
+        - PC865 # 5
+        - PC858 # 19
+        - blank
+
+# http://support.epostraders.co.uk/support-files/documents/3/l7O-TM-T88II_TechnicalRefGuide.pdf
+"TM-T88III":
+    inherits: epson
+    columns:
+        a: 42
+        b: 56
+    codePages:
+        - PC437 # 0
+        - Katakana # 1
+        - PC850 # 2
+        - PC860 # 3
+        - PC863 # 4
+        - PC865 # 5
+        - WPC1252 # 16
+        - PC866 # 17
+        - PC852 # 18
+        - PC858 # 19
+        - blank
+
 
 "TM-P80":
     inherits: epson
@@ -51,11 +188,13 @@ epson:
         default: {'a': 48, 'b': 64, 'kanji': 24}
         '42_emulation': {'a': 42, 'b': 60, 'kanji': 21}
 
+
 "TM-P60II 2":
     inherits: epson
     columnConfigs:
         '58mm_paper': {'a': 35, 'b': 42, 'c': 52}
         '60mm_paper': {'a': 36, 'b': 43, 'c': 54}
+
 
 "TM-P20 2":
     inherits: epson
