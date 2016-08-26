@@ -565,8 +565,10 @@ class Escpos(object):
         else:
             self._raw(TXT_INVERT_OFF)
 
-    def line_spacing(self, spacing=30, divisor=180):
+    def line_spacing(self, spacing=None, divisor=180):
         """ Set line character spacing.
+
+        If no spacing is given, we reset it to the default.
 
         There are different commands for setting the line spacing, using
         a different denominator:
@@ -578,6 +580,10 @@ class Escpos(object):
         Some printers may not support all of them. The most commonly
         available command (using a divisor of 180) is chosen.
         """
+        if spacing is None:
+            self._raw(LINESPACING_RESET)
+            return
+
         if divisor not in LINESPACING_FUNCS:
             raise ValueError("divisor must be either 360, 180 or 60")
         if (divisor in [360, 180] \

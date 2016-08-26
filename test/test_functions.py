@@ -8,10 +8,16 @@ def test_line_spacing_code_gen():
     assert printer.output == '\x1b3\n'
 
 
+def test_line_spacing_rest():
+    printer = Dummy()
+    printer.line_spacing()
+    assert printer.output == '\x1b2'
+
+
 def test_line_spacing_error_handling():
     printer = Dummy()
     with assert_raises(ValueError):
-      printer.line_spacing(divisor=44)
+      printer.line_spacing(99, divisor=44)
     with assert_raises(ValueError):
       printer.line_spacing(divisor=80, spacing=86)
     with assert_raises(ValueError):

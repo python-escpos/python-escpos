@@ -102,6 +102,7 @@ TXT_INVERT_ON  = GS  + b'\x42\x01'  # Inverse Printing ON
 TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
 
 # Spacing
+LINESPACING_RESET = ESC + b'2'
 LINESPACING_FUNCS = {
   60: ESC + b'A',  # line_spacing/60 of an inch, 0 <= line_spacing <= 85
   360: ESC + b'+', # line_spacing/360 of an inch, 0 <= line_spacing <= 255
