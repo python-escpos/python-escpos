@@ -217,7 +217,8 @@ class Escpos(object):
         if code.upper() == "AUTO":
             self.magic.force_encoding = False
         else:
-            self.magic.encoding = self.magic.codepage_sequence(code)
+            self.magic.codepage_sequence(code)
+            self.magic.encoding = code
             self.magic.force_encoding = True
 
     def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True, function_type="A"):
