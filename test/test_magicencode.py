@@ -13,103 +13,97 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import pytest
 from nose.tools import raises, assert_raises
 from hypothesis import given, example
 import hypothesis.strategies as st
-from escpos.magicencode import MagicEncode
+from escpos.magicencode import MagicEncode, Encoder, encode_katakana
 from escpos.exceptions import CharCodeError, Error
-from escpos.constants import CHARCODE
-
-@raises(CharCodeError)
-def test_magic_encode_unkown_char_constant_as_startenc():
-    """tests whether MagicEncode raises the proper Exception when an unknown charcode-name is passed as startencoding"""
-    MagicEncode(startencoding="something")
-
-@raises(CharCodeError)
-def test_magic_encode_unkown_char_constant_as_defaultenc():
-    """tests whether MagicEncode raises the proper Exception when an unknown charcode-name is passed as defaultenc."""
-    MagicEncode(defaultencoding="something")
-
-def test_magic_encode_wo_arguments():
-    """tests whether MagicEncode works in the standard configuration"""
-    MagicEncode()
-
-@raises(Error)
-def test_magic_encode_w_non_binary_defaultsymbol():
-    """tests whether MagicEncode catches non-binary defaultsymbols"""
-    MagicEncode(defaultsymbol="non-binary")
-
-@given(symbol=st.binary())
-def test_magic_encode_w_binary_defaultsymbol(symbol):
-    """tests whether MagicEncode works with any binary symbol"""
-    MagicEncode(defaultsymbol=symbol)
-
-@given(st.text())
-@example("カタカナ")
-@example("あいうえお")
-@example("ﾊﾝｶｸｶﾀｶﾅ")
-def test_magic_encode_encode_text_unicode_string(text):
-    """tests whether MagicEncode can accept a unicode string"""
-    me = MagicEncode()
-    me.encode_text(text)
-
-@given(char=st.characters())
-def test_magic_encode_encode_char(char):
-    """tests the encode_char-method of MagicEncode"""
-    me = MagicEncode()
-    me.encode_char(char)
-
-@raises(Error)
-@given(char=st.binary())
-def test_magic_encode_encode_char_binary(char):
-    """tests the encode_char-method of MagicEncode with binary input"""
-    me = MagicEncode()
-    me.encode_char(char)
 
 
-def test_magic_encode_string_with_katakana_and_hiragana():
-    """tests the encode_string-method with katakana and hiragana"""
-    me = MagicEncode()
-    me.encode_str("カタカナ")
-    me.encode_str("あいうえお")
 
-@raises(CharCodeError)
-def test_magic_encode_codepage_sequence_unknown_key():
-    """tests whether MagicEncode.codepage_sequence raises the proper Exception with unknown charcode-names"""
-    MagicEncode.codepage_sequence("something")
+class TestEncoder:
 
-@raises(CharCodeError)
-def test_magic_encode_codepage_name_unknown_key():
-    """tests whether MagicEncode.codepage_name raises the proper Exception with unknown charcode-names"""
-    MagicEncode.codepage_name("something")
+    def test_can_encode(self):
+        assert not Encoder({1: 'cp437'}).can_encode('cp437', u'€')
+        assert Encoder({1: 'cp437'}).can_encode('cp437', u'á')
+        assert not Encoder({1: 'foobar'}).can_encode('foobar', 'a')
 
-def test_magic_encode_constants_getter():
-    """tests whether the constants are properly fetched"""
-    for key in CHARCODE:
-        name = CHARCODE[key][1]
-        if name == '':
-            assert_raises(CharCodeError, MagicEncode.codepage_name, key)
-        else:
-            assert name == MagicEncode.codepage_name(key)
-        assert MagicEncode.codepage_sequence(key) == CHARCODE[key][0]
+    def test_find_suitable_encoding(self):
+        assert not Encoder({1: 'cp437'}).find_suitable_codespace(u'€')
+        assert Encoder({1: 'cp858'}).find_suitable_codespace(u'€') == 'cp858'
 
-@given(st.text())
-def test_magic_encode_force_encoding(text):
-    """test whether force_encoding works as expected"""
-    me = MagicEncode()
-    assert me.force_encoding is False
-    me.set_encoding(encoding='PC850', force_encoding=True)
-    assert me.encoding == 'PC850'
-    assert me.force_encoding is True
-    try:
-        me.encode_text(text)
-    except UnicodeEncodeError:
-        # we discard these errors as they are to be expected
-        # what we want to check here is, whether encoding or codepage will switch through some of the magic code
-        # being called accidentally
-        pass
-    assert me.encoding == 'PC850'
-    assert me.force_encoding is True
+    @raises(ValueError)
+    def test_get_encoding(self):
+        Encoder({}).get_encoding('latin1')
+
+
+class TestMagicEncode:
+
+    class TestInit:
+
+        def test_disabled_requires_encoding(self, driver):
+            with pytest.raises(Error):
+                MagicEncode(driver, disabled=True)
+
+    class TestWriteWithEncoding:
+
+        def test_init_from_none(self, driver):
+            encode = MagicEncode(driver, encoding=None)
+            encode.write_with_encoding('cp858', '€ ist teuro.')
+            assert driver.output == b'\x1bt\xd5 ist teuro.'
+
+        def test_change_from_another(self, driver):
+            encode = MagicEncode(driver, encoding='cp437')
+            encode.write_with_encoding('cp858', '€ ist teuro.')
+            assert driver.output == b'\x1bt\xd5 ist teuro.'
+
+        def test_no_change(self, driver):
+            encode = MagicEncode(driver, encoding='cp858')
+            encode.write_with_encoding('cp858', '€ ist teuro.')
+            assert driver.output == b'\xd5 ist teuro.'
+
+    class TestWrite:
+
+        def test_write(self, driver):
+            encode = MagicEncode(driver)
+            encode.write('€ ist teuro.')
+            assert driver.output == b'\x1bt\xa4 ist teuro.'
+
+        def test_write_disabled(self, driver):
+            encode = MagicEncode(driver, encoding='cp437', disabled=True)
+            encode.write('€ ist teuro.')
+            assert driver.output == b'? ist teuro.'
+
+        def test_write_no_codepage(self, driver):
+            encode = MagicEncode(
+                driver, defaultsymbol="_", encoder=Encoder({1: 'cp437'}),
+                encoding='cp437')
+            encode.write(u'€ ist teuro.')
+            assert driver.output == b'_ ist teuro.'
+
+    class TestForceEncoding:
+
+        def test(self, driver):
+            encode = MagicEncode(driver)
+            encode.force_encoding('cp437')
+            assert driver.output == b'\x1bt'
+
+            encode.write('€ ist teuro.')
+            assert driver.output == b'\x1bt? ist teuro.'
+
+
+class TestKatakana:
+    @given(st.text())
+    @example("カタカナ")
+    @example("あいうえお")
+    @example("ﾊﾝｶｸｶﾀｶﾅ")
+    def test_accept(self, text):
+        encode_katakana(text)
+
+    def test_result(self):
+        assert encode_katakana('カタカナ') == b'\xb6\xc0\xb6\xc5'
+        assert encode_katakana("あいうえお") == b'\xb1\xb2\xb3\xb4\xb5'
 
 
 # TODO Idee für unittest: hypothesis-strings erzeugen, in encode_text werfen

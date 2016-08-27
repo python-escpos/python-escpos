@@ -36,12 +36,12 @@ class Escpos(object):
     """
     device = None
 
-    def __init__(self, profile=None, **kwargs):
+    def __init__(self, profile=None, magic_encode_args=None, **kwargs):
         """ Initialize ESCPOS Printer
 
         :param profile: Printer profile"""
         self.profile = get_profile(profile)
-        self.magic = MagicEncode(**kwargs)
+        self.magic = MagicEncode(self, **(magic_encode_args or {}))
 
     def __del__(self):
         """ call self.close upon deletion """
@@ -228,11 +228,9 @@ class Escpos(object):
         :raises: :py:exc:`~escpos.exceptions.CharCodeError`
         """
         if code.upper() == "AUTO":
-            self.magic.force_encoding = False
+            self.magic.force_encoding(False)
         else:
-            self.magic.codepage_sequence(code)
-            self.magic.encoding = code
-            self.magic.force_encoding = True
+            self.magic.force_encoding(code)
 
     def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True, function_type="A"):
         """ Print Barcode
@@ -373,7 +371,7 @@ class Escpos(object):
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
         txt = six.text_type(txt)
-        self._raw(self.magic.encode_text(txt=txt))
+        self.magic.write(txt)
 
     def block_text(self, txt, font=None, columns=None):
         """ Text is printed wrapped to specified columns

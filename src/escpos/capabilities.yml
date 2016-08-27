@@ -80,8 +80,8 @@ default:
         #24: // Thai Character Code 16
         #25: // Thai Character Code 17
         #26: // Thai Character Code 18
-        30: 'TCVN-3-1', # TCVN-3: Vietnamese
-        31: 'TCVN-3-2', # TCVN-3: Vietnamese
+        30: 'TCVN-3-1' # TCVN-3: Vietnamese
+        31: 'TCVN-3-2' # TCVN-3: Vietnamese
         32: "CP720"
         33: "CP775"
         34: "CP855"
@@ -152,13 +152,13 @@ epson:
         a: 42
         b: 56
     codePages:
-        - PC437 # 0
+        - cp437 # 0
         - Katakana # 1
-        - PC850 # 2
-        - PC860 # 3
-        - PC863 # 4
-        - PC865 # 5
-        - PC858 # 19
+        - cp850 # 2
+        - cp860 # 3
+        - cp863 # 4
+        - cp865 # 5
+        - cp858 # 19
         - blank
 
 # http://support.epostraders.co.uk/support-files/documents/3/l7O-TM-T88II_TechnicalRefGuide.pdf
@@ -168,16 +168,16 @@ epson:
         a: 42
         b: 56
     codePages:
-        - PC437 # 0
+        - CP437 # 0
         - Katakana # 1
-        - PC850 # 2
-        - PC860 # 3
-        - PC863 # 4
-        - PC865 # 5
-        - WPC1252 # 16
-        - PC866 # 17
-        - PC852 # 18
-        - PC858 # 19
+        - CP850 # 2
+        - CP860 # 3
+        - CP863 # 4
+        - CP865 # 5
+        - PC1252 # 16
+        - CP866 # 17
+        - CP852 # 18
+        - CP858 # 19
         - blank
 
 

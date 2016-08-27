@@ -17,8 +17,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from .constants import CHARCODE
+from .constants import CODEPAGE_CHANGE
 from .exceptions import CharCodeError, Error
+from .capabilities import get_profile
 import copy
 import six
 
@@ -27,153 +28,230 @@ try:
 except ImportError:
     jcconv = None
 
+
+def encode_katakana(text):
+    """I don't think this quite works yet."""
+    encoded = []
+    for char in text:
+        if jcconv:
+            # try to convert japanese text to half-katakanas
+            char = jcconv.kata2half(jcconv.hira2kata(char))
+            # TODO: "the conversion may result in multiple characters"
+            # When? What should we do about it?
+
+        if char in TXT_ENC_KATAKANA_MAP:
+            encoded.append(TXT_ENC_KATAKANA_MAP[char])
+        else:
+            encoded.append(char)
+    print(encoded)
+    return b"".join(encoded)
+
+
+
+# TODO: When the capabilities.yml format is finished, this should be
+# in the profile itself.
+def get_encodings_from_profile(profile):
+    mapping = {k: v.lower() for k, v in profile.codePageMap.items()}
+    if hasattr(profile, 'codePages'):
+        code_pages = [n.lower() for n in profile.codePages]
+        return {k: v for k, v in mapping.items() if v in code_pages}
+    else:
+        return mapping
+
+
+class CodePages:
+    def get_all(self):
+        return get_encodings_from_profile(get_profile()).values()
+
+    def encode(self, text, encoding, errors='strict'):
+        # Python has not have this builtin?
+        if encoding.upper() == 'KATAKANA':
+            return encode_katakana(text)
+
+        return text.encode(encoding, errors=errors)
+
+    def get_encoding(self, encoding):
+        # resolve the encoding alias
+        return encoding.lower()
+
+code_pages = CodePages()
+
+
+class Encoder(object):
+    """Takes a list of available code spaces. Picks the right one for a
+    given character.
+
+    Note: To determine the codespace, it needs to do the conversion, and
+    thus already knows what the final byte in the target encoding would
+    be. Nevertheless, the API of this class doesn't return the byte.
+
+    The caller use to do the character conversion itself.
+
+        $ python -m timeit -s "{u'ö':'a'}.get(u'ö')"
+        100000000 loops, best of 3: 0.0133 usec per loop
+
+        $ python -m timeit -s "u'ö'.encode('latin1')"
+        100000000 loops, best of 3: 0.0141 usec per loop
+    """
+
+    def __init__(self, codepages):
+        self.codepages = codepages
+        self.reverse = {v:k for k, v in codepages.items()}
+        self.available_encodings = set(codepages.values())
+        self.used_encodings = set()
+
+    def get_sequence(self, encoding):
+        return self.reverse[encoding]
+
+    def get_encoding(self, encoding):
+        """resolve aliases
+
+        check that the profile allows this encoding
+        """
+        encoding = code_pages.get_encoding(encoding)
+        if not encoding in self.available_encodings:
+            raise ValueError('This encoding cannot be used for the current profile')
+        return encoding
+
+    def get_encodings(self):
+        """
+        - remove the ones not supported
+        - order by used first, then others
+        - do not use a cache, because encode already is so fast
+        """
+        return self.available_encodings
+
+    def can_encode(self, encoding, char):
+        try:
+            encoded = code_pages.encode(char, encoding)
+            assert type(encoded) is bytes
+            return encoded
+        except LookupError:
+            # We don't have this encoding
+            return False
+        except UnicodeEncodeError:
+            return False
+
+        return True
+
+    def find_suitable_codespace(self, char):
+        """The order of our search is a specific one:
+
+        1. code pages that we already tried before; there is a good
+           chance they might work again, reducing the search space,
+           and by re-using already used encodings we might also
+           reduce the number of codepage change instructiosn we have
+           to send. Still, any performance gains will presumably be
+           fairly minor.
+
+        2. code pages in lower ESCPOS slots first. Presumably, they
+           are more likely to be supported, so if a printer profile
+           is missing or incomplete, we might increase our change
+           that the code page we pick for this character is actually
+           supported.
+
+        # XXX actually do speed up the search
+        """
+        for encoding in self.get_encodings():
+            if self.can_encode(encoding, char):
+                # This encoding worked; at it to the set of used ones.
+                self.used_encodings.add(encoding)
+                return encoding
+
+
 class MagicEncode(object):
     """ Magic Encode Class
 
     It tries to automatically encode utf-8 input into the right coding. When encoding is impossible a configurable
     symbol will be inserted.
+
+    encoding: If you know the current encoding of the printer when
+    initializing this class, set it here. If the current encoding is
+    unknown, the first character emitted will be a codepage switch.
     """
-    def __init__(self, startencoding='PC437', force_encoding=False, defaultsymbol=b'', defaultencoding='PC437'):
-        # running these functions makes sure that the encoding is suitable
-        MagicEncode.codepage_name(startencoding)
-        MagicEncode.codepage_name(defaultencoding)
+    def __init__(self, driver, encoding=None, disabled=False,
+                 defaultsymbol='?', encoder=None):
+        if disabled and not encoding:
+            raise Error('If you disable magic encode, you need to define an encoding!')
 
-        self.encoding = startencoding
+        self.driver = driver
+        self.encoder = encoder or Encoder(get_encodings_from_profile(driver.profile))
+
+        self.encoding = self.encoder.get_encoding(encoding) if encoding else None
         self.defaultsymbol = defaultsymbol
-        if type(self.defaultsymbol) is not six.binary_type:
-            raise Error("The supplied symbol {sym} has to be a binary string".format(sym=defaultsymbol))
-        self.defaultencoding = defaultencoding
-        self.force_encoding = force_encoding
+        self.disabled = disabled
 
-    def set_encoding(self, encoding='PC437', force_encoding=False):
-        """sets an encoding (normally not used)
+    def force_encoding(self, encoding):
+        """Sets a fixed encoding. The change is emitted right away.
 
-        This function should normally not be used since it manipulates the automagic behaviour. However, if you want to
-        force a certain codepage, then you can use this function.
-
-        :param encoding: must be a valid encoding from CHARCODE
-        :param force_encoding: whether the encoding should not be changed automatically
+        From now one, this buffer will switch the code page anymore.
+        However, it will still keep track of the current code page.
         """
-        self.codepage_name(encoding)
-        self.encoding = encoding
-        self.force_encoding = force_encoding
-
-    @staticmethod
-    def codepage_sequence(codepage):
-        """returns the corresponding codepage-sequence"""
-        try:
-            return CHARCODE[codepage][0]
-        except KeyError:
-            raise CharCodeError("The encoding {enc} is unknown.".format(enc=codepage))
-
-    @staticmethod
-    def codepage_name(codepage):
-        """returns the corresponding codepage-name (for python)"""
-        try:
-            name = CHARCODE[codepage][1]
-            if name == '':
-                raise CharCodeError("The codepage {enc} does not have a connected python-codepage".format(enc=codepage))
-            return name
-        except KeyError:
-            raise CharCodeError("The encoding {enc} is unknown.".format(enc=codepage))
-
-    def encode_char(self, char):
-        """
-        Encodes a single unicode character into a sequence of
-        esc-pos code page change instructions and character declarations
-        """
-        if type(char) is not six.text_type:
-            raise Error("The supplied text has to be unicode, but is of type {type}.".format(
-                type=type(char)
-            ))
-        encoded = b''
-        encoding = self.encoding  # we reuse the last encoding to prevent code page switches at every character
-        remaining = copy.copy(CHARCODE)
-
-        while True:  # Trying all encoding until one succeeds
-            try:
-                if encoding == 'KATAKANA':  # Japanese characters
-                    if jcconv:
-                        # try to convert japanese text to half-katakanas
-                        kata = jcconv.kata2half(jcconv.hira2kata(char))
-                        if kata != char:
-                            self.extra_chars += len(kata) - 1
-                            # the conversion may result in multiple characters
-                            return self.encode_str(kata)
-                    else:
-                        kata = char
-
-                    if kata in TXT_ENC_KATAKANA_MAP:
-                        encoded = TXT_ENC_KATAKANA_MAP[kata]
-                        break
-                    else:
-                        raise ValueError()
-                else:
-                    try:
-                        enc_name = MagicEncode.codepage_name(encoding)
-                        encoded = char.encode(enc_name)
-                        assert type(encoded) is bytes
-                    except LookupError:
-                        raise ValueError("The encoding {enc} seems to not exist in Python".format(enc=encoding))
-                    except CharCodeError:
-                        raise ValueError("The encoding {enc} is not fully configured in constants".format(
-                            enc=encoding
-                        ))
-                    break
-
-            except ValueError:  # the encoding failed, select another one and retry
-                if encoding in remaining:
-                    del remaining[encoding]
-                if len(remaining) >= 1:
-                    encoding = list(remaining)[0]
-                else:
-                    encoding = self.defaultencoding
-                    encoded = self.defaultsymbol  # could not encode, output error character
-                    break
-
-        if encoding != self.encoding:
-            # if the encoding changed, remember it and prefix the character with
-            # the esc-pos encoding change sequence
-            self.encoding = encoding
-            encoded = CHARCODE[encoding][0] + encoded
-
-        return encoded
-
-    def encode_str(self, txt):
-        # make sure the right codepage is set in the printer
-        buffer = self.codepage_sequence(self.encoding)
-        if self.force_encoding:
-            buffer += txt.encode(self.codepage_name(self.encoding))
+        if not encoding:
+            self.disabled = False
         else:
-            for c in txt:
-                buffer += self.encode_char(c)
-        return buffer
+            self.write_with_encoding(encoding, None)
+            self.disabled = True
 
-    def encode_text(self, txt):
-        """returns a byte-string with encoded text
-
-        :param txt: text that shall be encoded
-        :return: byte-string for the printer
+    def write(self, text):
+        """Write the text, automatically switching encodings.
         """
-        if not txt:
+
+        if self.disabled:
+            self.write_with_encoding(self.encoding, text)
             return
 
-        self.extra_chars = 0
+        # TODO: Currently this very simple loop means we send every
+        # character individually to the printer. We can probably
+        # improve performace by searching the text for the first
+        # character that cannot be rendered using the current code
+        # page, and then sending all of those characters at once.
+        # Or, should a lower-level buffer be responsible for that?
 
-        txt = self.encode_str(txt)
+        for char in text:
+            # See if the current code page works for this character.
+            # The encoder object will use a cache to be able to answer
+            # this question fairly easily.
+            if self.encoding and self.encoder.can_encode(self.encoding, char):
+                self.write_with_encoding(self.encoding, char)
+                continue
 
-        # if the utf-8 -> codepage conversion inserted extra characters,
-        # remove double spaces to try to restore the original string length
-        # and prevent printing alignment issues
-        while self.extra_chars > 0:
-            dspace = txt.find('  ')
-            if dspace > 0:
-                txt = txt[:dspace] + txt[dspace+1:]
-                self.extra_chars -= 1
-            else:
-                break
+            # We have to find another way to print this character.
+            # See if any of the code pages that the printer profile supports
+            # can encode this character.
+            codespace = self.encoder.find_suitable_codespace(char)
+            if not codespace:
+                self._handle_character_failed(char)
+                continue
 
-        return txt
+            self.write_with_encoding(codespace, char)
+
+    def _handle_character_failed(self, char):
+        """Called when no codepage was found to render a character.
+        """
+        # Writing the default symbol via write() allows us to avoid
+        # unnecesary codepage switches.
+        self.write(self.defaultsymbol)
+
+    def write_with_encoding(self, encoding, text):
+        if text is not None and type(text) is not six.text_type:
+            raise Error("The supplied text has to be unicode, but is of type {type}.".format(
+                type=type(text)
+            ))
+
+        encoding = self.encoder.get_encoding(encoding)
+
+        # We always know the current code page; if the new codepage
+        # is different, emit a change command.
+        if encoding != self.encoding:
+            self.encoding = encoding
+            self.driver._raw(b'{}{}'.format(
+                CODEPAGE_CHANGE,
+                six.int2byte(self.encoder.get_sequence(encoding))
+            ))
+
+        if text:
+            self.driver._raw(code_pages.encode(text, encoding, errors="replace"))
 
 
 # todo emoticons mit charmap encoden
