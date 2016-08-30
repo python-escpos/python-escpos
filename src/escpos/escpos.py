@@ -585,6 +585,35 @@ class Escpos(object):
         else:
             self._raw(TXT_INVERT_OFF)
 
+    def line_spacing(self, spacing=None, divisor=180):
+        """ Set line character spacing.
+
+        If no spacing is given, we reset it to the default.
+
+        There are different commands for setting the line spacing, using
+        a different denominator:
+
+        '+'' line_spacing/360 of an inch, 0 <= line_spacing <= 255
+        '3' line_spacing/180 of an inch, 0 <= line_spacing <= 255
+        'A' line_spacing/60 of an inch, 0 <= line_spacing <= 85
+
+        Some printers may not support all of them. The most commonly
+        available command (using a divisor of 180) is chosen.
+        """
+        if spacing is None:
+            self._raw(LINESPACING_RESET)
+            return
+
+        if divisor not in LINESPACING_FUNCS:
+            raise ValueError("divisor must be either 360, 180 or 60")
+        if (divisor in [360, 180] \
+                and (not(0 <= spacing <= 255))):
+            raise ValueError("spacing must be a int between 0 and 255 when divisor is 360 or 180")
+        if divisor == 60 and (not(0 <= spacing <= 85)):
+            raise ValueError("spacing must be a int between 0 and 85 when divisor is 60")
+
+        self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
+
     def cut(self, mode=''):
         """ Cut paper.
 

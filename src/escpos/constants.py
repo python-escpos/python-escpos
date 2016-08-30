@@ -55,10 +55,17 @@ _CUT_PAPER = lambda m: GS + b'V' + m
 PAPER_FULL_CUT = _CUT_PAPER(b'\x00')  # Full cut paper
 PAPER_PART_CUT = _CUT_PAPER(b'\x01')  # Partial cut paper
 
+# Beep
+BEEP = b'\x07'
+
 # Panel buttons (e.g. the FEED button)
 _PANEL_BUTTON = lambda n: ESC + b'c5' + six.int2byte(n)
 PANEL_BUTTON_ON = _PANEL_BUTTON(0)  # enable all panel buttons
 PANEL_BUTTON_OFF = _PANEL_BUTTON(1)  # disable all panel buttons
+
+# Sheet modes
+SHEET_SLIP_MODE = ESC + b'\x63\x30\x04'  # slip paper
+SHEET_ROLL_MODE = ESC + b'\x63\x30\x01'  # paper roll
 
 # Text format
 # TODO: Acquire the "ESC/POS Application Programming Guide for Paper Roll
@@ -103,6 +110,18 @@ TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
 SET_FONT = lambda n: ESC + b'\x4d' + n
 TXT_FONT_A     = SET_FONT(b'\x00')  # Font type A
 TXT_FONT_B     = SET_FONT(b'\x01')  # Font type B
+
+# Text colors
+TXT_COLOR_BLACK = ESC + b'\x72\x00'  # Default Color
+TXT_COLOR_RED = ESC + b'\x72\x01'    # Alternative Color (Usually Red)
+
+# Spacing
+LINESPACING_RESET = ESC + b'2'
+LINESPACING_FUNCS = {
+  60: ESC + b'A',  # line_spacing/60 of an inch, 0 <= line_spacing <= 85
+  360: ESC + b'+', # line_spacing/360 of an inch, 0 <= line_spacing <= 255
+  180: ESC + b'3', # line_spacing/180 of an inch, 0 <= line_spacing <= 255
+}
 
 # Char code table
 CHARCODE_PC437  = ESC + b'\x74\x00'  # USA: Standard Europe
@@ -189,7 +208,7 @@ QR_ECLEVEL_L = 0
 QR_ECLEVEL_M = 1
 QR_ECLEVEL_Q = 2
 QR_ECLEVEL_H = 3
-    
+
 # QRcode models
 QR_MODEL_1 = 1
 QR_MODEL_2 = 2
