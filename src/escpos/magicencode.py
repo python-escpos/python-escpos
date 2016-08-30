@@ -211,10 +211,9 @@ class MagicEncode(object):
         # is different, emit a change command.
         if encoding != self.encoding:
             self.encoding = encoding
-            self.driver._raw(b'{}{}'.format(
-                CODEPAGE_CHANGE,
-                six.int2byte(self.encoder.get_sequence(encoding))
-            ))
+            self.driver._raw(
+                CODEPAGE_CHANGE +
+                six.int2byte(self.encoder.get_sequence(encoding)))
 
         if text:
             self.driver._raw(CodePages.encode(text, encoding, errors="replace"))
