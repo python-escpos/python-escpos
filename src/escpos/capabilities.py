@@ -100,7 +100,7 @@ class Profile(get_profile_class('default')):
 
     def get_columns(self, font):
         if self.columns is not None:
-            return columns
+            return self.columns
 
         return super(Profile, self).get_columns(font)
 
