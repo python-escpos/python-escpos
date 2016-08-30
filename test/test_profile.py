@@ -8,6 +8,8 @@ def profile():
 
 
 class TestBaseProfile:
+    """Test the `BaseProfile` class.
+    """
 
     def test_get_font(self, profile):
         with pytest.raises(NotSupported):
@@ -26,6 +28,8 @@ class TestBaseProfile:
 
 
 class TestCustomProfile:
+    """Test custom profile options with the `Profile` class.
+    """
 
     def test_columns(self):
         assert Profile(columns=10).get_columns('sdfasdf') == 10
