@@ -23,7 +23,7 @@ from .exceptions import *
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
-from escpos.capabilities import get_profile
+from escpos.capabilities import get_profile, BARCODE_B
 
 
 @six.add_metaclass(ABCMeta)
@@ -293,7 +293,8 @@ class Escpos(object):
         else:
             raise CharCodeError()
 
-    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True, function_type="A"):
+    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A",
+                align_ct=True, function_type=None):
         """ Print Barcode
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
@@ -364,14 +365,40 @@ class Escpos(object):
                          issued.
         :type align_ct: bool
 
-        :param function_type: Choose between ESCPOS function type A or B, depending on printer support and desired
-            barcode.
+        :param function_type: Choose between ESCPOS function type A or B,
+            depending on printer support and desired barcode. If not given,
+            the printer will attempt to automatically choose the correct
+            function based on the current profile.
             *default*: A
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
+        if function_type is None:
+            # Choose the function type automatically.
+            if bc in BARCODE_TYPES['A']:
+                function_type = 'A'
+            else:
+                if bc in BARCODE_TYPES['B']:
+                    if not self.profile.supports(BARCODE_B):
+                        raise BarcodeTypeError((
+                            "Barcode type '{bc} not supported for "
+                            "the current printer profile").format(bc=bc))
+                    function_type = 'B'
+                else:
+                    raise BarcodeTypeError((
+                            "Barcode type '{bc} is not valid").format(bc=bc))
+
+        bc_types = BARCODE_TYPES[function_type.upper()]
+        if bc.upper() not in bc_types.keys():
+            raise BarcodeTypeError((
+                "Barcode type '{bc}' not valid for barcode function type "
+                "{function_type}").format(
+                    bc=bc,
+                    function_type=function_type,
+                ))
+
         # Align Bar Code()
         if align_ct:
             self._raw(TXT_ALIGN_CT)
@@ -399,14 +426,6 @@ class Escpos(object):
             self._raw(BARCODE_TXT_ABV)
         else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-
-        bc_types = BARCODE_TYPES[function_type.upper()]
-        if bc.upper() not in bc_types.keys():
-            # TODO: Raise a better error, or fix the message of this error type
-            raise BarcodeTypeError("Barcode type {bc} not valid for barcode function type {function_type}".format(
-                bc=bc,
-                function_type=function_type,
-            ))
 
         self._raw(bc_types[bc.upper()])
 

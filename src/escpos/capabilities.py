@@ -15,6 +15,9 @@ class NotSupported(Exception):
     pass
 
 
+BARCODE_B = 'barcodeB'
+
+
 class BaseProfile(object):
     """This respresents a printer profile.
 
@@ -42,6 +45,11 @@ class BaseProfile(object):
         """
         font = self.get_font(font)
         return self.fonts[six.text_type(font)]['columns']
+
+    def supports(self, feature):
+        """Return true/false for the given feature.
+        """
+        return self.features.get(feature)
 
 
 def get_profile(name=None, **kwargs):
@@ -84,10 +92,11 @@ def clean(s):
 # For users, who want to provide their profile
 class Profile(get_profile_class('default')):
 
-    def __init__(self, columns=None):
-        super(Profile, self).__init()
+    def __init__(self, columns=None, features={}):
+        super(Profile, self).__init__()
 
         self.columns = columns
+        self.features = features
 
     def get_columns(self, font):
         if self.columns is not None:
