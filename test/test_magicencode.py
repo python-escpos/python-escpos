@@ -17,7 +17,8 @@ import pytest
 from nose.tools import raises, assert_raises
 from hypothesis import given, example
 import hypothesis.strategies as st
-from escpos.magicencode import MagicEncode, Encoder, encode_katakana
+from escpos.magicencode import MagicEncode, Encoder
+from escpos.katakana import encode_katakana
 from escpos.exceptions import CharCodeError, Error
 
 
@@ -25,13 +26,13 @@ from escpos.exceptions import CharCodeError, Error
 class TestEncoder:
 
     def test_can_encode(self):
-        assert not Encoder({1: 'cp437'}).can_encode('cp437', u'€')
-        assert Encoder({1: 'cp437'}).can_encode('cp437', u'á')
-        assert not Encoder({1: 'foobar'}).can_encode('foobar', 'a')
+        assert not Encoder({'cp437': 1}).can_encode('cp437', u'€')
+        assert Encoder({'cp437': 1}).can_encode('cp437', u'á')
+        assert not Encoder({'foobar': 1}).can_encode('foobar', 'a')
 
     def test_find_suitable_encoding(self):
-        assert not Encoder({1: 'cp437'}).find_suitable_codespace(u'€')
-        assert Encoder({1: 'cp858'}).find_suitable_codespace(u'€') == 'cp858'
+        assert not Encoder({'cp437': 1}).find_suitable_encoding(u'€')
+        assert Encoder({'cp858': 1}).find_suitable_encoding(u'€') == 'cp858'
 
     @raises(ValueError)
     def test_get_encoding(self):
@@ -51,12 +52,12 @@ class TestMagicEncode:
         def test_init_from_none(self, driver):
             encode = MagicEncode(driver, encoding=None)
             encode.write_with_encoding('cp858', '€ ist teuro.')
-            assert driver.output == b'\x1bt\xd5 ist teuro.'
+            assert driver.output == b'\x1bt\x13\xd5 ist teuro.'
 
         def test_change_from_another(self, driver):
             encode = MagicEncode(driver, encoding='cp437')
             encode.write_with_encoding('cp858', '€ ist teuro.')
-            assert driver.output == b'\x1bt\xd5 ist teuro.'
+            assert driver.output == b'\x1bt\x13\xd5 ist teuro.'
 
         def test_no_change(self, driver):
             encode = MagicEncode(driver, encoding='cp858')
@@ -68,7 +69,7 @@ class TestMagicEncode:
         def test_write(self, driver):
             encode = MagicEncode(driver)
             encode.write('€ ist teuro.')
-            assert driver.output == b'\x1bt\xa4 ist teuro.'
+            assert driver.output == b'\x1bt\x0f\xa4 ist teuro.'
 
         def test_write_disabled(self, driver):
             encode = MagicEncode(driver, encoding='cp437', disabled=True)
@@ -77,7 +78,7 @@ class TestMagicEncode:
 
         def test_write_no_codepage(self, driver):
             encode = MagicEncode(
-                driver, defaultsymbol="_", encoder=Encoder({1: 'cp437'}),
+                driver, defaultsymbol="_", encoder=Encoder({'cp437': 1}),
                 encoding='cp437')
             encode.write(u'€ ist teuro.')
             assert driver.output == b'_ ist teuro.'
@@ -87,10 +88,10 @@ class TestMagicEncode:
         def test(self, driver):
             encode = MagicEncode(driver)
             encode.force_encoding('cp437')
-            assert driver.output == b'\x1bt'
+            assert driver.output == b'\x1bt\x00'
 
             encode.write('€ ist teuro.')
-            assert driver.output == b'\x1bt? ist teuro.'
+            assert driver.output == b'\x1bt\x00? ist teuro.'
 
 
 class TestKatakana:
