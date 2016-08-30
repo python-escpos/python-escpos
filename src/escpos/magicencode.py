@@ -85,7 +85,6 @@ class Encoder(object):
             index
         )
 
-
     def find_suitable_encoding(self, char):
         """The order of our search is a specific one:
 
@@ -111,6 +110,21 @@ class Encoder(object):
                 # This encoding worked; at it to the set of used ones.
                 self.used_encodings.add(encoding)
                 return encoding
+
+
+def split_writable_text(encoder, text, encoding):
+    """Splits off as many characters from the begnning of text as
+    are writable with "encoding". Returns a 2-tuple (writable, rest).
+    """
+    if not encoding:
+        return None, text
+
+    for idx, char in enumerate(text):
+        if encoder.can_encode(encoding, char):
+            continue
+        return text[:idx], text[idx:]
+
+    return text, None
 
 
 class MagicEncode(object):
@@ -161,30 +175,24 @@ class MagicEncode(object):
             self.write_with_encoding(self.encoding, text)
             return
 
-        # TODO: Currently this very simple loop means we send every
-        # character individually to the printer. We can probably
-        # improve performace by searching the text for the first
-        # character that cannot be rendered using the current code
-        # page, and then sending all of those characters at once.
-        # Or, should a lower-level buffer be responsible for that?
+        # See how far we can go into the text with the current encoding
+        to_write, text = split_writable_text(self.encoder, text, self.encoding)
+        if to_write:
+            self.write_with_encoding(self.encoding, to_write)
 
-        for char in text:
-            # See if the current code page works for this character.
-            # The encoder object will use a cache to be able to answer
-            # this question fairly easily.
-            if self.encoding and self.encoder.can_encode(self.encoding, char):
-                self.write_with_encoding(self.encoding, char)
-                continue
-
-            # We have to find another way to print this character.
-            # See if any of the code pages that the printer profile supports
-            # can encode this character.
-            encoding = self.encoder.find_suitable_encoding(char)
+        while text:
+            # See if any of the code pages that the printer profile
+            # supports can encode this character.
+            encoding = self.encoder.find_suitable_encoding(text[0])
             if not encoding:
-                self._handle_character_failed(char)
+                self._handle_character_failed(text[0])
+                text = text[1:]
                 continue
 
-            self.write_with_encoding(encoding, char)
+            # Write as much text as possible with the encoding found.
+            to_write, text = split_writable_text(self.encoder, text, encoding)
+            if to_write:
+                self.write_with_encoding(encoding, to_write)
 
     def _handle_character_failed(self, char):
         """Called when no codepage was found to render a character.
