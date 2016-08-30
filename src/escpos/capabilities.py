@@ -92,11 +92,11 @@ def clean(s):
 # For users, who want to provide their profile
 class Profile(get_profile_class('default')):
 
-    def __init__(self, columns=None, features={}):
+    def __init__(self, columns=None, features=None):
         super(Profile, self).__init__()
 
         self.columns = columns
-        self.features = features
+        self.features = features or {}
 
     def get_columns(self, font):
         if self.columns is not None:
