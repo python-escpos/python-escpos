@@ -19,7 +19,7 @@ def test_function_text_dies_ist_ein_test_lf():
     """test the text printing function with simple string and compare output"""
     instance = Dummy()
     instance.text('Dies ist ein Test.\n')
-    assert instance.output == 'Dies ist ein Test.\n'
+    assert instance.output == b'Dies ist ein Test.\n'
 
 
 def test_block_text():
@@ -27,4 +27,4 @@ def test_block_text():
     printer.block_text(
         "All the presidents men were eating falafel for breakfast.", font='a')
     assert printer.output == \
-        'All the presidents men were eating falafel\nfor breakfast.'
+        b'All the presidents men were eating falafel\nfor breakfast.'

@@ -31,4 +31,4 @@ def test_lacks_support(bctype, supports_b):
     with pytest.raises(BarcodeTypeError):
         instance.barcode('test', bctype)
 
-    assert instance.output == ''
+    assert instance.output == b''
