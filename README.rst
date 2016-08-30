@@ -54,14 +54,14 @@ The basic usage is:
 
 .. code:: python
 
-    from escpos import *
+    from escpos.printer import Usb
 
     """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-    Epson = escpos.Escpos(0x04b8,0x0202,0)
-    Epson.text("Hello World\n")
-    Epson.image("logo.gif")
-    Epson.barcode('1324354657687','EAN13',64,2,'','')
-    Epson.cut()
+    p = Usb(0x04b8,0x0202,0)
+    p.text("Hello World\n")
+    p.image("logo.gif")
+    p.barcode('1324354657687','EAN13',64,2,'','')
+    p.cut()
 
 The full project-documentation is available on `Read the Docs <https://python-escpos.readthedocs.io>`_.
 

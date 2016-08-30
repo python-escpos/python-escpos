@@ -15,6 +15,21 @@ contributors
 - Patrick Kanzler (with code by Frédéric Van der Essen)
 
 
+2016-08-26 - Version 2.2.0 - "Fate Amenable To Change"
+------------------------------------------------------
+
+changes
+^^^^^^^
+- fix improper API-use in qrcode()
+- change setup.py shebang to make it compatible with virtualenvs.
+- add constants for sheet mode and colors
+- support changing the linespacing
+
+contributors
+^^^^^^^^^^^^
+- Michael Elsdörfer
+- Patrick Kanzler
+
 2016-08-10 - Version 2.1.3 - "Ethics Gradient"
 ----------------------------------------------
 

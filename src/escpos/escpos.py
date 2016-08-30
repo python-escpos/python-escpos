@@ -24,7 +24,7 @@ from .magicencode import MagicEncode
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
-from escpos.capabilities import get_profile
+from escpos.capabilities import get_profile, BARCODE_B
 
 
 @six.add_metaclass(ABCMeta)
@@ -232,7 +232,8 @@ class Escpos(object):
         else:
             self.magic.force_encoding(code)
 
-    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True, function_type="A"):
+    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A",
+                align_ct=True, function_type=None):
         """ Print Barcode
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
@@ -303,14 +304,40 @@ class Escpos(object):
                          issued.
         :type align_ct: bool
 
-        :param function_type: Choose between ESCPOS function type A or B, depending on printer support and desired
-            barcode.
+        :param function_type: Choose between ESCPOS function type A or B,
+            depending on printer support and desired barcode. If not given,
+            the printer will attempt to automatically choose the correct
+            function based on the current profile.
             *default*: A
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
+        if function_type is None:
+            # Choose the function type automatically.
+            if bc in BARCODE_TYPES['A']:
+                function_type = 'A'
+            else:
+                if bc in BARCODE_TYPES['B']:
+                    if not self.profile.supports(BARCODE_B):
+                        raise BarcodeTypeError((
+                            "Barcode type '{bc} not supported for "
+                            "the current printer profile").format(bc=bc))
+                    function_type = 'B'
+                else:
+                    raise BarcodeTypeError((
+                            "Barcode type '{bc} is not valid").format(bc=bc))
+
+        bc_types = BARCODE_TYPES[function_type.upper()]
+        if bc.upper() not in bc_types.keys():
+            raise BarcodeTypeError((
+                "Barcode type '{bc}' not valid for barcode function type "
+                "{function_type}").format(
+                    bc=bc,
+                    function_type=function_type,
+                ))
+
         # Align Bar Code()
         if align_ct:
             self._raw(TXT_ALIGN_CT)
@@ -338,14 +365,6 @@ class Escpos(object):
             self._raw(BARCODE_TXT_ABV)
         else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-
-        bc_types = BARCODE_TYPES[function_type.upper()]
-        if bc.upper() not in bc_types.keys():
-            # TODO: Raise a better error, or fix the message of this error type
-            raise BarcodeTypeError("Barcode type {bc} not valid for barcode function type {function_type}".format(
-                bc=bc,
-                function_type=function_type,
-            ))
 
         self._raw(bc_types[bc.upper()])
 
@@ -385,8 +404,8 @@ class Escpos(object):
         col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
-    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False,
-            flip=False):
+    def set(self, align='left', font='a', text_type='normal', width=1,
+            height=1, density=9, invert=False, smooth=False, flip=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
@@ -396,7 +415,9 @@ class Escpos(object):
             * RIGHT
 
             *default*: LEFT
-        :param font: font type, possible values are A or B, *default*: A
+
+        :param font: font given as an index, a name, or one of the
+            special values 'a' or 'b', refering to fonts 0 and 1.
         :param text_type: text type, possible values are:
 
             * B for bold
@@ -461,10 +482,8 @@ class Escpos(object):
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL_OFF)
         # Font
-        if font.upper() == "B":
-            self._raw(TXT_FONT_B)
-        else:  # DEFAULT FONT: A
-            self._raw(TXT_FONT_A)
+        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+
         # Align
         if align.upper() == "CENTER":
             self._raw(TXT_ALIGN_CT)
@@ -498,6 +517,35 @@ class Escpos(object):
             self._raw(TXT_INVERT_ON)
         else:
             self._raw(TXT_INVERT_OFF)
+
+    def line_spacing(self, spacing=None, divisor=180):
+        """ Set line character spacing.
+
+        If no spacing is given, we reset it to the default.
+
+        There are different commands for setting the line spacing, using
+        a different denominator:
+
+        '+'' line_spacing/360 of an inch, 0 <= line_spacing <= 255
+        '3' line_spacing/180 of an inch, 0 <= line_spacing <= 255
+        'A' line_spacing/60 of an inch, 0 <= line_spacing <= 85
+
+        Some printers may not support all of them. The most commonly
+        available command (using a divisor of 180) is chosen.
+        """
+        if spacing is None:
+            self._raw(LINESPACING_RESET)
+            return
+
+        if divisor not in LINESPACING_FUNCS:
+            raise ValueError("divisor must be either 360, 180 or 60")
+        if (divisor in [360, 180] \
+                and (not(0 <= spacing <= 255))):
+            raise ValueError("spacing must be a int between 0 and 255 when divisor is 360 or 180")
+        if divisor == 60 and (not(0 <= spacing <= 85)):
+            raise ValueError("spacing must be a int between 0 and 85 when divisor is 60")
+
+        self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
 
     def cut(self, mode=''):
         """ Cut paper.
