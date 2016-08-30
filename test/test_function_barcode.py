@@ -16,6 +16,8 @@ import pytest
         b'\x1ba\x01\x1dh@\x1dw\x03\x1df\x00\x1dH\x02\x1dk\x024006381333931\x00')
 ])
 def test_barcode(bctype, data, expected):
+    """should generate different barcode types correctly.
+    """
     instance = printer.Dummy()
     instance.barcode(data, bctype)
     assert instance.output == expected
@@ -26,6 +28,8 @@ def test_barcode(bctype, data, expected):
     ('CODE128', False),
 ])
 def test_lacks_support(bctype, supports_b):
+    """should raise an error if the barcode type is not supported.
+    """
     profile = Profile(features={BARCODE_B: supports_b})
     instance = printer.Dummy(profile=profile)
     with pytest.raises(BarcodeTypeError):

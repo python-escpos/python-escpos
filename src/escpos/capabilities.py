@@ -13,6 +13,9 @@ PROFILES = CAPABILITIES['profiles']
 
 
 class NotSupported(Exception):
+    """Raised if a requested feature is not suppored by the
+    printer profile.
+    """
     pass
 
 
@@ -38,7 +41,7 @@ class BaseProfile(object):
         font = {'a': 0, 'b': 1}.get(font, font)
         if not six.text_type(font) in self.fonts:
             raise NotSupported(
-                '"%s" is not a valid font in the current profile' % font)
+                '"{}" is not a valid font in the current profile'.format(font))
         return font
 
     def get_columns(self, font):
