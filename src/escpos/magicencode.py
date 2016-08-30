@@ -55,7 +55,7 @@ class Encoder(object):
         canonical encoding name; and also validate that the encoding
         is supported.
 
-        TOOD: Support encoding aliases.
+        TODO: Support encoding aliases: pc437 instead of cp437.
         """
         encoding = CodePages.get_encoding(encoding)
         if not encoding in self.codepages:
@@ -78,6 +78,14 @@ class Encoder(object):
 
         return True
 
+    def __encoding_sort_func(self, item):
+        key, index = item
+        return (
+            key in self.used_encodings,
+            index
+        )
+
+
     def find_suitable_encoding(self, char):
         """The order of our search is a specific one:
 
@@ -93,17 +101,12 @@ class Encoder(object):
            is missing or incomplete, we might increase our change
            that the code page we pick for this character is actually
            supported.
+        """
+        sorted_encodings = sorted(
+            self.codepages.items(),
+            key=self.__encoding_sort_func)
 
-        # TODO actually do speed up the search
-        """
-        """
-        - remove the ones not supported
-        - order by used first, then others
-        - do not use a cache, because encode already is so fast
-        """
-        sorted_encodings = self.codepages.keys()
-
-        for encoding in sorted_encodings:
+        for encoding, _ in sorted_encodings:
             if self.can_encode(encoding, char):
                 # This encoding worked; at it to the set of used ones.
                 self.used_encodings.add(encoding)
