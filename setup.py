@@ -83,7 +83,8 @@ setup(
     platforms='any',
     package_dir={"": "src"},
     packages=find_packages(where="src", exclude=["tests", "tests.*"]),
-    package_data={'': ['COPYING']},
+    package_data={'': ['COPYING', 'src/escpos/capabilities.json']},
+    include_package_data=True,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',

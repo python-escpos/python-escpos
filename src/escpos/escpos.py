@@ -452,8 +452,8 @@ class Escpos(object):
         col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
-    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False,
-            flip=False):
+    def set(self, align='left', font='a', text_type='normal', width=1,
+            height=1, density=9, invert=False, smooth=False, flip=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
@@ -463,7 +463,9 @@ class Escpos(object):
             * RIGHT
 
             *default*: LEFT
-        :param font: font type, possible values are A or B, *default*: A
+
+        :param font: font given as an index, a name, or one of the
+            special values 'a' or 'b', refering to fonts 0 and 1.
         :param text_type: text type, possible values are:
 
             * B for bold
@@ -528,10 +530,8 @@ class Escpos(object):
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL_OFF)
         # Font
-        if font.upper() == "B":
-            self._raw(TXT_FONT_B)
-        else:  # DEFAULT FONT: A
-            self._raw(TXT_FONT_A)
+        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+
         # Align
         if align.upper() == "CENTER":
             self._raw(TXT_ALIGN_CT)

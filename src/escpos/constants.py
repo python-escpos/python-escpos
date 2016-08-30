@@ -93,13 +93,16 @@ TXT_UNDERL_ON  = ESC + b'\x2d\x01'  # Underline font 1-dot ON
 TXT_UNDERL2_ON = ESC + b'\x2d\x02'  # Underline font 2-dot ON
 TXT_BOLD_OFF   = ESC + b'\x45\x00'  # Bold font OFF
 TXT_BOLD_ON    = ESC + b'\x45\x01'  # Bold font ON
-TXT_FONT_A     = ESC + b'\x4d\x00'  # Font type A
-TXT_FONT_B     = ESC + b'\x4d\x01'  # Font type B
 TXT_ALIGN_LT   = ESC + b'\x61\x00'  # Left justification
 TXT_ALIGN_CT   = ESC + b'\x61\x01'  # Centering
 TXT_ALIGN_RT   = ESC + b'\x61\x02'  # Right justification
 TXT_INVERT_ON  = GS  + b'\x42\x01'  # Inverse Printing ON
 TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
+
+# Fonts
+SET_FONT = lambda n: ESC + b'\x4d' + n
+TXT_FONT_A     = SET_FONT(b'\x00')  # Font type A
+TXT_FONT_B     = SET_FONT(b'\x01')  # Font type B
 
 # Char code table
 CHARCODE_PC437  = ESC + b'\x74\x00'  # USA: Standard Europe
