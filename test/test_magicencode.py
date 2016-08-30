@@ -94,6 +94,13 @@ class TestMagicEncode:
             assert driver.output == b'\x1bt\x00? ist teuro.'
 
 
+try:
+    import jcconv
+except ImportError:
+    jcconv = None
+
+
+@pytest.mark.skipif(not jcconv, reason="jcconv not installed")
 class TestKatakana:
     @given(st.text())
     @example("カタカナ")
