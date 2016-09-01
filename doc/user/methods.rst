@@ -85,7 +85,7 @@ text("text")
 Prints raw text. Raises ``TextError`` exception.
 
 set("align", "font", "text_type", width, height, invert, smooth, flip)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set text properties.
 
