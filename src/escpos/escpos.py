@@ -23,6 +23,7 @@ from .exceptions import *
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
+from escpos.capabilities import get_profile, BARCODE_B
 
 
 @six.add_metaclass(ABCMeta)
@@ -35,11 +36,11 @@ class Escpos(object):
     device = None
     codepage = None
 
-    def __init__(self, columns=32):
+    def __init__(self, profile=None):
         """ Initialize ESCPOS Printer
 
-        :param columns: Text columns used by the printer. Defaults to 32."""
-        self.columns = columns
+        :param profile: Printer profile"""
+        self.profile = get_profile(profile)
 
     def __del__(self):
         """ call self.close upon deletion """
@@ -292,7 +293,8 @@ class Escpos(object):
         else:
             raise CharCodeError()
 
-    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A", align_ct=True, function_type="A"):
+    def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A",
+                align_ct=True, function_type=None):
         """ Print Barcode
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
@@ -363,14 +365,40 @@ class Escpos(object):
                          issued.
         :type align_ct: bool
 
-        :param function_type: Choose between ESCPOS function type A or B, depending on printer support and desired
-            barcode.
+        :param function_type: Choose between ESCPOS function type A or B,
+            depending on printer support and desired barcode. If not given,
+            the printer will attempt to automatically choose the correct
+            function based on the current profile.
             *default*: A
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
+        if function_type is None:
+            # Choose the function type automatically.
+            if bc in BARCODE_TYPES['A']:
+                function_type = 'A'
+            else:
+                if bc in BARCODE_TYPES['B']:
+                    if not self.profile.supports(BARCODE_B):
+                        raise BarcodeTypeError((
+                            "Barcode type '{bc} not supported for "
+                            "the current printer profile").format(bc=bc))
+                    function_type = 'B'
+                else:
+                    raise BarcodeTypeError((
+                            "Barcode type '{bc} is not valid").format(bc=bc))
+
+        bc_types = BARCODE_TYPES[function_type.upper()]
+        if bc.upper() not in bc_types.keys():
+            raise BarcodeTypeError((
+                "Barcode type '{bc}' not valid for barcode function type "
+                "{function_type}").format(
+                    bc=bc,
+                    function_type=function_type,
+                ))
+
         # Align Bar Code()
         if align_ct:
             self._raw(TXT_ALIGN_CT)
@@ -398,14 +426,6 @@ class Escpos(object):
             self._raw(BARCODE_TXT_ABV)
         else:  # DEFAULT POSITION: BELOW
             self._raw(BARCODE_TXT_BLW)
-
-        bc_types = BARCODE_TYPES[function_type.upper()]
-        if bc.upper() not in bc_types.keys():
-            # TODO: Raise a better error, or fix the message of this error type
-            raise BarcodeTypeError("Barcode type {bc} not valid for barcode function type {function_type}".format(
-                bc=bc,
-                function_type=function_type,
-            ))
 
         self._raw(bc_types[bc.upper()])
 
@@ -439,7 +459,7 @@ class Escpos(object):
             # TODO: why is it problematic to print an empty string?
             raise TextError()
 
-    def block_text(self, txt, columns=None):
+    def block_text(self, txt, font=None, columns=None):
         """ Text is printed wrapped to specified columns
 
         Text has to be encoded in unicode.
@@ -448,11 +468,11 @@ class Escpos(object):
         :param columns: amount of columns
         :return: None
         """
-        col_count = self.columns if columns is None else columns
+        col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
-    def set(self, align='left', font='a', text_type='normal', width=1, height=1, density=9, invert=False, smooth=False,
-            flip=False):
+    def set(self, align='left', font='a', text_type='normal', width=1,
+            height=1, density=9, invert=False, smooth=False, flip=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
@@ -462,7 +482,9 @@ class Escpos(object):
             * RIGHT
 
             *default*: LEFT
-        :param font: font type, possible values are A or B, *default*: A
+
+        :param font: font given as an index, a name, or one of the
+            special values 'a' or 'b', refering to fonts 0 and 1.
         :param text_type: text type, possible values are:
 
             * B for bold
@@ -527,10 +549,8 @@ class Escpos(object):
             self._raw(TXT_BOLD_OFF)
             self._raw(TXT_UNDERL_OFF)
         # Font
-        if font.upper() == "B":
-            self._raw(TXT_FONT_B)
-        else:  # DEFAULT FONT: A
-            self._raw(TXT_FONT_A)
+        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+
         # Align
         if align.upper() == "CENTER":
             self._raw(TXT_ALIGN_CT)
