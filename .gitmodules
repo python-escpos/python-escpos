@@ -1,0 +1,3 @@
+[submodule "capabilities-data"]
+	path = capabilities-data
+	url = https://github.com/mike42/escpos-printer-db.git

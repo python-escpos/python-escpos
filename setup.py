@@ -72,7 +72,7 @@ setup(
     author='Manuel F Martinez and others',
     author_email='manpaz@bashlinux.com',
     maintainer='Patrick Kanzler',
-    maintainer_email='patrick.kanzler@fablab.fau.de',
+    maintainer_email='dev@pkanzler.de',
     keywords=[
         'ESC/POS',
         'thermoprinter',
