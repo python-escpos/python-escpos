@@ -3,6 +3,7 @@ include *.txt
 include COPYING
 include INSTALL
 include tox.ini
+include capabilities-data/dist/capabilities.json
 recursive-include doc *.bat
 recursive-include doc *.ico
 recursive-include doc *.py
