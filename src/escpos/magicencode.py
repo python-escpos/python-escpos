@@ -132,10 +132,10 @@ class Encoder(object):
         :param char: char to encode
         :param charmap: dictionary for mapping characters in this code page
         """
-        if char in charmap:
-            return charmap[char]
         if ord(char) < 128:
             return ord(char)
+        if char in charmap:
+            return charmap[char]
         return ord('?')
 
     def encode(self, text, encoding, defaultchar='?'):
