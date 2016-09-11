@@ -58,7 +58,7 @@ class BaseProfile(object):
     def get_code_pages(self):
         """Return the support code pages as a {name: index} dict.
         """
-        return {v.lower(): k for k, v in self.codePages.items()}
+        return {v: k for k, v in self.codePages.items()}
 
 
 

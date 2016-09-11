@@ -36,7 +36,7 @@ class TestEncoder:
 
     @raises(ValueError)
     def test_get_encoding(self):
-        Encoder({}).get_encoding('latin1')
+        Encoder({}).get_encoding_name('latin1')
 
 
 class TestMagicEncode:
