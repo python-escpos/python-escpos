@@ -17,7 +17,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from builtins import bytes, chr
+from builtins import bytes
 from .constants import CODEPAGE_CHANGE
 from .exceptions import CharCodeError, Error
 from .capabilities import get_profile
@@ -46,6 +46,7 @@ class Encoder(object):
     def __init__(self, codepage_map):
         self.codepages = codepage_map
         self.available_encodings = set(codepage_map.keys())
+        self.available_characters = {}
         self.used_encodings = set()
 
     def get_sequence(self, encoding):
@@ -66,8 +67,15 @@ class Encoder(object):
                 ).format(encoding, ','.join(self.codepages.keys())))
         return encoding
 
-    def can_encode(self, encoding, char):
-        # Compute the encodable characters in the upper half of this code page
+    def _get_codepage_char_list(self, encoding):
+        """Get codepage character list
+        
+        Gets characters 128-255 for a given code page, as an array.
+        
+        :param encoding: The name of the encoding. This must be a valid python encoding.
+        """
+        # Compute the encodable characters as an array (this is the format
+        # that for non-standard codings come in)
         encodable_chars = [u" "] * 128
         for i in range(0, 128):
             codepoint = i + 128
@@ -76,13 +84,42 @@ class Encoder(object):
             except UnicodeDecodeError:
                 # Non-encodable character
                 pass
-            except LookupError:
-                # We don't have this encoding
-                return False
+        return encodable_chars
+
+    def _get_codepage_char_map(self, encoding):
+        """ Get codepage character map
+        
+        Process an encoding and return a map of UTF-characters to code points
+        in this encoding.
+        
+        This is generated once only, and returned from a cache.
+        
+        :param encoding: The name of the encoding.
+        """
+        # Skip things that were loaded previously
+        if encoding in self.available_characters:
+            return self.available_characters[encoding]
+        codepage_char_list = self._get_codepage_char_list(encoding)
+        codepage_char_map = dict((utf8, i + 128) for (i, utf8) in enumerate(codepage_char_list))
+        self.available_characters[encoding] = codepage_char_map
+        return codepage_char_map
+
+    def can_encode(self, encoding, char):
+        """Determine if a character is encodeable in the given code page.
+        
+        :param encoding: The name of the encoding.
+        :param char: The character to attempt to encode.
+        """
+        available_map = {}
+        try:
+            available_map = self._get_codepage_char_map(encoding)
+        except LookupError:
+            return False
 
         # Decide whether this character is encodeable in this code page
         is_ascii = ord(char) < 128
-        return is_ascii or char in encodable_chars
+        is_encodable = char in available_map
+        return is_ascii or is_encodable
 
     def __encoding_sort_func(self, item):
         key, index = item
