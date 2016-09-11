@@ -177,6 +177,20 @@ And for a network printer::
                 host: 127.0.0.1
                 port: 9000
 
+Printing text right
+-------------------
+Python-escpos is designed to accept unicode. So make sure that you use ``u'strings'`` or import ``unicode_literals``
+from ``__future__`` if you are on Python2. On Version 3 you should be fine.
+
+For normal usage you can simply pass your text to the printers ``text()``-function. It will automatically guess
+the right codepage and then send the encoded data to the printer. If this feature should not work, please try to
+isolate the error and then create an issue.
+
+I you want or need to you can manually set the codepage. For this please use the ``charcode()``-function. You can set
+any key-value that is in ``CHARCODE``. If something is wrong, an ``CharCodeError`` will be raised.
+After you have set the codepage manually the printer won't change it anymore. You can get back to normal behaviour
+by setting charcode to ``AUTO``.
+
 Advanced Usage: Print from binary blob
 --------------------------------------
 
@@ -235,19 +249,3 @@ You could then for example print the code from another process than your main-pr
 (Of course this will not make the printer print faster.)
 
 
-How to update your code for USB printers
-----------------------------------------
-
-Old code
-
-::
-
-    Epson = escpos.Escpos(0x04b8,0x0202,0)
-
-New code
-
-::
-
-    Epson = printer.Usb(0x04b8,0x0202)
-
-Nothe that "0" which is the interface number is no longer needed.

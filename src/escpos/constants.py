@@ -123,27 +123,9 @@ LINESPACING_FUNCS = {
   180: ESC + b'3', # line_spacing/180 of an inch, 0 <= line_spacing <= 255
 }
 
-# Char code table
-CHARCODE_PC437  = ESC + b'\x74\x00'  # USA: Standard Europe
-CHARCODE_JIS    = ESC + b'\x74\x01'  # Japanese Katakana
-CHARCODE_PC850  = ESC + b'\x74\x02'  # Multilingual
-CHARCODE_PC860  = ESC + b'\x74\x03'  # Portuguese
-CHARCODE_PC863  = ESC + b'\x74\x04'  # Canadian-French
-CHARCODE_PC865  = ESC + b'\x74\x05'  # Nordic
-CHARCODE_WEU    = ESC + b'\x74\x06'  # Simplified Kanji, Hirakana
-CHARCODE_GREEK  = ESC + b'\x74\x07'  # Simplified Kanji
-CHARCODE_HEBREW = ESC + b'\x74\x08'  # Simplified Kanji
-CHARCODE_PC1252 = ESC + b'\x74\x11'  # Western European Windows Code Set
-CHARCODE_PC866  = ESC + b'\x74\x12'  # Cirillic #2
-CHARCODE_PC852  = ESC + b'\x74\x13'  # Latin 2
-CHARCODE_PC858  = ESC + b'\x74\x14'  # Euro
-CHARCODE_THAI42 = ESC + b'\x74\x15'  # Thai character code 42
-CHARCODE_THAI11 = ESC + b'\x74\x16'  # Thai character code 11
-CHARCODE_THAI13 = ESC + b'\x74\x17'  # Thai character code 13
-CHARCODE_THAI14 = ESC + b'\x74\x18'  # Thai character code 14
-CHARCODE_THAI16 = ESC + b'\x74\x19'  # Thai character code 16
-CHARCODE_THAI17 = ESC + b'\x74\x1a'  # Thai character code 17
-CHARCODE_THAI18 = ESC + b'\x74\x1b'  # Thai character code 18
+# Prefix to change the codepage. You need to attach a byte to indicate
+# the codepage to use. We use escpos-printer-db as the data source.
+CODEPAGE_CHANGE = ESC + b'\x74'
 
 # Barcode format
 _SET_BARCODE_TXT_POS = lambda n: GS + b'H' + n
