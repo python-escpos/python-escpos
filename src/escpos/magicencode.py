@@ -126,7 +126,7 @@ class Encoder(object):
         is_encodable = char in available_map
         return is_ascii or is_encodable
 
-    def _encode_char(self, char, charmap):
+    def _encode_char(self, char, charmap, defaultchar):
         """ Encode a single character with the given encoding map
         
         :param char: char to encode
@@ -136,7 +136,7 @@ class Encoder(object):
             return ord(char)
         if char in charmap:
             return charmap[char]
-        return ord('?')
+        return ord(defaultchar)
 
     def encode(self, text, encoding, defaultchar='?'):
         """ Encode text under the given encoding
