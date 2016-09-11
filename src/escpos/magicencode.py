@@ -17,6 +17,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from builtins import bytes, chr
 from .constants import CODEPAGE_CHANGE
 from .exceptions import CharCodeError, Error
 from .capabilities import get_profile
@@ -66,17 +67,22 @@ class Encoder(object):
         return encoding
 
     def can_encode(self, encoding, char):
-        try:
-            encoded = CodePages.encode(char, encoding)
-            assert type(encoded) is bytes
-            return encoded
-        except LookupError:
-            # We don't have this encoding
-            return False
-        except UnicodeEncodeError:
-            return False
+        # Compute the encodable characters in the upper half of this code page
+        encodable_chars = [u" "] * 128
+        for i in range(0, 128):
+            codepoint = i + 128
+            try:
+                encodable_chars[i] = bytes([codepoint]).decode(encoding)
+            except UnicodeDecodeError:
+                # Non-encodable character
+                pass
+            except LookupError:
+                # We don't have this encoding
+                return False
 
-        return True
+        # Decide whether this character is encodeable in this code page
+        is_ascii = ord(char) < 128
+        return is_ascii or char in encodable_chars
 
     def __encoding_sort_func(self, item):
         key, index = item
