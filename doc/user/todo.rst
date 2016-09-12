@@ -21,6 +21,7 @@ Testing
 ~~~~~~~
 
 * Test on many printers as possible (USB, Serial, Network)
+* automate testing
 
 Design
 ~~~~~~
@@ -31,5 +32,12 @@ Design
   *  Port to Python 3
   *  Windows compatibility (hidapi instead libusb?)
   *  PDF417 support
+
+* use something similar to the `capabilities` in escpos-php
+
+Todos in the codebase
+~~~~~~~~~~~~~~~~~~~~~
+
+.. todolist::
 
 

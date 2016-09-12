@@ -32,11 +32,25 @@ Network("host", port)
 ^^^^^^^^^^^^^^^^^^^^^
 
 Based on socket
+
 * ``host`` is an alphanumeric host name, could be either DNS host name or IP address.
 * ``port`` to write to (default = 9100)
+
+Troubleshooting:
+Problems with a network-attached printer can have numerous causes. Make sure that your device has a proper IP address.
+Often you can check the IP address by triggering the self-test of the device. As a next step try to send text
+manually to the device. You could use for example:
+
+.. ::
+
+    echo "OK\n" | nc IPADDRESS 9100
+    # the port number is often 9100
+
+As a last resort try to reset the interface of the printer. This should be described in its manual.
 
 File("file\_name")
 ^^^^^^^^^^^^^^^^^^
 
 Printcap printers
+
 * ``file_name`` is the full path to the device file name
