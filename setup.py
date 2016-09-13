@@ -113,6 +113,7 @@ setup(
         'pyyaml',
         'argparse',
         'argcomplete',
+        'future'
     ],
     setup_requires=[
         'setuptools_scm',

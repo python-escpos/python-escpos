@@ -145,7 +145,7 @@ class Encoder(object):
         :param encoding: Encoding name to use (must be defined in capabilities)
         :param defaultchar: Fallback for non-encodable characters
         """
-        codepage_char_map = self.available_characters[encoding]
+        codepage_char_map = self._get_codepage_char_map(encoding)
         output_bytes = bytes([self._encode_char(char, codepage_char_map, defaultchar) for char in text])
         return output_bytes
 

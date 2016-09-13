@@ -20,7 +20,7 @@ from escpos.printer import Dummy
 
 
 def get_printer():
-    return Dummy(magic_encode_args={'disabled': True, 'encoding': 'cp437'})
+    return Dummy(magic_encode_args={'disabled': True, 'encoding': 'CP437'})
 
 
 @given(text=st.text())
