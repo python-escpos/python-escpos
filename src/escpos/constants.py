@@ -47,6 +47,7 @@ HW_RESET  = ESC + b'\x3f\x0a\x00'   # Reset printer hardware
 
 # Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
 _CASH_DRAWER = lambda m, t1='', t2='': ESC + b'p' + m + six.int2byte(t1) + six.int2byte(t2)
+CD_KICK_DEC_SEQUENCE = lambda esc, p, m, t1=50, t2=50: six.int2byte(esc) + six.int2byte(p) + six.int2byte(m) + six.int2byte(t1) + six.int2byte(t2)
 CD_KICK_2 = _CASH_DRAWER(b'\x00', 50, 50)  # Sends a pulse to pin 2 []
 CD_KICK_5 = _CASH_DRAWER(b'\x01', 50, 50)  # Sends a pulse to pin 5 []
 
