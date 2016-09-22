@@ -17,6 +17,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from builtins import bytes
 from .constants import CODEPAGE_CHANGE
 from .exceptions import CharCodeError, Error
 from .capabilities import get_profile
@@ -45,19 +46,20 @@ class Encoder(object):
     def __init__(self, codepage_map):
         self.codepages = codepage_map
         self.available_encodings = set(codepage_map.keys())
+        self.available_characters = {}
         self.used_encodings = set()
 
     def get_sequence(self, encoding):
         return int(self.codepages[encoding])
 
-    def get_encoding(self, encoding):
+    def get_encoding_name(self, encoding):
         """Given an encoding provided by the user, will return a
         canonical encoding name; and also validate that the encoding
         is supported.
 
         TODO: Support encoding aliases: pc437 instead of cp437.
         """
-        encoding = CodePages.get_encoding(encoding)
+        encoding = CodePages.get_encoding_name(encoding)
         if not encoding in self.codepages:
             raise ValueError((
                     'Encoding "{}" cannot be used for the current profile. '
@@ -65,18 +67,87 @@ class Encoder(object):
                 ).format(encoding, ','.join(self.codepages.keys())))
         return encoding
 
+    def _get_codepage_char_list(self, encoding):
+        """Get codepage character list
+        
+        Gets characters 128-255 for a given code page, as an array.
+        
+        :param encoding: The name of the encoding. This must appear in the CodePage list
+        """
+        codepage = CodePages.get_encoding(encoding)
+        if 'data' in codepage:
+            encodable_chars = list("".join(codepage['data']))
+            assert(len(encodable_chars) == 128)
+            return encodable_chars
+        elif 'python_encode' in codepage:
+            encodable_chars = [u" "] * 128
+            for i in range(0, 128):
+                codepoint = i + 128
+                try:
+                    encodable_chars[i] = bytes([codepoint]).decode(codepage['python_encode'])
+                except UnicodeDecodeError:
+                    # Non-encodable character, just skip it
+                    pass
+            return encodable_chars
+        raise LookupError("Can't find a known encoding for {}".format(encoding))
+
+    def _get_codepage_char_map(self, encoding):
+        """ Get codepage character map
+        
+        Process an encoding and return a map of UTF-characters to code points
+        in this encoding.
+        
+        This is generated once only, and returned from a cache.
+        
+        :param encoding: The name of the encoding.
+        """
+        # Skip things that were loaded previously
+        if encoding in self.available_characters:
+            return self.available_characters[encoding]
+        codepage_char_list = self._get_codepage_char_list(encoding)
+        codepage_char_map = dict((utf8, i + 128) for (i, utf8) in enumerate(codepage_char_list))
+        self.available_characters[encoding] = codepage_char_map
+        return codepage_char_map
+
     def can_encode(self, encoding, char):
+        """Determine if a character is encodeable in the given code page.
+        
+        :param encoding: The name of the encoding.
+        :param char: The character to attempt to encode.
+        """
+        available_map = {}
         try:
-            encoded = CodePages.encode(char, encoding)
-            assert type(encoded) is bytes
-            return encoded
+            available_map = self._get_codepage_char_map(encoding)
         except LookupError:
-            # We don't have this encoding
-            return False
-        except UnicodeEncodeError:
             return False
 
-        return True
+        # Decide whether this character is encodeable in this code page
+        is_ascii = ord(char) < 128
+        is_encodable = char in available_map
+        return is_ascii or is_encodable
+
+    def _encode_char(self, char, charmap, defaultchar):
+        """ Encode a single character with the given encoding map
+        
+        :param char: char to encode
+        :param charmap: dictionary for mapping characters in this code page
+        """
+        if ord(char) < 128:
+            return ord(char)
+        if char in charmap:
+            return charmap[char]
+        return ord(defaultchar)
+
+    def encode(self, text, encoding, defaultchar='?'):
+        """ Encode text under the given encoding
+        
+        :param text: Text to encode
+        :param encoding: Encoding name to use (must be defined in capabilities)
+        :param defaultchar: Fallback for non-encodable characters
+        """
+        codepage_char_map = self._get_codepage_char_map(encoding)
+        output_bytes = bytes([self._encode_char(char, codepage_char_map, defaultchar) for char in text])
+        return output_bytes
 
     def __encoding_sort_func(self, item):
         key, index = item
@@ -151,7 +222,7 @@ class MagicEncode(object):
         self.driver = driver
         self.encoder = encoder or Encoder(driver.profile.get_code_pages())
 
-        self.encoding = self.encoder.get_encoding(encoding) if encoding else None
+        self.encoding = self.encoder.get_encoding_name(encoding) if encoding else None
         self.defaultsymbol = defaultsymbol
         self.disabled = disabled
 
@@ -216,4 +287,4 @@ class MagicEncode(object):
                 six.int2byte(self.encoder.get_sequence(encoding)))
 
         if text:
-            self.driver._raw(CodePages.encode(text, encoding, errors="replace"))
+            self.driver._raw(self.encoder.encode(text, encoding))

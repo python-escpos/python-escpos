@@ -26,17 +26,17 @@ from escpos.exceptions import CharCodeError, Error
 class TestEncoder:
 
     def test_can_encode(self):
-        assert not Encoder({'cp437': 1}).can_encode('cp437', u'€')
-        assert Encoder({'cp437': 1}).can_encode('cp437', u'á')
+        assert not Encoder({'CP437': 1}).can_encode('CP437', u'€')
+        assert Encoder({'CP437': 1}).can_encode('CP437', u'á')
         assert not Encoder({'foobar': 1}).can_encode('foobar', 'a')
 
     def test_find_suitable_encoding(self):
-        assert not Encoder({'cp437': 1}).find_suitable_encoding(u'€')
-        assert Encoder({'cp858': 1}).find_suitable_encoding(u'€') == 'cp858'
+        assert not Encoder({'CP437': 1}).find_suitable_encoding(u'€')
+        assert Encoder({'CP858': 1}).find_suitable_encoding(u'€') == 'CP858'
 
     @raises(ValueError)
     def test_get_encoding(self):
-        Encoder({}).get_encoding('latin1')
+        Encoder({}).get_encoding_name('latin1')
 
 
 class TestMagicEncode:
@@ -51,17 +51,17 @@ class TestMagicEncode:
 
         def test_init_from_none(self, driver):
             encode = MagicEncode(driver, encoding=None)
-            encode.write_with_encoding('cp858', '€ ist teuro.')
+            encode.write_with_encoding('CP858', '€ ist teuro.')
             assert driver.output == b'\x1bt\x13\xd5 ist teuro.'
 
         def test_change_from_another(self, driver):
-            encode = MagicEncode(driver, encoding='cp437')
-            encode.write_with_encoding('cp858', '€ ist teuro.')
+            encode = MagicEncode(driver, encoding='CP437')
+            encode.write_with_encoding('CP858', '€ ist teuro.')
             assert driver.output == b'\x1bt\x13\xd5 ist teuro.'
 
         def test_no_change(self, driver):
-            encode = MagicEncode(driver, encoding='cp858')
-            encode.write_with_encoding('cp858', '€ ist teuro.')
+            encode = MagicEncode(driver, encoding='CP858')
+            encode.write_with_encoding('CP858', '€ ist teuro.')
             assert driver.output == b'\xd5 ist teuro.'
 
     class TestWrite:
@@ -72,14 +72,14 @@ class TestMagicEncode:
             assert driver.output == b'\x1bt\x0f\xa4 ist teuro.'
 
         def test_write_disabled(self, driver):
-            encode = MagicEncode(driver, encoding='cp437', disabled=True)
+            encode = MagicEncode(driver, encoding='CP437', disabled=True)
             encode.write('€ ist teuro.')
             assert driver.output == b'? ist teuro.'
 
         def test_write_no_codepage(self, driver):
             encode = MagicEncode(
-                driver, defaultsymbol="_", encoder=Encoder({'cp437': 1}),
-                encoding='cp437')
+                driver, defaultsymbol="_", encoder=Encoder({'CP437': 1}),
+                encoding='CP437')
             encode.write(u'€ ist teuro.')
             assert driver.output == b'_ ist teuro.'
 
@@ -87,7 +87,7 @@ class TestMagicEncode:
 
         def test(self, driver):
             encode = MagicEncode(driver)
-            encode.force_encoding('cp437')
+            encode.force_encoding('CP437')
             assert driver.output == b'\x1bt\x00'
 
             encode.write('€ ist teuro.')

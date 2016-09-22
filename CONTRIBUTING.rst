@@ -29,7 +29,7 @@ of every file of code:
   from __future__ import division
   from __future__ import print_function
   from __future__ import unicode_literals
- 
+
 Furthermore please be aware of the differences between Python 2 and 3. For
 example `this guide <https://docs.python.org/3/howto/pyporting.html>`_ is helpful.
 Special care has to be taken when dealing with strings and byte-strings. Please note
@@ -45,8 +45,7 @@ The checks by Landscape and QuantifiedCode that run on every PR will provide you
 GIT
 ^^^
 The master-branch contains code that has been released to PyPi. A release is marked with a tag
-corresponding to the version. Issues are closed when they have been resolved in a released version
-of the package.
+corresponding to the version. Issues are closed when they have been resolved in the development-branch.
 
 When you have a change to make, begin by creating a new branch from the HEAD of `python-escpos/development`.
 Name your branch to indicate what you are trying to achieve. Good branch names might
