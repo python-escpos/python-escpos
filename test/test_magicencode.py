@@ -112,14 +112,3 @@ class TestKatakana:
     def test_result(self):
         assert encode_katakana('カタカナ') == b'\xb6\xc0\xb6\xc5'
         assert encode_katakana("あいうえお") == b'\xb1\xb2\xb3\xb4\xb5'
-
-
-# TODO Idee für unittest: hypothesis-strings erzeugen, in encode_text werfen
-# Ergebnis durchgehen: Vorkommnisse von Stuersequenzen suchen und daran den Text splitten in ein sortiertes dict mit Struktur:
-# encoding: textfolge
-# das alles wieder in unicode dekodieren mit den codepages und dann zusammenbauen
-# fertigen String mit hypothesis-string vergleichen (Achtung bei katana-conversion. Die am besten auch auf den hypothesis-string
-# anwenden)
-# TODO bei nicht kodierbarem Zeichen Fehler werfen! Als Option das verhalten von jetzt hinzufügen
-# TODO tests sollten eigentlich nicht gehen, wenn encode_char gerufen wird (extra_char ist nicht definiert)
-# TODO verhalten bei leerem String festlegen und testen
