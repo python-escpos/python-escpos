@@ -95,12 +95,12 @@ class TestMagicEncode:
 
 
 try:
-    import jcconv
+    import jaconv
 except ImportError:
-    jcconv = None
+    jaconv = None
 
 
-@pytest.mark.skipif(not jcconv, reason="jcconv not installed")
+@pytest.mark.skipif(not jaconv, reason="jaconv not installed")
 class TestKatakana:
     @given(st.text())
     @example("カタカナ")

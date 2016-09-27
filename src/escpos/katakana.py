@@ -11,24 +11,27 @@ from __future__ import unicode_literals
 
 
 try:
-    import jcconv
+    import jaconv
 except ImportError:
-    jcconv = None
+    jaconv = None
 
 
 def encode_katakana(text):
     """I don't think this quite works yet."""
     encoded = []
     for char in text:
-        if jcconv:
+        if jaconv:
             # try to convert japanese text to half-katakanas
-            char = jcconv.kata2half(jcconv.hira2kata(char))
+            char = jaconv.z2h(jaconv.hira2kata(char))
             # TODO: "the conversion may result in multiple characters"
-            # When? What should we do about it?
+            # If that really can happen (I am not really shure), than the string would have to be split and every single
+            #  character has to passed through the following lines.
 
         if char in TXT_ENC_KATAKANA_MAP:
             encoded.append(TXT_ENC_KATAKANA_MAP[char])
         else:
+            #TODO doesn't this discard all that is not in the map? Can we be shure that the input does contain only
+            # encodable characters? We could at least throw an exception if encoding is not possible.
             pass
     return b"".join(encoded)
 
@@ -36,6 +39,7 @@ def encode_katakana(text):
 
 TXT_ENC_KATAKANA_MAP = {
     # Maps UTF-8 Katakana symbols to KATAKANA Page Codes
+    # TODO: has this really to be hardcoded?
 
     # Half-Width Katakanas
     '｡': b'\xa1',
