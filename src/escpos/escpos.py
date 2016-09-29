@@ -636,9 +636,10 @@ class Escpos(object):
     def cashdraw(self, pin):
         """ Send pulse to kick the cash drawer
 
-        Kick cash drawer on pin 2 or pin 5 according to parameter.
+        Kick cash drawer on pin 2 or pin 5 according to default parameter.
+        For non default parameter send a decimal sequence i.e. [27,112,48] or [27,112,0,25,255]
 
-        :param pin: pin number, 2 or 5
+        :param pin: pin number, 2 or 5 or list of decimals
         :raises: :py:exc:`~escpos.exceptions.CashDrawerError`
         """
         if pin == 2:
@@ -646,7 +647,10 @@ class Escpos(object):
         elif pin == 5:
             self._raw(CD_KICK_5)
         else:
-            raise CashDrawerError()
+            try:
+                self._raw(CD_KICK_DEC_SEQUENCE(*pin))
+            except:
+                raise CashDrawerError()
 
     def hw(self, hw):
         """ Hardware operations
