@@ -1,6 +1,20 @@
 *********
 Changelog
 *********
+
+2016-08-?? - Version 2.?.? - "?"
+------------------------------------------------
+
+changes
+^^^^^^^
+- feature: the driver tries now to guess the appropriate codepage and sets it automatically
+- as an alternative you can force the codepage with the old API
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler (with code by Frédéric Van der Essen)
+
+
 2016-08-26 - Version 2.2.0 - "Fate Amenable To Change"
 ------------------------------------------------------
 

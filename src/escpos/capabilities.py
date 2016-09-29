@@ -7,8 +7,9 @@ import yaml
 # Load external printer database
 with open(path.join(path.dirname(__file__), 'capabilities.json')) as f:
     CAPABILITIES = yaml.load(f)
+
 PROFILES = CAPABILITIES['profiles']
-ENCODINGS = CAPABILITIES['encodings']
+
 
 
 class NotSupported(Exception):
@@ -53,6 +54,12 @@ class BaseProfile(object):
         """Return true/false for the given feature.
         """
         return self.features.get(feature)
+
+    def get_code_pages(self):
+        """Return the support code pages as a {name: index} dict.
+        """
+        return {v: k for k, v in self.codePages.items()}
+
 
 
 def get_profile(name=None, **kwargs):

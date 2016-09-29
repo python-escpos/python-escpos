@@ -113,11 +113,12 @@ setup(
         'pyyaml',
         'argparse',
         'argcomplete',
+        'future'
     ],
     setup_requires=[
         'setuptools_scm',
     ],
-    tests_require=['tox', 'pytest', 'pytest-cov', 'nose', 'scripttest', 'mock', 'hypothesis'],
+    tests_require=['jaconv', 'tox', 'pytest', 'pytest-cov', 'pytest-mock', 'nose', 'scripttest', 'mock', 'hypothesis'],
     cmdclass={'test': Tox},
     entry_points={
         'console_scripts': [

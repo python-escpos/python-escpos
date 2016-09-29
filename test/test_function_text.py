@@ -12,18 +12,29 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import pytest
+import mock
+from hypothesis import given, assume
+import hypothesis.strategies as st
 from escpos.printer import Dummy
 
 
-def test_function_text_dies_ist_ein_test_lf():
-    """test the text printing function with simple string and compare output"""
-    instance = Dummy()
-    instance.text('Dies ist ein Test.\n')
-    assert instance.output == b'Dies ist ein Test.\n'
+def get_printer():
+    return Dummy(magic_encode_args={'disabled': True, 'encoding': 'CP437'})
+
+
+@given(text=st.text())
+def test_text(text):
+    """Test that text() calls the MagicEncode object.
+    """
+    instance = get_printer()
+    instance.magic.write = mock.Mock()
+    instance.text(text)
+    instance.magic.write.assert_called_with(text)
 
 
 def test_block_text():
-    printer = Dummy()
+    printer = get_printer()
     printer.block_text(
         "All the presidents men were eating falafel for breakfast.", font='a')
     assert printer.output == \
