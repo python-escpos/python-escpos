@@ -59,7 +59,7 @@ class Escpos(object):
         pass
 
     def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster",
-              fragment_height=1024):
+              fragment_height=960):
         """ Print an image
 
         You can select whether the printer should print in high density or not. The default value is high density.
