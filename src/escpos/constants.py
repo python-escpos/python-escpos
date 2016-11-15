@@ -64,6 +64,11 @@ _PANEL_BUTTON = lambda n: ESC + b'c5' + six.int2byte(n)
 PANEL_BUTTON_ON = _PANEL_BUTTON(0)  # enable all panel buttons
 PANEL_BUTTON_OFF = _PANEL_BUTTON(1)  # disable all panel buttons
 
+# Line display printing
+LINE_DISPLAY_OPEN = ESC + b'\x3d\x02'
+LINE_DISPLAY_CLEAR = ESC + b'\x40'
+LINE_DISPLAY_CLOSE = ESC + b'\x3d\x01'
+
 # Sheet modes
 SHEET_SLIP_MODE = ESC + b'\x63\x30\x04'  # slip paper
 SHEET_ROLL_MODE = ESC + b'\x63\x30\x01'  # paper roll
