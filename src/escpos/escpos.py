@@ -29,6 +29,7 @@ from .constants import BARCODE_TXT_OFF, BARCODE_TXT_BTH, BARCODE_TXT_ABV, BARCOD
 from .constants import TXT_SIZE, TXT_NORMAL
 from .constants import SET_FONT
 from .constants import LINESPACING_FUNCS, LINESPACING_RESET
+from .constants import LINE_DISPLAY_OPEN, LINE_DISPLAY_CLEAR, LINE_DISPLAY_CLOSE
 from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CUT, PAPER_PART_CUT
 from .constants import HW_RESET, HW_SELECT, HW_INIT
 from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
@@ -592,6 +593,41 @@ class Escpos(object):
                 self._raw(CD_KICK_DEC_SEQUENCE(*pin))
             except:
                 raise CashDrawerError()
+
+    def linedisplay_select(self, select_display=False):
+        """ Selects the line display or the printer
+
+        This method is used for line displays that are daisy-chained between your computer and printer.
+        If you set `select_display` to true, only the display is selected and if you set it to false,
+        only the printer is selected.
+
+        :param select_display: whether the display should be selected or the printer
+        :type select_display: bool
+        """
+        if select_display:
+            self._raw(LINE_DISPLAY_OPEN)
+        else:
+            self._raw(LINE_DISPLAY_CLOSE)
+
+    def linedisplay_clear(self):
+        """ Clears the line display and resets the cursor
+
+        This method is used for line displays that are daisy-chained between your computer and printer.
+        """
+        self._raw(LINE_DISPLAY_CLEAR)
+
+    def linedisplay(self, text):
+        """
+        Display text on a line display connected to your printer
+
+        You should connect a line display to your printer. You can do this by daisy-chaining
+        the display between your computer and printer.
+        :param text: Text to display
+        """
+        self.linedisplay_select(select_display=True)
+        self.linedisplay_clear()
+        self.text(text)
+        self.linedisplay_select(select_display=False)
 
     def hw(self, hw):
         """ Hardware operations
