@@ -64,7 +64,7 @@ If you have installed pyusb for libusb-1.0 then you need to:
 
 ::
 
-    # git clone https://github.com/manpaz/python-escpos.git
+    # git clone --recursive https://github.com/manpaz/python-escpos.git
     # cd python-escpos
     # python setup.py build
     # sudo python setup.py install
