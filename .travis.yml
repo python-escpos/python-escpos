@@ -30,7 +30,7 @@ matrix:
     - python: nightly
     - python: pypy3
 before_install:
-    - pip install tox codecov
+    - pip install tox codecov docutils==0.12
 script:
     - tox
     - codecov
