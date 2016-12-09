@@ -8,13 +8,13 @@ Methods
 Escpos class
 ------------
 
-Escpos inherits its methods to the printers. the following methods are
+Escpos inherits its methods to the printers. The following methods are
 defined:
 
 image("image\_name.ext")
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Prints an image. Its adjust the size in order to print it.
+Prints an image. It adjusts the size in order to print it.
 
 * ``image_name.ext`` is the complete file name and location of any image type (jpg, gif, png, bmp)
 
@@ -72,7 +72,7 @@ Prints a barcode.
   * A
   * B > *Default:* A
 
-*  ``fuction_type`` chooses between ESCPOS function type A or B. A is default, B has more barcode options. Choose which one based upon your printer support and require barcode.
+*  ``function_type`` chooses between ESCPOS function type A or B. A is default, B has more barcode options. Choose which one based upon your printer support and required barcode.
 
   * A
   * B > *Default* A
@@ -115,7 +115,7 @@ Cut paper.
 cashdraw(pin)
 ^^^^^^^^^^^^^
 
-Sends a pulse to the cash drawer in the specified pin.
+Sends a pulse to the cash drawer on the specified pin.
 
 * ``pin`` is a numeric value which defines the pin to be used to send the pulse, it could be 2 or 5. Raises ``CashDrawerError()``
 
