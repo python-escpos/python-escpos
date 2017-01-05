@@ -38,3 +38,5 @@ You need sudo and python3 to run your program.
 
 Now you can attach your printer and and test it with the example code in the project's set of examples.
 You can find that in the `project-repository <https://github.com/python-escpos/python-escpos>`__.
+
+For more details on this check the :doc:`installation-manual <installation>`.
