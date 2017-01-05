@@ -6,12 +6,10 @@ Raspberry Pi
 
 This instructions were tested on Raspbian Jessie.
 
-Warning
--------
-You should **never** directly connect an printer with RS232-interface (serial port) directly to
-a Raspberry PI or similar interface (e.g. those simple USB-sticks without encasing). Those interfaces are
-based on 5V- or 3,3V-logic (the latter in the case of Raspberry PI). Classical RS232 uses 12V-logic and would
-**thus destroy your interface**. Connect both systems with an appropriate *level shifter*.
+.. warning:: You should **never** directly connect an printer with RS232-interface (serial port) directly to
+    a Raspberry PI or similar interface (e.g. those simple USB-sticks without encasing). Those interfaces are
+    based on 5V- or 3,3V-logic (the latter in the case of Raspberry PI). Classical RS232 uses 12V-logic and would
+    **thus destroy your interface**. Connect both systems with an appropriate *level shifter*.
 
 Dependencies
 ------------
