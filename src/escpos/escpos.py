@@ -79,7 +79,7 @@ class Escpos(object):
         :param high_density_vertical: print in high density in vertical direction *default:* True
         :param high_density_horizontal: print in high density in horizontal direction *default:* True
         :param impl: choose image printing mode between `bitImageRaster`, `graphics` or `bitImageColumn`
-        :param fragment_height: Images larger than this will be split into multiple fragments *default:* 1024
+        :param fragment_height: Images larger than this will be split into multiple fragments *default:* 960
 
         """       
         im = EscposImage(img_source)
