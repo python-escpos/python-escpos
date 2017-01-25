@@ -1,56 +1,77 @@
 ********
 Printers
 ********
+:Last Reviewed: 2017-01-25
 
-.. note:: **TODO** Merge this page into the API-description.
+As of now there are 5 different type of printer implementations.
 
-There 3 different type of printers:
+USB
+---
+The USB-class uses pyusb and libusb to communicate with USB-based
+printers. Note that this driver is not suited for USB-to-Serial-adapters
+and similiar devices, but only for those implementing native USB.
 
-USB(idVendor, idProduct, interface, in\_ep, out\_ep)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: escpos.printer.Usb
+    :members:
+    :special-members:
+    :member-order: bysource
+    :noindex:
 
-Based on pyusb and libusb-1.0
+Serial
+------
+This driver uses pyserial in order to communicate with serial devices.
+If you are using an USB-based adapter to connect to the serial port,
+then you should also use this driver.
+The configuration is often based on DIP-switches that you can set on your
+printer. For the hardware-configuration please refer to your printer's manual.
 
-* ``idVendor`` is the Vendor ID
-* ``idProduct`` is the Product ID
-* ``interface`` is the USB device interface (default = 0)
-*  ``in_ep`` is the input end point (default = 0x82)
-* ``out_ep`` is the output end point (default = 0x01)
+.. autoclass:: escpos.printer.Serial
+     :members:
+     :special-members:
+     :member-order: bysource
+     :noindex:
 
-Serial("devfile", baudrate, bytesize, timeout)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Network
+-------
 
-Based on pyserial, default values are based on the defaults set by
-DIP\_SWITCH\_1 on the documentation(hardware side).
+This driver is based on the socket class.
 
-* ``devfile`` is an alphanumeric device file name under /dev filesystem (default = /ev/ttyS0)
-* ``baudrate`` is the Baud rate for serial transmission (default = 9600)
-* ``bytesize`` sets the serial buffer size (default = 8)
-* ``timeout`` defines Read/Write timeout (default = 1)
+.. autoclass:: escpos.printer.Network
+      :members:
+      :special-members:
+      :member-order: bysource
+      :noindex:
 
-Network("host", port)
-^^^^^^^^^^^^^^^^^^^^^
-
-Based on socket
-
-* ``host`` is an alphanumeric host name, could be either DNS host name or IP address.
-* ``port`` to write to (default = 9100)
-
-Troubleshooting:
+Troubleshooting
+^^^^^^^^^^^^^^^
 Problems with a network-attached printer can have numerous causes. Make sure that your device has a proper IP address.
 Often you can check the IP address by triggering the self-test of the device. As a next step try to send text
 manually to the device. You could use for example:
 
-.. ::
+    ::
 
-    echo "OK\n" | nc IPADDRESS 9100
-    # the port number is often 9100
+            echo "OK\n" | nc IPADDRESS 9100
+            # the port number is often 9100
 
 As a last resort try to reset the interface of the printer. This should be described in its manual.
 
-File("file\_name")
-^^^^^^^^^^^^^^^^^^
+File
+----
+This printer "prints" just into a file-handle. Especially on \*nix-systems this comes very handy.
 
-Printcap printers
+.. autoclass:: escpos.printer.File
+      :members:
+      :special-members:
+      :member-order: bysource
+      :noindex:
 
-* ``file_name`` is the full path to the device file name
+Dummy
+-----
+The Dummy-printer is mainly for testing- and debugging-purposes. It stores
+all of the "output" as raw ESC/POS in a string and returns that.
+
+.. autoclass:: escpos.printer.Dummy
+      :members:
+      :member-order: bysource
+      :noindex:
+

@@ -182,9 +182,9 @@ class Network(Escpos):
     def __init__(self, host, port=9100, timeout=60, *args, **kwargs):
         """
 
-        :param host : Printer's hostname or IP address
-        :param port : Port to write to
-        :param timeout : timeout in seconds for the socket-library
+        :param host:    Printer's hostname or IP address
+        :param port:    Port to write to
+        :param timeout: timeout in seconds for the socket-library
         """
         Escpos.__init__(self, *args, **kwargs)
         self.host = host
