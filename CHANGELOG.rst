@@ -2,18 +2,31 @@
 Changelog
 *********
 
-2016-08-?? - Version 2.?.? - "?"
-------------------------------------------------
+2017-01-29 - Version 3.0a - "Grey Area"
+---------------------------------------
+This release is the first alpha release of the new version 3.0. Please
+be aware that the API will still change until v3.0 is released.
 
 changes
 ^^^^^^^
-- feature: the driver tries now to guess the appropriate codepage and sets it automatically
+- feature: add "capabilities" which are shared with escpos-php
+- feature: the driver tries now to guess the appropriate codepage and sets it automatically (called "magic encode")
 - as an alternative you can force the codepage with the old API
+- updated and improved documentation
+- changed constructor of main class due to introduction of capablities
+- changed interface of method `blocktext`, changed behavior of multiple methods, for details refer to the documentation
+  on `python-escpos.readthedocs.io <https://python-escpos.readthedocs.io>`_
 
 contributors
 ^^^^^^^^^^^^
+- Michael Billington
+- Michael Elsdörfer
 - Patrick Kanzler (with code by Frédéric Van der Essen)
-
+- Asuki Kono
+- Benito López
+- Curtis // mashedkeyboard
+- Thijs Triemstra
+- ysuolmai
 
 2016-08-26 - Version 2.2.0 - "Fate Amenable To Change"
 ------------------------------------------------------
