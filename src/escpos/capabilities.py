@@ -77,7 +77,7 @@ def get_profile_class(name):
     """For the given profile name, load the data from the external
     database, then generate dynamically a class.
     """
-    if not name in CLASS_CACHE:
+    if name not in CLASS_CACHE:
         profile_data = PROFILES[name]
         profile_name = clean(name)
         class_name = '{}{}Profile'.format(
