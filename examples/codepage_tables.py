@@ -5,7 +5,7 @@ import six
 import sys
 
 from escpos import printer
-from escpos.constants import *
+from escpos.constants import CODEPAGE_CHANGE, ESC, CTL_LF, CTL_FF, CTL_CR, CTL_HT, CTL_VT
 
 
 def main():
