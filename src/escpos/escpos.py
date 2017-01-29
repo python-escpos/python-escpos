@@ -81,7 +81,7 @@ class Escpos(object):
         :param impl: choose image printing mode between `bitImageRaster`, `graphics` or `bitImageColumn`
         :param fragment_height: Images larger than this will be split into multiple fragments *default:* 960
 
-        """       
+        """
         im = EscposImage(img_source)
 
         if im.height > fragment_height:
@@ -93,13 +93,14 @@ class Escpos(object):
                            impl=impl,
                            fragment_height=fragment_height)
             return
-        
+
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
             density_byte = (0 if high_density_horizontal else 1) + (0 if high_density_vertical else 2)
-            header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) + self._int_low_high(im.height, 2)
+            header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) +\
+                     self._int_low_high(im.height, 2)
             self._raw(header + im.to_raster_format())
-        
+
         if impl == "graphics":
             # GS ( L raster format graphics
             img_header = self._int_low_high(im.width, 2) + self._int_low_high(im.height, 2)
@@ -111,7 +112,7 @@ class Escpos(object):
             raster_data = im.to_raster_format()
             self._image_send_graphics_data(b'0', b'p', header + raster_data)
             self._image_send_graphics_data(b'0', b'2', b'')
-        
+
         if impl == "bitImageColumn":
             # ESC *, column format bit image
             density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0)
@@ -198,7 +199,7 @@ class Escpos(object):
             raise ValueError("cn and fn must be one byte each.")
         header = self._int_low_high(len(data) + len(m) + 2, 2)
         self._raw(GS + b'(k' + header + cn + fn + m + data)
-    
+
     @staticmethod
     def _int_low_high(inp_number, out_bytes):
         """ Generate multiple bytes for a number: In lower and higher parts, or more parts as needed.
@@ -398,6 +399,7 @@ class Escpos(object):
         Text has to be encoded in unicode.
 
         :param txt: text to be printed
+        :param font: font to be used, can be :code:`a` or :code`b`
         :param columns: amount of columns
         :return: None
         """
@@ -539,7 +541,7 @@ class Escpos(object):
 
         if divisor not in LINESPACING_FUNCS:
             raise ValueError("divisor must be either 360, 180 or 60")
-        if (divisor in [360, 180] \
+        if (divisor in [360, 180]
                 and (not(0 <= spacing <= 255))):
             raise ValueError("spacing must be a int between 0 and 255 when divisor is 360 or 180")
         if divisor == 60 and (not(0 <= spacing <= 85)):

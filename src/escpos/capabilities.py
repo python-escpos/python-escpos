@@ -3,13 +3,11 @@ import six
 from os import path
 import yaml
 
-
 # Load external printer database
 with open(path.join(path.dirname(__file__), 'capabilities.json')) as f:
     CAPABILITIES = yaml.load(f)
 
 PROFILES = CAPABILITIES['profiles']
-
 
 
 class NotSupported(Exception):
@@ -61,7 +59,6 @@ class BaseProfile(object):
         return {v: k for k, v in self.codePages.items()}
 
 
-
 def get_profile(name=None, **kwargs):
     """Get the profile by name; if no name is given, return the
     default profile.
@@ -92,17 +89,18 @@ def get_profile_class(name):
 
 
 def clean(s):
-   # Remove invalid characters
-   s = re.sub('[^0-9a-zA-Z_]', '', s)
-   # Remove leading characters until we find a letter or underscore
-   s = re.sub('^[^a-zA-Z_]+', '', s)
-   return str(s)
+    # Remove invalid characters
+    s = re.sub('[^0-9a-zA-Z_]', '', s)
+    # Remove leading characters until we find a letter or underscore
+    s = re.sub('^[^a-zA-Z_]+', '', s)
+    return str(s)
 
 
 class Profile(get_profile_class('default')):
     """
     For users, who want to provide their profile
     """
+
     def __init__(self, columns=None, features=None):
         super(Profile, self).__init__()
 
@@ -114,7 +112,3 @@ class Profile(get_profile_class('default')):
             return self.columns
 
         return super(Profile, self).get_columns(font)
-
-
-
-

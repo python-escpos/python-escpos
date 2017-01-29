@@ -30,11 +30,10 @@ def encode_katakana(text):
         if char in TXT_ENC_KATAKANA_MAP:
             encoded.append(TXT_ENC_KATAKANA_MAP[char])
         else:
-            #TODO doesn't this discard all that is not in the map? Can we be shure that the input does contain only
+            # TODO doesn't this discard all that is not in the map? Can we be sure that the input does contain only
             # encodable characters? We could at least throw an exception if encoding is not possible.
             pass
     return b"".join(encoded)
-
 
 
 TXT_ENC_KATAKANA_MAP = {

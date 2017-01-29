@@ -17,10 +17,10 @@ def test_line_spacing_rest():
 def test_line_spacing_error_handling():
     printer = Dummy()
     with assert_raises(ValueError):
-      printer.line_spacing(99, divisor=44)
+        printer.line_spacing(99, divisor=44)
     with assert_raises(ValueError):
-      printer.line_spacing(divisor=80, spacing=86)
+        printer.line_spacing(divisor=80, spacing=86)
     with assert_raises(ValueError):
-      printer.line_spacing(divisor=360, spacing=256)
+        printer.line_spacing(divisor=360, spacing=256)
     with assert_raises(ValueError):
-      printer.line_spacing(divisor=180, spacing=256)
+        printer.line_spacing(divisor=180, spacing=256)

@@ -46,8 +46,8 @@ def print_codepage(printer, codepage):
         printer._raw("{} ".format(hex(x)[2:]))
         printer.set()
 
-        for y in range(0,16):
-            byte = six.int2byte(x*16+y)
+        for y in range(0, 16):
+            byte = six.int2byte(x * 16 + y)
 
             if byte in (ESC, CTL_LF, CTL_FF, CTL_CR, CTL_HT, CTL_VT):
                 byte = ' '
@@ -55,6 +55,7 @@ def print_codepage(printer, codepage):
             printer._raw(byte)
             printer._raw(sep)
         printer._raw('\n')
+
 
 if __name__ == '__main__':
     main()

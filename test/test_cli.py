@@ -30,7 +30,7 @@ printer:
 )
 
 
-class TestCLI():
+class TestCLI:
     """ Contains setups, teardowns, and tests for CLI
     """
 

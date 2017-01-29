@@ -67,7 +67,8 @@ class Encoder(object):
                 ).format(encoding, ','.join(self.codepages.keys())))
         return encoding
 
-    def _get_codepage_char_list(self, encoding):
+    @staticmethod
+    def _get_codepage_char_list(encoding):
         """Get codepage character list
         
         Gets characters 128-255 for a given code page, as an array.
@@ -126,7 +127,8 @@ class Encoder(object):
         is_encodable = char in available_map
         return is_ascii or is_encodable
 
-    def _encode_char(self, char, charmap, defaultchar):
+    @staticmethod
+    def _encode_char(char, charmap, defaultchar):
         """ Encode a single character with the given encoding map
         
         :param char: char to encode

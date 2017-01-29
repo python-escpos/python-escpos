@@ -26,6 +26,7 @@ if six.PY3:
 else:
     mock_open_call = '__builtin__.open'
 
+
 @given(path=text())
 def test_load_file_printer(mocker, path):
     """test the loading of the file-printer"""

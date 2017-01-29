@@ -22,7 +22,6 @@ from escpos.katakana import encode_katakana
 from escpos.exceptions import CharCodeError, Error
 
 
-
 class TestEncoder:
     """
     Tests the single encoders.
