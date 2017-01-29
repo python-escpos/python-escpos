@@ -56,4 +56,5 @@ def print_codepage(printer, codepage):
             printer._raw(sep)
         printer._raw('\n')
 
-main()
+if __name__ == '__main__':
+    main()

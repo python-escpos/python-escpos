@@ -99,9 +99,10 @@ def clean(s):
    return str(s)
 
 
-# For users, who want to provide their profile
 class Profile(get_profile_class('default')):
-
+    """
+    For users, who want to provide their profile
+    """
     def __init__(self, columns=None, features=None):
         super(Profile, self).__init__()
 

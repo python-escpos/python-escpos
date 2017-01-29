@@ -24,6 +24,9 @@ from escpos.exceptions import CharCodeError, Error
 
 
 class TestEncoder:
+    """
+    Tests the single encoders.
+    """
 
     def test_can_encode(self):
         assert not Encoder({'CP437': 1}).can_encode('CP437', u'€')
@@ -40,10 +43,21 @@ class TestEncoder:
 
 
 class TestMagicEncode:
+    """
+    Tests the magic encode functionality.
+    """
 
     class TestInit:
+        """
+        Test initialization.
+        """
 
         def test_disabled_requires_encoding(self, driver):
+            """
+            Test that disabled without encoder raises an error.
+
+            :param driver:
+            """
             with pytest.raises(Error):
                 MagicEncode(driver, disabled=True)
 

@@ -208,14 +208,20 @@ class MagicEncode(object):
 
     If the printer does not support a suitable code page, it can
     insert an error character.
-
-    :param encoding: If you know the current encoding of the printer
-        when initializing this class, set it here. If the current
-        encoding is unknown, the first character emitted will be a
-        codepage switch.
     """
     def __init__(self, driver, encoding=None, disabled=False,
                  defaultsymbol='?', encoder=None):
+        """
+
+        :param driver:
+        :param encoding: If you know the current encoding of the printer
+        when initializing this class, set it here. If the current
+        encoding is unknown, the first character emitted will be a
+        codepage switch.
+        :param disabled:
+        :param defaultsymbol:
+        :param encoder:
+        """
         if disabled and not encoding:
             raise Error('If you disable magic encode, you need to define an encoding!')
 
