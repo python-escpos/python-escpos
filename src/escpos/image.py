@@ -5,7 +5,7 @@ This module contains the image format handler :py:class:`EscposImage`.
 :author: `Michael Billington <michael.billington@gmail.com>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 Michael Billington <michael.billington@gmail.com>
-:license: GNU GPL v3
+:license: MIT
 """
 
 from __future__ import absolute_import

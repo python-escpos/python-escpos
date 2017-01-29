@@ -4,7 +4,7 @@
 :author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 Patrick Kanzler
-:license: GNU GPL v3
+:license: MIT
 """
 
 from __future__ import absolute_import

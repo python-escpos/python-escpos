@@ -9,7 +9,7 @@ The code is based on the encoding-code in py-xml-escpos by @fvdsn.
 :author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 Patrick Kanzler and Frédéric van der Essen
-:license: GNU GPL v3
+:license: MIT
 """
 
 from __future__ import absolute_import

@@ -7,8 +7,8 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
-:copyright: Copyright (c) 2012 Bashlinux
-:license: GNU GPL v3
+:copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
+:license: MIT
 """
 
 from __future__ import absolute_import
