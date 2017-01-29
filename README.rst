@@ -37,6 +37,11 @@ Text can be aligned/justified and fonts can be changed by size, type and weight.
 Also, this module handles some hardware functionalities like cutting paper, control characters, printer reset
 and similar functions.
 
+Since supported commands differ from printer to printer the software tries to automatically apply the right
+settings for the printer that you set. These settings are handled by
+`escpos-printer-db <https://github.com/receipt-print-hq/escpos-printer-db>`_ which is also used in
+`escpos-php <https://github.com/mike42/escpos-php>`_.
+
 Dependencies
 ------------
 
@@ -56,11 +61,11 @@ The basic usage is:
 
     from escpos.printer import Usb
 
-    """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-    p = Usb(0x04b8,0x0202,0)
+    """ Seiko Epson Corp. Receipt Printer (EPSON TM-T88III) """
+    p = Usb(0x04b8, 0x0202, 0, profile="TM-T88III")
     p.text("Hello World\n")
     p.image("logo.gif")
-    p.barcode('1324354657687','EAN13',64,2,'','')
+    p.barcode('1324354657687', 'EAN13', 64, 2, '', '')
     p.cut()
 
 The full project-documentation is available on `Read the Docs <https://python-escpos.readthedocs.io>`_.

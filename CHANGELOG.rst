@@ -9,13 +9,15 @@ be aware that the API will still change until v3.0 is released.
 
 changes
 ^^^^^^^
-- feature: add "capabilities" which are shared with escpos-php
+- feature: add "capabilities" which are shared with escpos-php, capabilities are stored in
+  `escpos-printer-db <https://github.com/receipt-print-hq/escpos-printer-db>`_
 - feature: the driver tries now to guess the appropriate codepage and sets it automatically (called "magic encode")
 - as an alternative you can force the codepage with the old API
 - updated and improved documentation
 - changed constructor of main class due to introduction of capablities
 - changed interface of method `blocktext`, changed behavior of multiple methods, for details refer to the documentation
   on `python-escpos.readthedocs.io <https://python-escpos.readthedocs.io>`_
+- add support for custom cash drawer sequence
 
 contributors
 ^^^^^^^^^^^^
