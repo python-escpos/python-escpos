@@ -244,13 +244,13 @@ ESCPOS_COMMANDS = [
                 'option_strings': ('--high_density_horizontal',),
                 'help': 'Image density (horizontal)',
                 'type': str_to_bool,
-            },     
+            },
             {
                 'option_strings': ('--high_density_vertical',),
                 'help': 'Image density (vertical)',
                 'type': str_to_bool,
-            },      
-                      
+            },
+
         ],
     },
     {
