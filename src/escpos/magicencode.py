@@ -62,8 +62,8 @@ class Encoder(object):
         encoding = CodePages.get_encoding_name(encoding)
         if not encoding in self.codepages:
             raise ValueError((
-                    'Encoding "{}" cannot be used for the current profile. '
-                    'Valid encodings are: {}'
+                'Encoding "{}" cannot be used for the current profile. '
+                'Valid encodings are: {}'
                 ).format(encoding, ','.join(self.codepages.keys())))
         return encoding
 

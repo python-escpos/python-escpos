@@ -98,7 +98,7 @@ class Escpos(object):
             # GS v 0, raster format bit image
             density_byte = (0 if high_density_horizontal else 1) + (0 if high_density_vertical else 2)
             header = GS + b"v0" + six.int2byte(density_byte) + self._int_low_high(im.width_bytes, 2) +\
-                     self._int_low_high(im.height, 2)
+                self._int_low_high(im.height, 2)
             self._raw(header + im.to_raster_format())
 
         if impl == "graphics":
@@ -328,7 +328,7 @@ class Escpos(object):
                     function_type = 'B'
                 else:
                     raise BarcodeTypeError((
-                            "Barcode type '{bc} is not valid").format(bc=bc))
+                        "Barcode type '{bc} is not valid").format(bc=bc))
 
         bc_types = BARCODE_TYPES[function_type.upper()]
         if bc.upper() not in bc_types.keys():
