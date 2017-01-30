@@ -118,7 +118,18 @@ setup(
     setup_requires=[
         'setuptools_scm',
     ],
-    tests_require=['jaconv', 'tox', 'pytest', 'pytest-cov', 'pytest-mock', 'nose', 'scripttest', 'mock', 'hypothesis'],
+    tests_require=[
+        'jaconv',
+        'tox',
+        'pytest',
+        'pytest-cov',
+        'pytest-mock',
+        'nose',
+        'scripttest',
+        'mock',
+        'hypothesis',
+        'flake8'
+    ],
     cmdclass={'test': Tox},
     entry_points={
         'console_scripts': [
