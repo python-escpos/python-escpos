@@ -53,7 +53,6 @@ setuptools_scm_template = """\
 from __future__ import unicode_literals
 
 version = '{version}'
-
 """
 
 
