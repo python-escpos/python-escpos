@@ -1,6 +1,8 @@
 """Prints code page tables.
 """
 
+from __future__ import print_function
+
 import six
 import sys
 
@@ -21,7 +23,7 @@ def main():
 
     dummy.cut()
 
-    print dummy.output
+    print(dummy.output)
 
 
 def print_codepage(printer, codepage):
