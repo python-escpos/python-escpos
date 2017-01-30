@@ -20,4 +20,5 @@ class CodePageManager:
     def get_encoding(self, encoding):
         return self.data[encoding]
 
+
 CodePages = CodePageManager(CAPABILITIES['encodings'])
