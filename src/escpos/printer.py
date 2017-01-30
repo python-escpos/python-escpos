@@ -211,8 +211,9 @@ class Network(Escpos):
 
     def close(self):
         """ Close TCP connection """
-        self.device.shutdown(socket.SHUT_RDWR)
-        self.device.close()
+        if self.device is not None:
+            self.device.shutdown(socket.SHUT_RDWR)
+            self.device.close()
 
 
 class File(Escpos):
@@ -263,8 +264,9 @@ class File(Escpos):
 
     def close(self):
         """ Close system file """
-        self.device.flush()
-        self.device.close()
+        if self.device is not None:
+            self.device.flush()
+            self.device.close()
 
 
 class Dummy(Escpos):
