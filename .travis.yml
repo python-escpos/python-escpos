@@ -25,8 +25,9 @@ matrix:
       env: TOXENV=pypy3
     - python: 2.7
       env: TOXENV=docs
-      # TODO add flake8 also for python3
     - python: 2.7
+      env: TOXENV=flake8
+    - python: 3.4
       env: TOXENV=flake8
   allow_failures:
     - python: 3.5-dev
