@@ -58,7 +58,7 @@ class Encoder(object):
         TODO: Support encoding aliases: pc437 instead of cp437.
         """
         encoding = CodePages.get_encoding_name(encoding)
-        if not encoding in self.codepages:
+        if encoding not in self.codepages:
             raise ValueError((
                 'Encoding "{}" cannot be used for the current profile. '
                 'Valid encodings are: {}'
