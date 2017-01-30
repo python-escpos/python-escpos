@@ -19,10 +19,8 @@ from __future__ import unicode_literals
 
 from builtins import bytes
 from .constants import CODEPAGE_CHANGE
-from .exceptions import CharCodeError, Error
-from .capabilities import get_profile
+from .exceptions import Error
 from .codepages import CodePages
-import copy
 import six
 
 
