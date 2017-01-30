@@ -126,7 +126,7 @@ class Escpos(object):
     def _image_send_graphics_data(self, m, fn, data):
         """
         Wrapper for GS ( L, to calculate and send correct data length.
-        
+
         :param m: Modifier//variant for function. Usually '0'
         :param fn: Function number to use, as byte
         :param data: Data to send
@@ -203,7 +203,7 @@ class Escpos(object):
     @staticmethod
     def _int_low_high(inp_number, out_bytes):
         """ Generate multiple bytes for a number: In lower and higher parts, or more parts as needed.
-        
+
         :param inp_number: Input number
         :param out_bytes: The number of bytes to output (1 - 4).
         """
@@ -259,7 +259,7 @@ class Escpos(object):
 
         .. todo:: If further barcode-types are needed they could be rendered transparently as an image. (This could also
                   be of help if the printer does not support types that others do.)
-        
+
         :param code: alphanumeric data to be printed as bar code
         :param bc: barcode format, possible values are for type A are:
 
@@ -555,7 +555,7 @@ class Escpos(object):
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
         be attempted. Note however, that not all models can do a partial cut. See the documentation of
         your printer for details.
-        
+
         .. todo:: Check this function on TM-T88II.
 
         :param mode: set to 'PART' for a partial cut

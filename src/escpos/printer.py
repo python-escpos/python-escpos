@@ -34,7 +34,7 @@ class Usb(Escpos):
 
     """
 
-    def __init__(self, idVendor, idProduct, timeout=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
+    def __init__(self, idVendor, idProduct, timeout=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):  # noqa: N803
         """
         :param idVendor: Vendor ID
         :param idProduct: Product ID

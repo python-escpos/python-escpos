@@ -70,9 +70,9 @@ class Encoder(object):
     @staticmethod
     def _get_codepage_char_list(encoding):
         """Get codepage character list
-        
+
         Gets characters 128-255 for a given code page, as an array.
-        
+
         :param encoding: The name of the encoding. This must appear in the CodePage list
         """
         codepage = CodePages.get_encoding(encoding)
@@ -94,12 +94,12 @@ class Encoder(object):
 
     def _get_codepage_char_map(self, encoding):
         """ Get codepage character map
-        
+
         Process an encoding and return a map of UTF-characters to code points
         in this encoding.
-        
+
         This is generated once only, and returned from a cache.
-        
+
         :param encoding: The name of the encoding.
         """
         # Skip things that were loaded previously
@@ -112,7 +112,7 @@ class Encoder(object):
 
     def can_encode(self, encoding, char):
         """Determine if a character is encodeable in the given code page.
-        
+
         :param encoding: The name of the encoding.
         :param char: The character to attempt to encode.
         """
@@ -130,7 +130,7 @@ class Encoder(object):
     @staticmethod
     def _encode_char(char, charmap, defaultchar):
         """ Encode a single character with the given encoding map
-        
+
         :param char: char to encode
         :param charmap: dictionary for mapping characters in this code page
         """
@@ -142,7 +142,7 @@ class Encoder(object):
 
     def encode(self, text, encoding, defaultchar='?'):
         """ Encode text under the given encoding
-        
+
         :param text: Text to encode
         :param encoding: Encoding name to use (must be defined in capabilities)
         :param defaultchar: Fallback for non-encodable characters
