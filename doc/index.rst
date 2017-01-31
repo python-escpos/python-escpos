@@ -35,8 +35,13 @@ Content
    api/printer
    api/constants
    api/exceptions
+   api/capabilities
    api/config
    api/image
+   api/cli
+   api/magicencode
+   api/codepages
+   api/katakana
 
 Indices and tables
 ==================

@@ -2,10 +2,9 @@
 Raspberry Pi
 ************
 
-This instructions were tested on Raspbian.
+:Last Reviewed: 2017-01-05
 
-Unless you have done any distro with libusb-1.0 on the Raspberry Pi, the
-following instructions should works fine on your raspberry distro.
+This instructions were tested on Raspbian Jessie.
 
 .. warning:: You should **never** directly connect an printer with RS232-interface (serial port) directly to
     a Raspberry PI or similar interface (e.g. those simple USB-sticks without encasing). Those interfaces are
@@ -14,60 +13,30 @@ following instructions should works fine on your raspberry distro.
 
 Dependencies
 ------------
-
 First, install the packages available on Raspbian.
 
 ::
 
-    # apt-get install python-imaging python-serial python-setuptools
-
-PyUSB
-^^^^^
-
-PyUSB 1.0 is not available on Ubuntu, so you have to download and
-install it manually
-
-1. Download the latest tarball from
-   `Sourceforge <http://sourceforge.net/projects/pyusb/files/>`__
-2. Decompress the zip file
-3. Install the library
-
-   ::
-
-       # wget ...
-       # unzip pyusb*.zip
-       # cd pyusb*
-       # python setup.py build
-       # sudo python setup.py install
-
-python-qrcode
-^^^^^^^^^^^^^
-
-1. Checkout the code from github
-2. Install the library
-
-   ::
-
-       # git clone https://github.com/lincolnloop/python-qrcode
-       # cd python-qrcode
-       # python setup.py build
-       # sudo python setup.py install
+       sudo apt-get install python3 python3-setuptools python3-pip libjpeg8-dev
 
 Installation
 ------------
-
-If you have installed pyusb for libusb-1.0 then you need to:
-
-1. Download the latest file
-2. Decompress the file
-3. Install the library
+You can install by using pip3.
 
 ::
 
-    # git clone https://github.com/manpaz/python-escpos.git
-    # cd python-escpos
-    # python setup.py build
-    # sudo python setup.py install
+    sudo pip3 install --upgrade pip
+    sudo pip3 install python-escpos
 
-Now you can attach your printer and and test it with the example code in
-the project's `home <https://github.com/manpaz/python-escpos>`__
+Run
+---
+You need sudo and python3 to run your program.
+
+::
+
+    sudo python3 your-program.py
+
+Now you can attach your printer and and test it with the example code in the project's set of examples.
+You can find that in the `project-repository <https://github.com/python-escpos/python-escpos>`__.
+
+For more details on this check the :doc:`installation-manual <installation>`.

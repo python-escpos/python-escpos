@@ -15,22 +15,28 @@ matrix:
       env: TOXENV=py34
     - python: 3.5
       env: TOXENV=py35
-    - python: 3.5-dev
-      env: TOXENV=py35
-    - python: nightly
+    - python: 3.6
       env: TOXENV=py36
+    - python: 3.6-dev
+      env: TOXENV=py36
+    - python: nightly
+      env: TOXENV=py37
     - python: pypy
       env: TOXENV=pypy
     - python: pypy3
       env: TOXENV=pypy3
     - python: 2.7
       env: TOXENV=docs
+    - python: 2.7
+      env: TOXENV=flake8
+    - python: 3.5
+      env: TOXENV=flake8
   allow_failures:
-    - python: 3.5-dev
+    - python: 3.6-dev
     - python: nightly
     - python: pypy3
 before_install:
-    - pip install tox codecov
+    - pip install tox codecov 'sphinx>=1.5.1'
 script:
     - tox
     - codecov

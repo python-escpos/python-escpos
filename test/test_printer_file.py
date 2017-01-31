@@ -5,7 +5,7 @@
 :author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
-:license: GNU GPL v3
+:license: MIT
 """
 
 from __future__ import absolute_import
@@ -15,7 +15,7 @@ from __future__ import unicode_literals
 
 import six
 
-import mock
+import pytest
 from hypothesis import given
 from hypothesis.strategies import text
 
@@ -26,22 +26,24 @@ if six.PY3:
 else:
     mock_open_call = '__builtin__.open'
 
+
 @given(path=text())
-@mock.patch(mock_open_call)
-@mock.patch('escpos.escpos.Escpos.__init__')
-def test_load_file_printer(mock_escpos, mock_open, path):
+def test_load_file_printer(mocker, path):
     """test the loading of the file-printer"""
+    mock_escpos = mocker.patch('escpos.escpos.Escpos.__init__')
+    mock_open = mocker.patch(mock_open_call)
     printer.File(devfile=path)
     assert mock_escpos.called
     mock_open.assert_called_with(path, "wb")
 
 
 @given(txt=text())
-@mock.patch.object(printer.File, 'device')
-@mock.patch(mock_open_call)
-@mock.patch('escpos.escpos.Escpos.__init__')
-def test_auto_flush(mock_escpos, mock_open, mock_device, txt):
+def test_auto_flush(mocker, txt):
     """test auto_flush in file-printer"""
+    mock_escpos = mocker.patch('escpos.escpos.Escpos.__init__')
+    mock_open = mocker.patch(mock_open_call)
+    mock_device = mocker.patch.object(printer.File, 'device')
+
     p = printer.File(auto_flush=False)
     # inject the mocked device-object
     p.device = mock_device
@@ -56,10 +58,11 @@ def test_auto_flush(mock_escpos, mock_open, mock_device, txt):
 
 
 @given(txt=text())
-@mock.patch.object(printer.File, 'device')
-@mock.patch(mock_open_call)
-def test_flush_on_close(mock_open, mock_device, txt):
+def test_flush_on_close(mocker, txt):
     """test flush on close in file-printer"""
+    mock_open = mocker.patch(mock_open_call)
+    mock_device = mocker.patch.object(printer.File, 'device')
+
     p = printer.File(auto_flush=False)
     # inject the mocked device-object
     p.device = mock_device

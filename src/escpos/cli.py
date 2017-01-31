@@ -33,8 +33,10 @@ def str_to_bool(string):
     """
     return string.lower() in ('y', 'yes', '1', 'true')
 
+
 # A list of functions that work better with a newline to be sent after them.
 REQUIRES_NEWLINE = ('qr', 'barcode', 'text', 'block_text')
+
 
 # Used in demo method
 # Key: The name of escpos function and the argument passed on the CLI. Some
@@ -244,13 +246,13 @@ ESCPOS_COMMANDS = [
                 'option_strings': ('--high_density_horizontal',),
                 'help': 'Image density (horizontal)',
                 'type': str_to_bool,
-            },     
+            },
             {
                 'option_strings': ('--high_density_vertical',),
                 'help': 'Image density (vertical)',
                 'type': str_to_bool,
-            },      
-                      
+            },
+
         ],
     },
     {
@@ -567,6 +569,7 @@ def demo(printer, **kwargs):
         for params in DEMO_FUNCTIONS[demo_choice]:
             command(**params)
         printer.cut()
+
 
 if __name__ == '__main__':
     main()

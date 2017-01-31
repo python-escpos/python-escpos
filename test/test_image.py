@@ -5,7 +5,7 @@ converted to ESC/POS column & raster formats.
 :author: `Michael Billington <michael.billington@gmail.com>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `Michael Billington <michael.billington@gmail.com>`_
-:license: GNU GPL v3
+:license: MIT
 """
 
 from escpos.image import EscposImage

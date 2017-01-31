@@ -4,8 +4,8 @@
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
-:copyright: Copyright (c) 2012 Bashlinux
-:license: GNU GPL v3
+:copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
+:license: MIT
 """
 
 from __future__ import absolute_import
@@ -34,7 +34,7 @@ class Usb(Escpos):
 
     """
 
-    def __init__(self, idVendor, idProduct, timeout=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):
+    def __init__(self, idVendor, idProduct, timeout=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):  # noqa: N803
         """
         :param idVendor: Vendor ID
         :param idProduct: Product ID
@@ -182,9 +182,9 @@ class Network(Escpos):
     def __init__(self, host, port=9100, timeout=60, *args, **kwargs):
         """
 
-        :param host : Printer's hostname or IP address
-        :param port : Port to write to
-        :param timeout : timeout in seconds for the socket-library
+        :param host:    Printer's hostname or IP address
+        :param port:    Port to write to
+        :param timeout: timeout in seconds for the socket-library
         """
         Escpos.__init__(self, *args, **kwargs)
         self.host = host
@@ -211,8 +211,9 @@ class Network(Escpos):
 
     def close(self):
         """ Close TCP connection """
-        self.device.shutdown(socket.SHUT_RDWR)
-        self.device.close()
+        if self.device is not None:
+            self.device.shutdown(socket.SHUT_RDWR)
+            self.device.close()
 
 
 class File(Escpos):
@@ -263,8 +264,9 @@ class File(Escpos):
 
     def close(self):
         """ Close system file """
-        self.device.flush()
-        self.device.close()
+        if self.device is not None:
+            self.device.flush()
+            self.device.close()
 
 
 class Dummy(Escpos):

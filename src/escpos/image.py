@@ -5,7 +5,7 @@ This module contains the image format handler :py:class:`EscposImage`.
 :author: `Michael Billington <michael.billington@gmail.com>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 Michael Billington <michael.billington@gmail.com>
-:license: GNU GPL v3
+:license: MIT
 """
 
 from __future__ import absolute_import
@@ -28,7 +28,7 @@ class EscposImage(object):
     def __init__(self, img_source):
         """
         Load in an image
-        
+
         :param img_source: PIL.Image, or filename to load one from.
         """
         if isinstance(img_source, Image.Image):
@@ -45,12 +45,12 @@ class EscposImage(object):
         im = Image.new("RGB", img_original.size, (255, 255, 255))
         im.paste(img_original, mask=img_original.split()[3])
         # Convert down to greyscale
-        im = im.convert("L") 
+        im = im.convert("L")
         # Invert: Only works on 'L' images
         im = ImageOps.invert(im)
         # Pure black and white
         self._im = im.convert("1")
-    
+
     @property
     def width(self):
         """

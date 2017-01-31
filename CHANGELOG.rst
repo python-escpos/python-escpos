@@ -1,6 +1,37 @@
 *********
 Changelog
 *********
+
+2017-01-31 - Version 3.0a - "Grey Area"
+---------------------------------------
+This release is the first alpha release of the new version 3.0. Please
+be aware that the API will still change until v3.0 is released.
+
+changes
+^^^^^^^
+- change the project's license to MIT in accordance with the contributors (see python-escpos/python-escpos#171)
+- feature: add "capabilities" which are shared with escpos-php, capabilities are stored in
+  `escpos-printer-db <https://github.com/receipt-print-hq/escpos-printer-db>`_
+- feature: the driver tries now to guess the appropriate codepage and sets it automatically (called "magic encode")
+- as an alternative you can force the codepage with the old API
+- updated and improved documentation
+- changed constructor of main class due to introduction of capablities
+- changed interface of method `blocktext`, changed behavior of multiple methods, for details refer to the documentation
+  on `python-escpos.readthedocs.io <https://python-escpos.readthedocs.io>`_
+- add support for custom cash drawer sequence
+- enforce flake8 on the src-files, test py36 and py37 on travis
+
+contributors
+^^^^^^^^^^^^
+- Michael Billington
+- Michael Elsdörfer
+- Patrick Kanzler (with code by Frédéric Van der Essen)
+- Asuki Kono
+- Benito López
+- Curtis // mashedkeyboard
+- Thijs Triemstra
+- ysuolmai
+
 2016-08-26 - Version 2.2.0 - "Fate Amenable To Change"
 ------------------------------------------------------
 

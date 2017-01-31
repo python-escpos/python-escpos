@@ -7,8 +7,8 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
-:copyright: Copyright (c) 2012 Bashlinux
-:license: GNU GPL v3
+:copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
+:license: MIT
 """
 
 from __future__ import absolute_import
@@ -47,6 +47,7 @@ HW_RESET  = ESC + b'\x3f\x0a\x00'   # Reset printer hardware
 
 # Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
 _CASH_DRAWER = lambda m, t1='', t2='': ESC + b'p' + m + six.int2byte(t1) + six.int2byte(t2)
+CD_KICK_DEC_SEQUENCE = lambda esc, p, m, t1=50, t2=50: six.int2byte(esc) + six.int2byte(p) + six.int2byte(m) + six.int2byte(t1) + six.int2byte(t2)
 CD_KICK_2 = _CASH_DRAWER(b'\x00', 50, 50)  # Sends a pulse to pin 2 []
 CD_KICK_5 = _CASH_DRAWER(b'\x01', 50, 50)  # Sends a pulse to pin 5 []
 
@@ -100,13 +101,16 @@ TXT_UNDERL_ON  = ESC + b'\x2d\x01'  # Underline font 1-dot ON
 TXT_UNDERL2_ON = ESC + b'\x2d\x02'  # Underline font 2-dot ON
 TXT_BOLD_OFF   = ESC + b'\x45\x00'  # Bold font OFF
 TXT_BOLD_ON    = ESC + b'\x45\x01'  # Bold font ON
-TXT_FONT_A     = ESC + b'\x4d\x00'  # Font type A
-TXT_FONT_B     = ESC + b'\x4d\x01'  # Font type B
 TXT_ALIGN_LT   = ESC + b'\x61\x00'  # Left justification
 TXT_ALIGN_CT   = ESC + b'\x61\x01'  # Centering
 TXT_ALIGN_RT   = ESC + b'\x61\x02'  # Right justification
 TXT_INVERT_ON  = GS  + b'\x42\x01'  # Inverse Printing ON
 TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
+
+# Fonts
+SET_FONT = lambda n: ESC + b'\x4d' + n
+TXT_FONT_A     = SET_FONT(b'\x00')  # Font type A
+TXT_FONT_B     = SET_FONT(b'\x01')  # Font type B
 
 # Text colors
 TXT_COLOR_BLACK = ESC + b'\x72\x00'  # Default Color
@@ -120,27 +124,9 @@ LINESPACING_FUNCS = {
   180: ESC + b'3', # line_spacing/180 of an inch, 0 <= line_spacing <= 255
 }
 
-# Char code table
-CHARCODE_PC437  = ESC + b'\x74\x00'  # USA: Standard Europe
-CHARCODE_JIS    = ESC + b'\x74\x01'  # Japanese Katakana
-CHARCODE_PC850  = ESC + b'\x74\x02'  # Multilingual
-CHARCODE_PC860  = ESC + b'\x74\x03'  # Portuguese
-CHARCODE_PC863  = ESC + b'\x74\x04'  # Canadian-French
-CHARCODE_PC865  = ESC + b'\x74\x05'  # Nordic
-CHARCODE_WEU    = ESC + b'\x74\x06'  # Simplified Kanji, Hirakana
-CHARCODE_GREEK  = ESC + b'\x74\x07'  # Simplified Kanji
-CHARCODE_HEBREW = ESC + b'\x74\x08'  # Simplified Kanji
-CHARCODE_PC1252 = ESC + b'\x74\x11'  # Western European Windows Code Set
-CHARCODE_PC866  = ESC + b'\x74\x12'  # Cirillic #2
-CHARCODE_PC852  = ESC + b'\x74\x13'  # Latin 2
-CHARCODE_PC858  = ESC + b'\x74\x14'  # Euro
-CHARCODE_THAI42 = ESC + b'\x74\x15'  # Thai character code 42
-CHARCODE_THAI11 = ESC + b'\x74\x16'  # Thai character code 11
-CHARCODE_THAI13 = ESC + b'\x74\x17'  # Thai character code 13
-CHARCODE_THAI14 = ESC + b'\x74\x18'  # Thai character code 14
-CHARCODE_THAI16 = ESC + b'\x74\x19'  # Thai character code 16
-CHARCODE_THAI17 = ESC + b'\x74\x1a'  # Thai character code 17
-CHARCODE_THAI18 = ESC + b'\x74\x1b'  # Thai character code 18
+# Prefix to change the codepage. You need to attach a byte to indicate
+# the codepage to use. We use escpos-printer-db as the data source.
+CODEPAGE_CHANGE = ESC + b'\x74'
 
 # Barcode format
 _SET_BARCODE_TXT_POS = lambda n: GS + b'H' + n

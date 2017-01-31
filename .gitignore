@@ -5,6 +5,7 @@
 $~
 .idea/
 .directory
+.cache/
 
 # temporary data
 temp

@@ -8,12 +8,11 @@ Define your printer
 USB printer
 ^^^^^^^^^^^
 
-Before start creating your Python ESC/POS printer instance, you must see
-at your system for the printer parameters. This is done with the 'lsusb'
-command.
+Before creating your Python ESC/POS printer instance, consult the system to obtain
+the printer parameters. This is done with the 'lsusb' command.
 
-First run the command to look for the "Vendor ID" and "Product ID", then
-write down the values, these values are displayed just before the name
+Run the command and look for the "Vendor ID" and "Product ID" and write
+down the values. These values are displayed just before the name
 of the device with the following format:
 
 ::
@@ -37,7 +36,7 @@ so you can get the "Interface" number and "End Point"
     # lsusb -vvv -d xxxx:xxxx | grep bEndpointAddress | grep OUT
           bEndpointAddress     0x01  EP 1 OUT
 
-The first command will yields the "Interface" number that must be handy
+The first command will yield the "Interface" number that must be handy
 to have and the second yields the "Output Endpoint" address.
 
 **USB Printer initialization**
@@ -47,9 +46,9 @@ to have and the second yields the "Output Endpoint" address.
     Epson = printer.Usb(0x04b8,0x0202)
 
 By default the "Interface" number is "0" and the "Output Endpoint"
-address is "0x01", if you have other values then you can define with
+address is "0x01". If you have other values then you can define them on
 your instance. So, assuming that we have another printer where in\_ep is
-on 0x81 and out\_ep=0x02, then the printer definition should looks like:
+on 0x81 and out\_ep=0x02, then the printer definition should look like:
 
 **Generic USB Printer initialization**
 
@@ -72,10 +71,10 @@ IP by DHCP or you set it manually.
 Serial printer
 ^^^^^^^^^^^^^^
 
-Must of the default values set by the DIP switches for the serial
+Most of the default values set by the DIP switches for the serial
 printers, have been set as default on the serial printer class, so the
-only thing you need to know is which serial port the printer is hooked
-up.
+only thing you need to know is which serial port the printer is connected
+to.
 
 **Serial printer initialization**
 
@@ -86,9 +85,9 @@ up.
 Other printers
 ^^^^^^^^^^^^^^
 
-Some printers under /dev can't be used or initialized with any of the
+Some printers under `/dev` can't be used or initialized with any of the
 methods described above. Usually, those are printers used by printcap,
-however, if you know the device name, you could try the initialize
+however, if you know the device name, you could try to initialize by
 passing the device node name.
 
 ::
@@ -101,8 +100,8 @@ node, then you don't necessary need to pass the node name.
 Define your instance
 --------------------
 
-The following example demonstrate how to initialize the Epson TM-TI88IV
-on USB interface
+The following example demonstrates how to initialize the Epson TM-TI88IV
+on a USB interface.
 
 ::
 
@@ -125,9 +124,9 @@ Configuration File
 
 You can create a configuration file for python-escpos. This will
 allow you to use the CLI, and skip some setup when using the library
-programically.
+programmatically.
 
-The default configuration file is named ``config.yaml``. It's in the YAML
+The default configuration file is named ``config.yaml`` and uses the YAML
 format. For windows it is probably at::
 
     %appdata%/python-escpos/config.yaml
@@ -143,11 +142,10 @@ If you aren't sure, run::
         c.load()
 
 If it can't find the configuration file in the default location, it will tell
-you where it's looking. You can always pass a path or a list of paths to
-search to the ``load()`` method.
+you where it's looking. You can always pass a path, or a list of paths, to
+the ``load()`` method.
 
-
-To load the configured pritner, run::
+To load the configured printer, run::
 
         from escpos import config
         c = config.Config()
@@ -176,6 +174,20 @@ And for a network printer::
                 type: network
                 host: 127.0.0.1
                 port: 9000
+
+Printing text right
+-------------------
+Python-escpos is designed to accept unicode. So make sure that you use ``u'strings'`` or import ``unicode_literals``
+from ``__future__`` if you are on Python 2. On Python 3 you should be fine.
+
+For normal usage you can simply pass your text to the printers ``text()``-function. It will automatically guess
+the right codepage and then send the encoded data to the printer. If this feature does not work, please try to
+isolate the error and then create an issue on the Github project page.
+
+If you want or need to you can manually set the codepage. For this please use the ``charcode()``-function. You can set
+any key-value that is in ``CHARCODE``. If something is wrong, an ``CharCodeError`` will be raised.
+After you have manually set the codepage the printer won't change it anymore. You can revert to normal behaviour
+by setting charcode to ``AUTO``.
 
 Advanced Usage: Print from binary blob
 --------------------------------------
@@ -230,24 +242,8 @@ This is probably best explained by an example:
    # send code to printer
    p._raw(d.output)
 
-This way you could also store the code in a file and print later.
+This way you could also store the code in a file and print it later.
 You could then for example print the code from another process than your main-program and thus reduce the waiting time.
 (Of course this will not make the printer print faster.)
 
 
-How to update your code for USB printers
-----------------------------------------
-
-Old code
-
-::
-
-    Epson = escpos.Escpos(0x04b8,0x0202,0)
-
-New code
-
-::
-
-    Epson = printer.Usb(0x04b8,0x0202)
-
-Nothe that "0" which is the interface number is no longer needed.
