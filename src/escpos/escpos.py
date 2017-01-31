@@ -620,7 +620,7 @@ class Escpos(object):
         else:  # DEFAULT: DOES NOTHING
             pass
 
-    def control(self, ctl, pos=4):
+    def control(self, ctl, pos=None):
         """ Feed control sequences
 
         :param ctl: string for the following control sequences:
@@ -631,14 +631,16 @@ class Escpos(object):
             * HT *for Horizontal Tab*
             * VT *for Vertical Tab*
 
-        :param pos: integer between 1 and 16, controls the horizontal tab position
+        :param pos: controls the horizontal tab positions. an integer
+           or an iterable of integers.
         :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
         # Set tab positions
-        if not (1 <= pos <= 16):
-            raise TabPosError()
-        else:
-            self._raw(CTL_SET_HT + six.int2byte(pos))
+        if pos:
+            if not isinstance(pos, (list, tuple)):
+                pos = (pos,)
+            self._raw(CTL_SET_HT + b"".join(map(lambda p: six.int2byte(p), pos)))
+        
         # Set position
         if ctl.upper() == "LF":
             self._raw(CTL_LF)
