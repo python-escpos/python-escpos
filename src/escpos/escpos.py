@@ -578,9 +578,11 @@ class Escpos(object):
         # Fix the size between last line and cut
         # TODO: handle this with a line feed
         self._raw(b"\n\n\n\n\n\n")
-        if mode.upper() == "PART":
+
+        if mode.upper() == "PART" and self.profile.supports('paperPartCut'):
             self._raw(PAPER_PART_CUT)
-        else:  # DEFAULT MODE: FULL CUT
+        elif mode.upper() != "PART" and self.profile.supports('paperFullCut'):
+            # DEFAULT MODE: FULL CUT
             self._raw(PAPER_FULL_CUT)
 
     def cashdraw(self, pin):
