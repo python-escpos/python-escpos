@@ -23,3 +23,8 @@ src/escpos/version.py
 
 # testing temporary directories
 test/test-cli-output/
+
+# vim swap files
+*.swp
+*.swn
+*.swo
