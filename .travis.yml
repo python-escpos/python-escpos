@@ -29,7 +29,7 @@ matrix:
       env: TOXENV=docs
     - python: 2.7
       env: TOXENV=flake8
-    - python: 3.5
+    - python: 3.6
       env: TOXENV=flake8
   allow_failures:
     - python: 3.6-dev
@@ -44,3 +44,16 @@ notifications:
   email:
     on_success: never
     on_failure: change
+deploy:
+# Github deployment
+  - provider: releases
+    api_key:
+      secure: oiR3r5AIx9ENIRtbUKIxorRx8GMv4BxgVIZcieXbgSTN4DBZdRWdzs1Xxngu/90Xf79G0X+XGxZyXrYN7eFFNp0kUYj8kwZ1aS/dyR88scskumERWi1Hv5WUJrYGrDe7PcjNGsJ2jw0nNnRPKG87Y84aR4lQygyGBSlDcdrOBnBv0sHYJMxRvHSRkGgWpur06QIOGOk4oOipTXR/7E9cg3YQC5nvZAf2QiprwTa8IcOSFlZQPykEVRYSiAgXrgqBYcZzpX0hAGuIBv7DmPI2ORTF+t79Wbhxhnho3gGJleDv7Z96//sf1vQNCG6qOgeIc9ZY08Jm1AwXQoW0p6F1/XcEPxeyPDkXJzlojE9rjYNLCPL4gxb/LESEuUafm0U4JGMsZ6hnsBOw583yTuAdfQuJ9M+QaSyem6OVNkky3+DKAD3z0WJnl9jmGXIXigNSIxD25XhpvY+j9P0XTLBG1GT2Q+wXCIjSYJc2XnYcdgVJcLoxSWk1fKj/KPi7buAWtqwnL3tjeldpMMOZMliPUTWMM14zoGskHztt0JCkAtcotm9AQtvL8eZ2LHLDK/jyLzjv0wAwU5vzSVp14XHLZl7Q0AIoNc20p1EYGa9C/gSPd9CkrWZoG4lMOiAu3tp2PRLVrdXH3ZWSPQq4Ek5MczrUTkmB82XErNbOa8QB1Dw=
+    file: .tox/dist/python-escpos*.zip
+    file_glob: true
+    skip_cleanup: true
+    on:
+      tags: true
+      repo: python-escpos/python-escpos
+      branch: master
+      condition: $TRAVIS_PYTHON_VERSION = "3.5"
