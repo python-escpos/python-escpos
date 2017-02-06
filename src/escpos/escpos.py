@@ -564,7 +564,7 @@ class Escpos(object):
 
         self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
 
-    def cut(self, mode=''):
+    def cut(self, mode='FULL'):
         """ Cut paper.
 
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
@@ -573,17 +573,25 @@ class Escpos(object):
 
         .. todo:: Check this function on TM-T88II.
 
-        :param mode: set to 'PART' for a partial cut
+        :param mode: set to 'PART' for a partial cut. default: 'FULL'
+        :raises ValueError: if mode not in ('FULL', 'PART')
         """
-        # Fix the size between last line and cut
-        # TODO: handle this with a line feed
-        self._raw(b"\n\n\n\n\n\n")
+        self.print_and_feed(6)
 
-        if mode.upper() == "PART" and self.profile.supports('paperPartCut'):
-            self._raw(PAPER_PART_CUT)
-        elif mode.upper() != "PART" and self.profile.supports('paperFullCut'):
-            # DEFAULT MODE: FULL CUT
-            self._raw(PAPER_FULL_CUT)
+        mode = mode.upper()
+        if mode not in ('FULL', 'PART'):
+            raise ValueError("Mode must be one of ('FULL', 'PART')")
+
+        if mode == "PART":
+            if self.profile.supports('paperPartCut'):
+                self._raw(PAPER_PART_CUT)
+            elif self.profile.supports('paperFullCut'):
+                self._raw(PAPER_FULL_CUT)
+        elif mode == "FULL":
+            if self.profile.supports('paperFullCut'):
+                self._raw(PAPER_FULL_CUT)
+            elif self.profile.supports('paperPartCut'):
+                self._raw(PAPER_PART_CUT)
 
     def cashdraw(self, pin):
         """ Send pulse to kick the cash drawer
@@ -621,6 +629,20 @@ class Escpos(object):
             self._raw(HW_RESET)
         else:  # DEFAULT: DOES NOTHING
             pass
+
+    def print_and_feed(self, n):
+        """ Print data in print buffer and feed *n* lines
+
+            if n not in range (0, 255) then ValueError will be raised
+
+            :param n: number of lines to feed. 0 <= n <= 255
+            :raises ValueError: if not 0 <= n <= 255
+        """
+        if 0 <= n <= 255:
+            # ESC d n
+            self._raw(ESC + b"d" + six.binary_type(chr(n)))
+        else:
+            raise ValueError("n must be betwen 0 and 255")
 
     def control(self, ctl, pos=4):
         """ Feed control sequences
