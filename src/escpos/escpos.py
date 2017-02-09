@@ -640,7 +640,7 @@ class Escpos(object):
         """
         if 0 <= n <= 255:
             # ESC d n
-            self._raw(ESC + b"d" + six.binary_type(chr(n)))
+            self._raw(ESC + b"d" + six.int2byte(n))
         else:
             raise ValueError("n must be betwen 0 and 255")
 
