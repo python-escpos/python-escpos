@@ -630,12 +630,12 @@ class Escpos(object):
         else:  # DEFAULT: DOES NOTHING
             pass
 
-    def print_and_feed(self, n):
+    def print_and_feed(self, n=1):
         """ Print data in print buffer and feed *n* lines
 
             if n not in range (0, 255) then ValueError will be raised
 
-            :param n: number of lines to feed. 0 <= n <= 255
+            :param n: number of n to feed. 0 <= n <= 255. default: 1
             :raises ValueError: if not 0 <= n <= 255
         """
         if 0 <= n <= 255:
@@ -658,11 +658,6 @@ class Escpos(object):
         :param pos: integer between 1 and 16, controls the horizontal tab position
         :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
-        # Set tab positions
-        if not (1 <= pos <= 16):
-            raise TabPosError()
-        else:
-            self._raw(CTL_SET_HT + six.int2byte(pos))
         # Set position
         if ctl.upper() == "LF":
             self._raw(CTL_LF)
@@ -671,6 +666,12 @@ class Escpos(object):
         elif ctl.upper() == "CR":
             self._raw(CTL_CR)
         elif ctl.upper() == "HT":
+            if not (1 <= pos <= 16):
+                raise TabPosError()
+            else:
+                # Set tab positions
+                self._raw(CTL_SET_HT + six.int2byte(pos))
+
             self._raw(CTL_HT)
         elif ctl.upper() == "VT":
             self._raw(CTL_VT)
