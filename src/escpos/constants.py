@@ -53,8 +53,8 @@ CD_KICK_5 = _CASH_DRAWER(b'\x01', 50, 50)  # Sends a pulse to pin 5 []
 
 # Paper Cutter
 _CUT_PAPER = lambda m: GS + b'V' + m
-PAPER_FULL_CUT = _CUT_PAPER(b'\x00')  # Full cut paper
-PAPER_PART_CUT = _CUT_PAPER(b'\x01')  # Partial cut paper
+PAPER_FULL_CUT = _CUT_PAPER(b'\x00\x30')  # Full cut paper
+PAPER_PART_CUT = _CUT_PAPER(b'\x01\x31')  # Partial cut paper
 
 # Beep
 BEEP = b'\x07'
