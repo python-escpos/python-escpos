@@ -100,6 +100,12 @@ ESCPOS_COMMANDS = [
                 'option_strings': ('--content',),
                 'help': 'Text to print as a qr code',
                 'required': True,
+            },
+            {
+                'option_strings': ('--size',),
+                'help': 'QR code size (1-16) [default:3]',
+                'required': False,
+                'type': int,
             }
         ],
     },
