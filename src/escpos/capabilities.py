@@ -1,10 +1,15 @@
 import re
 import six
-from os import path
+from os import environ, path
 import yaml
 
 # Load external printer database
-with open(path.join(path.dirname(__file__), 'capabilities.json')) as f:
+if 'ESCPOS_CAPABILITIES_FILE' in environ:
+    file_path = environ['ESCPOS_CAPABILITIES_FILE']
+else:
+    file_path = path.join(path.dirname(__file__), 'capabilities.json')
+
+with open(file_path) as f:
     CAPABILITIES = yaml.load(f)
 
 PROFILES = CAPABILITIES['profiles']
