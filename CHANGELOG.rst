@@ -2,6 +2,24 @@
 Changelog
 *********
 
+2017-03-29 - Version 3.0a1 - "Headcrash"
+----------------------------------------
+This release is the second alpha release of the new version 3.0. Please
+be aware that the API will still change until v3.0 is released.
+
+changes
+^^^^^^^
+- automatically upload releases to GitHub
+- add environment variable ESCPOS_CAPABILITIES_FILE
+- automatically handle cases where full cut or partial cut is not available
+- add print_and_feed
+
+contributors
+^^^^^^^^^^^^
+- Sam Cheng
+- Patrick Kanzler
+- Dmytro Katyukha
+
 2017-01-31 - Version 3.0a - "Grey Area"
 ---------------------------------------
 This release is the first alpha release of the new version 3.0. Please

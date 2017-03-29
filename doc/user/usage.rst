@@ -216,6 +216,32 @@ Here you can download an example, that will print a set of common barcodes:
 
     * :download:`barcode.bin </download/barcode.bin>` by `@mike42 <https://github.com/mike42>`_
 
+Advanced Usage: change capabilities-profile
+-------------------------------------------
+
+Packaged together with the escpos-code is a capabilities-file. This file in
+JSON-format describes the capabilities of different printers. It is developed and hosted in
+`escpos-printer-db <https://github.com/receipt-print-hq/escpos-printer-db>`_.
+
+Certain applications like the usage of `cx_freeze <https://cx-freeze.readthedocs.io>`_ might change the
+packaging structure. This leads to the capabilities-profile not being found.
+In this case you can use the environment-variable `ESCPOS_CAPABILITIES_FILE`.
+The following code is an example.
+
+.. code-block:: shell
+
+   # use packaged capabilities-profile
+   python-escpos cut
+
+   # use capabilities-profile that you have put in /usr/python-escpos
+   export ESCPOS_CAPABILITIES_FILE=/usr/python-escpos/capabilities.json
+   python-escpos cut
+
+   # use packaged file again
+   unset ESCPOS_CAPABILITIES_FILE
+   python-escpos cut
+
+
 Hint: preprocess printing
 -------------------------
 

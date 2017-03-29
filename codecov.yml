@@ -7,10 +7,6 @@ coverage:
       default:  # status context
         target: auto
         threshold: "1%"
-    patch:
-      default:
-        target: auto
-        threshold: "1%"
   range: "60...100"
 
 comment: off
