@@ -1,0 +1,13 @@
+include *.rst
+include *.txt
+include COPYING
+include LICENSE
+include INSTALL
+include tox.ini
+include capabilities-data/dist/capabilities.json
+recursive-include doc *.bat
+recursive-include doc *.ico
+recursive-include doc *.py
+recursive-include doc *.rst
+recursive-include doc *.txt
+recursive-include doc Makefile

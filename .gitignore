@@ -1,9 +1,30 @@
 # python temporary files
 *.pyc
 
-# editor autosaves
+# editor autosaves, data and file browser files
 $~
 .idea/
+.directory
+.cache/
 
 # temporary data
 temp
+
+# packaging and testing
+.tox/
+*.egg-info/
+.eggs/
+*.egg
+build/
+dist/
+.coverage
+src/escpos/version.py
+.hypothesis
+
+# testing temporary directories
+test/test-cli-output/
+
+# vim swap files
+*.swp
+*.swn
+*.swo

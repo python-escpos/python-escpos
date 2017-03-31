@@ -1,0 +1,13 @@
+codecov:
+  bot: patkan
+
+coverage:
+  status:
+    project:
+      default:  # status context
+        target: auto
+        threshold: "1%"
+  range: "60...100"
+
+comment: off
+
