@@ -414,7 +414,7 @@ class Escpos(object):
         Text has to be encoded in unicode.
 
         :param txt: text to be printed
-        :param font: font to be used, can be :code:`a` or :code`b`
+        :param font: font to be used, can be :code:`a` or :code:`b`
         :param columns: amount of columns
         :return: None
         """
