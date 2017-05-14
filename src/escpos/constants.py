@@ -71,50 +71,89 @@ SHEET_ROLL_MODE = ESC + b'\x63\x30\x01'  # paper roll
 # Text format
 # TODO: Acquire the "ESC/POS Application Programming Guide for Paper Roll
 #       Printers" and tidy up this stuff too.
-TXT_FLIP_ON    = ESC + b'\x7b\x01'
-TXT_FLIP_OFF   = ESC + b'\x7b\x00'
-TXT_SMOOTH_ON  = GS + b'\x62\x01'
-TXT_SMOOTH_OFF = GS + b'\x62\x00'
 TXT_SIZE       = GS + b'!'
-TXT_WIDTH      = {1: 0x00,
-                  2: 0x10,
-                  3: 0x20,
-                  4: 0x30,
-                  5: 0x40,
-                  6: 0x50,
-                  7: 0x60,
-                  8: 0x70}
-TXT_HEIGHT     = {1: 0x00,
-                  2: 0x01,
-                  3: 0x02,
-                  4: 0x03,
-                  5: 0x04,
-                  6: 0x05,
-                  7: 0x06,
-                  8: 0x07}
+
 TXT_NORMAL     = ESC + b'!\x00'     # Normal text
-TXT_2HEIGHT    = ESC + b'!\x10'     # Double height text
-TXT_2WIDTH     = ESC + b'!\x20'     # Double width text
-TXT_4SQUARE    = ESC + b'!\x30'     # Quad area text
-TXT_UNDERL_OFF = ESC + b'\x2d\x00'  # Underline font OFF
-TXT_UNDERL_ON  = ESC + b'\x2d\x01'  # Underline font 1-dot ON
-TXT_UNDERL2_ON = ESC + b'\x2d\x02'  # Underline font 2-dot ON
-TXT_BOLD_OFF   = ESC + b'\x45\x00'  # Bold font OFF
-TXT_BOLD_ON    = ESC + b'\x45\x01'  # Bold font ON
-TXT_ALIGN_LT   = ESC + b'\x61\x00'  # Left justification
-TXT_ALIGN_CT   = ESC + b'\x61\x01'  # Centering
-TXT_ALIGN_RT   = ESC + b'\x61\x02'  # Right justification
-TXT_INVERT_ON  = GS  + b'\x42\x01'  # Inverse Printing ON
-TXT_INVERT_OFF = GS  + b'\x42\x00'  # Inverse Printing OFF
+
+
+TXT_STYLE = {
+    'bold': {
+        False: ESC + b'\x45\x00',               # Bold font OFF
+        True: ESC + b'\x45\x01'                 # Bold font ON
+    },
+    'underline': {
+        0: ESC + b'\x2d\x00',                   # Underline font OFF
+        1: ESC + b'\x2d\x01',                   # Underline font 1-dot ON
+        2: ESC + b'\x2d\x02'                    # Underline font 2-dot ON
+    },
+    'size': {
+        'normal': TXT_NORMAL + ESC + b'!\x00',  # Normal text
+        '2h': TXT_NORMAL + ESC + b'!\x10',      # Double height text
+        '2w': TXT_NORMAL + ESC + b'!\x20',      # Double width text
+        '2x': TXT_NORMAL + ESC + b'!\x30'       # Quad area text
+    },
+    'font': {
+        'a': ESC + b'\x4d\x00',                 # Font type A
+        'b': ESC + b'\x4d\x00'                  # Font type B
+    },
+    'align': {
+        'left': ESC + b'\x61\x00',              # Left justification
+        'center': ESC + b'\x61\x01',            # Centering
+        'right': ESC + b'\x61\x02'              # Right justification
+    },
+    'invert': {
+        True: GS  + b'\x42\x01',                # Inverse Printing ON
+        False: GS  + b'\x42\x00'                # Inverse Printing OFF
+    },
+    'color': {
+        'black': ESC + b'\x72\x00',             # Default Color
+        'red': ESC + b'\x72\x01'                # Alternative Color, Usually Red
+    },
+    'flip': {
+        True: ESC + b'\x7b\x01',                # Flip ON
+        False: ESC + b'\x7b\x00'                # Flip OFF
+    },
+    'density': {
+        0: GS + b'\x7c\x00',                    # Printing Density -50%
+        1: GS + b'\x7c\x01',                    # Printing Density -37.5%
+        2: GS + b'\x7c\x02',                    # Printing Density -25%
+        3: GS + b'\x7c\x03',                    # Printing Density -12.5%
+        4: GS + b'\x7c\x04',                    # Printing Density  0%
+        5: GS + b'\x7c\x08',                    # Printing Density +50%
+        6: GS + b'\x7c\x07',                    # Printing Density +37.5%
+        7: GS + b'\x7c\x06',                    # Printing Density +25%
+        8: GS + b'\x7c\x05'                     # Printing Density +12.5%
+    },
+    'smooth': {
+        True: GS + b'\x62\x01',                 # Smooth ON
+        False: GS + b'\x62\x00'                 # Smooth OFF
+    },
+    'height': {                                 # Custom text height
+        1: 0x00,
+        2: 0x01,
+        3: 0x02,
+        4: 0x03,
+        5: 0x04,
+        6: 0x05,
+        7: 0x06,
+        8: 0x07
+    },
+    'width': {                                  # Custom text width
+        1: 0x00,
+        2: 0x10,
+        3: 0x20,
+        4: 0x30,
+        5: 0x40,
+        6: 0x50,
+        7: 0x60,
+        8: 0x70
+    }
+}
 
 # Fonts
 SET_FONT = lambda n: ESC + b'\x4d' + n
 TXT_FONT_A     = SET_FONT(b'\x00')  # Font type A
 TXT_FONT_B     = SET_FONT(b'\x01')  # Font type B
-
-# Text colors
-TXT_COLOR_BLACK = ESC + b'\x72\x00'  # Default Color
-TXT_COLOR_RED = ESC + b'\x72\x01'    # Alternative Color (Usually Red)
 
 # Spacing
 LINESPACING_RESET = ESC + b'2'
@@ -205,14 +244,3 @@ S_RASTER_N  = _PRINT_RASTER_IMG(b'\x00')  # Set raster image normal size
 S_RASTER_2W = _PRINT_RASTER_IMG(b'\x01')  # Set raster image double width
 S_RASTER_2H = _PRINT_RASTER_IMG(b'\x02')  # Set raster image double height
 S_RASTER_Q  = _PRINT_RASTER_IMG(b'\x03')  # Set raster image quadruple
-
-# Printing Density
-PD_N50 = GS + b'\x7c\x00'  # Printing Density -50%
-PD_N37 = GS + b'\x7c\x01'  # Printing Density -37.5%
-PD_N25 = GS + b'\x7c\x02'  # Printing Density -25%
-PD_N12 = GS + b'\x7c\x03'  # Printing Density -12.5%
-PD_0   = GS + b'\x7c\x04'  # Printing Density  0%
-PD_P50 = GS + b'\x7c\x08'  # Printing Density +50%
-PD_P37 = GS + b'\x7c\x07'  # Printing Density +37.5%
-PD_P25 = GS + b'\x7c\x06'  # Printing Density +25%
-PD_P12 = GS + b'\x7c\x05'  # Printing Density +12.5%
