@@ -24,16 +24,15 @@ from barcode.writer import ImageWriter
 
 from .constants import ESC, GS, NUL, QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q
 from .constants import QR_MODEL_1, QR_MODEL_2, QR_MICRO, BARCODE_TYPES, BARCODE_HEIGHT, BARCODE_WIDTH
-from .constants import TXT_ALIGN_CT, TXT_ALIGN_LT, TXT_ALIGN_RT, BARCODE_FONT_A, BARCODE_FONT_B
+from .constants import BARCODE_FONT_A, BARCODE_FONT_B
 from .constants import BARCODE_TXT_OFF, BARCODE_TXT_BTH, BARCODE_TXT_ABV, BARCODE_TXT_BLW
-from .constants import TXT_HEIGHT, TXT_WIDTH, TXT_SIZE, TXT_NORMAL, TXT_SMOOTH_OFF, TXT_SMOOTH_ON
-from .constants import TXT_FLIP_OFF, TXT_FLIP_ON, TXT_2WIDTH, TXT_2HEIGHT, TXT_4SQUARE
-from .constants import TXT_UNDERL_OFF, TXT_UNDERL_ON, TXT_BOLD_OFF, TXT_BOLD_ON, SET_FONT, TXT_UNDERL2_ON
-from .constants import TXT_INVERT_OFF, TXT_INVERT_ON, LINESPACING_FUNCS, LINESPACING_RESET
-from .constants import PD_0, PD_N12, PD_N25, PD_N37, PD_N50, PD_P50, PD_P37, PD_P25, PD_P12
+from .constants import TXT_SIZE, TXT_NORMAL
+from .constants import SET_FONT
+from .constants import LINESPACING_FUNCS, LINESPACING_RESET
 from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CUT, PAPER_PART_CUT
 from .constants import HW_RESET, HW_SELECT, HW_INIT
 from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
+from .constants import TXT_STYLE
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
@@ -359,7 +358,7 @@ class Escpos(object):
 
         # Align Bar Code()
         if align_ct:
-            self._raw(TXT_ALIGN_CT)
+            self._raw(TXT_STYLE['align']['center'])
         # Height
         if 1 <= height <= 255:
             self._raw(BARCODE_HEIGHT + six.int2byte(height))
@@ -444,8 +443,9 @@ class Escpos(object):
         col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
-    def set(self, align='left', font='a', text_type='normal', width=1,
-            height=1, density=9, invert=False, smooth=False, flip=False):
+    def set(self, align='left', font='a', bold=False, underline=0, width=1,
+            height=1, density=9, invert=False, smooth=False, flip=False,
+            size='normal'):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
@@ -476,87 +476,29 @@ class Escpos(object):
         :param flip: True enables upside-down printing, *default*: False
         :type invert: bool
         """
-        # Width
-        if height == 2 and width == 2:
-            self._raw(TXT_NORMAL)
-            self._raw(TXT_4SQUARE)
-        elif height == 2 and width == 1:
-            self._raw(TXT_NORMAL)
-            self._raw(TXT_2HEIGHT)
-        elif width == 2 and height == 1:
-            self._raw(TXT_NORMAL)
-            self._raw(TXT_2WIDTH)
-        elif width == 1 and height == 1:
-            self._raw(TXT_NORMAL)
-        elif 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and isinstance(height, int):
-            self._raw(TXT_SIZE + six.int2byte(TXT_WIDTH[width] + TXT_HEIGHT[height]))
-        else:
-            raise SetVariableError()
-        # Upside down
-        if flip:
-            self._raw(TXT_FLIP_ON)
-        else:
-            self._raw(TXT_FLIP_OFF)
-        # Smoothing
-        if smooth:
-            self._raw(TXT_SMOOTH_ON)
-        else:
-            self._raw(TXT_SMOOTH_OFF)
-        # Type
-        if text_type.upper() == "B":
-            self._raw(TXT_BOLD_ON)
-            self._raw(TXT_UNDERL_OFF)
-        elif text_type.upper() == "U":
-            self._raw(TXT_BOLD_OFF)
-            self._raw(TXT_UNDERL_ON)
-        elif text_type.upper() == "U2":
-            self._raw(TXT_BOLD_OFF)
-            self._raw(TXT_UNDERL2_ON)
-        elif text_type.upper() == "BU":
-            self._raw(TXT_BOLD_ON)
-            self._raw(TXT_UNDERL_ON)
-        elif text_type.upper() == "BU2":
-            self._raw(TXT_BOLD_ON)
-            self._raw(TXT_UNDERL2_ON)
-        elif text_type.upper() == "NORMAL":
-            self._raw(TXT_BOLD_OFF)
-            self._raw(TXT_UNDERL_OFF)
-        # Font
-        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
 
-        # Align
-        if align.upper() == "CENTER":
-            self._raw(TXT_ALIGN_CT)
-        elif align.upper() == "RIGHT":
-            self._raw(TXT_ALIGN_RT)
-        elif align.upper() == "LEFT":
-            self._raw(TXT_ALIGN_LT)
-        # Density
-        if density == 0:
-            self._raw(PD_N50)
-        elif density == 1:
-            self._raw(PD_N37)
-        elif density == 2:
-            self._raw(PD_N25)
-        elif density == 3:
-            self._raw(PD_N12)
-        elif density == 4:
-            self._raw(PD_0)
-        elif density == 5:
-            self._raw(PD_P12)
-        elif density == 6:
-            self._raw(PD_P25)
-        elif density == 7:
-            self._raw(PD_P37)
-        elif density == 8:
-            self._raw(PD_P50)
-        else:  # DEFAULT: DOES NOTHING
-            pass
-        # Invert Printing
-        if invert:
-            self._raw(TXT_INVERT_ON)
-        else:
-            self._raw(TXT_INVERT_OFF)
+        if size in TXT_STYLE['size']:
+            self._raw(TXT_NORMAL)
+            self._raw(TXT_STYLE['size'][size])
+        elif size == 'custom':
+            if 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and\
+              isinstance(height, int):
+                size_byte = TXT_STYLE['width'][width] + TXT_STYLE['height'][height]
+                self._raw(TXT_SIZE + six.int2byte(size_byte))
+            else:
+                raise SetVariableError()
+
+        self._raw(TXT_STYLE['flip'][flip])
+        self._raw(TXT_STYLE['smooth'][smooth])
+        self._raw(TXT_STYLE['bold'][bold])
+        self._raw(TXT_STYLE['underline'][underline])
+        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+        self._raw(TXT_STYLE['align'][align])
+
+        if density != 9:
+            self._raw(TXT_STYLE['density'][density])
+
+        self._raw(TXT_STYLE['invert'][invert])
 
     def line_spacing(self, spacing=None, divisor=180):
         """ Set line character spacing.
