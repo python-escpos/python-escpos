@@ -450,31 +450,44 @@ class Escpos(object):
 
         :param align: horizontal position for text, possible values are:
 
-            * CENTER
-            * LEFT
-            * RIGHT
+            * 'center'
+            * 'left'
+            * 'right'
 
-            *default*: LEFT
+            *default*: 'left'
+
+        :param size: size modifier for text, possible values are:
+
+            * 'normal'
+            * '2h' for double text height
+            * '2w' for double text width
+            * '2x' for double text height and width (doubles the text surface)
+            * 'custom' for custom text height and width
+
+            In this last case, see the width and height parameters.
+            *default*: 'normal'
 
         :param font: font given as an index, a name, or one of the
-            special values 'a' or 'b', refering to fonts 0 and 1.
-        :param text_type: text type, possible values are:
-
-            * B for bold
-            * U for underlined
-            * U2 for underlined, version 2
-            * BU for bold and underlined
-            * BU2 for bold and underlined, version 2
-            * NORMAL for normal text
-
-            *default*: NORMAL
-        :param width: text width multiplier, decimal range 1-8,  *default*: 1
-        :param height: text height multiplier, decimal range 1-8, *default*: 1
+            special values 'a' or 'b', referring to fonts 0 and 1.
+        :param bold: text in bold, *default*: False
+        :param underline: underline mode for text, decimal range 0-2,  *default*: 0
+        :param width: text width multiplier when size is set to custom, decimal range 1-8,  *default*: 1
+        :param height: text height multiplier when size is set to custom, decimal range 1-8, *default*: 1
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
         :param invert: True enables white on black printing, *default*: False
         :param smooth: True enables text smoothing. Effective on 4x4 size text and larger, *default*: False
         :param flip: True enables upside-down printing, *default*: False
+
         :type invert: bool
+        :type bold: bool
+        :type underline: bool
+        :type smooth: bool
+        :type flip: bool
+        :type size: str
+        :type align: str
+        :type width: int
+        :type height: int
+        :type density: int
         """
 
         if size in TXT_STYLE['size']:
