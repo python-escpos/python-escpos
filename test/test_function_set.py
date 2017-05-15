@@ -33,7 +33,7 @@ def test_default_values():
 
 def test_set_size_2h():
     instance = printer.Dummy()
-    instance.set(size='2h')
+    instance.set(double_height=True)
 
     expected_sequence = (
         TXT_NORMAL, TXT_STYLE['size']['2h'],  # Double height text size
@@ -51,7 +51,7 @@ def test_set_size_2h():
 
 def test_set_size_2w():
     instance = printer.Dummy()
-    instance.set(size='2w')
+    instance.set(double_width=True)
 
     expected_sequence = (
         TXT_NORMAL, TXT_STYLE['size']['2w'],  # Double width text size
@@ -69,7 +69,7 @@ def test_set_size_2w():
 
 def test_set_size_2x():
     instance = printer.Dummy()
-    instance.set(size='2x')
+    instance.set(double_height=True, double_width=True)
 
     expected_sequence = (
         TXT_NORMAL, TXT_STYLE['size']['2x'],  # Double text size
@@ -87,7 +87,7 @@ def test_set_size_2x():
 
 def test_set_size_custom():
     instance = printer.Dummy()
-    instance.set(size='custom', width=8, height=7)
+    instance.set(custom_size=True, width=8, height=7)
 
     expected_sequence = (
         TXT_SIZE,  # Custom text size, no normal reset
