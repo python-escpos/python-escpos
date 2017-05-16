@@ -115,7 +115,8 @@ setup(
         'pyyaml',
         'argparse',
         'argcomplete',
-        'future'
+        'future',
+        'pyBarcode==0.8b1'
     ],
     setup_requires=[
         'setuptools_scm',
