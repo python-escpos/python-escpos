@@ -570,6 +570,16 @@ class Escpos(object):
             except:
                 raise CashDrawerError()
 
+    def linedisplay(self, text):
+        """
+        Display text on line display thought your epson printer
+        :param text: Text to display
+        """
+        self._raw(LINE_DISPLAY_OPEN)
+        self._raw(LINE_DISPLAY_CLEAR)
+        self.text(text)
+        self._raw(LINE_DISPLAY_CLOSE)
+
     def hw(self, hw):
         """ Hardware operations
 
