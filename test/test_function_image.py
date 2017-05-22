@@ -12,8 +12,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import escpos.printer as printer
+import pytest
+
 from PIL import Image
+
+import escpos.printer as printer
+from escpos.exceptions import ImageWidthError
 
 
 # Raster format print
@@ -139,3 +143,22 @@ def test_large_graphics():
     instance = printer.Dummy()
     instance.image('test/resources/black_white.png', impl="bitImageRaster", fragment_height=1)
     assert(instance.output == b'\x1dv0\x00\x01\x00\x01\x00\xc0\x1dv0\x00\x01\x00\x01\x00\x00')
+
+
+def test_width_too_large():
+    """
+    Test printing an image that is too large in width.
+    """
+    instance = printer.Dummy()
+    instance.profile.profile_data = {
+        'media': {
+            'width': {
+                'pixels': 384
+            }
+        }
+    }
+
+    with pytest.raises(ImageWidthError):
+        instance.image(Image.new("RGB", (385, 200)))
+
+    instance.image(Image.new("RGB", (384, 200)))

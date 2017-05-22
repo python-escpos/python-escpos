@@ -101,7 +101,7 @@ class Escpos(object):
         im = EscposImage(img_source)
 
         try:
-            max_width =  self.profile.profile_data['media']['width']['pixels']
+            max_width = self.profile.profile_data['media']['width']['pixels']
             if im.width > max_width:
                 raise ImageWidthError('{} > {}'.format(im.width, max_width))
         except KeyError:

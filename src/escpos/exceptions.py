@@ -107,7 +107,7 @@ class ImageSizeError(Error):
 
 class ImageWidthError(Error):
     """ Image width is too large.
-    
+
     The return code for this exception is `41`.
     """
     def __init__(self, msg=""):
