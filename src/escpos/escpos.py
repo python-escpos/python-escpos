@@ -101,11 +101,14 @@ class Escpos(object):
         im = EscposImage(img_source)
 
         try:
-            max_width = self.profile.profile_data['media']['width']['pixels']
+            max_width = int(self.profile.profile_data['media']['width']['pixels'])
             if im.width > max_width:
                 raise ImageWidthError('{} > {}'.format(im.width, max_width))
         except KeyError:
             # If the printer's pixel width is not known, print anyways...
+            pass
+        except ValueError:
+            # If the max_width cannot be converted to an int, print anyways...
             pass
 
         if im.height > fragment_height:
