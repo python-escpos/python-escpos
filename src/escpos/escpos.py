@@ -34,6 +34,7 @@ from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
+from .exceptions import ImageWidthError
 
 from .magicencode import MagicEncode
 
@@ -98,6 +99,14 @@ class Escpos(object):
 
         """
         im = EscposImage(img_source)
+
+        try:
+            max_width =  self.profile.profile_data['media']['width']['pixels']
+            if im.width > max_width:
+                raise ImageWidthError('{} > {}'.format(im.width, max_width))
+        except KeyError:
+            # If the printer's pixel width is not known, print anyways...
+            pass
 
         if im.height > fragment_height:
             fragments = im.split(fragment_height)
