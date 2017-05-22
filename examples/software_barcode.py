@@ -1,5 +1,6 @@
 from escpos.printer import Usb
 
+
 # Adapt to your needs
 p = Usb(0x0416, 0x5011, profile="POS-5890")
 
