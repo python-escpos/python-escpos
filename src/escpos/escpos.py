@@ -399,14 +399,18 @@ class Escpos(object):
         if function_type.upper() == "A":
             self._raw(NUL)
 
-    def soft_barcode(self, barcode_type, data, module_height=5, module_width=0.2, text_distance=1):
+    def soft_barcode(self, barcode_type, data, impl='bitImageColumn',
+                     module_height=5, module_width=0.2, text_distance=1):
+
         image_writer = ImageWriter()
 
+        # Check if barcode type exists
         if barcode_type not in barcode.PROVIDED_BARCODES:
             raise BarcodeTypeError(
                 'Barcode type {} not supported by software barcode renderer'
                 .format(barcode_type))
 
+        # Render the barcode to a fake file
         barcode_class = barcode.get_barcode_class(barcode_type)
         my_code = barcode_class(data, writer=image_writer)
 
@@ -416,8 +420,9 @@ class Escpos(object):
             'text_distance': text_distance
         })
 
+        # Retrieve the Pillow image and print it
         image = my_code.writer._image
-        self.image(image, impl='bitImageColumn')
+        self.image(image, impl=impl)
 
     def text(self, txt):
         """ Print alpha-numeric text
