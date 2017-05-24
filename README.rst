@@ -47,10 +47,10 @@ Dependencies
 
 This library makes use of:
 
-    * pyusb for USB-printers
-    * Pillow for image printing
-    * qrcode for the generation of QR-codes
-    * pyserial for serial printers
+* pyusb for USB-printers
+* Pillow for image printing
+* qrcode for the generation of QR-codes
+* pyserial for serial printers
 
 Documentation and Usage
 -----------------------
