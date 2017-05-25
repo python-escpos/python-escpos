@@ -1,6 +1,8 @@
 language: python
 sudo: false
 cache: pip
+git:
+  depth: 100000
 addons:
   apt:
     packages:
@@ -37,6 +39,7 @@ matrix:
     - python: pypy3
 before_install:
     - pip install tox codecov 'sphinx>=1.5.1'
+    - ./doc/generate_authors.sh --check
 script:
     - tox
     - codecov
