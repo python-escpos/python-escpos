@@ -118,7 +118,7 @@ setup(
         'argparse',
         'argcomplete',
         'future',
-        'pyBarcode==0.8b1'
+        'viivakoodi>=0.8'
     ],
     setup_requires=[
         'setuptools_scm',
