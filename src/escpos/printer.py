@@ -131,6 +131,8 @@ class Serial(Escpos):
 
     def open(self):
         """ Setup serial port and set is as escpos device """
+        if self.device is not None and self.device.is_open:
+            self.close()
         self.device = serial.Serial(port=self.devfile, baudrate=self.baudrate,
                                     bytesize=self.bytesize, parity=self.parity,
                                     stopbits=self.stopbits, timeout=self.timeout,
@@ -151,7 +153,7 @@ class Serial(Escpos):
 
     def close(self):
         """ Close Serial interface """
-        if self.device is not None:
+        if self.device is not None and self.device.is_open:
             self.device.flush()
             self.device.close()
 
