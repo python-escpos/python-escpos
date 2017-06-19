@@ -117,7 +117,8 @@ setup(
         'pyyaml',
         'argparse',
         'argcomplete',
-        'future'
+        'future',
+        'viivakoodi>=0.8'
     ],
     setup_requires=[
         'setuptools_scm',
