@@ -47,10 +47,11 @@ Dependencies
 
 This library makes use of:
 
-* pyusb for USB-printers
-* Pillow for image printing
-* qrcode for the generation of QR-codes
-* pyserial for serial printers
+* `pyusb <https://github.com/walac/pyusb>`_ for USB-printers
+* `Pillow <https://github.com/python-pillow/Pillow>`_ for image printing
+* `qrcode <https://github.com/lincolnloop/python-qrcode>`_ for the generation of QR-codes
+* `pyserial <https://github.com/pyserial/pyserial>`_ for serial printers
+* `viivakoodi <https://github.com/kxepal/viivakoodi>`_ for the generation of barcodes
 
 Documentation and Usage
 -----------------------
