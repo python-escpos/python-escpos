@@ -203,7 +203,10 @@ class Escpos(object):
             qr_img = qr_code.make_image()
             im = qr_img._img.convert("RGB")
             # Convert the RGB image in printable image
+            self.text('\n')
             self.image(im)
+            self.text('\n')
+            self.text('\n')
             return
         # Native 2D code printing
         cn = b'1'  # Code type for QR code
