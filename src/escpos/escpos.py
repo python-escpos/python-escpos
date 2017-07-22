@@ -79,6 +79,9 @@ class Escpos(object):
         """
         pass
 
+    def _read(self, msg):
+        raise NotImplementedError(); 
+
     def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster",
               fragment_height=960):
         """ Print an image
@@ -744,7 +747,7 @@ class Escpos(object):
         else:
             return [8];
 
-    def _isOnline(self):
+    def isOnline(self):
         status = self.queryStatus()[0];
         return ((status & RT_MASK_ONLINE) == 0);
 
