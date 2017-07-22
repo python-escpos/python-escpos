@@ -252,5 +252,4 @@ S_RASTER_Q  = _PRINT_RASTER_IMG(b'\x03')  # Set raster image quadruple
 
 # Status Command
 RT_STATUS_ONLINE = DLE + EOT +  b'\x01';
-RT_STATUS_OFFLINECAUSE = DLE + EOT +  b'\x02';
 RT_MASK_ONLINE = 8;
