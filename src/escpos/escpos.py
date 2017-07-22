@@ -18,6 +18,7 @@ from __future__ import unicode_literals
 import qrcode
 import textwrap
 import six
+import time
 
 import barcode
 from barcode.writer import ImageWriter
@@ -34,6 +35,7 @@ from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CU
 from .constants import HW_RESET, HW_SELECT, HW_INIT
 from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
 from .constants import TXT_STYLE
+from .constants import RT_STATUS_ONLINE, RT_STATUS_OFFLINECAUSE, RT_MASK_ONLINE
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
@@ -733,6 +735,18 @@ class Escpos(object):
         else:
             self._raw(PANEL_BUTTON_OFF)
 
+    def queryStatus(self):
+        self._raw(RT_STATUS_ONLINE)
+        time.sleep(1)
+        status = self._read();
+        if (len(status) > 0):
+            return status;
+        else:
+            return [8];
+
+    def _isOnline(self):
+        status = self.queryStatus()[0];
+        return ((status & RT_MASK_ONLINE) == 0);
 
 class EscposIO(object):
     """ESC/POS Printer IO object
