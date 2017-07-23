@@ -587,8 +587,12 @@ class Escpos(object):
         :param feed: print and feed before cutting. default: true
         :raises ValueError: if mode not in ('FULL', 'PART')
         """
-        if feed:
-            self.print_and_feed(6)
+
+        if not feed:
+            self._raw(GS + b'V' + six.int2byte(66) + b'\x00')
+            return
+
+        self.print_and_feed(6)
 
         mode = mode.upper()
         if mode not in ('FULL', 'PART'):
