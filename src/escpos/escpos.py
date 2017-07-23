@@ -747,13 +747,13 @@ class Escpos(object):
         self._raw(RT_STATUS_ONLINE)
         time.sleep(1)
         status = self._read()
-        return status or [8]
+        return status or [RT_MASK_ONLINE]
 
     def is_online(self):
         """ Queries the printer its online status.
         When online, returns True; False otherwise.
         :rtype: bool: True if online, False if offline."""
-        return (self.query_status()[0] & RT_MASK_ONLINE) == 0
+        return not (self.query_status()[0] & RT_MASK_ONLINE)
 
 
 class EscposIO(object):
