@@ -84,6 +84,10 @@ class Usb(Escpos):
         """
         self.device.write(self.out_ep, msg, self.timeout)
 
+    def _read(self):
+        """ Reads a data buffer and returns it to the caller. """
+        return self.device.read(self.in_ep, 16)
+
     def close(self):
         """ Release USB interface """
         if self.device:

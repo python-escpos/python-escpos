@@ -249,3 +249,7 @@ S_RASTER_N  = _PRINT_RASTER_IMG(b'\x00')  # Set raster image normal size
 S_RASTER_2W = _PRINT_RASTER_IMG(b'\x01')  # Set raster image double width
 S_RASTER_2H = _PRINT_RASTER_IMG(b'\x02')  # Set raster image double height
 S_RASTER_Q  = _PRINT_RASTER_IMG(b'\x03')  # Set raster image quadruple
+
+# Status Command
+RT_STATUS_ONLINE = DLE + EOT +  b'\x01';
+RT_MASK_ONLINE = 8;

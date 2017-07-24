@@ -18,6 +18,7 @@ from __future__ import unicode_literals
 import qrcode
 import textwrap
 import six
+import time
 
 import barcode
 from barcode.writer import ImageWriter
@@ -34,6 +35,7 @@ from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CU
 from .constants import HW_RESET, HW_SELECT, HW_INIT
 from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
 from .constants import TXT_STYLE
+from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
@@ -76,6 +78,12 @@ class Escpos(object):
         :type msg: bytes
         """
         pass
+
+    def _read(self, msg):
+        """ Returns a NotImplementedError if the instance of the class doesn't override this method.
+        :raises NotImplementedError
+        """
+        raise NotImplementedError()
 
     def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster",
               fragment_height=960):
@@ -732,6 +740,20 @@ class Escpos(object):
             self._raw(PANEL_BUTTON_ON)
         else:
             self._raw(PANEL_BUTTON_OFF)
+
+    def query_status(self):
+        """ Queries the printer for its status, and returns an array of integers containing it.
+        :rtype: array(integer)"""
+        self._raw(RT_STATUS_ONLINE)
+        time.sleep(1)
+        status = self._read()
+        return status or [RT_MASK_ONLINE]
+
+    def is_online(self):
+        """ Queries the printer its online status.
+        When online, returns True; False otherwise.
+        :rtype: bool: True if online, False if offline."""
+        return not (self.query_status()[0] & RT_MASK_ONLINE)
 
 
 class EscposIO(object):
