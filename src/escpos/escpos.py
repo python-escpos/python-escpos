@@ -718,7 +718,9 @@ class Escpos(object):
         elif ctl.upper() == "CR":
             self._raw(CTL_CR)
         elif ctl.upper() == "HT":
-            if not (0 <= count <= 32 and 1 <= tab_size <= 255 and count * tab_size < 256):
+            if not (0 <= count <= 32 and
+                    1 <= tab_size <= 255 and
+                    count * tab_size < 256):
                 raise TabPosError()
             else:
                 # Set tab positions
