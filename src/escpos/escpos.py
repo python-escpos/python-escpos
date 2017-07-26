@@ -574,7 +574,7 @@ class Escpos(object):
 
         self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
 
-    def cut(self, mode='FULL'):
+    def cut(self, mode='FULL', feed=True):
         """ Cut paper.
 
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
@@ -584,8 +584,14 @@ class Escpos(object):
         .. todo:: Check this function on TM-T88II.
 
         :param mode: set to 'PART' for a partial cut. default: 'FULL'
+        :param feed: print and feed before cutting. default: true
         :raises ValueError: if mode not in ('FULL', 'PART')
         """
+
+        if not feed:
+            self._raw(GS + b'V' + six.int2byte(66) + b'\x00')
+            return
+
         self.print_and_feed(6)
 
         mode = mode.upper()
