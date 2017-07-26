@@ -33,7 +33,7 @@ from .constants import LINESPACING_FUNCS, LINESPACING_RESET
 from .constants import LINE_DISPLAY_OPEN, LINE_DISPLAY_CLEAR, LINE_DISPLAY_CLOSE
 from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CUT, PAPER_PART_CUT
 from .constants import HW_RESET, HW_SELECT, HW_INIT
-from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
+from .constants import CTL_VT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
 from .constants import TXT_STYLE
 from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
 
@@ -695,7 +695,7 @@ class Escpos(object):
         else:
             raise ValueError("n must be betwen 0 and 255")
 
-    def control(self, ctl, pos=4):
+    def control(self, ctl, count=5, tab_size=8):
         """ Feed control sequences
 
         :param ctl: string for the following control sequences:
@@ -706,7 +706,8 @@ class Escpos(object):
             * HT *for Horizontal Tab*
             * VT *for Vertical Tab*
 
-        :param pos: integer between 1 and 16, controls the horizontal tab position
+        :param count: integer between 1 and 32, controls the horizontal tab count. Defaults to 5.
+        :param tab_size: integer between 1 and 255, controls the horizontal tab size in characters. Defaults to 8
         :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
         # Set position
@@ -717,13 +718,16 @@ class Escpos(object):
         elif ctl.upper() == "CR":
             self._raw(CTL_CR)
         elif ctl.upper() == "HT":
-            if not (1 <= pos <= 16):
+            if not (0 <= count <= 32 and
+                    1 <= tab_size <= 255 and
+                    count * tab_size < 256):
                 raise TabPosError()
             else:
                 # Set tab positions
-                self._raw(CTL_SET_HT + six.int2byte(pos))
-
-            self._raw(CTL_HT)
+                self._raw(CTL_SET_HT)
+                for iterator in range(1, count):
+                    self._raw(six.int2byte(iterator * tab_size))
+                self._raw(NUL)
         elif ctl.upper() == "VT":
             self._raw(CTL_VT)
 
