@@ -36,6 +36,7 @@ from .constants import HW_RESET, HW_SELECT, HW_INIT
 from .constants import CTL_VT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
 from .constants import TXT_STYLE
 from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
+from .constants import RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
@@ -754,19 +755,40 @@ class Escpos(object):
         else:
             self._raw(PANEL_BUTTON_OFF)
 
-    def query_status(self):
+    def query_status(self, mode):
         """ Queries the printer for its status, and returns an array of integers containing it.
+        :param mode: Integer that sets the status mode queried to the printer.
+        RT_STATUS_ONLINE: Printer status.
+        RT_STATUS_PAPER: Paper sensor.
         :rtype: array(integer)"""
-        self._raw(RT_STATUS_ONLINE)
+        self._raw(mode)
         time.sleep(1)
         status = self._read()
-        return status or [RT_MASK_ONLINE]
+        return status
 
     def is_online(self):
         """ Queries the printer its online status.
         When online, returns True; False otherwise.
         :rtype: bool: True if online, False if offline."""
-        return not (self.query_status()[0] & RT_MASK_ONLINE)
+        status = self.query_status(RT_STATUS_ONLINE)
+        if len(status) == 0:
+            return False
+        return not (status & RT_MASK_ONLINE)
+
+    def paper_status(self):
+        """ Queries the printer its paper status.
+        Returns 2 if there is plenty of paper, 1 if the paper has arrived to
+        the near-end sensor and 0 if there is no paper.
+        :rtype: int: 2: Paper is adequate. 1: Paper ending. 0: No paper."""
+        status = self.query_status(RT_STATUS_PAPER)
+        if len(status) == 0:
+            return 2
+        if (status[0] & RT_MASK_NOPAPER == RT_MASK_NOPAPER):
+            return 0
+        if (status[0] & RT_MASK_LOWPAPER == RT_MASK_LOWPAPER):
+            return 1
+        if (status[0] & RT_MASK_PAPER == RT_MASK_PAPER):
+            return 2
 
 
 class EscposIO(object):
