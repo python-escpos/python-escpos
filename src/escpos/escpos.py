@@ -756,8 +756,7 @@ class Escpos(object):
 
     def query_status(self, mode):
         """ Queries the printer for its status, and returns an array of integers containing it.
-        :param mode: Querying command to be sent to the printer.
-        Available commands:
+        :param mode: Integer that sets the status mode queried to the printer.
         RT_STATUS_ONLINE: Printer status.
         RT_STATUS_PAPER: Paper sensor.
         :rtype: array(integer)"""
@@ -770,7 +769,7 @@ class Escpos(object):
         """ Queries the printer its online status.
         When online, returns True; False otherwise.
         :rtype: bool: True if online, False if offline."""
-        status = self.query_status(RT_STATUS_ONLINE)
+        status = self.query_status(RT_STATUS_ONLINE);
         if len(status) == 0:
             return False;
         return not (status & RT_MASK_ONLINE)
