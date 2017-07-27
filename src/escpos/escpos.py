@@ -35,7 +35,8 @@ from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CU
 from .constants import HW_RESET, HW_SELECT, HW_INIT
 from .constants import CTL_VT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
 from .constants import TXT_STYLE
-from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE, RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
+from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
+from .constants import RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
@@ -769,9 +770,9 @@ class Escpos(object):
         """ Queries the printer its online status.
         When online, returns True; False otherwise.
         :rtype: bool: True if online, False if offline."""
-        status = self.query_status(RT_STATUS_ONLINE);
+        status = self.query_status(RT_STATUS_ONLINE)
         if len(status) == 0:
-            return False;
+            return False
         return not (status & RT_MASK_ONLINE)
 
     def paper_status(self):
