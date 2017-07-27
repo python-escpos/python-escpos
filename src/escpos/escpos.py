@@ -251,9 +251,9 @@ class Escpos(object):
         """
         max_input = (256 << (out_bytes * 8) - 1)
         if not 1 <= out_bytes <= 4:
-            raise ValueError("Can only output 1-4 byes")
+            raise ValueError("Can only output 1-4 bytes")
         if not 0 <= inp_number <= max_input:
-            raise ValueError("Number too large. Can only output up to {0} in {1} byes".format(max_input, out_bytes))
+            raise ValueError("Number too large. Can only output up to {0} in {1} bytes".format(max_input, out_bytes))
         outp = b''
         for _ in range(0, out_bytes):
             outp += six.int2byte(inp_number % 256)
