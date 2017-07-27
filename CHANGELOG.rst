@@ -2,6 +2,32 @@
 Changelog
 *********
 
+2017-07-27 - Version 3.0a2 - "It's My Party And I'll Sing If I Want To"
+-----------------------------------------------------------------------
+This release is the third alpha release of the new version 3.0. Please
+be aware that the API will still change until v3.0 is released.
+
+changes
+^^^^^^^
+- refactor of the set-method
+- preliminary support of POS "line display" printing
+- improvement of tests
+- added ImageWidthError
+- list authors in repository
+- add support for software-based barcode-rendering
+- fix SerialException when trying to close device on __del__
+- added the DLE EOT querying command for USB
+- ensure QR codes have a large enough border
+- make feed for cut optional
+- fix the behavior of horizontal tabs
+
+contributors
+^^^^^^^^^^^^
+- csoft2k
+- Patrick Kanzler
+- Romain Porte
+- Ahmed Tahri
+
 2017-03-29 - Version 3.0a1 - "Headcrash"
 ----------------------------------------
 This release is the second alpha release of the new version 3.0. Please
