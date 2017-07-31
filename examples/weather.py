@@ -59,7 +59,7 @@ def forecast(idx):
     printer.text(day + ' \n ')
     time.sleep(5)           # Sleep to prevent printer buffer overflow
     printer.text('\n')
-    printer.image(forecast_icon(idx), high_density_vertical=False, high_density_horizontal=False, impl=u'bitImageRaster', fragment_height=960)
+    printer.image(forecast_icon(idx))
     printer.text('low ' + str(lo) )    
     printer.text(deg)
     printer.text('\n') 
