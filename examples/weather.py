@@ -14,13 +14,17 @@
 
 
 from __future__ import print_function
-from datetime import date
 from datetime import datetime
 import calendar
 import urllib, json
 import time
+import os
 
 from escpos.printer import Usb
+
+""" Setting up the main pathing """
+this_dir, this_filename = os.path.split(__file__)
+GRAPHICS_PATH = os.path.join(this_dir, "graphics/climacons/")
 
 # Adapt to your needs
 printer = Usb(0x0416, 0x5011, profile="POS-5890")
@@ -34,7 +38,7 @@ LONG = "114.189945"     # Your Location
 
 def forecast_icon(idx):
     icon = data['daily']['data'][idx]['icon']
-    image = "/graphics/climacons/" + icon + ".png"
+    image = GRAPHICS_PATH + icon + ".png"
     return image
 
 
@@ -68,7 +72,7 @@ def forecast(idx):
 
 def icon():
     icon = data['currently']['icon']
-    image = "/graphics/" + icon + ".png"
+    image = GRAPHICS_PATH + icon + ".png"
     return image
 
 
