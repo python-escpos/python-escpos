@@ -34,7 +34,7 @@ LONG = "114.189945"     # Your Location
 
 def forecast_icon(idx):
     icon = data['daily']['data'][idx]['icon']
-    image = "/graphics/" + icon + ".png"
+    image = "/graphics/climacons/" + icon + ".png"
     return image
 
 
@@ -75,7 +75,7 @@ def icon():
 deg     = ' C'      # Degree symbol on thermal printer, need to find a better way to use a proper degree symbol
 
 # if you want Fahrenheit change units= to 'us'
-url = "https://api.darksky.net/forecast/"+API_KEY+"/"+LAT+","+LONG+"?exclude=[alerts,minutely,hourly,flags]&units=si"
+url = "https://api.darksky.net/forecast/"+API_KEY+"/"+LAT+","+LONG+"?exclude=[alerts,minutely,hourly,flags]&units=si" #change last bit to 'us' for Fahrenheit
 response = urllib.urlopen(url)
 data = json.loads(response.read())
 
