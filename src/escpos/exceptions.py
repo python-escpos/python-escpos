@@ -150,7 +150,8 @@ class CashDrawerError(Error):
 
 
 class TabPosError(Error):
-    """ Valid tab positions must be in the range 0 to 16.
+    """ Valid tab positions must be set by using from 1 to 32 tabs, and between 1 and 255 tab size values.
+    Both values multiplied must not exceed 255, since it is the maximum tab value.
 
     This exception is raised by :py:meth:`escpos.escpos.Escpos.control`.
     The returncode for this exception is `70`.

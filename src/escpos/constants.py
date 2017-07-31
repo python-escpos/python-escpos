@@ -251,5 +251,10 @@ S_RASTER_2H = _PRINT_RASTER_IMG(b'\x02')  # Set raster image double height
 S_RASTER_Q  = _PRINT_RASTER_IMG(b'\x03')  # Set raster image quadruple
 
 # Status Command
-RT_STATUS_ONLINE = DLE + EOT +  b'\x01';
-RT_MASK_ONLINE = 8;
+RT_STATUS = DLE + EOT
+RT_STATUS_ONLINE = RT_STATUS +  b'\x01'
+RT_STATUS_PAPER = RT_STATUS +  b'\x04'
+RT_MASK_ONLINE = 8
+RT_MASK_PAPER = 18
+RT_MASK_LOWPAPER = 30
+RT_MASK_NOPAPER = 114

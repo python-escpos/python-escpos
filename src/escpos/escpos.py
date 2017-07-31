@@ -33,9 +33,10 @@ from .constants import LINESPACING_FUNCS, LINESPACING_RESET
 from .constants import LINE_DISPLAY_OPEN, LINE_DISPLAY_CLEAR, LINE_DISPLAY_CLOSE
 from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CUT, PAPER_PART_CUT
 from .constants import HW_RESET, HW_SELECT, HW_INIT
-from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
+from .constants import CTL_VT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
 from .constants import TXT_STYLE
 from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
+from .constants import RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
@@ -250,9 +251,9 @@ class Escpos(object):
         """
         max_input = (256 << (out_bytes * 8) - 1)
         if not 1 <= out_bytes <= 4:
-            raise ValueError("Can only output 1-4 byes")
+            raise ValueError("Can only output 1-4 bytes")
         if not 0 <= inp_number <= max_input:
-            raise ValueError("Number too large. Can only output up to {0} in {1} byes".format(max_input, out_bytes))
+            raise ValueError("Number too large. Can only output up to {0} in {1} bytes".format(max_input, out_bytes))
         outp = b''
         for _ in range(0, out_bytes):
             outp += six.int2byte(inp_number % 256)
@@ -574,7 +575,7 @@ class Escpos(object):
 
         self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
 
-    def cut(self, mode='FULL'):
+    def cut(self, mode='FULL', feed=True):
         """ Cut paper.
 
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
@@ -584,8 +585,14 @@ class Escpos(object):
         .. todo:: Check this function on TM-T88II.
 
         :param mode: set to 'PART' for a partial cut. default: 'FULL'
+        :param feed: print and feed before cutting. default: true
         :raises ValueError: if mode not in ('FULL', 'PART')
         """
+
+        if not feed:
+            self._raw(GS + b'V' + six.int2byte(66) + b'\x00')
+            return
+
         self.print_and_feed(6)
 
         mode = mode.upper()
@@ -689,7 +696,7 @@ class Escpos(object):
         else:
             raise ValueError("n must be betwen 0 and 255")
 
-    def control(self, ctl, pos=4):
+    def control(self, ctl, count=5, tab_size=8):
         """ Feed control sequences
 
         :param ctl: string for the following control sequences:
@@ -700,7 +707,8 @@ class Escpos(object):
             * HT *for Horizontal Tab*
             * VT *for Vertical Tab*
 
-        :param pos: integer between 1 and 16, controls the horizontal tab position
+        :param count: integer between 1 and 32, controls the horizontal tab count. Defaults to 5.
+        :param tab_size: integer between 1 and 255, controls the horizontal tab size in characters. Defaults to 8
         :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
         # Set position
@@ -711,13 +719,16 @@ class Escpos(object):
         elif ctl.upper() == "CR":
             self._raw(CTL_CR)
         elif ctl.upper() == "HT":
-            if not (1 <= pos <= 16):
+            if not (0 <= count <= 32 and
+                    1 <= tab_size <= 255 and
+                    count * tab_size < 256):
                 raise TabPosError()
             else:
                 # Set tab positions
-                self._raw(CTL_SET_HT + six.int2byte(pos))
-
-            self._raw(CTL_HT)
+                self._raw(CTL_SET_HT)
+                for iterator in range(1, count):
+                    self._raw(six.int2byte(iterator * tab_size))
+                self._raw(NUL)
         elif ctl.upper() == "VT":
             self._raw(CTL_VT)
 
@@ -744,19 +755,40 @@ class Escpos(object):
         else:
             self._raw(PANEL_BUTTON_OFF)
 
-    def query_status(self):
+    def query_status(self, mode):
         """ Queries the printer for its status, and returns an array of integers containing it.
+        :param mode: Integer that sets the status mode queried to the printer.
+        RT_STATUS_ONLINE: Printer status.
+        RT_STATUS_PAPER: Paper sensor.
         :rtype: array(integer)"""
-        self._raw(RT_STATUS_ONLINE)
+        self._raw(mode)
         time.sleep(1)
         status = self._read()
-        return status or [RT_MASK_ONLINE]
+        return status
 
     def is_online(self):
         """ Queries the printer its online status.
         When online, returns True; False otherwise.
         :rtype: bool: True if online, False if offline."""
-        return not (self.query_status()[0] & RT_MASK_ONLINE)
+        status = self.query_status(RT_STATUS_ONLINE)
+        if len(status) == 0:
+            return False
+        return not (status & RT_MASK_ONLINE)
+
+    def paper_status(self):
+        """ Queries the printer its paper status.
+        Returns 2 if there is plenty of paper, 1 if the paper has arrived to
+        the near-end sensor and 0 if there is no paper.
+        :rtype: int: 2: Paper is adequate. 1: Paper ending. 0: No paper."""
+        status = self.query_status(RT_STATUS_PAPER)
+        if len(status) == 0:
+            return 2
+        if (status[0] & RT_MASK_NOPAPER == RT_MASK_NOPAPER):
+            return 0
+        if (status[0] & RT_MASK_LOWPAPER == RT_MASK_LOWPAPER):
+            return 1
+        if (status[0] & RT_MASK_PAPER == RT_MASK_PAPER):
+            return 2
 
 
 class EscposIO(object):
