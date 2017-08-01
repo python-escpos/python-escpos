@@ -460,6 +460,28 @@ class Escpos(object):
         txt = six.text_type(txt)
         self.magic.write(txt)
 
+    def textln(self, txt=''):
+        """Print alpha-numeric text with a newline
+
+        The text has to be encoded in the currently selected codepage.
+        The input text has to be encoded in unicode.
+
+        :param txt: text to be printed with a newline
+        :raises: :py:exc:`~escpos.exceptions.TextError`
+        """
+        self.text('{}\n'.format(txt))
+
+    def ln(self, count=1):
+        """Print a newline or more
+
+        :param count: number of newlines to print
+        :raises: :py:exc:`ValueError` if count < 0
+        """
+        if count < 0:
+            raise ValueError('Count cannot be lesser than 0')
+        if count > 0:
+            self.text('\n' * count)
+
     def block_text(self, txt, font=None, columns=None):
         """ Text is printed wrapped to specified columns
 

@@ -39,3 +39,27 @@ def test_block_text():
         "All the presidents men were eating falafel for breakfast.", font='a')
     assert printer.output == \
         b'All the presidents men were eating falafel\nfor breakfast.'
+
+
+def test_textln():
+    printer = get_printer()
+    printer.textln('hello, world')
+    assert printer.output == b'hello, world\n'
+
+
+def test_textln_empty():
+    printer = get_printer()
+    printer.textln()
+    assert printer.output == b'\n'
+
+
+def test_ln():
+    printer = get_printer()
+    printer.ln()
+    assert printer.output == b'\n'
+
+
+def test_multiple_ln():
+    printer = get_printer()
+    printer.ln(3)
+    assert printer.output == b'\n\n\n'
