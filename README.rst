@@ -6,10 +6,6 @@ python-escpos - Python library to manipulate ESC/POS Printers
     :target: https://travis-ci.org/python-escpos/python-escpos
     :alt: Continous Integration
 
-.. image:: https://www.quantifiedcode.com/api/v1/project/95748b89a3974700800b85e4ed3d32c4/badge.svg
-    :target: https://www.quantifiedcode.com/app/project/95748b89a3974700800b85e4ed3d32c4
-    :alt: Code issues
-
 .. image:: https://landscape.io/github/python-escpos/python-escpos/master/landscape.svg?style=flat
     :target: https://landscape.io/github/python-escpos/python-escpos/master
     :alt: Code Health
