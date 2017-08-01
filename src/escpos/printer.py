@@ -154,6 +154,10 @@ class Serial(Escpos):
         :type msg: bytes
         """
         self.device.write(msg)
+        
+    def _read(self):
+        """ Reads a data buffer and returns it to the caller. """
+        return self.device.read(16)
 
     def close(self):
         """ Close Serial interface """
