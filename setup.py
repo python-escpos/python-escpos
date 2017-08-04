@@ -126,7 +126,7 @@ setup(
     tests_require=[
         'jaconv',
         'tox',
-        'pytest',
+        'pytest!=3.2.0',
         'pytest-cov',
         'pytest-mock',
         'nose',
