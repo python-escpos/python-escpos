@@ -8,6 +8,7 @@ Result/Exit codes:
     - `20` = Barcode size values are out of range :py:exc:`~escpos.exceptions.BarcodeSizeError`
     - `30` = Barcode text not supplied :py:exc:`~escpos.exceptions.BarcodeCodeError`
     - `40` = Image height is too large :py:exc:`~escpos.exceptions.ImageSizeError`
+    - `41` = Image width is too large :py:exc:`~escpos.exceptions.ImageWidthError`
     - `50` = No string supplied to be printed :py:exc:`~escpos.exceptions.TextError`
     - `60` = Invalid pin to send Cash Drawer pulse :py:exc:`~escpos.exceptions.CashDrawerError`
     - `70` = Invalid number of tab positions :py:exc:`~escpos.exceptions.TabPosError`
@@ -104,6 +105,20 @@ class ImageSizeError(Error):
         return "Image height is longer than 255px and can't be printed ({msg})".format(msg=self.msg)
 
 
+class ImageWidthError(Error):
+    """ Image width is too large.
+
+    The return code for this exception is `41`.
+    """
+    def __init__(self, msg=""):
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 41
+
+    def __str__(self):
+        return "Image width is too large ({msg})".format(msg=self.msg)
+
+
 class TextError(Error):
     """ Text string must be supplied to the `text()` method.
 
@@ -135,7 +150,8 @@ class CashDrawerError(Error):
 
 
 class TabPosError(Error):
-    """ Valid tab positions must be in the range 0 to 16.
+    """ Valid tab positions must be set by using from 1 to 32 tabs, and between 1 and 255 tab size values.
+    Both values multiplied must not exceed 255, since it is the maximum tab value.
 
     This exception is raised by :py:meth:`escpos.escpos.Escpos.control`.
     The returncode for this exception is `70`.

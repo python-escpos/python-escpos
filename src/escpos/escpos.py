@@ -18,22 +18,29 @@ from __future__ import unicode_literals
 import qrcode
 import textwrap
 import six
+import time
+
+import barcode
+from barcode.writer import ImageWriter
 
 from .constants import ESC, GS, NUL, QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q
 from .constants import QR_MODEL_1, QR_MODEL_2, QR_MICRO, BARCODE_TYPES, BARCODE_HEIGHT, BARCODE_WIDTH
-from .constants import TXT_ALIGN_CT, TXT_ALIGN_LT, TXT_ALIGN_RT, BARCODE_FONT_A, BARCODE_FONT_B
+from .constants import BARCODE_FONT_A, BARCODE_FONT_B
 from .constants import BARCODE_TXT_OFF, BARCODE_TXT_BTH, BARCODE_TXT_ABV, BARCODE_TXT_BLW
-from .constants import TXT_HEIGHT, TXT_WIDTH, TXT_SIZE, TXT_NORMAL, TXT_SMOOTH_OFF, TXT_SMOOTH_ON
-from .constants import TXT_FLIP_OFF, TXT_FLIP_ON, TXT_2WIDTH, TXT_2HEIGHT, TXT_4SQUARE
-from .constants import TXT_UNDERL_OFF, TXT_UNDERL_ON, TXT_BOLD_OFF, TXT_BOLD_ON, SET_FONT, TXT_UNDERL2_ON
-from .constants import TXT_INVERT_OFF, TXT_INVERT_ON, LINESPACING_FUNCS, LINESPACING_RESET
-from .constants import PD_0, PD_N12, PD_N25, PD_N37, PD_N50, PD_P50, PD_P37, PD_P25, PD_P12
+from .constants import TXT_SIZE, TXT_NORMAL
+from .constants import SET_FONT
+from .constants import LINESPACING_FUNCS, LINESPACING_RESET
+from .constants import LINE_DISPLAY_OPEN, LINE_DISPLAY_CLEAR, LINE_DISPLAY_CLOSE
 from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CUT, PAPER_PART_CUT
 from .constants import HW_RESET, HW_SELECT, HW_INIT
-from .constants import CTL_VT, CTL_HT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
+from .constants import CTL_VT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
+from .constants import TXT_STYLE
+from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
+from .constants import RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
 
 from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
 from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
+from .exceptions import ImageWidthError
 
 from .magicencode import MagicEncode
 
@@ -73,6 +80,12 @@ class Escpos(object):
         """
         pass
 
+    def _read(self, msg):
+        """ Returns a NotImplementedError if the instance of the class doesn't override this method.
+        :raises NotImplementedError
+        """
+        raise NotImplementedError()
+
     def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster",
               fragment_height=960):
         """ Print an image
@@ -98,6 +111,17 @@ class Escpos(object):
 
         """
         im = EscposImage(img_source)
+
+        try:
+            max_width = int(self.profile.profile_data['media']['width']['pixels'])
+            if im.width > max_width:
+                raise ImageWidthError('{} > {}'.format(im.width, max_width))
+        except KeyError:
+            # If the printer's pixel width is not known, print anyways...
+            pass
+        except ValueError:
+            # If the max_width cannot be converted to an int, print anyways...
+            pass
 
         if im.height > fragment_height:
             fragments = im.split(fragment_height)
@@ -188,7 +212,10 @@ class Escpos(object):
             qr_img = qr_code.make_image()
             im = qr_img._img.convert("RGB")
             # Convert the RGB image in printable image
+            self.text('\n')
             self.image(im)
+            self.text('\n')
+            self.text('\n')
             return
         # Native 2D code printing
         cn = b'1'  # Code type for QR code
@@ -224,9 +251,9 @@ class Escpos(object):
         """
         max_input = (256 << (out_bytes * 8) - 1)
         if not 1 <= out_bytes <= 4:
-            raise ValueError("Can only output 1-4 byes")
+            raise ValueError("Can only output 1-4 bytes")
         if not 0 <= inp_number <= max_input:
-            raise ValueError("Number too large. Can only output up to {0} in {1} byes".format(max_input, out_bytes))
+            raise ValueError("Number too large. Can only output up to {0} in {1} bytes".format(max_input, out_bytes))
         outp = b''
         for _ in range(0, out_bytes):
             outp += six.int2byte(inp_number % 256)
@@ -356,7 +383,7 @@ class Escpos(object):
 
         # Align Bar Code()
         if align_ct:
-            self._raw(TXT_ALIGN_CT)
+            self._raw(TXT_STYLE['align']['center'])
         # Height
         if 1 <= height <= 255:
             self._raw(BARCODE_HEIGHT + six.int2byte(height))
@@ -396,6 +423,31 @@ class Escpos(object):
         if function_type.upper() == "A":
             self._raw(NUL)
 
+    def soft_barcode(self, barcode_type, data, impl='bitImageColumn',
+                     module_height=5, module_width=0.2, text_distance=1):
+
+        image_writer = ImageWriter()
+
+        # Check if barcode type exists
+        if barcode_type not in barcode.PROVIDED_BARCODES:
+            raise BarcodeTypeError(
+                'Barcode type {} not supported by software barcode renderer'
+                .format(barcode_type))
+
+        # Render the barcode to a fake file
+        barcode_class = barcode.get_barcode_class(barcode_type)
+        my_code = barcode_class(data, writer=image_writer)
+
+        my_code.write("/dev/null", {
+            'module_height': module_height,
+            'module_width': module_width,
+            'text_distance': text_distance
+        })
+
+        # Retrieve the Pillow image and print it
+        image = my_code.writer._image
+        self.image(image, impl=impl)
+
     def text(self, txt):
         """ Print alpha-numeric text
 
@@ -408,132 +460,113 @@ class Escpos(object):
         txt = six.text_type(txt)
         self.magic.write(txt)
 
+    def textln(self, txt=''):
+        """Print alpha-numeric text with a newline
+
+        The text has to be encoded in the currently selected codepage.
+        The input text has to be encoded in unicode.
+
+        :param txt: text to be printed with a newline
+        :raises: :py:exc:`~escpos.exceptions.TextError`
+        """
+        self.text('{}\n'.format(txt))
+
+    def ln(self, count=1):
+        """Print a newline or more
+
+        :param count: number of newlines to print
+        :raises: :py:exc:`ValueError` if count < 0
+        """
+        if count < 0:
+            raise ValueError('Count cannot be lesser than 0')
+        if count > 0:
+            self.text('\n' * count)
+
     def block_text(self, txt, font=None, columns=None):
         """ Text is printed wrapped to specified columns
 
         Text has to be encoded in unicode.
 
         :param txt: text to be printed
-        :param font: font to be used, can be :code:`a` or :code`b`
+        :param font: font to be used, can be :code:`a` or :code:`b`
         :param columns: amount of columns
         :return: None
         """
         col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
-    def set(self, align='left', font='a', text_type='normal', width=1,
-            height=1, density=9, invert=False, smooth=False, flip=False):
+    def set(self, align='left', font='a', bold=False, underline=0, width=1,
+            height=1, density=9, invert=False, smooth=False, flip=False,
+            double_width=False, double_height=False, custom_size=False):
         """ Set text properties by sending them to the printer
 
         :param align: horizontal position for text, possible values are:
 
-            * CENTER
-            * LEFT
-            * RIGHT
+            * 'center'
+            * 'left'
+            * 'right'
 
-            *default*: LEFT
+            *default*: 'left'
 
         :param font: font given as an index, a name, or one of the
-            special values 'a' or 'b', refering to fonts 0 and 1.
-        :param text_type: text type, possible values are:
-
-            * B for bold
-            * U for underlined
-            * U2 for underlined, version 2
-            * BU for bold and underlined
-            * BU2 for bold and underlined, version 2
-            * NORMAL for normal text
-
-            *default*: NORMAL
-        :param width: text width multiplier, decimal range 1-8,  *default*: 1
-        :param height: text height multiplier, decimal range 1-8, *default*: 1
+            special values 'a' or 'b', referring to fonts 0 and 1.
+        :param bold: text in bold, *default*: False
+        :param underline: underline mode for text, decimal range 0-2,  *default*: 0
+        :param double_height: doubles the height of the text
+        :param double_width: doubles the width of the text
+        :param custom_size: uses custom size specified by width and height
+            parameters. Cannot be used with double_width or double_height.
+        :param width: text width multiplier when custom_size is used, decimal range 1-8,  *default*: 1
+        :param height: text height multiplier when custom_size is used, decimal range 1-8, *default*: 1
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
         :param invert: True enables white on black printing, *default*: False
         :param smooth: True enables text smoothing. Effective on 4x4 size text and larger, *default*: False
         :param flip: True enables upside-down printing, *default*: False
-        :type invert: bool
-        """
-        # Width
-        if height == 2 and width == 2:
-            self._raw(TXT_NORMAL)
-            self._raw(TXT_4SQUARE)
-        elif height == 2 and width == 1:
-            self._raw(TXT_NORMAL)
-            self._raw(TXT_2HEIGHT)
-        elif width == 2 and height == 1:
-            self._raw(TXT_NORMAL)
-            self._raw(TXT_2WIDTH)
-        elif width == 1 and height == 1:
-            self._raw(TXT_NORMAL)
-        elif 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and isinstance(height, int):
-            self._raw(TXT_SIZE + six.int2byte(TXT_WIDTH[width] + TXT_HEIGHT[height]))
-        else:
-            raise SetVariableError()
-        # Upside down
-        if flip:
-            self._raw(TXT_FLIP_ON)
-        else:
-            self._raw(TXT_FLIP_OFF)
-        # Smoothing
-        if smooth:
-            self._raw(TXT_SMOOTH_ON)
-        else:
-            self._raw(TXT_SMOOTH_OFF)
-        # Type
-        if text_type.upper() == "B":
-            self._raw(TXT_BOLD_ON)
-            self._raw(TXT_UNDERL_OFF)
-        elif text_type.upper() == "U":
-            self._raw(TXT_BOLD_OFF)
-            self._raw(TXT_UNDERL_ON)
-        elif text_type.upper() == "U2":
-            self._raw(TXT_BOLD_OFF)
-            self._raw(TXT_UNDERL2_ON)
-        elif text_type.upper() == "BU":
-            self._raw(TXT_BOLD_ON)
-            self._raw(TXT_UNDERL_ON)
-        elif text_type.upper() == "BU2":
-            self._raw(TXT_BOLD_ON)
-            self._raw(TXT_UNDERL2_ON)
-        elif text_type.upper() == "NORMAL":
-            self._raw(TXT_BOLD_OFF)
-            self._raw(TXT_UNDERL_OFF)
-        # Font
-        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
 
-        # Align
-        if align.upper() == "CENTER":
-            self._raw(TXT_ALIGN_CT)
-        elif align.upper() == "RIGHT":
-            self._raw(TXT_ALIGN_RT)
-        elif align.upper() == "LEFT":
-            self._raw(TXT_ALIGN_LT)
-        # Density
-        if density == 0:
-            self._raw(PD_N50)
-        elif density == 1:
-            self._raw(PD_N37)
-        elif density == 2:
-            self._raw(PD_N25)
-        elif density == 3:
-            self._raw(PD_N12)
-        elif density == 4:
-            self._raw(PD_0)
-        elif density == 5:
-            self._raw(PD_P12)
-        elif density == 6:
-            self._raw(PD_P25)
-        elif density == 7:
-            self._raw(PD_P37)
-        elif density == 8:
-            self._raw(PD_P50)
-        else:  # DEFAULT: DOES NOTHING
-            pass
-        # Invert Printing
-        if invert:
-            self._raw(TXT_INVERT_ON)
+        :type font: str
+        :type invert: bool
+        :type bold: bool
+        :type underline: bool
+        :type smooth: bool
+        :type flip: bool
+        :type custom_size: bool
+        :type double_width: bool
+        :type double_height: bool
+        :type align: str
+        :type width: int
+        :type height: int
+        :type density: int
+        """
+
+        if custom_size:
+            if 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and\
+              isinstance(height, int):
+                size_byte = TXT_STYLE['width'][width] + TXT_STYLE['height'][height]
+                self._raw(TXT_SIZE + six.int2byte(size_byte))
+            else:
+                raise SetVariableError()
         else:
-            self._raw(TXT_INVERT_OFF)
+            self._raw(TXT_NORMAL)
+            if double_width and double_height:
+                self._raw(TXT_STYLE['size']['2x'])
+            elif double_width:
+                self._raw(TXT_STYLE['size']['2w'])
+            elif double_height:
+                self._raw(TXT_STYLE['size']['2h'])
+            else:
+                self._raw(TXT_STYLE['size']['normal'])
+
+        self._raw(TXT_STYLE['flip'][flip])
+        self._raw(TXT_STYLE['smooth'][smooth])
+        self._raw(TXT_STYLE['bold'][bold])
+        self._raw(TXT_STYLE['underline'][underline])
+        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+        self._raw(TXT_STYLE['align'][align])
+
+        if density != 9:
+            self._raw(TXT_STYLE['density'][density])
+
+        self._raw(TXT_STYLE['invert'][invert])
 
     def line_spacing(self, spacing=None, divisor=180):
         """ Set line character spacing.
@@ -564,7 +597,7 @@ class Escpos(object):
 
         self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
 
-    def cut(self, mode='FULL'):
+    def cut(self, mode='FULL', feed=True):
         """ Cut paper.
 
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
@@ -574,8 +607,14 @@ class Escpos(object):
         .. todo:: Check this function on TM-T88II.
 
         :param mode: set to 'PART' for a partial cut. default: 'FULL'
+        :param feed: print and feed before cutting. default: true
         :raises ValueError: if mode not in ('FULL', 'PART')
         """
+
+        if not feed:
+            self._raw(GS + b'V' + six.int2byte(66) + b'\x00')
+            return
+
         self.print_and_feed(6)
 
         mode = mode.upper()
@@ -612,6 +651,41 @@ class Escpos(object):
             except:
                 raise CashDrawerError()
 
+    def linedisplay_select(self, select_display=False):
+        """ Selects the line display or the printer
+
+        This method is used for line displays that are daisy-chained between your computer and printer.
+        If you set `select_display` to true, only the display is selected and if you set it to false,
+        only the printer is selected.
+
+        :param select_display: whether the display should be selected or the printer
+        :type select_display: bool
+        """
+        if select_display:
+            self._raw(LINE_DISPLAY_OPEN)
+        else:
+            self._raw(LINE_DISPLAY_CLOSE)
+
+    def linedisplay_clear(self):
+        """ Clears the line display and resets the cursor
+
+        This method is used for line displays that are daisy-chained between your computer and printer.
+        """
+        self._raw(LINE_DISPLAY_CLEAR)
+
+    def linedisplay(self, text):
+        """
+        Display text on a line display connected to your printer
+
+        You should connect a line display to your printer. You can do this by daisy-chaining
+        the display between your computer and printer.
+        :param text: Text to display
+        """
+        self.linedisplay_select(select_display=True)
+        self.linedisplay_clear()
+        self.text(text)
+        self.linedisplay_select(select_display=False)
+
     def hw(self, hw):
         """ Hardware operations
 
@@ -644,7 +718,7 @@ class Escpos(object):
         else:
             raise ValueError("n must be betwen 0 and 255")
 
-    def control(self, ctl, pos=4):
+    def control(self, ctl, count=5, tab_size=8):
         """ Feed control sequences
 
         :param ctl: string for the following control sequences:
@@ -655,7 +729,8 @@ class Escpos(object):
             * HT *for Horizontal Tab*
             * VT *for Vertical Tab*
 
-        :param pos: integer between 1 and 16, controls the horizontal tab position
+        :param count: integer between 1 and 32, controls the horizontal tab count. Defaults to 5.
+        :param tab_size: integer between 1 and 255, controls the horizontal tab size in characters. Defaults to 8
         :raises: :py:exc:`~escpos.exceptions.TabPosError`
         """
         # Set position
@@ -666,13 +741,16 @@ class Escpos(object):
         elif ctl.upper() == "CR":
             self._raw(CTL_CR)
         elif ctl.upper() == "HT":
-            if not (1 <= pos <= 16):
+            if not (0 <= count <= 32 and
+                    1 <= tab_size <= 255 and
+                    count * tab_size < 256):
                 raise TabPosError()
             else:
                 # Set tab positions
-                self._raw(CTL_SET_HT + six.int2byte(pos))
-
-            self._raw(CTL_HT)
+                self._raw(CTL_SET_HT)
+                for iterator in range(1, count):
+                    self._raw(six.int2byte(iterator * tab_size))
+                self._raw(NUL)
         elif ctl.upper() == "VT":
             self._raw(CTL_VT)
 
@@ -698,6 +776,41 @@ class Escpos(object):
             self._raw(PANEL_BUTTON_ON)
         else:
             self._raw(PANEL_BUTTON_OFF)
+
+    def query_status(self, mode):
+        """ Queries the printer for its status, and returns an array of integers containing it.
+        :param mode: Integer that sets the status mode queried to the printer.
+        RT_STATUS_ONLINE: Printer status.
+        RT_STATUS_PAPER: Paper sensor.
+        :rtype: array(integer)"""
+        self._raw(mode)
+        time.sleep(1)
+        status = self._read()
+        return status
+
+    def is_online(self):
+        """ Queries the printer its online status.
+        When online, returns True; False otherwise.
+        :rtype: bool: True if online, False if offline."""
+        status = self.query_status(RT_STATUS_ONLINE)
+        if len(status) == 0:
+            return False
+        return not (status & RT_MASK_ONLINE)
+
+    def paper_status(self):
+        """ Queries the printer its paper status.
+        Returns 2 if there is plenty of paper, 1 if the paper has arrived to
+        the near-end sensor and 0 if there is no paper.
+        :rtype: int: 2: Paper is adequate. 1: Paper ending. 0: No paper."""
+        status = self.query_status(RT_STATUS_PAPER)
+        if len(status) == 0:
+            return 2
+        if (status[0] & RT_MASK_NOPAPER == RT_MASK_NOPAPER):
+            return 0
+        if (status[0] & RT_MASK_LOWPAPER == RT_MASK_LOWPAPER):
+            return 1
+        if (status[0] & RT_MASK_PAPER == RT_MASK_PAPER):
+            return 2
 
 
 class EscposIO(object):
