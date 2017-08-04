@@ -100,6 +100,8 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
@@ -115,7 +117,8 @@ setup(
         'pyyaml',
         'argparse',
         'argcomplete',
-        'future'
+        'future',
+        'viivakoodi>=0.8'
     ],
     setup_requires=[
         'setuptools_scm',
@@ -123,7 +126,7 @@ setup(
     tests_require=[
         'jaconv',
         'tox',
-        'pytest',
+        'pytest!=3.2.0',
         'pytest-cov',
         'pytest-mock',
         'nose',
