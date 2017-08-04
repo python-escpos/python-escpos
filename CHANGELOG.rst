@@ -2,7 +2,7 @@
 Changelog
 *********
 
-2017-07-27 - Version 3.0a2 - "It's My Party And I'll Sing If I Want To"
+2017-08-04 - Version 3.0a2 - "It's My Party And I'll Sing If I Want To"
 -----------------------------------------------------------------------
 This release is the third alpha release of the new version 3.0. Please
 be aware that the API will still change until v3.0 is released.
@@ -16,15 +16,20 @@ changes
 - list authors in repository
 - add support for software-based barcode-rendering
 - fix SerialException when trying to close device on __del__
-- added the DLE EOT querying command for USB
+- added the DLE EOT querying command for USB and Serial
 - ensure QR codes have a large enough border
 - make feed for cut optional
 - fix the behavior of horizontal tabs
+- added test script for hard an soft barcodes
+- implemented paper sensor querying command
+- added weather forecast example script
+- added a method for simpler newlines
 
 contributors
 ^^^^^^^^^^^^
 - csoft2k
 - Patrick Kanzler
+- mrwunderbar666
 - Romain Porte
 - Ahmed Tahri
 
