@@ -70,4 +70,13 @@ The full project-documentation is available on `Read the Docs <https://python-es
 Contributing
 ------------
 
-This project is open for any contribution! Please see CONTRIBUTING.rst for more information.
+This project is open for any contribution! Please see `CONTRIBUTING.rst <http://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_ for more information.
+
+
+Disclaimer
+----------
+
+None of the vendors cited in this project agree or endorse any of the patterns or implementations.
+Its names are used only to maintain context.
+
+
