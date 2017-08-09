@@ -114,7 +114,7 @@ setup(
         'pyserial',
         'six',
         'appdirs',
-        'pyyaml',
+        'PyYAML',
         'argparse',
         'argcomplete',
         'future',
