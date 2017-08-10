@@ -80,7 +80,7 @@ class Escpos(object):
         """
         pass
 
-    def _read(self, msg):
+    def _read(self):
         """ Returns a NotImplementedError if the instance of the class doesn't override this method.
         :raises NotImplementedError
         """
