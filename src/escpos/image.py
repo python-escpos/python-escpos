@@ -115,3 +115,19 @@ class EscposImage(object):
             box = (left, upper, right, lower)
             fragments.append(self.img_original.crop(box))
         return fragments
+
+    def center(self, max_width):
+        """In-place image centering
+
+        :param: Maximum width in order to deduce x offset for centering
+        :return: None
+        """
+        old_width, height = self._im.size
+        new_size = (max_width, height)
+
+        new_im = Image.new("1", new_size)
+        paste_x = int((max_width - old_width) / 2)
+
+        new_im.paste(self._im, (paste_x, 0))
+
+        self._im = new_im
