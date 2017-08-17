@@ -43,7 +43,6 @@ if full_load:
 logger.debug('Finished loading capabilities took %.2fs', time.time() - t0)
 
 
-
 PROFILES = CAPABILITIES['profiles']
 
 
