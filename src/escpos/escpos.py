@@ -116,11 +116,11 @@ class Escpos(object):
         try:
             max_width = int(self.profile.profile_data['media']['width']['pixels'])
 
-            if center:
-                im.center(max_width)
-
             if im.width > max_width:
                 raise ImageWidthError('{} > {}'.format(im.width, max_width))
+
+            if center:
+                im.center(max_width)
         except KeyError:
             # If the printer's pixel width is not known, print anyways...
             pass
