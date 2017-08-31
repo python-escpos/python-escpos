@@ -19,13 +19,14 @@ import qrcode
 import textwrap
 import six
 import time
+from re import match as re_match
 
 import barcode
 from barcode.writer import ImageWriter
 
 from .constants import ESC, GS, NUL, QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q
 from .constants import QR_MODEL_1, QR_MODEL_2, QR_MICRO, BARCODE_TYPES, BARCODE_HEIGHT, BARCODE_WIDTH
-from .constants import BARCODE_FONT_A, BARCODE_FONT_B
+from .constants import BARCODE_FONT_A, BARCODE_FONT_B, BARCODE_FORMATS
 from .constants import BARCODE_TXT_OFF, BARCODE_TXT_BTH, BARCODE_TXT_ABV, BARCODE_TXT_BLW
 from .constants import TXT_SIZE, TXT_NORMAL
 from .constants import SET_FONT
@@ -275,17 +276,42 @@ class Escpos(object):
         else:
             self.magic.force_encoding(code)
 
+    @staticmethod
+    def check_barcode(bc, code):
+        """
+        This method checks if the barcode is in the proper format.
+        The validation concerns the barcode length and the set of characters, but won't compute/validate any checksum.
+        The full set of requirement for each barcode type is available in the ESC/POS documentation.
+
+        As an example, using EAN13, the barcode `12345678901` will be correct, because it can be rendered by the
+        printer. But it does not suit the EAN13 standard, because the checksum digit is missing. Adding a wrong
+        checksum in the end will also be considered correct, but adding a letter won't (EAN13 is numeric only).
+
+        .. todo:: Add a method to compute the checksum for the different standards
+
+        .. todo:: For fixed-length standards with mandatory checksum (EAN, UPC),
+            compute and add the checksum automatically if missing.
+
+        :param bc: barcode format, see :py:func`~escpos.Escpos.barcode`
+        :param code: alphanumeric data to be printed as bar code, see :py:func`~escpos.Escpos.barcode`
+        :return: bool
+        """
+        if bc not in BARCODE_FORMATS:
+            return False
+
+        bounds, regex = BARCODE_FORMATS[bc]
+        return any(bound[0] <= len(code) <= bound[1] for bound in bounds) and re_match(regex, code)
+
     def barcode(self, code, bc, height=64, width=3, pos="BELOW", font="A",
-                align_ct=True, function_type=None):
+                align_ct=True, function_type=None, check=True):
         """ Print Barcode
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
-        be supported by the unit. Currently you have to check manually whether your barcode text is correct. Uncorrect
-        barcodes may lead to unexpected printer behaviour. There are two forms of the barcode function. Type A is
-        default but has fewer barcodes, while type B has some more to choose from.
-
-        .. todo:: Add a method to check barcode codes. Alternatively or as an addition write explanations about each
-                  barcode-type. Research whether the check digits can be computed autmatically.
+        be supported by the unit. By default, this method will check whether your barcode text is correct, that is
+        the characters and lengths are supported by ESCPOS. Call the method with `check=False` to disable the check, but
+        note that uncorrect barcodes may lead to unexpected printer behaviour.
+        There are two forms of the barcode function. Type A is default but has fewer barcodes,
+        while type B has some more to choose from.
 
         Use the parameters `height` and `width` for adjusting of the barcode size. Please take notice that the barcode
         will not be printed if it is outside of the printable area. (Which should be impossible with this method, so
@@ -353,6 +379,10 @@ class Escpos(object):
             function based on the current profile.
             *default*: A
 
+        :param check: If this parameter is True, the barcode format will be checked to ensure it meets the bc
+            requirements as defigned in the esc/pos documentation. See py:func:`~escpos.Escpos.check_barcode`
+            for more information. *default*: True.
+
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
@@ -375,11 +405,18 @@ class Escpos(object):
         bc_types = BARCODE_TYPES[function_type.upper()]
         if bc.upper() not in bc_types.keys():
             raise BarcodeTypeError((
-                "Barcode type '{bc}' not valid for barcode function type "
+                "Barcode '{bc}' not valid for barcode function type "
                 "{function_type}").format(
                     bc=bc,
                     function_type=function_type,
                 ))
+
+        if check and not self.check_barcode(bc, code):
+            raise BarcodeCodeError((
+                "Barcode '{code}' not in a valid format for type '{bc}'").format(
+                code=code,
+                bc=bc,
+            ))
 
         # Align Bar Code()
         if align_ct:
