@@ -13,6 +13,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import pytest
 import mock
 
 from escpos.printer import Dummy
@@ -30,3 +31,12 @@ def test_type_of_object_passed_to_image_function(img_function):
     d.qr("LoremIpsum")
     args, kwargs = img_function.call_args
     assert isinstance(args[0], Image.Image)
+
+
+@pytest.fixture
+def instance():
+    return Dummy()
+
+
+def test_center(instance):
+    instance.qr("LoremIpsum", center=True)
