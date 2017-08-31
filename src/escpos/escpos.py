@@ -87,7 +87,7 @@ class Escpos(object):
         raise NotImplementedError()
 
     def image(self, img_source, high_density_vertical=True, high_density_horizontal=True, impl="bitImageRaster",
-              fragment_height=960):
+              fragment_height=960, center=False):
         """ Print an image
 
         You can select whether the printer should print in high density or not. The default value is high density.
@@ -108,14 +108,19 @@ class Escpos(object):
         :param high_density_horizontal: print in high density in horizontal direction *default:* True
         :param impl: choose image printing mode between `bitImageRaster`, `graphics` or `bitImageColumn`
         :param fragment_height: Images larger than this will be split into multiple fragments *default:* 960
+        :param center: Center image horizontally *default:* False
 
         """
         im = EscposImage(img_source)
 
         try:
             max_width = int(self.profile.profile_data['media']['width']['pixels'])
+
             if im.width > max_width:
                 raise ImageWidthError('{} > {}'.format(im.width, max_width))
+
+            if center:
+                im.center(max_width)
         except KeyError:
             # If the printer's pixel width is not known, print anyways...
             pass
@@ -173,7 +178,8 @@ class Escpos(object):
         header = self._int_low_high(len(data) + 2, 2)
         self._raw(GS + b'(L' + header + m + fn + data)
 
-    def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2, native=False):
+    def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2,
+           native=False, center=False):
         """ Print QR Code for the provided string
 
         :param content: The content of the code. Numeric data will be more efficiently compacted.
@@ -185,6 +191,7 @@ class Escpos(object):
             by all printers).
         :param native: True to render the code on the printer, False to render the code as an image and send it to the
             printer (Default)
+        :param center: Centers the code *default:* False
         """
         # Basic validation
         if ec not in [QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q]:
@@ -211,12 +218,17 @@ class Escpos(object):
             qr_code.make(fit=True)
             qr_img = qr_code.make_image()
             im = qr_img._img.convert("RGB")
+
             # Convert the RGB image in printable image
             self.text('\n')
-            self.image(im)
+            self.image(im, center=center)
             self.text('\n')
             self.text('\n')
             return
+
+        if center:
+            raise NotImplementedError("Centering not implemented for native QR rendering")
+
         # Native 2D code printing
         cn = b'1'  # Code type for QR code
         # Select model: 1, 2 or micro.
