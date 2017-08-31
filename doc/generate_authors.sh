@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GENLIST=$(git shortlog -s -n | cut -f2 | sort)
+GENLIST=$(git shortlog -s -n | cut -f2 | sort -f)
 AUTHORSFILE="$(dirname $0)/../AUTHORS"
 TEMPAUTHORSFILE="/tmp/python-escpos-authorsfile"
 
