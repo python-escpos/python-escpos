@@ -132,7 +132,7 @@ setup(
         'nose',
         'scripttest',
         'mock',
-        'hypothesis<=3.28.3',
+        'hypothesis',
         'flake8'
     ],
     cmdclass={'test': Tox},
