@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 import six
 
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis.strategies import text
 
 import escpos.printer as printer
@@ -37,6 +37,7 @@ def test_load_file_printer(mocker, path):
     mock_open.assert_called_with(path, "wb")
 
 
+@settings(deadline=None)
 @given(txt=text())
 def test_auto_flush(mocker, txt):
     """test auto_flush in file-printer"""
@@ -57,6 +58,7 @@ def test_auto_flush(mocker, txt):
     assert mock_device.flush.called
 
 
+@settings(deadline=None)
 @given(txt=text())
 def test_flush_on_close(mocker, txt):
     """test flush on close in file-printer"""
