@@ -38,7 +38,7 @@ if full_load:
     logger.debug('Loading and pickling capabilities')
     with open(capabilities_path) as cp, open(pickle_path, 'wb') as pp:
         CAPABILITIES = yaml.load(cp)
-        pickle.dump(CAPABILITIES, pp)
+        pickle.dump(CAPABILITIES, pp, protocol=2)
 
 logger.debug('Finished loading capabilities took %.2fs', time.time() - t0)
 
