@@ -1,6 +1,24 @@
 *********
 Changelog
 *********
+2017-10-08 - Version 3.0a3 - "Just Testing"
+-------------------------------------------
+This release is the fourth alpha release of the new version 3.0. Please
+be aware that the API will still change until v3.0 is released.
+
+changes
+^^^^^^^
+- minor changes in documentation, tests and examples
+- pickle capabilities for faster startup
+- first implementation of centering images and QR
+- check barcodes based on regex
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
+- Lucy Linder
+- Romain Porte
+- Sergio Pulgarin
 
 2017-08-04 - Version 3.0a2 - "It's My Party And I'll Sing If I Want To"
 -----------------------------------------------------------------------
