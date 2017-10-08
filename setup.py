@@ -68,7 +68,6 @@ setup(
     url='https://github.com/python-escpos/python-escpos',
     download_url='https://github.com/python-escpos/python-escpos/archive/master.zip',
     description='Python library to manipulate ESC/POS Printers',
-    bugtrack_url='https://github.com/python-escpos/python-escpos/issues',
     license='MIT',
     long_description=read('README.rst'),
     author='Manuel F Martinez and others',
