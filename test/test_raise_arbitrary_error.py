@@ -12,12 +12,21 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import pytest
 import escpos
+import escpos.exceptions
 
 
-def test_raise_error():
-    """raise error
+def test_raise_error_wrongly():
+    """raise error the wrong way
 
     should reproduce https://github.com/python-escpos/python-escpos/issues/257
     """
-    raise escpos.Error("This is a test.")
+    with pytest.raises(AttributeError):
+        raise escpos.Error("This should raise an AttributeError.")
+
+
+def tests_raise_error():
+    """raise error the right way"""
+    with pytest.raises(escpos.exceptions.Error):
+        raise escpos.exceptions.Error("This should raise an error.")
