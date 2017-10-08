@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 import escpos.printer as printer
 from escpos.constants import BARCODE_TYPE_A, BARCODE_TYPE_B
 from escpos.capabilities import Profile, BARCODE_B
-from escpos.exceptions import BarcodeTypeError
+from escpos.exceptions import BarcodeTypeError, BarcodeCodeError
 import pytest
 
 
@@ -34,5 +34,19 @@ def test_lacks_support(bctype, supports_b):
     instance = printer.Dummy(profile=profile)
     with pytest.raises(BarcodeTypeError):
         instance.barcode('test', bctype)
+
+    assert instance.output == b''
+
+
+@pytest.mark.parametrize("bctype,data", [
+    ('EAN13', 'AA'),
+    ('CODE128', '{D2354AA'),
+])
+def test_code_check(bctype, data):
+    """should raise an error if the barcode code is invalid.
+    """
+    instance = printer.Dummy()
+    with pytest.raises(BarcodeCodeError):
+        instance.barcode(data, bctype)
 
     assert instance.output == b''
