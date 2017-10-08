@@ -145,10 +145,8 @@ def test_large_graphics():
     assert(instance.output == b'\x1dv0\x00\x01\x00\x01\x00\xc0\x1dv0\x00\x01\x00\x01\x00\x00')
 
 
-def test_width_too_large():
-    """
-    Test printing an image that is too large in width.
-    """
+@pytest.fixture
+def dummy_with_width():
     instance = printer.Dummy()
     instance.profile.profile_data = {
         'media': {
@@ -157,8 +155,25 @@ def test_width_too_large():
             }
         }
     }
+    return instance
+
+
+def test_width_too_large(dummy_with_width):
+    """
+    Test printing an image that is too large in width.
+    """
+    instance = dummy_with_width
 
     with pytest.raises(ImageWidthError):
         instance.image(Image.new("RGB", (385, 200)))
 
     instance.image(Image.new("RGB", (384, 200)))
+
+
+def test_center_image(dummy_with_width):
+    instance = dummy_with_width
+
+    with pytest.raises(ImageWidthError):
+        instance.image(Image.new("RGB", (385, 200)), center=True)
+
+    instance.image(Image.new("RGB", (384, 200)), center=True)

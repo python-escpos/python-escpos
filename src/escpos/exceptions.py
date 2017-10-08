@@ -77,9 +77,10 @@ class BarcodeSizeError(Error):
 
 
 class BarcodeCodeError(Error):
-    """ No Barcode code was supplied.
+    """ No Barcode code was supplied, or it is incorrect.
 
-    No data for the barcode has been supplied in :py:meth:`escpos.escpos.Escpos.barcode`.
+    No data for the barcode has been supplied in :py:meth:`escpos.escpos.Escpos.barcode` or the the `check` parameter
+    was True and the check failed.
     The returncode for this exception is `30`.
     """
     def __init__(self, msg=""):

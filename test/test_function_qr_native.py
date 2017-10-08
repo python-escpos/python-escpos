@@ -13,6 +13,8 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from nose.tools import raises
+import pytest
+
 import escpos.printer as printer
 from escpos.constants import QR_ECLEVEL_H, QR_MODEL_1
 
@@ -24,7 +26,6 @@ def test_defaults():
     expected = b'\x1d(k\x04\x001A2\x00\x1d(k\x03\x001C\x03\x1d(k\x03\x001E0\x1d' \
         b'(k\x07\x001P01234\x1d(k\x03\x001Q0'
     assert(instance.output == expected)
-
 
 def test_empty():
     """Test QR printing blank code"""
@@ -99,3 +100,13 @@ def test_image_invalid_model():
     """Test unsupported QR model as image"""
     instance = printer.Dummy()
     instance.qr("1234", native=False, model=QR_MODEL_1)
+
+
+@pytest.fixture
+def instance():
+    return printer.Dummy()
+
+
+def test_center_not_implementer(instance):
+    with pytest.raises(NotImplementedError):
+        instance.qr("test", center=True, native=True)

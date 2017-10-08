@@ -243,7 +243,7 @@ class File(Escpos):
     def __init__(self, devfile="/dev/usb/lp0", auto_flush=True, *args, **kwargs):
         """
 
-        :param devfile : Device file under dev filesystem
+        :param devfile: Device file under dev filesystem
         :param auto_flush: automatically call flush after every call of _raw()
         """
         Escpos.__init__(self, *args, **kwargs)

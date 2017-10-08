@@ -16,4 +16,4 @@ if __name__ == '__main__':
 
     # Adapt to your needs
     p = Usb(0x0416, 0x5011, profile="POS-5890")
-    p.qr(content)
+    p.qr(content, center=True)

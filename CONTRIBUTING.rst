@@ -20,6 +20,7 @@ When contributing the first time, please include a commit with the output of thi
 Otherwise the integration-check will fail.
 
 When you change your username or mail-address, please also update the `.mailmap` and the authors-list.
+You can find a good documentation on the mapping-feature in the `documentation of git-shortlog <https://git-scm.com/docs/git-shortlog#_mapping_authors>`_.
 
 Style-Guide
 -----------
@@ -47,9 +48,11 @@ Often you can achieve compatibility quite easily with a tool from the `six`-pack
 
 PEP8
 ^^^^
-This is not yet consequently done in every piece of code, but please try to ensure
-that your code honors PEP8.
-The checks by Landscape and QuantifiedCode that run on every PR will provide you with hints.
+The entire codebase adheres to the rules of PEP8.
+These rules are enforced by running `flake8` in the integration-checks.
+Please adhere to these rules as your contribution can only be merged if the check succeeds.
+You can use flake8 or similar tools locally in order to check your code.
+Apart from that the travis-log and the check by Landscape will provide you with hints.
 
 GIT
 ^^^

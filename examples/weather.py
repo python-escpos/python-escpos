@@ -123,5 +123,5 @@ printer.set(font='a', height=2, align='center', bold=True, double_height=False)
 printer.text('Forecast: \n')
 forecast(0)
 forecast(1)
-printer.cut
+printer.cut()
 printer.control("LF")
