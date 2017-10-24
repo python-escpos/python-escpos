@@ -697,8 +697,8 @@ class Escpos(object):
         else:
             try:
                 self._raw(CD_KICK_DEC_SEQUENCE(*pin))
-            except:
-                raise CashDrawerError()
+            except Exception as e:
+                raise CashDrawerError(e)
 
     def linedisplay_select(self, select_display=False):
         """ Selects the line display or the printer
