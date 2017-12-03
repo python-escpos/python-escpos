@@ -312,5 +312,13 @@ class Dummy(Escpos):
         """ Get the data that was sent to this printer """
         return b''.join(self._output_list)
 
+    def clear(self):
+        """ Clear the buffer of the printer
+
+        This method can be called if you send the contents to a physical printer
+        and want to use the Dummy printer for new output.
+        """
+        del self._output_list[:]
+
     def close(self):
         pass
