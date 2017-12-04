@@ -107,7 +107,7 @@ setup(
         'Topic :: Office/Business :: Financial :: Point-Of-Sale',
     ],
     install_requires=[
-        'pyusb>=1.0.0',
+        'libusb1',
         'Pillow>=2.0',
         'qrcode>=4.0',
         'pyserial',

@@ -13,8 +13,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import usb.core
-import usb.util
+from usb1 import USBContext
+
+import platform
 import serial
 import socket
 
@@ -33,6 +34,7 @@ class Usb(Escpos):
         :parts: 1
 
     """
+    INTERFACE = 0
 
     def __init__(self, idVendor, idProduct, timeout=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):  # noqa: N803
         """
@@ -52,29 +54,16 @@ class Usb(Escpos):
 
     def open(self):
         """ Search device on USB tree and set it as escpos device """
-        self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
-        if self.device is None:
+        self.ctx = USBContext()
+        dev = self.ctx.getByVendorIDAndProductID(self.idVendor, self.idProduct)
+        if dev is None:
             raise USBNotFoundError("Device not found or cable not plugged in.")
 
-        check_driver = None
+        self.device = dev.open()
+        if platform.system() == 'Linux' and self.device.kernelDriverActive(self.INTERFACE):
+            self.device.detachKernelDriver(self.INTERFACE)
 
-        try:
-            check_driver = self.device.is_kernel_driver_active(0)
-        except NotImplementedError:
-            pass
-
-        if check_driver is None or check_driver:
-            try:
-                self.device.detach_kernel_driver(0)
-            except usb.core.USBError as e:
-                if check_driver is not None:
-                    print("Could not detatch kernel driver: {0}".format(str(e)))
-
-        try:
-            self.device.set_configuration()
-            self.device.reset()
-        except usb.core.USBError as e:
-            print("Could not set configuration: {0}".format(str(e)))
+        self.device.claimInterface(self.INTERFACE)
 
     def _raw(self, msg):
         """ Print any command sent in raw format
@@ -82,17 +71,21 @@ class Usb(Escpos):
         :param msg: arbitrary code to be printed
         :type msg: bytes
         """
-        self.device.write(self.out_ep, msg, self.timeout)
+        self.device.bulkWrite(self.out_ep, msg, timeout=self.timeout)
 
     def _read(self):
         """ Reads a data buffer and returns it to the caller. """
-        return self.device.read(self.in_ep, 16)
+        return self.device.bulkRead(self.in_ep, 16, timeout=self.timeout)
 
     def close(self):
         """ Release USB interface """
         if self.device:
-            usb.util.dispose_resources(self.device)
-        self.device = None
+            self.device.releaseInterface(self.INTERFACE)
+            self.device.close()
+            self.device = None
+        if self.ctx:
+            self.ctx.exit()
+            self.ctx = None
 
 
 class Serial(Escpos):
