@@ -728,6 +728,7 @@ class Escpos(object):
 
         You should connect a line display to your printer. You can do this by daisy-chaining
         the display between your computer and printer.
+
         :param text: Text to display
         """
         self.linedisplay_select(select_display=True)
