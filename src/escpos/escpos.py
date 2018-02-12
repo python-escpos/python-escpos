@@ -845,7 +845,7 @@ class Escpos(object):
         status = self.query_status(RT_STATUS_ONLINE)
         if len(status) == 0:
             return False
-        return not (status & RT_MASK_ONLINE)
+        return not (status[0] & RT_MASK_ONLINE)
 
     def paper_status(self):
         """ Queries the printer its paper status.
