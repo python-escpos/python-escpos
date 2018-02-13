@@ -843,7 +843,7 @@ class Escpos(object):
 
     def is_online(self):
         """
-        Queries the printer its online status.
+        Queries the online status of the printer.
 
         :returns: When online, returns ``True``; ``False`` otherwise.
         :rtype: bool
@@ -855,7 +855,8 @@ class Escpos(object):
 
     def paper_status(self):
         """
-        Queries the printer its paper status.
+        Queries the paper status of the printer.
+
         Returns 2 if there is plenty of paper, 1 if the paper has arrived to
         the near-end sensor and 0 if there is no paper.
 
