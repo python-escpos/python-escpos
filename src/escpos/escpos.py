@@ -180,7 +180,7 @@ class Escpos(object):
         self._raw(GS + b'(L' + header + m + fn + data)
 
     def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2,
-           native=False, center=False):
+           native=False, center=False, impl="bitImageRaster"):
         """ Print QR Code for the provided string
 
         :param content: The content of the code. Numeric data will be more efficiently compacted.
@@ -222,7 +222,7 @@ class Escpos(object):
 
             # Convert the RGB image in printable image
             self.text('\n')
-            self.image(im, center=center)
+            self.image(im, center=center, impl=impl)
             self.text('\n')
             self.text('\n')
             return
