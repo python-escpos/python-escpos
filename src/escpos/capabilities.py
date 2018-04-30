@@ -47,7 +47,7 @@ PROFILES = CAPABILITIES['profiles']
 
 
 class NotSupported(Exception):
-    """Raised if a requested feature is not suppored by the
+    """Raised if a requested feature is not supported by the
     printer profile.
     """
     pass
@@ -90,7 +90,7 @@ class BaseProfile(object):
         return self.features.get(feature)
 
     def get_code_pages(self):
-        """Return the support code pages as a {name: index} dict.
+        """Return the support code pages as a ``{name: index}`` dict.
         """
         return {v: k for k, v in self.codePages.items()}
 
