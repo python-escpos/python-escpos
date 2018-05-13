@@ -20,6 +20,7 @@ dist/
 .coverage
 src/escpos/version.py
 .hypothesis
+.pytest_cache/
 
 # testing temporary directories
 test/test-cli-output/
