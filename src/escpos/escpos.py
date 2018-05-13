@@ -828,30 +828,41 @@ class Escpos(object):
             self._raw(PANEL_BUTTON_OFF)
 
     def query_status(self, mode):
-        """ Queries the printer for its status, and returns an array of integers containing it.
+        """
+        Queries the printer for its status, and returns an array of integers containing it.
+
         :param mode: Integer that sets the status mode queried to the printer.
-        RT_STATUS_ONLINE: Printer status.
-        RT_STATUS_PAPER: Paper sensor.
-        :rtype: array(integer)"""
+            - RT_STATUS_ONLINE: Printer status.
+            - RT_STATUS_PAPER: Paper sensor.
+        :rtype: array(integer)
+        """
         self._raw(mode)
         time.sleep(1)
         status = self._read()
         return status
 
     def is_online(self):
-        """ Queries the printer its online status.
-        When online, returns True; False otherwise.
-        :rtype: bool: True if online, False if offline."""
+        """
+        Queries the online status of the printer.
+
+        :returns: When online, returns ``True``; ``False`` otherwise.
+        :rtype: bool
+        """
         status = self.query_status(RT_STATUS_ONLINE)
         if len(status) == 0:
             return False
-        return not (status & RT_MASK_ONLINE)
+        return not (status[0] & RT_MASK_ONLINE)
 
     def paper_status(self):
-        """ Queries the printer its paper status.
+        """
+        Queries the paper status of the printer.
+
         Returns 2 if there is plenty of paper, 1 if the paper has arrived to
         the near-end sensor and 0 if there is no paper.
-        :rtype: int: 2: Paper is adequate. 1: Paper ending. 0: No paper."""
+
+        :returns: 2: Paper is adequate. 1: Paper ending. 0: No paper.
+        :rtype: int
+        """
         status = self.query_status(RT_STATUS_PAPER)
         if len(status) == 0:
             return 2
@@ -867,7 +878,7 @@ class EscposIO(object):
     """ESC/POS Printer IO object
 
     Allows the class to be used together with the `with`-statement. You have to define a printer instance
-    and assign it to the EsposIO-class.
+    and assign it to the EscposIO class.
     This example explains the usage:
 
     .. code-block:: Python
