@@ -7,12 +7,12 @@ import time
 import six
 import yaml
 
+from tempfile import gettempdir
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-
-pickle_dir = environ.get('ESCPOS_CAPABILITIES_PICKLE_DIR', '/tmp/')
+pickle_dir = environ.get('ESCPOS_CAPABILITIES_PICKLE_DIR', gettempdir())
 pickle_path = path.join(pickle_dir, 'capabilities.pickle')
 capabilities_path = environ.get(
     'ESCPOS_CAPABILITIES_FILE',
