@@ -3,7 +3,6 @@
 import os
 import sys
 from setuptools import find_packages, setup
-from setuptools.command.test import test as test_command
 
 
 base_dir = os.path.dirname(__file__)
@@ -17,33 +16,6 @@ sys.path.insert(0, src_dir)
 def read(fname):
     """read file from same path as setup.py"""
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
-
-class Tox(test_command):
-    """proxy class that enables tox to be run with setup.py test"""
-    user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
-
-    def initialize_options(self):
-        """initialize the user-options"""
-        test_command.initialize_options(self)
-        self.tox_args = None
-
-    def finalize_options(self):
-        """finalize user-options"""
-        test_command.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        """run tox and pass on user-options"""
-        # import here, cause outside the eggs aren't loaded
-        import tox
-        import shlex
-        args = self.tox_args
-        if args:
-            args = shlex.split(self.tox_args)
-        errno = tox.cmdline(args=args)
-        sys.exit(errno)
 
 
 setuptools_scm_template = """\
@@ -133,7 +105,6 @@ setup(
         'hypothesis!=3.56.9',
         'flake8'
     ],
-    cmdclass={'test': Tox},
     entry_points={
         'console_scripts': [
             'python-escpos = escpos.cli:main'
