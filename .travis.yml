@@ -8,11 +8,12 @@ addons:
     packages:
       - graphviz
 env:
-  - ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
+  global:
+    - ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
 matrix:
   include:
     - python: 2.7
-      env: TOXENV=py27 ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
+      env: TOXENV=py27
     - python: 3.3
       env: TOXENV=py33
     - python: 3.4
