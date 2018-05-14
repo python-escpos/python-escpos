@@ -489,7 +489,7 @@ class Escpos(object):
         barcode_class = barcode.get_barcode_class(barcode_type)
         my_code = barcode_class(data, writer=image_writer)
 
-        with open(os.devnull, "w") as nullfile:
+        with open(os.devnull, "wb") as nullfile:
             my_code.write(nullfile, {
                 'module_height': module_height,
                 'module_width': module_width,
