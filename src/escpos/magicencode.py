@@ -75,11 +75,11 @@ class Encoder(object):
         """
         codepage = CodePages.get_encoding(encoding)
         if 'data' in codepage:
-            encodable_chars = list("".join(codepage['data']))
+            encodable_chars = list(''.join(codepage['data']))
             assert(len(encodable_chars) == 128)
             return encodable_chars
         elif 'python_encode' in codepage:
-            encodable_chars = [u" "] * 128
+            encodable_chars = [u' '] * 128
             for i in range(0, 128):
                 codepoint = i + 128
                 try:
@@ -280,7 +280,7 @@ class MagicEncode(object):
 
     def write_with_encoding(self, encoding, text):
         if text is not None and type(text) is not six.text_type:
-            raise Error("The supplied text has to be unicode, but is of type {type}.".format(
+            raise Error('The supplied text has to be unicode, but is of type {type}.'.format(
                 type=type(text)
             ))
 

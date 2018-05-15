@@ -550,7 +550,7 @@ def main():
         # print command with args
         getattr(printer, target_command)(**command_arguments)
         if target_command in REQUIRES_NEWLINE:
-            printer.text("\n")
+            printer.text('\n')
     else:
         command_arguments['printer'] = printer
         globals()[target_command](**command_arguments)

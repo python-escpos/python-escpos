@@ -42,14 +42,14 @@ class EscposImage(object):
         # Convert to white RGB background, paste over white background
         # to strip alpha.
         img_original = img_original.convert('RGBA')
-        im = Image.new("RGB", img_original.size, (255, 255, 255))
+        im = Image.new('RGB', img_original.size, (255, 255, 255))
         im.paste(img_original, mask=img_original.split()[3])
         # Convert down to greyscale
-        im = im.convert("L")
+        im = im.convert('L')
         # Invert: Only works on 'L' images
         im = ImageOps.invert(im)
         # Pure black and white
-        self._im = im.convert("1")
+        self._im = im.convert('1')
 
     @property
     def width(self):
@@ -125,7 +125,7 @@ class EscposImage(object):
         old_width, height = self._im.size
         new_size = (max_width, height)
 
-        new_im = Image.new("1", new_size)
+        new_im = Image.new('1', new_size)
         paste_x = int((max_width - old_width) / 2)
 
         new_im.paste(self._im, (paste_x, 0))

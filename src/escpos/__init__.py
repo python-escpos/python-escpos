@@ -7,7 +7,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-__all__ = ["constants", "escpos", "exceptions", "printer"]
+__all__ = ['constants', 'escpos', 'exceptions', 'printer']
 
 try:
     from .version import version as __version__  # noqa

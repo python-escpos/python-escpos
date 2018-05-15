@@ -54,7 +54,7 @@ class Usb(Escpos):
         """ Search device on USB tree and set it as escpos device """
         self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
         if self.device is None:
-            raise USBNotFoundError("Device not found or cable not plugged in.")
+            raise USBNotFoundError('Device not found or cable not plugged in.')
 
         check_driver = None
 
@@ -68,13 +68,13 @@ class Usb(Escpos):
                 self.device.detach_kernel_driver(0)
             except usb.core.USBError as e:
                 if check_driver is not None:
-                    print("Could not detatch kernel driver: {0}".format(str(e)))
+                    print('Could not detatch kernel driver: {0}'.format(str(e)))
 
         try:
             self.device.set_configuration()
             self.device.reset()
         except usb.core.USBError as e:
-            print("Could not set configuration: {0}".format(str(e)))
+            print('Could not set configuration: {0}'.format(str(e)))
 
     def _raw(self, msg):
         """ Print any command sent in raw format
@@ -107,7 +107,7 @@ class Serial(Escpos):
 
     """
 
-    def __init__(self, devfile="/dev/ttyS0", baudrate=9600, bytesize=8, timeout=1,
+    def __init__(self, devfile='/dev/ttyS0', baudrate=9600, bytesize=8, timeout=1,
                  parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE,
                  xonxoff=False, dsrdtr=True, *args, **kwargs):
         """
@@ -143,9 +143,9 @@ class Serial(Escpos):
                                     xonxoff=self.xonxoff, dsrdtr=self.dsrdtr)
 
         if self.device is not None:
-            print("Serial printer enabled")
+            print('Serial printer enabled')
         else:
-            print("Unable to open serial printer on: {0}".format(str(self.devfile)))
+            print('Unable to open serial printer on: {0}'.format(str(self.devfile)))
 
     def _raw(self, msg):
         """ Print any command sent in raw format
@@ -209,7 +209,7 @@ class Network(Escpos):
         self.device.connect((self.host, self.port))
 
         if self.device is None:
-            print("Could not open socket for {0}".format(self.host))
+            print('Could not open socket for {0}'.format(self.host))
 
     def _raw(self, msg):
         """ Print any command sent in raw format
@@ -240,7 +240,7 @@ class File(Escpos):
 
     """
 
-    def __init__(self, devfile="/dev/usb/lp0", auto_flush=True, *args, **kwargs):
+    def __init__(self, devfile='/dev/usb/lp0', auto_flush=True, *args, **kwargs):
         """
 
         :param devfile: Device file under dev filesystem
@@ -253,10 +253,10 @@ class File(Escpos):
 
     def open(self):
         """ Open system file """
-        self.device = open(self.devfile, "wb")
+        self.device = open(self.devfile, 'wb')
 
         if self.device is None:
-            print("Could not open the specified file {0}".format(self.devfile))
+            print('Could not open the specified file {0}'.format(self.devfile))
 
     def flush(self):
         """ Flush printing content """

@@ -17,9 +17,9 @@ def main():
 
     for codepage in sys.argv[1:] or ['USA']:
         dummy.set(height=2, width=2)
-        dummy._raw(codepage + "\n\n\n")
+        dummy._raw(codepage + '\n\n\n')
         print_codepage(dummy, codepage)
-        dummy._raw("\n\n")
+        dummy._raw('\n\n')
 
     dummy.cut()
 
@@ -30,22 +30,22 @@ def print_codepage(printer, codepage):
     if codepage.isdigit():
         codepage = int(codepage)
         printer._raw(CODEPAGE_CHANGE + six.int2byte(codepage))
-        printer._raw("after")
+        printer._raw('after')
     else:
         printer.charcode(codepage)
 
-    sep = ""
+    sep = ''
 
     # Table header
     printer.set(font='b')
-    printer._raw("  {}\n".format(sep.join(map(lambda s: hex(s)[2:], range(0, 16)))))
+    printer._raw('  {}\n'.format(sep.join(map(lambda s: hex(s)[2:], range(0, 16)))))
     printer.set()
 
     # The table
     for x in range(0, 16):
         # First column
         printer.set(font='b')
-        printer._raw("{} ".format(hex(x)[2:]))
+        printer._raw('{} '.format(hex(x)[2:]))
         printer.set()
 
         for y in range(0, 16):

@@ -67,7 +67,7 @@ IP by DHCP or you set it manually.
 
 ::
 
-    Epson = printer.Network("192.168.1.99")
+    Epson = printer.Network('192.168.1.99')
 
 Serial printer
 ^^^^^^^^^^^^^^
@@ -81,7 +81,7 @@ to.
 
 ::
 
-    Epson = printer.Serial("/dev/tty0")
+    Epson = printer.Serial('/dev/tty0')
 
 Other printers
 ^^^^^^^^^^^^^^
@@ -93,7 +93,7 @@ passing the device node name.
 
 ::
 
-    Epson = printer.File("/dev/usb/lp1")
+    Epson = printer.File('/dev/usb/lp1')
 
 The default is "/dev/usb/lp0", so if the printer is located on that
 node, then you don't necessary need to pass the node name.
@@ -110,11 +110,11 @@ on a USB interface.
     """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
     Epson = printer.Usb(0x04b8,0x0202)
     # Print text
-    Epson.text("Hello World\n")
+    Epson.text('Hello World\n')
     # Print image
-    Epson.image("logo.gif")
+    Epson.image('logo.gif')
     # Print QR Code
-    Epson.qr("You can readme from your smartphone")
+    Epson.qr('You can readme from your smartphone')
     # Print barcode
     Epson.barcode('1324354657687','EAN13',64,2,'','')
     # Cut paper
@@ -214,7 +214,7 @@ advantage of the fact that `_raw()` accepts binary strings.)
     from escpos import printer
     p = printer.Serial()  # adapt this to your printer model
 
-    file = open("binary-blob.bin", "rb")  # read in the file containing your commands in binary-mode
+    file = open('binary-blob.bin', 'rb')  # read in the file containing your commands in binary-mode
     data = file.read()
     file.close()
 
@@ -273,8 +273,8 @@ This is probably best explained by an example:
    d = Dummy()
 
    # create ESC/POS for the print job, this should go really fast
-   d.text("This is my image:\n")
-   d.image("funny_cat.png")
+   d.text('This is my image:\n')
+   d.image('funny_cat.png')
    d.cut()
 
    # send code to printer

@@ -4,7 +4,7 @@ from escpos.printer import Usb
 
 
 def usage():
-    print("usage: qr_code.py <content>")
+    print('usage: qr_code.py <content>')
 
 
 if __name__ == '__main__':
@@ -15,5 +15,5 @@ if __name__ == '__main__':
     content = sys.argv[1]
 
     # Adapt to your needs
-    p = Usb(0x0416, 0x5011, profile="POS-5890")
+    p = Usb(0x0416, 0x5011, profile='POS-5890')
     p.qr(content, center=True)

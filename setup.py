@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 
 base_dir = os.path.dirname(__file__)
-src_dir = os.path.join(base_dir, "src")
+src_dir = os.path.join(base_dir, 'src')
 
 # When executing the setup.py, we need to be able to import ourselves, this
 # means that we need to add the src/ directory to the sys.path.
@@ -54,8 +54,8 @@ setup(
         'receipt,',
     ],
     platforms='any',
-    package_dir={"": "src"},
-    packages=find_packages(where="src", exclude=["tests", "tests.*"]),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src', exclude=['tests', 'tests.*']),
     package_data={'': ['COPYING', 'src/escpos/capabilities.json']},
     include_package_data=True,
     classifiers=[

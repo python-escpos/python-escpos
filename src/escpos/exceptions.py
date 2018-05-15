@@ -51,13 +51,13 @@ class BarcodeTypeError(Error):
     one of those specified in :py:meth:`escpos.escpos.Escpos.barcode`.
     The returned error code is `10`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 10
 
     def __str__(self):
-        return "No Barcode type is defined ({msg})".format(msg=self.msg)
+        return 'No Barcode type is defined ({msg})'.format(msg=self.msg)
 
 
 class BarcodeSizeError(Error):
@@ -67,13 +67,13 @@ class BarcodeSizeError(Error):
     The size of the barcode has to be in the range that is specified in :py:meth:`escpos.escpos.Escpos.barcode`.
     The resulting returncode is `20`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 20
 
     def __str__(self):
-        return "Barcode size is out of range ({msg})".format(msg=self.msg)
+        return 'Barcode size is out of range ({msg})'.format(msg=self.msg)
 
 
 class BarcodeCodeError(Error):
@@ -83,13 +83,13 @@ class BarcodeCodeError(Error):
     was True and the check failed.
     The returncode for this exception is `30`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 30
 
     def __str__(self):
-        return "No Barcode code was supplied ({msg})".format(msg=self.msg)
+        return 'No Barcode code was supplied ({msg})'.format(msg=self.msg)
 
 
 class ImageSizeError(Error):
@@ -97,7 +97,7 @@ class ImageSizeError(Error):
 
     The returncode for this exception is `40`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 40
@@ -111,13 +111,13 @@ class ImageWidthError(Error):
 
     The return code for this exception is `41`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 41
 
     def __str__(self):
-        return "Image width is too large ({msg})".format(msg=self.msg)
+        return 'Image width is too large ({msg})'.format(msg=self.msg)
 
 
 class TextError(Error):
@@ -126,13 +126,13 @@ class TextError(Error):
     This exception is raised when an empty string is passed to :py:meth:`escpos.escpos.Escpos.text`.
     The returncode for this exception is `50`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 50
 
     def __str__(self):
-        return "Text string must be supplied to the text() method ({msg})".format(msg=self.msg)
+        return 'Text string must be supplied to the text() method ({msg})'.format(msg=self.msg)
 
 
 class CashDrawerError(Error):
@@ -141,13 +141,13 @@ class CashDrawerError(Error):
     A valid pin number has to be passed onto the method :py:meth:`escpos.escpos.Escpos.cashdraw`.
     The returncode for this exception is `60`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 60
 
     def __str__(self):
-        return "Valid pin must be set to send pulse ({msg})".format(msg=self.msg)
+        return 'Valid pin must be set to send pulse ({msg})'.format(msg=self.msg)
 
 
 class TabPosError(Error):
@@ -157,13 +157,13 @@ class TabPosError(Error):
     This exception is raised by :py:meth:`escpos.escpos.Escpos.control`.
     The returncode for this exception is `70`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 70
 
     def __str__(self):
-        return "Valid tab positions must be in the range 0 to 16 ({msg})".format(msg=self.msg)
+        return 'Valid tab positions must be in the range 0 to 16 ({msg})'.format(msg=self.msg)
 
 
 class CharCodeError(Error):
@@ -172,13 +172,13 @@ class CharCodeError(Error):
     The supplied charcode-name in :py:meth:`escpos.escpos.Escpos.charcode` is unknown.
     Ths returncode for this exception is `80`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 80
 
     def __str__(self):
-        return "Valid char code must be set ({msg})".format(msg=self.msg)
+        return 'Valid char code must be set ({msg})'.format(msg=self.msg)
 
 
 class USBNotFoundError(Error):
@@ -187,13 +187,13 @@ class USBNotFoundError(Error):
     The USB device seems to be not plugged in.
     Ths returncode for this exception is `90`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 90
 
     def __str__(self):
-        return "USB device not found ({msg})".format(msg=self.msg)
+        return 'USB device not found ({msg})'.format(msg=self.msg)
 
 
 class SetVariableError(Error):
@@ -202,13 +202,13 @@ class SetVariableError(Error):
     Check set variables against minimum and maximum values
     Ths returncode for this exception is `100`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 100
 
     def __str__(self):
-        return "Set variable out of range ({msg})".format(msg=self.msg)
+        return 'Set variable out of range ({msg})'.format(msg=self.msg)
 
 
 # Configuration errors
@@ -219,13 +219,13 @@ class ConfigNotFoundError(Error):
     The default or passed configuration file could not be read
     Ths returncode for this exception is `200`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 200
 
     def __str__(self):
-        return "Configuration not found ({msg})".format(msg=self.msg)
+        return 'Configuration not found ({msg})'.format(msg=self.msg)
 
 
 class ConfigSyntaxError(Error):
@@ -234,13 +234,13 @@ class ConfigSyntaxError(Error):
     The syntax is incorrect
     Ths returncode for this exception is `210`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 210
 
     def __str__(self):
-        return "Configuration syntax is invalid ({msg})".format(msg=self.msg)
+        return 'Configuration syntax is invalid ({msg})'.format(msg=self.msg)
 
 
 class ConfigSectionMissingError(Error):
@@ -249,10 +249,10 @@ class ConfigSectionMissingError(Error):
     The part of the config asked for doesn't exist in the loaded configuration
     Ths returncode for this exception is `220`.
     """
-    def __init__(self, msg=""):
+    def __init__(self, msg=''):
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 220
 
     def __str__(self):
-        return "Configuration section is missing ({msg})".format(msg=self.msg)
+        return 'Configuration section is missing ({msg})'.format(msg=self.msg)
