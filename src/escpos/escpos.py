@@ -24,6 +24,8 @@ from re import match as re_match
 import barcode
 from barcode.writer import ImageWriter
 
+import os
+
 from .constants import ESC, GS, NUL, QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q
 from .constants import QR_MODEL_1, QR_MODEL_2, QR_MICRO, BARCODE_TYPES, BARCODE_HEIGHT, BARCODE_WIDTH
 from .constants import BARCODE_FONT_A, BARCODE_FONT_B, BARCODE_FORMATS
@@ -180,7 +182,7 @@ class Escpos(object):
         self._raw(GS + b'(L' + header + m + fn + data)
 
     def qr(self, content, ec=QR_ECLEVEL_L, size=3, model=QR_MODEL_2,
-           native=False, center=False):
+           native=False, center=False, impl="bitImageRaster"):
         """ Print QR Code for the provided string
 
         :param content: The content of the code. Numeric data will be more efficiently compacted.
@@ -222,7 +224,7 @@ class Escpos(object):
 
             # Convert the RGB image in printable image
             self.text('\n')
-            self.image(im, center=center)
+            self.image(im, center=center, impl=impl)
             self.text('\n')
             self.text('\n')
             return
@@ -487,11 +489,12 @@ class Escpos(object):
         barcode_class = barcode.get_barcode_class(barcode_type)
         my_code = barcode_class(data, writer=image_writer)
 
-        my_code.write("/dev/null", {
-            'module_height': module_height,
-            'module_width': module_width,
-            'text_distance': text_distance
-        })
+        with open(os.devnull, "wb") as nullfile:
+            my_code.write(nullfile, {
+                'module_height': module_height,
+                'module_width': module_width,
+                'text_distance': text_distance
+            })
 
         # Retrieve the Pillow image and print it
         image = my_code.writer._image
@@ -697,8 +700,8 @@ class Escpos(object):
         else:
             try:
                 self._raw(CD_KICK_DEC_SEQUENCE(*pin))
-            except:
-                raise CashDrawerError()
+            except TypeError as err:
+                raise CashDrawerError(err)
 
     def linedisplay_select(self, select_display=False):
         """ Selects the line display or the printer
@@ -728,6 +731,7 @@ class Escpos(object):
 
         You should connect a line display to your printer. You can do this by daisy-chaining
         the display between your computer and printer.
+
         :param text: Text to display
         """
         self.linedisplay_select(select_display=True)
@@ -827,30 +831,41 @@ class Escpos(object):
             self._raw(PANEL_BUTTON_OFF)
 
     def query_status(self, mode):
-        """ Queries the printer for its status, and returns an array of integers containing it.
+        """
+        Queries the printer for its status, and returns an array of integers containing it.
+
         :param mode: Integer that sets the status mode queried to the printer.
-        RT_STATUS_ONLINE: Printer status.
-        RT_STATUS_PAPER: Paper sensor.
-        :rtype: array(integer)"""
+            - RT_STATUS_ONLINE: Printer status.
+            - RT_STATUS_PAPER: Paper sensor.
+        :rtype: array(integer)
+        """
         self._raw(mode)
         time.sleep(1)
         status = self._read()
         return status
 
     def is_online(self):
-        """ Queries the printer its online status.
-        When online, returns True; False otherwise.
-        :rtype: bool: True if online, False if offline."""
+        """
+        Queries the online status of the printer.
+
+        :returns: When online, returns ``True``; ``False`` otherwise.
+        :rtype: bool
+        """
         status = self.query_status(RT_STATUS_ONLINE)
         if len(status) == 0:
             return False
-        return not (status & RT_MASK_ONLINE)
+        return not (status[0] & RT_MASK_ONLINE)
 
     def paper_status(self):
-        """ Queries the printer its paper status.
+        """
+        Queries the paper status of the printer.
+
         Returns 2 if there is plenty of paper, 1 if the paper has arrived to
         the near-end sensor and 0 if there is no paper.
-        :rtype: int: 2: Paper is adequate. 1: Paper ending. 0: No paper."""
+
+        :returns: 2: Paper is adequate. 1: Paper ending. 0: No paper.
+        :rtype: int
+        """
         status = self.query_status(RT_STATUS_PAPER)
         if len(status) == 0:
             return 2
@@ -866,7 +881,7 @@ class EscposIO(object):
     """ESC/POS Printer IO object
 
     Allows the class to be used together with the `with`-statement. You have to define a printer instance
-    and assign it to the EsposIO-class.
+    and assign it to the EscposIO class.
     This example explains the usage:
 
     .. code-block:: Python
