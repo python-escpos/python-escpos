@@ -1,13 +1,16 @@
 """Prints code page tables.
 """
-
+from __future__ import absolute_import
+from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 
-import six
 import sys
 
 from escpos import printer
-from escpos.constants import CODEPAGE_CHANGE, ESC, CTL_LF, CTL_FF, CTL_CR, CTL_HT, CTL_VT
+from escpos.constants import CODEPAGE_CHANGE, CTL_CR, CTL_FF, CTL_HT, CTL_LF, CTL_VT, ESC
+
+import six
 
 
 def main():

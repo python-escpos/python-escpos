@@ -12,14 +12,17 @@
 # Icons taken from http://adamwhitcroft.com/climacons/
 # Check out his github: https://github.com/AdamWhitcroft/climacons
 
-
+from __future__ import absolute_import
+from __future__ import division
 from __future__ import print_function
-from datetime import datetime
+from __future__ import unicode_literals
+
 import calendar
-import urllib
 import json
-import time
 import os
+import time
+import urllib
+from datetime import datetime
 
 from escpos.printer import Usb
 
