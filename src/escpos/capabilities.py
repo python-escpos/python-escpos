@@ -8,12 +8,13 @@ import six
 import yaml
 
 from tempfile import gettempdir
+import platform
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 pickle_dir = environ.get('ESCPOS_CAPABILITIES_PICKLE_DIR', gettempdir())
-pickle_path = path.join(pickle_dir, 'capabilities.pickle')
+pickle_path = path.join(pickle_dir, '{v}.capabilities.pickle'.format(v=platform.python_version()))
 capabilities_path = environ.get(
     'ESCPOS_CAPABILITIES_FILE',
     path.join(path.dirname(__file__), 'capabilities.json'))
@@ -47,7 +48,7 @@ PROFILES = CAPABILITIES['profiles']
 
 
 class NotSupported(Exception):
-    """Raised if a requested feature is not suppored by the
+    """Raised if a requested feature is not supported by the
     printer profile.
     """
     pass
@@ -90,7 +91,7 @@ class BaseProfile(object):
         return self.features.get(feature)
 
     def get_code_pages(self):
-        """Return the support code pages as a {name: index} dict.
+        """Return the support code pages as a ``{name: index}`` dict.
         """
         return {v: k for k, v in self.codePages.items()}
 
