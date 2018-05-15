@@ -15,13 +15,15 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import argparse
+import sys
+
 try:
     import argcomplete
 except ImportError:
     # this CLI works nevertheless without argcomplete
     pass  # noqa
-import sys
 import six
+
 from . import config
 from . import version
 

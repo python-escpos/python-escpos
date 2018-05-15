@@ -18,10 +18,12 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from builtins import bytes
+
+import six
+
+from .codepages import CodePages
 from .constants import CODEPAGE_CHANGE
 from .exceptions import Error
-from .codepages import CodePages
-import six
 
 
 class Encoder(object):

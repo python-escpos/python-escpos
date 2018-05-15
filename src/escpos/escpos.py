@@ -15,41 +15,40 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import qrcode
+import os
 import textwrap
-import six
 import time
+from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
 
 import barcode
 from barcode.writer import ImageWriter
 
-import os
+import qrcode
 
-from .constants import ESC, GS, NUL, QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q
-from .constants import QR_MODEL_1, QR_MODEL_2, QR_MICRO, BARCODE_TYPES, BARCODE_HEIGHT, BARCODE_WIDTH
+import six
+
+from .capabilities import BARCODE_B, get_profile
 from .constants import BARCODE_FONT_A, BARCODE_FONT_B, BARCODE_FORMATS
 from .constants import BARCODE_TXT_OFF, BARCODE_TXT_BTH, BARCODE_TXT_ABV, BARCODE_TXT_BLW
-from .constants import TXT_SIZE, TXT_NORMAL
-from .constants import SET_FONT
+from .constants import BARCODE_TYPES, BARCODE_HEIGHT, BARCODE_WIDTH
+from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CUT, PAPER_PART_CUT
+from .constants import CTL_VT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
+from .constants import ESC, GS, NUL, QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q
+from .constants import HW_INIT, HW_RESET, HW_SELECT
 from .constants import LINESPACING_FUNCS, LINESPACING_RESET
 from .constants import LINE_DISPLAY_OPEN, LINE_DISPLAY_CLEAR, LINE_DISPLAY_CLOSE
-from .constants import CD_KICK_DEC_SEQUENCE, CD_KICK_5, CD_KICK_2, PAPER_FULL_CUT, PAPER_PART_CUT
-from .constants import HW_RESET, HW_SELECT, HW_INIT
-from .constants import CTL_VT, CTL_CR, CTL_FF, CTL_LF, CTL_SET_HT, PANEL_BUTTON_OFF, PANEL_BUTTON_ON
-from .constants import TXT_STYLE
-from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
+from .constants import QR_MODEL_1, QR_MODEL_2, QR_MICRO
+from .constants import RT_MASK_ONLINE, RT_STATUS_ONLINE
 from .constants import RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
-
-from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
-from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
-from .exceptions import ImageWidthError
-
+from .constants import SET_FONT
+from .constants import TXT_SIZE, TXT_NORMAL
+from .constants import TXT_STYLE
+from .exceptions import BarcodeCodeError, BarcodeSizeError, BarcodeTypeError
+from .exceptions import CashDrawerError, ImageWidthError
+from .exceptions import SetVariableError, TabPosError
+from .image import EscposImage
 from .magicencode import MagicEncode
-
-from abc import ABCMeta, abstractmethod  # abstract base class support
-from escpos.image import EscposImage
-from escpos.capabilities import get_profile, BARCODE_B
 
 
 @six.add_metaclass(ABCMeta)
@@ -409,17 +408,17 @@ class Escpos(object):
                 if bc in BARCODE_TYPES['B']:
                     if not self.profile.supports(BARCODE_B):
                         raise BarcodeTypeError((
-                            'Barcode type '{bc} not supported for '
+                            "Barcode type '{bc}' not supported for "
                             'the current printer profile').format(bc=bc))
                     function_type = 'B'
                 else:
                     raise BarcodeTypeError((
-                        'Barcode type '{bc} is not valid').format(bc=bc))
+                        "Barcode type '{bc}' is not valid").format(bc=bc))
 
         bc_types = BARCODE_TYPES[function_type.upper()]
         if bc.upper() not in bc_types.keys():
             raise BarcodeTypeError((
-                'Barcode '{bc}' not valid for barcode function type '
+                "Barcode '{bc}' not valid for barcode function type "
                 '{function_type}').format(
                     bc=bc,
                     function_type=function_type,
@@ -427,7 +426,7 @@ class Escpos(object):
 
         if check and not self.check_barcode(bc, code):
             raise BarcodeCodeError((
-                'Barcode '{code}' not in a valid format for type '{bc}'').format(
+                "Barcode '{code}' not in a valid format for type '{bc}'").format(
                 code=code,
                 bc=bc,
             ))
@@ -671,7 +670,7 @@ class Escpos(object):
 
         mode = mode.upper()
         if mode not in ('FULL', 'PART'):
-            raise ValueError('Mode must be one of ('FULL', 'PART')')
+            raise ValueError("Mode must be one of ('FULL', 'PART')")
 
         if mode == 'PART':
             if self.profile.supports('paperPartCut'):

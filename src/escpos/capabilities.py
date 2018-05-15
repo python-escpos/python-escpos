@@ -3,17 +3,17 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import re
-from os import environ, path
-import pickle
 import logging
+import pickle
+import platform
+import re
 import time
+from os import environ, path
+from tempfile import gettempdir
 
 import six
-import yaml
 
-from tempfile import gettempdir
-import platform
+import yaml
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)

@@ -13,10 +13,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import socket
+
+import serial
+
 import usb.core
 import usb.util
-import serial
-import socket
 
 from .escpos import Escpos
 from .exceptions import USBNotFoundError
