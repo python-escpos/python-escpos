@@ -1,6 +1,30 @@
 *********
 Changelog
 *********
+2018-05-15 - Version 3.0a4 - "Kakistocrat"
+------------------------------------------
+This release is the fifth alpha release of the new version 3.0. Please
+be aware that the API will still change until v3.0 is released.
+
+changes
+^^^^^^^
+- raise exception when TypeError occurs in cashdraw (#268)
+- Feature/clear content in dummy printer (#271)
+- fix is_online() (#282)
+- improve documentation
+- Modified submodule to always pull from master branch (#283)
+- parameter for implementation of nonnative qrcode (#289)
+- improve platform independence (#296)
+
+contributors
+^^^^^^^^^^^^
+- Christoph Heuel
+- Patrick Kanzler
+- kennedy
+- primax79
+- reck31
+- Thijs Triemstra
+
 2017-10-08 - Version 3.0a3 - "Just Testing"
 -------------------------------------------
 This release is the fourth alpha release of the new version 3.0. Please
