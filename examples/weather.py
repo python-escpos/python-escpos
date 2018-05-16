@@ -1,5 +1,5 @@
-#!/usr/bin/python
-
+#!/usr/bin/env python
+#  -*- coding: utf-8 -*-
 
 # Adapted script from Adafruit
 # Weather forecast for Raspberry Pi w/Adafruit Mini Thermal Printer.

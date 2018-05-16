@@ -1,3 +1,4 @@
+#  -*- coding: utf-8 -*-
 """Prints code page tables.
 """
 from __future__ import absolute_import

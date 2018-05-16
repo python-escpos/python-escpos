@@ -1,3 +1,4 @@
+#  -*- coding: utf-8 -*-
 """ Image format handling class
 
 This module contains the image format handler :py:class:`EscposImage`.
