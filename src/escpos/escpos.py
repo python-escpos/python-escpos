@@ -421,8 +421,8 @@ class Escpos(object):
                 "Barcode '{bc}' not valid for barcode function type "
                 '{function_type}').format(
                     bc=bc,
-                    function_type=function_type,
-                ))
+                    function_type=function_type,)
+            )
 
         if check and not self.check_barcode(bc, code):
             raise BarcodeCodeError((
@@ -590,8 +590,7 @@ class Escpos(object):
         """
 
         if custom_size:
-            if 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and\
-              isinstance(height, int):
+            if 1 <= width <= 8 and 1 <= height <= 8 and isinstance(width, int) and isinstance(height, int):
                 size_byte = TXT_STYLE['width'][width] + TXT_STYLE['height'][height]
                 self._raw(TXT_SIZE + six.int2byte(size_byte))
             else:
@@ -640,8 +639,7 @@ class Escpos(object):
 
         if divisor not in LINESPACING_FUNCS:
             raise ValueError('divisor must be either 360, 180 or 60')
-        if (divisor in [360, 180]
-                and (not(0 <= spacing <= 255))):
+        if (divisor in [360, 180] and (not(0 <= spacing <= 255))):
             raise ValueError('spacing must be a int between 0 and 255 when divisor is 360 or 180')
         if divisor == 60 and (not(0 <= spacing <= 85)):
             raise ValueError('spacing must be a int between 0 and 85 when divisor is 60')

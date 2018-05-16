@@ -107,7 +107,7 @@ class EscposImage(object):
         :param fragment_height: height of fragment
         :return: list of PIL objects
         """
-        passes = int(math.ceil(self.height/fragment_height))
+        passes = int(math.ceil(self.height // fragment_height))
         fragments = []
         for n in range(0, passes):
             left = 0

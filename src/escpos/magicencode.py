@@ -64,7 +64,7 @@ class Encoder(object):
             raise ValueError((
                 'Encoding "{}" cannot be used for the current profile. '
                 'Valid encodings are: {}'
-                ).format(encoding, ','.join(self.codepages.keys())))
+            ).format(encoding, ','.join(self.codepages.keys())))
         return encoding
 
     @staticmethod
