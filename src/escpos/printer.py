@@ -34,27 +34,39 @@ class Usb(Escpos):
 
     """
 
-    def __init__(self, idVendor, idProduct, timeout=0, in_ep=0x82, out_ep=0x01, *args, **kwargs):  # noqa: N803
+    def __init__(self, idVendor, idProduct, usb_args=None, timeout=0, in_ep=0x82, out_ep=0x01,
+                 *args, **kwargs):  # noqa: N803
         """
         :param idVendor: Vendor ID
         :param idProduct: Product ID
+        :param usb_args: Optional USB arguments (e.g. custom_match)
         :param timeout: Is the time limit of the USB operation. Default without timeout.
         :param in_ep: Input end point
         :param out_ep: Output end point
         """
         Escpos.__init__(self, *args, **kwargs)
-        self.idVendor = idVendor
-        self.idProduct = idProduct
         self.timeout = timeout
         self.in_ep = in_ep
         self.out_ep = out_ep
-        self.open()
 
-    def open(self):
-        """ Search device on USB tree and set it as escpos device """
-        self.device = usb.core.find(idVendor=self.idVendor, idProduct=self.idProduct)
+        usb_args = usb_args or {}
+        if idVendor:
+            usb_args['idVendor'] = idVendor
+        if idProduct:
+            usb_args['idProduct'] = idProduct
+        self.open(usb_args)
+
+    def open(self, usb_args):
+        """ Search device on USB tree and set it as escpos device.
+
+        :param usb_args: USB arguments
+        """
+        self.device = usb.core.find(**usb_args)
         if self.device is None:
             raise USBNotFoundError("Device not found or cable not plugged in.")
+
+        self.idVendor = self.device.idVendor
+        self.idProduct = self.device.idProduct
 
         check_driver = None
 
