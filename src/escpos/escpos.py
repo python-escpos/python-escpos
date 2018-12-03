@@ -230,7 +230,7 @@ class Escpos(object):
             return
 
         if center:
-            raise NotImplementedError("Centering not implemented for native QR rendering")
+            self._raw(b'\x1Ba\x01')
 
         # Native 2D code printing
         cn = b'1'  # Code type for QR code
