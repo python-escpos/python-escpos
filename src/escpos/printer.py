@@ -336,16 +336,16 @@ class Dummy(Escpos):
         pass
 
 
-_WIN32PRINT=False
+_WIN32PRINT = False
 try:
- import win32print
- _WIN32PRINT=True
+    import win32print
+    _WIN32PRINT = True
 except ImportError:
- pass 
+    pass
 
 if _WIN32PRINT:
     class Win32Raw(Escpos):
-        def __init__(self, printer_name = None, profile=None, magic_encode_args=None, **kwargs):
+        def __init__(self, printer_name=None, profile=None, magic_encode_args=None, **kwargs):
             super().__init__(profile=profile, magic_encode_args=magic_encode_args, **kwargs)
             if printer_name is not None:
                 self.printer_name = printer_name
@@ -353,22 +353,21 @@ if _WIN32PRINT:
                 self.printer_name = win32print.GetDefaultPrinter()
             self.hPrinter = None
 
-
         def open(self, job_name="python-escpos"):
             if self.printer_name is None:
                 raise Exception("Printer not found")
-            self.hPrinter = win32print.OpenPrinter (self.printer_name)
-            self.current_job = win32print.StartDocPrinter (self.hPrinter, 1, (job_name, None, "RAW"))
-            win32print.StartPagePrinter (self.hPrinter)
+            self.hPrinter = win32print.OpenPrinter(self.printer_name)
+            self.current_job = win32print.StartDocPrinter(self.hPrinter, 1, (job_name, None, "RAW"))
+            win32print.StartPagePrinter(self.hPrinter)
 
         def close(self):
             if not self.hPrinter:
                 return
-            win32print.EndPagePrinter (self.hPrinter)
-            win32print.EndDocPrinter (self.hPrinter)
-            win32print.ClosePrinter (self.hPrinter)
+            win32print.EndPagePrinter(self.hPrinter)
+            win32print.EndDocPrinter(self.hPrinter)
+            win32print.ClosePrinter(self.hPrinter)
             self.hPrinter = None
-        
+
         def _raw(self, msg):
             """ Print any command sent in raw format
 
@@ -379,6 +378,4 @@ if _WIN32PRINT:
                 raise Exception("Printer not found")
             if self.hPrinter is None:
                 raise Exception("Printer job not opened")
-            win32print.WritePrinter (self.hPrinter, msg)
-                        
-
+            win32print.WritePrinter(self.hPrinter, msg)
