@@ -345,8 +345,8 @@ except ImportError:
 
 if _WIN32PRINT:
     class Win32Raw(Escpos):
-        def __init__(self, printer_name=None, profile=None, magic_encode_args=None, **kwargs):
-            super().__init__(profile=profile, magic_encode_args=magic_encode_args, **kwargs)
+        def __init__(self, printer_name=None, *args, **kwargs):
+            Escpos.__init__(self, *args, **kwargs)
             if printer_name is not None:
                 self.printer_name = printer_name
             else:
