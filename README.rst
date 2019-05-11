@@ -65,6 +65,17 @@ The basic usage is:
     p.barcode('1324354657687', 'EAN13', 64, 2, '', '')
     p.cut()
 
+Another example for Network printer:
+.. code:: python
+
+    from escpos.printer import Network
+    
+    kitchen = Network("192.168.1.100") #Printer IP Address
+    kitchen.text("Hello World\n")
+    kitchen.barcode('1324354657687', 'EAN13', 64, 2, '', '')
+    kitchen.cut()
+
+
 The full project-documentation is available on `Read the Docs <https://python-escpos.readthedocs.io>`_.
 
 Contributing
