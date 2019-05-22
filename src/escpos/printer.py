@@ -17,7 +17,6 @@ import usb.core
 import usb.util
 import serial
 import socket
-import sys
 
 from .escpos import Escpos
 from .exceptions import USBNotFoundError
@@ -69,9 +68,11 @@ class Usb(Escpos):
         self.idVendor = self.device.idVendor
         self.idProduct = self.device.idProduct
 
-        # detach_kernel_driver() doesn't really work on Windows,
-        # causing the library to not work on that platform.
-        if sys.platform != 'win32':
+        # pyusb has three backends: libusb0, libusb1 and openusb but
+        # only libusb1 backend implements the methods is_kernel_driver_active()
+        # and detach_kernel_driver(). This change helps enable this
+        # library to work on Windows.
+        if sef.device.backend.__module__.endswith("libusb1"):
             check_driver = None
 
             try:
