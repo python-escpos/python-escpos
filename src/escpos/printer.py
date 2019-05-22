@@ -70,8 +70,8 @@ class Usb(Escpos):
 
         # pyusb has three backends: libusb0, libusb1 and openusb but
         # only libusb1 backend implements the methods is_kernel_driver_active()
-        # and detach_kernel_driver(). This change helps enable this
-        # library to work on Windows.
+        # and detach_kernel_driver().
+        # This helps enable this library to work on Windows.
         if self.device.backend.__module__.endswith("libusb1"):
             check_driver = None
 
