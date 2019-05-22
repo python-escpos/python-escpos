@@ -72,7 +72,7 @@ class Usb(Escpos):
         # only libusb1 backend implements the methods is_kernel_driver_active()
         # and detach_kernel_driver(). This change helps enable this
         # library to work on Windows.
-        if sef.device.backend.__module__.endswith("libusb1"):
+        if self.device.backend.__module__.endswith("libusb1"):
             check_driver = None
 
             try:
