@@ -65,7 +65,9 @@ The basic usage is:
     p.barcode('1324354657687', 'EAN13', 64, 2, '', '')
     p.cut()
 
-Another example for Network printer:
+
+Another example based on the Network printer class:
+
 .. code:: python
 
     from escpos.printer import Network
