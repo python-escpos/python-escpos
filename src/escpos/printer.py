@@ -68,19 +68,24 @@ class Usb(Escpos):
         self.idVendor = self.device.idVendor
         self.idProduct = self.device.idProduct
 
-        check_driver = None
+        # pyusb has three backends: libusb0, libusb1 and openusb but
+        # only libusb1 backend implements the methods is_kernel_driver_active()
+        # and detach_kernel_driver().
+        # This helps enable this library to work on Windows.
+        if self.device.backend.__module__.endswith("libusb1"):
+            check_driver = None
 
-        try:
-            check_driver = self.device.is_kernel_driver_active(0)
-        except NotImplementedError:
-            pass
-
-        if check_driver is None or check_driver:
             try:
-                self.device.detach_kernel_driver(0)
-            except usb.core.USBError as e:
-                if check_driver is not None:
-                    print("Could not detatch kernel driver: {0}".format(str(e)))
+                check_driver = self.device.is_kernel_driver_active(0)
+            except NotImplementedError:
+                pass
+
+            if check_driver is None or check_driver:
+                try:
+                    self.device.detach_kernel_driver(0)
+                except usb.core.USBError as e:
+                    if check_driver is not None:
+                        print("Could not detatch kernel driver: {0}".format(str(e)))
 
         try:
             self.device.set_configuration()
