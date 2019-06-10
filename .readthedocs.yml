@@ -1,0 +1,9 @@
+version: 2
+formats:
+  - pdf
+  - epub
+python:
+  version: 3.7
+  install:
+     - requirements: docs/requirements.txt
+     - method: setuptools
