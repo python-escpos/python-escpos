@@ -5,7 +5,6 @@ formats:
 python:
   version: 3.7
   install:
-     - method: pip
-       requirements: doc/requirements.txt
+     - requirements: doc/requirements.txt
      - method: setuptools
        path: .
