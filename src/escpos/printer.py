@@ -236,6 +236,11 @@ class Network(Escpos):
         """
         self.device.sendall(msg)
 
+    def _read(self):
+        """ Read data from the TCP socket """
+
+        return self.device.recv(16)
+
     def close(self):
         """ Close TCP connection """
         if self.device is not None:
