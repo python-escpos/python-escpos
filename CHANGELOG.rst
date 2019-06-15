@@ -1,6 +1,29 @@
 *********
 Changelog
 *********
+2019-06-16 - Version 3.0a5 - "Lightly Seared On The Reality Grill"
+------------------------------------------------------------------
+This release is the sixth alpha release of the new version 3.0. Please
+be aware that the API is subject to change until v3.0 is released.
+
+changes
+^^^^^^^
+- allow arbitrary USB arguments in USB-class
+- add Win32Raw-Printer on Windows-platforms
+- add and improve Windows support of USB-class
+- use pyyaml safe_load()
+- improve doc
+- implement _read method of Network printer class
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
+- Gerard Marull-Paretas
+- Ramon Poca
+- akeonly
+- Omer Akram
+- Justin Vieira
+
 2018-05-15 - Version 3.0a4 - "Kakistocrat"
 ------------------------------------------
 This release is the fifth alpha release of the new version 3.0. Please

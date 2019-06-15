@@ -65,8 +65,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
@@ -102,7 +100,7 @@ setup(
         'nose',
         'scripttest',
         'mock',
-        'hypothesis!=3.56.9',
+        'hypothesis!=3.56.9,<4',
         'flake8'
     ],
     entry_points={

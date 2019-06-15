@@ -44,7 +44,7 @@ to have and the second yields the "Output Endpoint" address.
 
 ::
 
-    Epson = printer.Usb(0x04b8,0x0202)
+    p = printer.Usb(0x04b8,0x0202)
 
 By default the "Interface" number is "0" and the "Output Endpoint"
 address is "0x01". If you have other values then you can define them on
@@ -55,7 +55,7 @@ on 0x81 and out\_ep=0x02, then the printer definition should look like:
 
 ::
 
-    Generic = printer.Usb(0x1a2b,0x1a2b,0,0x81,0x02)
+    p = printer.Usb(0x1a2b,0x1a2b,0,0x81,0x02)
 
 Network printer
 ^^^^^^^^^^^^^^^
@@ -67,7 +67,7 @@ IP by DHCP or you set it manually.
 
 ::
 
-    Epson = printer.Network("192.168.1.99")
+    p = printer.Network("192.168.1.99")
 
 Serial printer
 ^^^^^^^^^^^^^^
@@ -81,7 +81,10 @@ to.
 
 ::
 
-    Epson = printer.Serial("/dev/tty0")
+    p = printer.Serial("/dev/tty0")
+    
+    # on a Windows OS serial devices are typically accessible as COM
+    p = printer.Serial("COM1")
 
 Other printers
 ^^^^^^^^^^^^^^
@@ -93,7 +96,7 @@ passing the device node name.
 
 ::
 
-    Epson = printer.File("/dev/usb/lp1")
+    p = printer.File("/dev/usb/lp1")
 
 The default is "/dev/usb/lp0", so if the printer is located on that
 node, then you don't necessary need to pass the node name.
@@ -108,17 +111,17 @@ on a USB interface.
 
     from escpos import *
     """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-    Epson = printer.Usb(0x04b8,0x0202)
+    p = printer.Usb(0x04b8,0x0202)
     # Print text
-    Epson.text("Hello World\n")
+    p.text("Hello World\n")
     # Print image
-    Epson.image("logo.gif")
+    p.image("logo.gif")
     # Print QR Code
-    Epson.qr("You can readme from your smartphone")
+    p.qr("You can readme from your smartphone")
     # Print barcode
-    Epson.barcode('1324354657687','EAN13',64,2,'','')
+    p.barcode('1324354657687','EAN13',64,2,'','')
     # Cut paper
-    Epson.cut()
+    p.cut()
 
 Configuration File
 ------------------
