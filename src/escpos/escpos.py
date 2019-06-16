@@ -195,6 +195,7 @@ class Escpos(object):
         :param native: True to render the code on the printer, False to render the code as an image and send it to the
             printer (Default)
         :param center: Centers the code *default:* False
+        :param impl: Image-printing-implementation, refer to :meth:`.image()` for details
         """
         # Basic validation
         if ec not in [QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q]:
@@ -306,8 +307,8 @@ class Escpos(object):
         .. todo:: For fixed-length standards with mandatory checksum (EAN, UPC),
             compute and add the checksum automatically if missing.
 
-        :param bc: barcode format, see :py:func`~escpos.Escpos.barcode`
-        :param code: alphanumeric data to be printed as bar code, see :py:func`~escpos.Escpos.barcode`
+        :param bc: barcode format, see :py:meth:`.barcode()`
+        :param code: alphanumeric data to be printed as bar code, see :py:meth:`.barcode()`
         :return: bool
         """
         if bc not in BARCODE_FORMATS:
@@ -394,7 +395,7 @@ class Escpos(object):
             *default*: A
 
         :param check: If this parameter is True, the barcode format will be checked to ensure it meets the bc
-            requirements as defigned in the esc/pos documentation. See py:func:`~escpos.Escpos.check_barcode`
+            requirements as defigned in the esc/pos documentation. See :py:meth:`.check_barcode()`
             for more information. *default*: True.
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,
