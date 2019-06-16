@@ -12,6 +12,7 @@ env:
   global:
     - ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
 matrix:
+  fast_finish: true
   include:
     - name: "Python 3.7 on Windows"
       os: windows
@@ -50,11 +51,13 @@ matrix:
     - python: 3.7
       env: TOXENV=flake8
   allow_failures:
+    - python: 2.7
     - python: 3.6-dev
     - python: 3.7-dev
     - python: 3.8-dev
     - python: nightly
     - python: pypy3
+    - os: windows
 before_install:
     - pip install tox codecov 'sphinx>=1.5.1'
     - ./doc/generate_authors.sh --check
