@@ -19,7 +19,10 @@ matrix:
       before_install:
          - choco install python
          - pip install tox codecov 'sphinx>=1.5.1'
-      env: TOXENV=py37 PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      env:
+         - TOXENV=py37
+         - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+         - ESCPOS_CAPABILITIES_FILE=C:/Users/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
     - python: 2.7
       env: TOXENV=py27
     - python: 3.4
