@@ -12,7 +12,23 @@ env:
   global:
     - ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
 matrix:
+  fast_finish: true
   include:
+    - name: "Python 3.7 on Windows"
+      os: windows
+      language: shell
+      before_install:
+         - choco install python
+         - pip install tox codecov 'sphinx>=1.5.1'
+      env:
+         - TOXENV=py37
+         - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+         - ESCPOS_CAPABILITIES_FILE=C:/Users/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
+    - name: "Python 3.7 on macOS"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+      env: TOXENV=py37 ESCPOS_CAPABILITIES_FILE=/Users/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
     - python: 2.7
       env: TOXENV=py27
     - python: 3.4
@@ -40,11 +56,14 @@ matrix:
     - python: 3.7
       env: TOXENV=flake8
   allow_failures:
+    - python: 2.7
     - python: 3.6-dev
     - python: 3.7-dev
     - python: 3.8-dev
     - python: nightly
     - python: pypy3
+    - os: windows
+    - os: osx
 before_install:
     - pip install tox codecov 'sphinx>=1.5.1'
     - ./doc/generate_authors.sh --check
