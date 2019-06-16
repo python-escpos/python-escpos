@@ -13,6 +13,13 @@ env:
     - ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
 matrix:
   include:
+    - name: "Python 3.7 on Windows"
+      os: windows
+      language: shell
+      before_install:
+         - choco install python
+         - pip install tox codecov 'sphinx>=1.5.1'
+      env: TOXENV=py37 PATH=/c/Python37:/c/Python37/Scripts:$PATH
     - python: 2.7
       env: TOXENV=py27
     - python: 3.4
