@@ -62,7 +62,8 @@ matrix:
     - python: 3.8-dev
     - python: nightly
     - python: pypy3
-    - os: windows osx
+    - os: windows
+    - os: osx
 before_install:
     - pip install tox codecov 'sphinx>=1.5.1'
     - ./doc/generate_authors.sh --check
