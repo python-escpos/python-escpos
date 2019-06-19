@@ -1,6 +1,22 @@
 *********
 Changelog
 *********
+2019-06-19 - Version 3.0a6 - "Mistake not..."
+---------------------------------------------
+This release is the seventh alpha release of the new version 3.0.
+Please be aware the the API is subject to change until v3.0 is
+released.
+
+changes
+^^^^^^^
+- fix inclusion of the capabilities-file
+- execute CI jobs also on Windows and macOS-targets
+- improve documentation
+
+contributors
+^^^^^^^^^^^^
+- Patrick Kanzler
+
 2019-06-16 - Version 3.0a5 - "Lightly Seared On The Reality Grill"
 ------------------------------------------------------------------
 This release is the sixth alpha release of the new version 3.0. Please
