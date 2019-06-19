@@ -1,6 +1,5 @@
 include *.rst
 include *.txt
-include COPYING
 include LICENSE
 include INSTALL
 include tox.ini
