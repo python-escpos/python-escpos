@@ -469,7 +469,7 @@ if _CUPSPRINT:
 
         def close(self):
             """ Close CUPS connection.
-            
+
             Send pending job to the printer if needed.
             """
             if self.pending_job:
