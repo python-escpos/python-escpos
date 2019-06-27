@@ -8,15 +8,12 @@
 :license: MIT
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-import usb.core
-import usb.util
 import serial
 import socket
+import usb.core
+import usb.util
 
 from .escpos import Escpos
 from .exceptions import USBNotFoundError
@@ -83,6 +80,8 @@ class Usb(Escpos):
             if check_driver is None or check_driver:
                 try:
                     self.device.detach_kernel_driver(0)
+                except NotImplementedError:
+                    pass
                 except usb.core.USBError as e:
                     if check_driver is not None:
                         print("Could not detatch kernel driver: {0}".format(str(e)))
@@ -349,6 +348,7 @@ class Dummy(Escpos):
 _WIN32PRINT = False
 try:
     import win32print
+
     _WIN32PRINT = True
 except ImportError:
     pass
