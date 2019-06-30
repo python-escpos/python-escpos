@@ -119,7 +119,7 @@ on a USB interface.
     # Print QR Code
     p.qr("You can readme from your smartphone")
     # Print barcode
-    p.barcode('1324354657687','EAN13',64,2,'','')
+    p.barcode('4006381333931','EAN13',64,2,'','')
     # Cut paper
     p.cut()
 

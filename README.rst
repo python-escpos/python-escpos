@@ -62,7 +62,7 @@ The basic usage is:
     p = Usb(0x04b8, 0x0202, 0, profile="TM-T88III")
     p.text("Hello World\n")
     p.image("logo.gif")
-    p.barcode('1324354657687', 'EAN13', 64, 2, '', '')
+    p.barcode('4006381333931', 'EAN13', 64, 2, '', '')
     p.cut()
 
 
@@ -74,7 +74,7 @@ Another example based on the Network printer class:
     
     kitchen = Network("192.168.1.100") #Printer IP Address
     kitchen.text("Hello World\n")
-    kitchen.barcode('1324354657687', 'EAN13', 64, 2, '', '')
+    kitchen.barcode('4006381333931', 'EAN13', 64, 2, '', '')
     kitchen.cut()
 
 
