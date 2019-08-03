@@ -501,7 +501,7 @@ class Escpos(object):
         image = my_code.writer._image
         self.image(image, impl=impl)
 
-    def text(self, txt):
+    def text(self, txt, chinese=False):
         """ Print alpha-numeric text
 
         The text has to be encoded in the currently selected codepage.
@@ -510,10 +510,14 @@ class Escpos(object):
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
-        txt = six.text_type(txt)
-        self.magic.write(txt)
+        if chinese:
+            txt = txt.encode('GB18030')
+            self._raw(txt)
+        else:
+            txt = six.text_type(txt)
+            self.magic.write(txt)
 
-    def textln(self, txt=''):
+    def textln(self, txt='', chinese=False):
         """Print alpha-numeric text with a newline
 
         The text has to be encoded in the currently selected codepage.
@@ -522,7 +526,7 @@ class Escpos(object):
         :param txt: text to be printed with a newline
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
-        self.text('{}\n'.format(txt))
+        self.text('{}\n'.format(txt), chinese=chinese)
 
     def ln(self, count=1):
         """Print a newline or more
@@ -535,7 +539,7 @@ class Escpos(object):
         if count > 0:
             self.text('\n' * count)
 
-    def block_text(self, txt, font=None, columns=None):
+    def block_text(self, txt, font=None, columns=None, chinese=False):
         """ Text is printed wrapped to specified columns
 
         Text has to be encoded in unicode.
@@ -546,7 +550,7 @@ class Escpos(object):
         :return: None
         """
         col_count = self.profile.get_columns(font) if columns is None else columns
-        self.text(textwrap.fill(txt, col_count))
+        self.text(textwrap.fill(txt, col_count), chinese=chinese)
 
     def set(self, align='left', font='a', bold=False, underline=0, width=1,
             height=1, density=9, invert=False, smooth=False, flip=False,
