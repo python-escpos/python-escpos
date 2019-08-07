@@ -22,6 +22,7 @@ from .constants import CODEPAGE_CHANGE
 from .exceptions import Error
 from .codepages import CodePages
 import six
+import re
 
 
 class Encoder(object):
@@ -251,6 +252,9 @@ class MagicEncode(object):
         if self.disabled:
             self.write_with_encoding(self.encoding, text)
             return
+
+        if re.findall(r'[\u4e00-\u9fa5]', text):
+            text = text.encode('GB18030')
 
         # See how far we can go into the text with the current encoding
         to_write, text = split_writable_text(self.encoder, text, self.encoding)
