@@ -254,7 +254,8 @@ class MagicEncode(object):
             return
 
         if re.findall(r'[\u4e00-\u9fa5]', text):
-            text = text.encode('GB18030')
+            self.driver._raw(text.encode('GB18030'))
+            return
 
         # See how far we can go into the text with the current encoding
         to_write, text = split_writable_text(self.encoder, text, self.encoding)
