@@ -5,4 +5,4 @@ pyserial
 sphinx-rtd-theme
 setuptools-scm
 docutils>=0.12
-viivakoodi
+python-barcode>=0.11.0,<1
