@@ -43,7 +43,7 @@ This library makes use of:
 * `Pillow <https://github.com/python-pillow/Pillow>`_ for image printing
 * `qrcode <https://github.com/lincolnloop/python-qrcode>`_ for the generation of QR-codes
 * `pyserial <https://github.com/pyserial/pyserial>`_ for serial printers
-* `viivakoodi <https://github.com/kxepal/viivakoodi>`_ for the generation of barcodes
+* `python-barcode <https://github.com/WhyNotHugo/python-barcode>`_ for the generation of barcodes
 
 Documentation and Usage
 -----------------------
