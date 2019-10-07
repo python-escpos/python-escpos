@@ -27,25 +27,6 @@ Style-Guide
 
 When writing code please try to stick to these rules.
 
-Python 2 and 3
-^^^^^^^^^^^^^^
-We have rewritten the code in order to maintain compatibility with both Python 2 and Python 3.
-In order to ensure that we do not miss any accidental degradation, please add these imports to the top
-of every file of code:
-
-.. code-block:: Python
-
-  from __future__ import absolute_import
-  from __future__ import division
-  from __future__ import print_function
-  from __future__ import unicode_literals
-
-Furthermore please be aware of the differences between Python 2 and 3. For
-example `this guide <https://docs.python.org/3/howto/pyporting.html>`_ is helpful.
-Special care has to be taken when dealing with strings and byte-strings. Please note
-that the :py:meth:`~escpos.escpos.Escpos._raw`-method only accepts byte-strings.
-Often you can achieve compatibility quite easily with a tool from the `six`-package.
-
 PEP8
 ^^^^
 The entire codebase adheres to the rules of PEP8.

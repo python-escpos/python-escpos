@@ -29,8 +29,6 @@ matrix:
       osx_image: xcode10.2
       language: shell
       env: TOXENV=py37 ESCPOS_CAPABILITIES_FILE=/Users/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
-    - python: 2.7
-      env: TOXENV=py27
     - python: 3.4
       env: TOXENV=py34
     - python: 3.5

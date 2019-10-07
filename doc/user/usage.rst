@@ -82,7 +82,7 @@ to.
 ::
 
     p = printer.Serial("/dev/tty0")
-    
+
     # on a Windows OS serial devices are typically accessible as COM
     p = printer.Serial("COM1")
 
@@ -192,8 +192,8 @@ An USB-printer could be defined by::
 
 Printing text right
 -------------------
-Python-escpos is designed to accept unicode. So make sure that you use ``u'strings'`` or import ``unicode_literals``
-from ``__future__`` if you are on Python 2. On Python 3 you should be fine.
+
+Python-escpos is designed to accept unicode.
 
 For normal usage you can simply pass your text to the printers ``text()``-function. It will automatically guess
 the right codepage and then send the encoded data to the printer. If this feature does not work, please try to

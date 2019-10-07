@@ -4,10 +4,6 @@ This module contains the implentations of abstract base class :py:class:`Config`
 
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
 import os
 import appdirs
