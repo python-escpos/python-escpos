@@ -456,7 +456,7 @@ if _CUPSPRINT:
                     self.printer_name,
                     self.tmpfile.name,
                     self.job_name,
-                    {})
+                    {"document-format": cups.CUPS_FORMAT_RAW})
             self._clear()
 
         def _clear(self):
