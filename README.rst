@@ -77,7 +77,7 @@ Another example based on the Network printer class:
     kitchen.barcode('1324354657687', 'EAN13', 64, 2, '', '')
     kitchen.cut()
     
-Another example based on the Network printer class:
+Another example based on the Serial printer class:
 
 .. code:: python
 
