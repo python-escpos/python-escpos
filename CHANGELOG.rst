@@ -1,10 +1,35 @@
 *********
 Changelog
 *********
+2020-05-09 - Version 3.0a7 - "No Fixed Abode"
+---------------------------------------------
+This release is the eight alpha release of the new version 3.0.
+Please be aware that the API is subject to change until v3.0
+is released.
+
+This release also marks the point at which the project transitioned
+to having only a master-branch (and not an additional development branch).
+
+changes
+^^^^^^^
+- add Exception for NotImplementedError in detach_kernel_driver
+- update installation information
+- update and improve documentation
+- add error handling to image centering flag
+- update and fix tox and CI environment, preparing drop of support for Python 2
+
+contributors
+^^^^^^^^^^^^
+- Alexander Bougakov
+- Brian
+- Yaisel Hurtado
+- Maximilan Wagenbach
+- Patrick Kanzler
+
 2019-06-19 - Version 3.0a6 - "Mistake not..."
 ---------------------------------------------
 This release is the seventh alpha release of the new version 3.0.
-Please be aware the the API is subject to change until v3.0 is
+Please be aware that the API is subject to change until v3.0 is
 released.
 
 changes

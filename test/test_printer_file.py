@@ -28,7 +28,6 @@ else:
 
 
 @pytest.mark.skip("this test is broken and has to be fixed or discarded")
-@settings(use_coverage=False)
 @given(path=text())
 def test_load_file_printer(mocker, path):
     """test the loading of the file-printer"""
@@ -40,7 +39,6 @@ def test_load_file_printer(mocker, path):
 
 
 @pytest.mark.skip("this test is broken and has to be fixed or discarded")
-@settings(deadline=None, use_coverage=False)
 @given(txt=text())
 def test_auto_flush(mocker, txt):
     """test auto_flush in file-printer"""
@@ -62,7 +60,6 @@ def test_auto_flush(mocker, txt):
 
 
 @pytest.mark.skip("this test is broken and has to be fixed or discarded")
-@settings(deadline=None, use_coverage=False)
 @given(txt=text())
 def test_flush_on_close(mocker, txt):
     """test flush on close in file-printer"""

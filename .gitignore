@@ -29,3 +29,6 @@ test/test-cli-output/
 *.swp
 *.swn
 *.swo
+
+# vscode
+.vscode/settings.json
