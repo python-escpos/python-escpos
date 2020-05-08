@@ -56,12 +56,9 @@ Apart from that the travis-log and the check by Landscape will provide you with 
 
 GIT
 ^^^
-The master-branch contains code that has been released to PyPi. A release is marked with a tag
-corresponding to the version. Issues are closed when they have been resolved in the development-branch.
-
-When you have a change to make, begin by creating a new branch from the HEAD of `python-escpos/development`.
-Name your branch to indicate what you are trying to achieve. Good branch names might
-be `improve/text-handling`, `feature/enable-color-printing`.
+The master-branch contains the main development of the project. A release to PyPi is marked with a tag
+corresponding to the version. Issues are closed when they have been resolved by merging into the master-branch.
+When you have a change to make, begin by creating a new branch from the HEAD of `python-escpos/master`.
 
 Please try to group your commits into logical units. If you need to tidy up your branch, you can make use of a
 git feature called an 'interactive rebase' before making a pull request. A small, self-contained change-set is

@@ -76,6 +76,25 @@ Another example based on the Network printer class:
     kitchen.text("Hello World\n")
     kitchen.barcode('1324354657687', 'EAN13', 64, 2, '', '')
     kitchen.cut()
+    
+Another example based on the Serial printer class:
+
+.. code:: python
+
+    from escpos.printer import Serial
+    
+    """ 9600 Baud, 8N1, Flow Control Enabled """
+    p = Serial(devfile='/dev/tty.usbserial',
+               baudrate=9600,
+               bytesize=8,
+               parity='N',
+               stopbits=1,
+               timeout=1.00,
+               dsrdtr=True)
+
+    p.text("Hello World\n")
+    p.qr("You can readme from your smartphone")
+    p.cut()
 
 
 The full project-documentation is available on `Read the Docs <https://python-escpos.readthedocs.io>`_.
