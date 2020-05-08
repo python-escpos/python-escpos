@@ -4,6 +4,7 @@ include LICENSE
 include INSTALL
 include tox.ini
 include capabilities-data/dist/capabilities.json
+include src/escpos/capabilities.json
 recursive-include doc *.bat
 recursive-include doc *.ico
 recursive-include doc *.py

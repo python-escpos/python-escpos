@@ -106,6 +106,9 @@ class Escpos(object):
             * `graphics`: prints with the `GS ( L`-command
             * `bitImageColumn`: prints with the `ESC *`-command
 
+        When trying to center an image make sure you have initialized the printer with a valid profile, that
+        contains a media width pixel field. Otherwise the centering will have no effect.
+
         :param img_source: PIL image or filename to load: `jpg`, `gif`, `png` or `bmp`
         :param high_density_vertical: print in high density in vertical direction *default:* True
         :param high_density_horizontal: print in high density in horizontal direction *default:* True
@@ -117,6 +120,10 @@ class Escpos(object):
         im = EscposImage(img_source)
 
         try:
+            if self.profile.profile_data['media']['width']['pixels'] == "Unknown":
+                print("The media.width.pixel field of the printer profile is not set. " +
+                      "The center flag will have no effect.")
+
             max_width = int(self.profile.profile_data['media']['width']['pixels'])
 
             if im.width > max_width:
