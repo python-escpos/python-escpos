@@ -1,7 +1,7 @@
 language: python
 sudo: false
 cache: pip
-dist: focal
+dist: bionic
 git:
   depth: 100000
 addons:
