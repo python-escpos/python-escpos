@@ -37,3 +37,4 @@ jobs:
     - name: Test with tox
       run: |
         tox
+      env: ESCPOS_CAPABILITIES_FILE=/home/runner/work/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
