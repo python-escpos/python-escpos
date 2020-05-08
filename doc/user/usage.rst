@@ -48,14 +48,16 @@ to have and the second yields the "Output Endpoint" address.
 
 By default the "Interface" number is "0" and the "Output Endpoint"
 address is "0x01". If you have other values then you can define them on
-your instance. So, assuming that we have another printer where in\_ep is
-on 0x81 and out\_ep=0x02, then the printer definition should look like:
+your instance. So, assuming that we have another printer, CT-S2000, 
+manufactured by Citizen (with "Vendor ID" of 2730 and "Product ID" of 0fff) 
+where in\_ep is on 0x81 and out\_ep=0x02, then the printer definition should 
+look like:
 
 **Generic USB Printer initialization**
 
 ::
 
-    p = printer.Usb(0x1a2b,0x1a2b,0,0x81,0x02)
+    p = printer.Usb(0x2730, 0x0fff, 0, 0x81, 0x02)
 
 Network printer
 ^^^^^^^^^^^^^^^
