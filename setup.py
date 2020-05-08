@@ -100,7 +100,7 @@ setup(
         'nose',
         'scripttest',
         'mock',
-        'hypothesis!=3.56.9,<4',
+        'hypothesis>4',
         'flake8'
     ],
     entry_points={
