@@ -33,16 +33,12 @@ version = '{version}'
 
 setup(
     use_scm_version={
-        'write_to': 'src/escpos/version.py',
-        'write_to_template': setuptools_scm_template,
+        "write_to": "src/escpos/version.py",
+        "write_to_template": setuptools_scm_template,
     },
-    platforms='any',
+    platforms="any",
     package_dir={"": "src"},
     packages=find_packages(where="src", exclude=["tests", "tests.*"]),
-    package_data={'escpos': ['capabilities.json']},
-    entry_points={
-        'console_scripts': [
-            'python-escpos = escpos.cli:main'
-        ]
-    },
+    package_data={"escpos": ["capabilities.json"]},
+    entry_points={"console_scripts": ["python-escpos = escpos.cli:main"]},
 )
