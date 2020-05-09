@@ -54,7 +54,6 @@ setup(
         'receipt,',
     ],
     platforms='any',
-    python_requires='>=3.5',
     package_dir={"": "src"},
     packages=find_packages(where="src", exclude=["tests", "tests.*"]),
     package_data={'escpos': ['capabilities.json']},
@@ -75,6 +74,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Office/Business :: Financial :: Point-Of-Sale',
     ],
+    python_requires='>=3.5',
     install_requires=[
         'pyusb>=1.0.0',
         'Pillow>=2.0',
