@@ -54,6 +54,7 @@ setup(
         'receipt,',
     ],
     platforms='any',
+    python_requires='>=3.5',
     package_dir={"": "src"},
     packages=find_packages(where="src", exclude=["tests", "tests.*"]),
     package_data={'escpos': ['capabilities.json']},
