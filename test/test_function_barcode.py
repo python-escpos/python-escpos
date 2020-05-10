@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import escpos.printer as printer
-from escpos.constants import BARCODE_TYPE_A, BARCODE_TYPE_B
 from escpos.capabilities import Profile, BARCODE_B
 from escpos.exceptions import BarcodeTypeError, BarcodeCodeError
 import pytest
