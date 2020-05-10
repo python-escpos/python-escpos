@@ -31,4 +31,8 @@ test/test-cli-output/
 *.swo
 
 # vscode
-.vscode/settings.json
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

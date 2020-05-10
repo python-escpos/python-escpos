@@ -1,0 +1,11 @@
+{
+    "restructuredtext.confPath": "${workspaceFolder}/doc",
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.eggs/**": true,
+        "**/.hypothesis/**": true,
+        "**/.tox/**": true,
+      }
+}
