@@ -479,7 +479,8 @@ class Escpos(object):
             self._raw(NUL)
 
     def soft_barcode(self, barcode_type, data, impl='bitImageColumn',
-                     module_height=5, module_width=0.2, text_distance=1):
+                     module_height=5, module_width=0.2, text_distance=1,
+                     center=True):
 
         image_writer = ImageWriter()
 
@@ -502,7 +503,7 @@ class Escpos(object):
 
         # Retrieve the Pillow image and print it
         image = my_code.writer._image
-        self.image(image, impl=impl)
+        self.image(image, impl=impl, center=center)
 
     def text(self, txt):
         """ Print alpha-numeric text
