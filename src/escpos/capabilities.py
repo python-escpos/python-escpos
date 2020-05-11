@@ -1,5 +1,6 @@
 import re
 from os import environ, path
+import pkg_resources
 import pickle
 import logging
 import time
@@ -15,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 pickle_dir = environ.get('ESCPOS_CAPABILITIES_PICKLE_DIR', gettempdir())
 pickle_path = path.join(pickle_dir, '{v}.capabilities.pickle'.format(v=platform.python_version()))
-capabilities_path = environ.get(
-    'ESCPOS_CAPABILITIES_FILE',
-    path.join(path.dirname(__file__), 'capabilities.json'))
+# get a temporary file from pkg_resources if no file is specified in env
+capabilities_path = environ.get('ESCPOS_CAPABILITIES_FILE',
+                                pkg_resources.resource_filename(__name__, 'capabilities.json'))
 
 # Load external printer database
 t0 = time.time()
