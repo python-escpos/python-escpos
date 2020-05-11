@@ -1,6 +1,6 @@
 """ ESC/POS configuration manager.
 
-This module contains the implentations of abstract base class :py:class:`Config`.
+This module contains the implementations of abstract base class :py:class:`Config`.
 
 """
 

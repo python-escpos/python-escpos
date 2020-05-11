@@ -58,7 +58,7 @@ BARCODE_B = 'barcodeB'
 
 
 class BaseProfile(object):
-    """This respresents a printer profile.
+    """This represents a printer profile.
 
     A printer profile knows about the number of columns, supported
     features, colors and more.
