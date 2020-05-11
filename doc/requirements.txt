@@ -3,6 +3,7 @@ Pillow>=2.0
 qrcode>=4.0
 pyserial
 sphinx-rtd-theme
+setuptools
 setuptools-scm
 docutils>=0.12
 sphinxcontrib-spelling>=5
