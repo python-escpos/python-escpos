@@ -43,6 +43,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.graphviz',
     'sphinx.ext.inheritance_diagram',
+    'sphinxcontrib.spelling',
 ]
 
 # supress warnings for external images
