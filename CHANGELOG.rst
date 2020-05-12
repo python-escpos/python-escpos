@@ -1,6 +1,28 @@
 *********
 Changelog
 *********
+2020-05-12 - Version 3.0a8 - "Only Slightly Bent"
+-------------------------------------------------
+This release is the ninth alpha release of the new version 3.0.
+Please be aware that the API is subject to change until v3.0 is
+released.
+
+This release drops support for Python 2, requiring at least
+version 3.5 of Python.
+
+changes
+^^^^^^^
+- Drop support for Python 2 and mark in setuptools as only supporting 3.5 and upwards
+- remove landscape.io badge
+- replace viivakoodi with python-barcode which is maintained
+- add configuration for Visual Studio Code
+- use pkg_resources for the retrieval of the capabilities.json
+
+contributors
+^^^^^^^^^^^^
+- Romain Porte
+- Patrick Kanzler
+
 2020-05-09 - Version 3.0a7 - "No Fixed Abode"
 ---------------------------------------------
 This release is the eight alpha release of the new version 3.0.
