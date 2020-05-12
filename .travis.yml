@@ -9,9 +9,6 @@ addons:
     packages:
       - graphviz
       - libenchant1c2a
-env:
-  global:
-    - ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
 matrix:
   fast_finish: true
   include:
