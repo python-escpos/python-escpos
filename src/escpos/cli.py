@@ -3,7 +3,7 @@
 """ CLI
 
 This module acts as a command line interface for python-escpos. It mirrors
-closely the available ESCPOS commands while adding a couple extra ones for convience.
+closely the available ESCPOS commands while adding a couple extra ones for convenience.
 
 It requires you to have a configuration file. See documentation for details.
 
@@ -554,7 +554,7 @@ def main():
 
 def demo(printer, **kwargs):
     """
-    Prints specificed demos. Called when CLI is passed `demo`. This function
+    Prints demos. Called when CLI is passed `demo`. This function
     uses the DEMO_FUNCTIONS dictionary.
 
     :param printer: A printer from escpos.printer

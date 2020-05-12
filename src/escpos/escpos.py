@@ -398,7 +398,7 @@ class Escpos(object):
             *default*: A
 
         :param check: If this parameter is True, the barcode format will be checked to ensure it meets the bc
-            requirements as defigned in the esc/pos documentation. See :py:meth:`.check_barcode()`
+            requirements as definged in the ESC/POS documentation. See :py:meth:`.check_barcode()`
             for more information. *default*: True.
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeSizeError`,

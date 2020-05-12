@@ -48,9 +48,9 @@ to have and the second yields the "Output Endpoint" address.
 
 By default the "Interface" number is "0" and the "Output Endpoint"
 address is "0x01". If you have other values then you can define them on
-your instance. So, assuming that we have another printer, CT-S2000, 
-manufactured by Citizen (with "Vendor ID" of 2730 and "Product ID" of 0fff) 
-where in\_ep is on 0x81 and out\_ep=0x02, then the printer definition should 
+your instance. So, assuming that we have another printer, CT-S2000,
+manufactured by Citizen (with "Vendor ID" of 2730 and "Product ID" of 0fff)
+where in\_ep is on 0x81 and out\_ep=0x02, then the printer definition should
 look like:
 
 **Generic USB Printer initialization**
@@ -163,7 +163,7 @@ The printer section
 
 The ``printer`` configuration section defines a default printer to create.
 
-The only required paramter is ``type``. The value of this has to be one of the
+The only required parameter is ``type``. The value of this has to be one of the
 printers defined in :doc:`/user/printers`.
 
 The rest of the given parameters will be passed on to the initialization of the printer class.
@@ -199,7 +199,7 @@ Python-escpos is designed to accept unicode.
 
 For normal usage you can simply pass your text to the printers ``text()``-function. It will automatically guess
 the right codepage and then send the encoded data to the printer. If this feature does not work, please try to
-isolate the error and then create an issue on the Github project page.
+isolate the error and then create an issue on the GitHub project page.
 
 If you want or need to you can manually set the codepage. For this please use the ``charcode()``-function. You can set
 any key-value that is in ``CHARCODE``. If something is wrong, an ``CharCodeError`` will be raised.

@@ -8,6 +8,7 @@ addons:
   apt:
     packages:
       - graphviz
+      - libenchant1c2a
 env:
   global:
     - ESCPOS_CAPABILITIES_FILE=/home/travis/build/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
@@ -19,7 +20,7 @@ matrix:
       language: shell
       before_install:
          - choco install python
-         - pip install tox codecov 'sphinx>=1.5.1'
+         - pip install tox codecov 'sphinx>=1.5.1' 'sphinxcontrib-spelling>=5'
       env:
          - TOXENV=py37
          - PATH=/c/Python37:/c/Python37/Scripts:$PATH
@@ -57,7 +58,7 @@ matrix:
     - os: windows
     - os: osx
 before_install:
-    - pip install tox codecov 'sphinx>=1.5.1'
+    - pip install tox codecov 'sphinx>=1.5.1' 'sphinxcontrib-spelling>=5'
     - ./doc/generate_authors.sh --check
 script:
     - tox

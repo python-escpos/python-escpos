@@ -43,6 +43,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.graphviz',
     'sphinx.ext.inheritance_diagram',
+    'sphinxcontrib.spelling',
 ]
 
 # supress warnings for external images
@@ -292,3 +293,9 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# spellchecker
+spelling_ignore_pypi_package_names = True
+spelling_ignore_wiki_words = True
+spelling_ignore_python_builtins = True
+spelling_ignore_importable_modules = True
