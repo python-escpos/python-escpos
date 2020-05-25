@@ -661,8 +661,6 @@ class Escpos(object):
         be attempted. Note however, that not all models can do a partial cut. See the documentation of
         your printer for details.
 
-        .. todo:: Check this function on TM-T88II.
-
         :param mode: set to 'PART' for a partial cut. default: 'FULL'
         :param feed: print and feed before cutting. default: true
         :raises ValueError: if mode not in ('FULL', 'PART')
