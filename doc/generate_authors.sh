@@ -12,7 +12,7 @@ if [ "$#" -eq 1 ]
 	echo "\nNew authorsfile:\n"
 	cat $TEMPAUTHORSFILE
 	echo "\nUsing diff on files...\n"
-        diff -q --from-file $AUTHORSFILE $TEMPAUTHORSFILE
+        diff --suppress-common-lines -b --from-file $AUTHORSFILE $TEMPAUTHORSFILE
     else
 	echo "$GENLIST">$AUTHORSFILE
 fi
