@@ -15,7 +15,7 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 import six
 
 # Control characters
-# as labelled in http://www.novopos.ch/client/EPSON/TM-T20/TM-T20_eng_qr.pdf
+# as labelled in https://www.novopos.ch/client/EPSON/TM-T20/TM-T20_eng_qr.pdf
 NUL = b'\x00'
 EOT = b'\x04'
 ENQ = b'\x05'

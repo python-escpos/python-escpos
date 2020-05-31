@@ -11,7 +11,7 @@ python-escpos - Python library to manipulate ESC/POS Printers
     :alt: Code Coverage
 
 .. image:: https://readthedocs.org/projects/python-escpos/badge/?version=latest
-    :target: http://python-escpos.readthedocs.io/en/latest/?badge=latest
+    :target: https://python-escpos.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 
@@ -67,18 +67,18 @@ Another example based on the Network printer class:
 .. code:: python
 
     from escpos.printer import Network
-    
+
     kitchen = Network("192.168.1.100") #Printer IP Address
     kitchen.text("Hello World\n")
     kitchen.barcode('1324354657687', 'EAN13', 64, 2, '', '')
     kitchen.cut()
-    
+
 Another example based on the Serial printer class:
 
 .. code:: python
 
     from escpos.printer import Serial
-    
+
     """ 9600 Baud, 8N1, Flow Control Enabled """
     p = Serial(devfile='/dev/tty.usbserial',
                baudrate=9600,
@@ -98,7 +98,7 @@ The full project-documentation is available on `Read the Docs <https://python-es
 Contributing
 ------------
 
-This project is open for any contribution! Please see `CONTRIBUTING.rst <http://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_ for more information.
+This project is open for any contribution! Please see `CONTRIBUTING.rst <https://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_ for more information.
 
 
 Disclaimer
@@ -106,5 +106,3 @@ Disclaimer
 
 None of the vendors cited in this project agree or endorse any of the patterns or implementations.
 Its names are used only to maintain context.
-
-

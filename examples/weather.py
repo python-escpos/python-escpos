@@ -9,7 +9,7 @@
 # Written by Adafruit Industries.  MIT license.
 # Adapted and enhanced for escpos library by MrWunderbar666
 
-# Icons taken from http://adamwhitcroft.com/climacons/
+# Icons taken from https://adamwhitcroft.com/climacons/
 # Check out his github: https://github.com/AdamWhitcroft/climacons
 
 
