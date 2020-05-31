@@ -9,7 +9,7 @@ In order to reduce the amount of work for everyone please try to adhere to good 
 
 The pull requests and issues will be prefilled with templates. Please fill in your information where applicable.
 
-This project uses `semantic versioning <http://semver.org/>`_ and tries to adhere to the proposed rules as
+This project uses `semantic versioning <https://semver.org/>`_ and tries to adhere to the proposed rules as
 well as possible.
 
 Author-list
@@ -62,7 +62,7 @@ You can copy the structure from other testcases. Please remember to adapt the do
 Further reading
 ^^^^^^^^^^^^^^^
 For further best practices and hints on contributing please see the
-`contribution-guide <http://www.contribution-guide.org/>`_. Should there be any contradictions between this guide
+`contribution-guide <https://www.contribution-guide.org/>`_. Should there be any contradictions between this guide
 and the linked one, please stick to this text.
 Aside from that feel free to create an issue or write an email if anything is unclear.
 
