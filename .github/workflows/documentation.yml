@@ -25,4 +25,4 @@ jobs:
       - uses: ammaraskar/sphinx-action@0.4
         with:
           docs-folder: "doc/"
-          pre-build-command: "ls -al"
+          pre-build-command: "apt-get update -y && apt-get install -y git"
