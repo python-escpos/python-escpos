@@ -125,6 +125,11 @@ on a USB interface.
     # Cut paper
     p.cut()
 
+Standard python constraints on libraries apply. This means especially
+that you should not name the script in which you implement these lines
+should not be named ``escpos`` as this would collide with the name of
+the library.
+
 Configuration File
 ------------------
 
