@@ -52,7 +52,7 @@ _CUT_PAPER = lambda m: GS + b'V' + m
 PAPER_FULL_CUT = _CUT_PAPER(b'\x00')  # Full cut paper
 PAPER_PART_CUT = _CUT_PAPER(b'\x01')  # Partial cut paper
 
-# Beep
+# Beep (please note that the actual beep sequence may differ between devices)
 BEEP = b'\x07'
 
 # Panel buttons (e.g. the FEED button)
