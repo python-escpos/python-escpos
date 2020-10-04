@@ -297,7 +297,7 @@ You could then for example print the code from another process than your main-pr
 Troubleshooting
 ---------------
 
-This section gathers varios hint on troubleshooting.
+This section gathers various hints on troubleshooting.
 
 Print with STAR TSP100 family
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
