@@ -294,4 +294,18 @@ This way you could also store the code in a file and print it later.
 You could then for example print the code from another process than your main-program and thus reduce the waiting time.
 (Of course this will not make the printer print faster.)
 
+Troubleshooting
+---------------
+
+This section gathers various hints on troubleshooting.
+
+Print with STAR TSP100 family
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Printer of the STAR TSP100 family do not have a native ESC/POS mode, which
+is why you will not be able to directly print with this library to the printer.
+
+More information on this topic can be found in the online documentation of
+`Star Micronics <https://www.starmicronics.com/help-center/knowledge-base/configure-tsp100-series-printers-esc-pos-mode/>`_
+and the `discussion in the python-escpos project <https://github.com/python-escpos/python-escpos/issues/410>`_.
+
 
