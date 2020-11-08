@@ -11,6 +11,8 @@ import yaml
 from tempfile import gettempdir
 import platform
 
+from typing import Any, Dict
+
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
@@ -45,7 +47,7 @@ if full_load:
 logger.debug('Finished loading capabilities took %.2fs', time.time() - t0)
 
 
-PROFILES = CAPABILITIES['profiles']
+PROFILES: Dict[str, Any] = CAPABILITIES['profiles']
 
 
 class NotSupported(Exception):
@@ -65,12 +67,12 @@ class BaseProfile(object):
     features, colors and more.
     """
 
-    profile_data = {}
+    profile_data: Dict[str, Any] = {}
 
     def __getattr__(self, name):
         return self.profile_data[name]
 
-    def get_font(self, font):
+    def get_font(self, font) -> int:
         """Return the escpos index for `font`. Makes sure that
         the requested `font` is valid.
         """
@@ -97,7 +99,7 @@ class BaseProfile(object):
         return {v: k for k, v in self.codePages.items()}
 
 
-def get_profile(name=None, **kwargs):
+def get_profile(name:str=None, **kwargs):
     """Get the profile by name; if no name is given, return the
     default profile.
     """
@@ -111,7 +113,7 @@ def get_profile(name=None, **kwargs):
 CLASS_CACHE = {}
 
 
-def get_profile_class(name):
+def get_profile_class(name: str):
     """For the given profile name, load the data from the external
     database, then generate dynamically a class.
     """
