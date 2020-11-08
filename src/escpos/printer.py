@@ -242,7 +242,10 @@ class Network(Escpos):
     def close(self):
         """ Close TCP connection """
         if self.device is not None:
-            self.device.shutdown(socket.SHUT_RDWR)
+            try:
+                self.device.shutdown(socket.SHUT_RDWR)
+            except socket.error:
+                pass
             self.device.close()
 
 
