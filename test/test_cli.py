@@ -6,7 +6,7 @@
 import os
 import sys
 from scripttest import TestFileEnvironment
-from nose.tools import assert_equals, nottest
+from nose.tools import assert_equal, nottest
 import escpos
 
 TEST_DIR = os.path.abspath('test/test-cli-output')
@@ -78,7 +78,7 @@ class TestCLI:
         """ Test the version string """
         result = self.env.run('python-escpos', 'version')
         assert not result.stderr
-        assert_equals(escpos.__version__, result.stdout.strip())
+        assert_equal(escpos.__version__, result.stdout.strip())
 
     @nottest  # disable this test as it is not that easy anymore to predict the outcome of this call
     def test_cli_text(self):
@@ -109,6 +109,6 @@ class TestCLI:
             expect_error=True,
             expect_stderr=True
         )
-        assert_equals(result.returncode, 2)
+        assert_equal(result.returncode, 2)
         assert 'error:' in result.stderr
         assert not result.files_updated
