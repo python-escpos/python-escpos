@@ -99,7 +99,7 @@ class BaseProfile(object):
         return {v: k for k, v in self.codePages.items()}
 
 
-def get_profile(name:str=None, **kwargs):
+def get_profile(name: str=None, **kwargs):
     """Get the profile by name; if no name is given, return the
     default profile.
     """
