@@ -26,7 +26,7 @@ jobs:
         run:
           sudo apt-get update -y &&
           sudo apt-get install -y git python3-sphinx graphviz libenchant1c2a
-      - uses: ammaraskar/sphinx-action@master
+      - uses: ammaraskar/sphinx-action@0.4
         with:
-          pre-build-command: "apt-get update -y && apt-get install -y git python3-sphinx graphviz libenchant1c2a"
+          pre-build-command: "apt-get update -y && apt-get install -y git python3-sphinx graphviz libenchant1c2a && sudo pip install --upgrade sphinx"
           docs-folder: "doc/"
