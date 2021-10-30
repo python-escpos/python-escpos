@@ -26,3 +26,4 @@ jobs:
         with:
           docs-folder: "doc/"
           pre-build-command: "apt-get update -y && apt-get install -y git python3-sphinx graphviz libenchant1c2a"
+          build-command: "sphinx-build -b html -d _build/doctrees  --keep-going --no-color -w '/tmp/sphinx-log' . _build/html"
