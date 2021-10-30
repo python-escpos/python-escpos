@@ -6,5 +6,5 @@ sphinx-rtd-theme
 setuptools
 setuptools-scm
 docutils>=0.12
-sphinxcontrib-spelling>=5
+sphinxcontrib-spelling>=7.2.0
 python-barcode>=0.11.0,<1
