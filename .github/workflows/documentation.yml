@@ -24,7 +24,7 @@ jobs:
           submodules: 'recursive'
       - name: Install packages
         run:
-          apt-get update -y
+          apt-get update -y &&
           apt-get install -y git python3-sphinx graphviz libenchant1c2a
       - uses: ammaraskar/sphinx-action@0.4
         with:
