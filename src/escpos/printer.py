@@ -364,6 +364,7 @@ if _WIN32PRINT:
             else:
                 self.printer_name = win32print.GetDefaultPrinter()
             self.hPrinter = None
+            self.open()
 
         def open(self, job_name="python-escpos"):
             if self.printer_name is None:
