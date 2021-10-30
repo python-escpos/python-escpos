@@ -9,10 +9,12 @@ import pytest
 def instance():
     return printer.Dummy()
 
+
 def test_soft_barcode_ean8_invalid(instance):
     """test with an invalid barcode"""
     with pytest.raises(barcode.errors.BarcodeError):
         instance.soft_barcode("ean8", "1234")
+
 
 def test_soft_barcode_ean8(instance):
     """test with a valid ean8 barcode"""

@@ -21,6 +21,6 @@ def test_abstract_base_class_raises():
 
 
 def test_abstract_base_class():
-    """ test whether Escpos has the metaclass ABCMeta """
+    """test whether Escpos has the metaclass ABCMeta"""
     assert issubclass(escpos.Escpos, object)
     assert type(escpos.Escpos) is ABCMeta

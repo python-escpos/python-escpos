@@ -5,13 +5,13 @@ from escpos.printer import Dummy
 def test_line_spacing_code_gen():
     printer = Dummy()
     printer.line_spacing(10)
-    assert printer.output == b'\x1b3\n'
+    assert printer.output == b"\x1b3\n"
 
 
 def test_line_spacing_rest():
     printer = Dummy()
     printer.line_spacing()
-    assert printer.output == b'\x1b2'
+    assert printer.output == b"\x1b2"
 
 
 def test_line_spacing_error_handling():
