@@ -16,7 +16,7 @@ from escpos.printer import Dummy
 from PIL import Image
 
 
-@mock.patch('escpos.printer.Dummy.image', spec=Dummy)
+@mock.patch("escpos.printer.Dummy.image", spec=Dummy)
 def test_type_of_object_passed_to_image_function(img_function):
     """
     Test the type of object that is passed to the image function during non-native qr-printing.

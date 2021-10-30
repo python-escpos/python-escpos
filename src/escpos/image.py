@@ -37,7 +37,7 @@ class EscposImage(object):
 
         # Convert to white RGB background, paste over white background
         # to strip alpha.
-        img_original = img_original.convert('RGBA')
+        img_original = img_original.convert("RGBA")
         im = Image.new("RGB", img_original.size, (255, 255, 255))
         im.paste(img_original, mask=img_original.split()[3])
         # Convert down to greyscale
@@ -85,7 +85,7 @@ class EscposImage(object):
             box = (left, top, left + line_height, top + height_pixels)
             im_slice = im.transform((line_height, height_pixels), Image.EXTENT, box)
             im_bytes = im_slice.tobytes()
-            yield(im_bytes)
+            yield (im_bytes)
             left += line_height
 
     def to_raster_format(self):
@@ -101,7 +101,7 @@ class EscposImage(object):
         :param fragment_height: height of fragment
         :return: list of PIL objects
         """
-        passes = int(math.ceil(self.height/fragment_height))
+        passes = int(math.ceil(self.height / fragment_height))
         fragments = []
         for n in range(0, passes):
             left = 0

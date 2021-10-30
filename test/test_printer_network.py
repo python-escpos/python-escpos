@@ -11,6 +11,7 @@ def instance():
     socket.socket.connect = mock.Mock()
     return printer.Network("localhost")
 
+
 def test_close_without_open(instance):
     """try to close without opening (should fail gracefully)
 
