@@ -603,19 +603,16 @@ class Escpos(object):
                 )
             )
 
-        # Render the barcode to a fake file
+        # Render the barcode
         barcode_class = barcode.get_barcode_class(barcode_type)
         my_code = barcode_class(data, writer=image_writer)
-
-        with open(os.devnull, "wb") as nullfile:
-            my_code.write(
-                nullfile,
-                {
-                    "module_height": module_height,
-                    "module_width": module_width,
-                    "text_distance": text_distance,
-                },
-            )
+        my_code.render(
+            writer_options={
+                "module_height": module_height,
+                "module_width": module_width,
+                "text_distance": text_distance,
+            }
+        )
 
         # Retrieve the Pillow image and print it
         image = my_code.writer._image
