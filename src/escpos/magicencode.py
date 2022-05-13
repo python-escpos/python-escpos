@@ -183,7 +183,7 @@ class Encoder(object):
 
 
 def split_writable_text(encoder, text, encoding):
-    """Splits off as many characters from the begnning of text as
+    """Splits off as many characters from the beginning of text as
     are writable with "encoding". Returns a 2-tuple (writable, rest).
     """
     if not encoding:
