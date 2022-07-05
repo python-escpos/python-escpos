@@ -77,6 +77,12 @@ LINE_DISPLAY_CLOSE = ESC + b"\x3d\x01"
 SHEET_SLIP_MODE = ESC + b"\x63\x30\x04"  # slip paper
 SHEET_ROLL_MODE = ESC + b"\x63\x30\x01"  # paper roll
 
+# Slip specific codes
+SLIP_EJECT = ESC + b"\x4b\xc0" # Eject the slip or cheque
+SLIP_SELECT = FS # Select the slip station as default station
+SLIP_SET_WAIT_TIME = ESC + b"\x1b\x66" # Set timeout waiting for a slip/cheque to be inserted
+SLIP_PRINT_AND_EJECT = b"\x0c" # Print the buffer and eject (after waiting for the paper to be inserted)
+
 # Text format
 # TODO: Acquire the "ESC/POS Application Programming Guide for Paper Roll
 #       Printers" and tidy up this stuff too.
