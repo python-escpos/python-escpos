@@ -48,9 +48,9 @@ to have and the second yields the "Output Endpoint" address.
 
 By default the "Interface" number is "0" and the "Output Endpoint"
 address is "0x01". If you have other values then you can define them on
-your instance. So, assuming that we have another printer, CT-S2000, 
-manufactured by Citizen (with "Vendor ID" of 2730 and "Product ID" of 0fff) 
-where in\_ep is on 0x81 and out\_ep=0x02, then the printer definition should 
+your instance. So, assuming that we have another printer, CT-S2000,
+manufactured by Citizen (with "Vendor ID" of 2730 and "Product ID" of 0fff)
+where in\_ep is on 0x81 and out\_ep=0x02, then the printer definition should
 look like:
 
 **Generic USB Printer initialization**
@@ -84,7 +84,7 @@ to.
 ::
 
     p = printer.Serial("/dev/tty0")
-    
+
     # on a Windows OS serial devices are typically accessible as COM
     p = printer.Serial("COM1")
 
@@ -125,6 +125,11 @@ on a USB interface.
     # Cut paper
     p.cut()
 
+Standard python constraints on libraries apply. This means especially
+that you should not name the script in which you implement these lines
+should not be named ``escpos`` as this would collide with the name of
+the library.
+
 Configuration File
 ------------------
 
@@ -163,7 +168,7 @@ The printer section
 
 The ``printer`` configuration section defines a default printer to create.
 
-The only required paramter is ``type``. The value of this has to be one of the
+The only required parameter is ``type``. The value of this has to be one of the
 printers defined in :doc:`/user/printers`.
 
 The rest of the given parameters will be passed on to the initialization of the printer class.
@@ -194,12 +199,12 @@ An USB-printer could be defined by::
 
 Printing text right
 -------------------
-Python-escpos is designed to accept unicode. So make sure that you use ``u'strings'`` or import ``unicode_literals``
-from ``__future__`` if you are on Python 2. On Python 3 you should be fine.
+
+Python-escpos is designed to accept unicode.
 
 For normal usage you can simply pass your text to the printers ``text()``-function. It will automatically guess
 the right codepage and then send the encoded data to the printer. If this feature does not work, please try to
-isolate the error and then create an issue on the Github project page.
+isolate the error and then create an issue on the GitHub project page.
 
 If you want or need to you can manually set the codepage. For this please use the ``charcode()``-function. You can set
 any key-value that is in ``CHARCODE``. If something is wrong, an ``CharCodeError`` will be raised.
@@ -288,5 +293,19 @@ This is probably best explained by an example:
 This way you could also store the code in a file and print it later.
 You could then for example print the code from another process than your main-program and thus reduce the waiting time.
 (Of course this will not make the printer print faster.)
+
+Troubleshooting
+---------------
+
+This section gathers various hints on troubleshooting.
+
+Print with STAR TSP100 family
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Printer of the STAR TSP100 family do not have a native ESC/POS mode, which
+is why you will not be able to directly print with this library to the printer.
+
+More information on this topic can be found in the online documentation of
+`Star Micronics <https://www.starmicronics.com/help-center/knowledge-base/configure-tsp100-series-printers-esc-pos-mode/>`_
+and the `discussion in the python-escpos project <https://github.com/python-escpos/python-escpos/issues/410>`_.
 
 

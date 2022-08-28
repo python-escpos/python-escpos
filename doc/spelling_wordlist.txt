@@ -1,0 +1,7 @@
+Raspbian
+ESC
+POS
+Escpos
+Escpos
+baudrate
+lsusb

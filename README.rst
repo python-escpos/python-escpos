@@ -6,16 +6,12 @@ python-escpos - Python library to manipulate ESC/POS Printers
     :target: https://travis-ci.org/python-escpos/python-escpos
     :alt: Continous Integration
 
-.. image:: https://landscape.io/github/python-escpos/python-escpos/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/python-escpos/python-escpos/master
-    :alt: Code Health
-
 .. image:: https://codecov.io/github/python-escpos/python-escpos/coverage.svg?branch=master
     :target: https://codecov.io/github/python-escpos/python-escpos?branch=master
     :alt: Code Coverage
 
-.. image:: https://readthedocs.org/projects/python-escpos/badge/?version=stable
-    :target: http://python-escpos.readthedocs.io/en/latest/?badge=stable
+.. image:: https://readthedocs.org/projects/python-escpos/badge/?version=latest
+    :target: https://python-escpos.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 
@@ -47,7 +43,7 @@ This library makes use of:
 * `Pillow <https://github.com/python-pillow/Pillow>`_ for image printing
 * `qrcode <https://github.com/lincolnloop/python-qrcode>`_ for the generation of QR-codes
 * `pyserial <https://github.com/pyserial/pyserial>`_ for serial printers
-* `viivakoodi <https://github.com/kxepal/viivakoodi>`_ for the generation of barcodes
+* `python-barcode <https://github.com/WhyNotHugo/python-barcode>`_ for the generation of barcodes
 
 Documentation and Usage
 -----------------------
@@ -71,18 +67,18 @@ Another example based on the Network printer class:
 .. code:: python
 
     from escpos.printer import Network
-    
+
     kitchen = Network("192.168.1.100") #Printer IP Address
     kitchen.text("Hello World\n")
     kitchen.barcode('1324354657687', 'EAN13', 64, 2, '', '')
     kitchen.cut()
-    
+
 Another example based on the Serial printer class:
 
 .. code:: python
 
     from escpos.printer import Serial
-    
+
     """ 9600 Baud, 8N1, Flow Control Enabled """
     p = Serial(devfile='/dev/tty.usbserial',
                baudrate=9600,
@@ -102,7 +98,7 @@ The full project-documentation is available on `Read the Docs <https://python-es
 Contributing
 ------------
 
-This project is open for any contribution! Please see `CONTRIBUTING.rst <http://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_ for more information.
+This project is open for any contribution! Please see `CONTRIBUTING.rst <https://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_ for more information.
 
 
 Disclaimer
@@ -110,5 +106,3 @@ Disclaimer
 
 None of the vendors cited in this project agree or endorse any of the patterns or implementations.
 Its names are used only to maintain context.
-
-

@@ -9,7 +9,7 @@ In order to reduce the amount of work for everyone please try to adhere to good 
 
 The pull requests and issues will be prefilled with templates. Please fill in your information where applicable.
 
-This project uses `semantic versioning <http://semver.org/>`_ and tries to adhere to the proposed rules as
+This project uses `semantic versioning <https://semver.org/>`_ and tries to adhere to the proposed rules as
 well as possible.
 
 Author-list
@@ -26,25 +26,6 @@ Style-Guide
 -----------
 
 When writing code please try to stick to these rules.
-
-Python 2 and 3
-^^^^^^^^^^^^^^
-We have rewritten the code in order to maintain compatibility with both Python 2 and Python 3.
-In order to ensure that we do not miss any accidental degradation, please add these imports to the top
-of every file of code:
-
-.. code-block:: Python
-
-  from __future__ import absolute_import
-  from __future__ import division
-  from __future__ import print_function
-  from __future__ import unicode_literals
-
-Furthermore please be aware of the differences between Python 2 and 3. For
-example `this guide <https://docs.python.org/3/howto/pyporting.html>`_ is helpful.
-Special care has to be taken when dealing with strings and byte-strings. Please note
-that the :py:meth:`~escpos.escpos.Escpos._raw`-method only accepts byte-strings.
-Often you can achieve compatibility quite easily with a tool from the `six`-package.
 
 PEP8
 ^^^^
@@ -81,7 +62,7 @@ You can copy the structure from other testcases. Please remember to adapt the do
 Further reading
 ^^^^^^^^^^^^^^^
 For further best practices and hints on contributing please see the
-`contribution-guide <http://www.contribution-guide.org/>`_. Should there be any contradictions between this guide
+`contribution-guide <https://www.contribution-guide.org/>`_. Should there be any contradictions between this guide
 and the linked one, please stick to this text.
 Aside from that feel free to create an issue or write an email if anything is unclear.
 

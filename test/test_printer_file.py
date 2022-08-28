@@ -8,10 +8,6 @@
 :license: MIT
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
 import six
 
@@ -22,16 +18,16 @@ from hypothesis.strategies import text
 import escpos.printer as printer
 
 if six.PY3:
-    mock_open_call = 'builtins.open'
+    mock_open_call = "builtins.open"
 else:
-    mock_open_call = '__builtin__.open'
+    mock_open_call = "__builtin__.open"
 
 
 @pytest.mark.skip("this test is broken and has to be fixed or discarded")
 @given(path=text())
 def test_load_file_printer(mocker, path):
     """test the loading of the file-printer"""
-    mock_escpos = mocker.patch('escpos.escpos.Escpos.__init__')
+    mock_escpos = mocker.patch("escpos.escpos.Escpos.__init__")
     mock_open = mocker.patch(mock_open_call)
     printer.File(devfile=path)
     assert mock_escpos.called
@@ -42,9 +38,9 @@ def test_load_file_printer(mocker, path):
 @given(txt=text())
 def test_auto_flush(mocker, txt):
     """test auto_flush in file-printer"""
-    mock_escpos = mocker.patch('escpos.escpos.Escpos.__init__')
+    mock_escpos = mocker.patch("escpos.escpos.Escpos.__init__")
     mock_open = mocker.patch(mock_open_call)
-    mock_device = mocker.patch.object(printer.File, 'device')
+    mock_device = mocker.patch.object(printer.File, "device")
 
     p = printer.File(auto_flush=False)
     # inject the mocked device-object
@@ -64,7 +60,7 @@ def test_auto_flush(mocker, txt):
 def test_flush_on_close(mocker, txt):
     """test flush on close in file-printer"""
     mock_open = mocker.patch(mock_open_call)
-    mock_device = mocker.patch.object(printer.File, 'device')
+    mock_device = mocker.patch.object(printer.File, "device")
 
     p = printer.File(auto_flush=False)
     # inject the mocked device-object

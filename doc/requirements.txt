@@ -3,6 +3,8 @@ Pillow>=2.0
 qrcode>=4.0
 pyserial
 sphinx-rtd-theme
+setuptools
 setuptools-scm
 docutils>=0.12
-viivakoodi
+sphinxcontrib-spelling>=7.2.0
+python-barcode>=0.11.0,<1

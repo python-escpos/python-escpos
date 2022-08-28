@@ -1,8 +1,8 @@
 # Climacons by Adam Whitcroft
 
-75 climatically categorised pictographs for web and UI design by [@adamwhitcroft](http://www.twitter.com/#!/adamwhitcroft).
+75 climatically categorised pictographs for web and UI design by [@adamwhitcroft](https://www.twitter.com/#!/adamwhitcroft).
 
-Visit the [Climacons](http://adamwhitcroft.com/climacons/) website for more information.
+Visit the [Climacons](https://adamwhitcroft.com/climacons/) website for more information.
 
 Visit [Adam Whitcroft on GitHub](https://github.com/AdamWhitcroft)
 
