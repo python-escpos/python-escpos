@@ -404,7 +404,22 @@ if _CUPSPRINT:
         """ Simple CUPS printer connector.
         """
         def __init__(self, printer_name=None, *args, **kwargs):
+            """CupsPrinter constructor.
+
+            :param printer_name: CUPS printer name (Optional)
+            :type printer_name: str
+            :param host: CUPS server host/ip (Optional)
+            :type host: str
+            :param port: CUPS server port (Optional)
+            :type port: int
+            """
             Escpos.__init__(self, *args, **kwargs)
+            host, port = args or (
+                kwargs.get('host', cups.getServer()),
+                kwargs.get('port', cups.getPort())
+            )
+            cups.setServer(host)
+            cups.setPort(port)
             self.conn = cups.Connection()
             self.tmpfile = None
             self.printer_name = printer_name
