@@ -25,7 +25,7 @@ jobs:
       - name: Install packages
         run:
           sudo apt-get update -y &&
-          sudo apt-get install -y git python3-sphinx graphviz libenchant1c2a &&
+          sudo apt-get install -y git python3-sphinx graphviz libenchant-2-2 &&
           sudo pip install tox
       - name: Test doc build
         run: tox -e docs
