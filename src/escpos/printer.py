@@ -437,10 +437,16 @@ if _WIN32PRINT:
 if _CUPSPRINT:
 
     class CupsPrinter(Escpos):
-        """Simple CUPS printer connector."""
+        """Simple CUPS printer connector.
+
+        .. note::
+                Requires _pycups_ which in turn needs the cups development library package:
+                - Ubuntu/Debian: _libcups2-dev_
+                - OpenSuse/Fedora: _cups-devel_
+        """
 
         def __init__(self, printer_name=None, *args, **kwargs):
-            """CupsPrinter constructor.
+            """CupsPrinter class constructor.
 
             :param printer_name: CUPS printer name (Optional)
             :type printer_name: str
@@ -532,18 +538,26 @@ if _CUPSPRINT:
 if not sys.platform.startswith("win"):
 
     class LP(Escpos):
-        """Simple UNIX lp raw printing.
+        """Simple UNIX lp command raw printing.
 
-        From https://github.com/python-escpos/python-escpos/pull/348#issuecomment-549558316
+        Thanks to `Oyami-Srk comment <https://github.com/python-escpos/python-escpos/pull/348#issuecomment-549558316>`_.
         """
 
         def __init__(self, printer_name: str, *args, **kwargs):
+            """LP class constructor.
+
+            :param printer_name: CUPS printer name (Optional)
+            :type printer_name: str
+            :param auto_flush: Automatic flush after every _raw() (Optional)
+            :type auto_flush: bool
+            """
             Escpos.__init__(self, *args, **kwargs)
             self.printer_name = printer_name
             self.auto_flush = kwargs.get("auto_flush", True)
             self.open()
 
         def open(self):
+            """Invoke _lp_ in a new subprocess and wait for commands."""
             self.lp = subprocess.Popen(
                 ["lp", "-d", self.printer_name, "-o", "raw"],
                 stdin=subprocess.PIPE,
@@ -551,9 +565,11 @@ if not sys.platform.startswith("win"):
             )
 
         def close(self):
+            """Stop the subprocess."""
             self.lp.terminate()
 
         def flush(self):
+            """End line and wait for new commands"""
             if self.lp.stdin.writable():
                 self.lp.stdin.write(b"\n")
             if self.lp.stdin.closed is False:
@@ -562,6 +578,11 @@ if not sys.platform.startswith("win"):
             self.open()
 
         def _raw(self, msg):
+            """Write raw command(s) to the printer.
+
+            :param msg: arbitrary code to be printed
+            :type msg: bytes
+            """
             if self.lp.stdin.writable():
                 self.lp.stdin.write(msg)
             else:

@@ -1,9 +1,9 @@
 ********
 Printers
 ********
-:Last Reviewed: 2017-01-25
+:Last Reviewed: 2022-11-25
 
-As of now there are 5 different type of printer implementations.
+As of now there are 7 different type of printer implementations.
 
 USB
 ---
@@ -75,3 +75,30 @@ all of the "output" as raw ESC/POS in a string and returns that.
       :member-order: bysource
       :noindex:
 
+CUPS
+----
+This driver uses `pycups` in order to communicate with a CUPS server.
+Supports both local and remote CUPS printers and servers.
+The printer must be properly configured in CUPS administration.
+The connector generates a print job that is added to the CUPS queue.
+
+.. autoclass:: escpos.printer.CupsPrinter
+      :members:
+      :special-members:
+      :member-order: bysource
+      :noindex:
+
+LP
+----
+This driver uses the UNIX command `lp` in order to communicate with a CUPS server.
+Supports local and remote CUPS printers.
+The printer must be properly configured in CUPS administration.
+The connector spawns a new sub-process where the command lp is executed.
+
+No dependencies required, but somehow the print queue will affect some print job such as barcode.
+
+.. autoclass:: escpos.printer.LP
+      :members:
+      :special-members:
+      :member-order: bysource
+      :noindex:
