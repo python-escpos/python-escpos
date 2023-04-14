@@ -523,6 +523,17 @@ if _CUPSPRINT:
             self.tmpfile.close()
             self.pending_job = False
 
+        def _read(self):
+            """Return a single-item array with the accepting state of the print queue.
+
+            states: idle = [3], printing a job = [4], stopped = [5]
+            """
+            printer = self.printers.get(self.printer_name, {})
+            state = printer.get("printer-state")
+            if not state:
+                return []
+            return [state]
+
         def close(self):
             """Close CUPS connection.
 
