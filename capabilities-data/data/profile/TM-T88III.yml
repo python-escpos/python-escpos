@@ -1,0 +1,22 @@
+---
+TM-T88III:
+  name: TM-T88III
+  vendor: "Epson"
+  inherits: default
+  notes: >
+      Epson TM-T88III profile. This printer has similar feature support to the
+      TM-T88II. The code page mapping is documented in the
+      "TM-T88II/T88III Technical Reference Guide".
+  codePages:
+    0: CP437
+    1: CP932
+    2: CP850
+    3: CP860
+    4: CP863
+    5: CP865
+    16: CP1252
+    17: CP866
+    18: CP862
+    19: CP858
+    255: Unknown
+...

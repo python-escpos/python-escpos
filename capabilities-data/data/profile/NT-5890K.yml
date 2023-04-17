@@ -1,0 +1,8 @@
+---
+NT-5890K:
+  name: NT-5890K
+  vendor: Netum
+  inherits: POS-5890
+  notes: ""
+  features:
+    bitImageColumn: true

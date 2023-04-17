@@ -1,0 +1,7 @@
+---
+TUP500:
+  name: TUP500 Series
+  vendor: Star Micronics
+  inherits: SP2000
+  notes: Star TUP500 thermal printer series with ESC/POS emulation enabled
+...

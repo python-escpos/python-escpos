@@ -1,0 +1,50 @@
+---
+OCD-100:
+  name: OCD-100 Customer Display
+  vendor: Aures
+  inherits: simple
+  features:
+    bitImageRaster: false
+    bitImageColumn: false
+    graphics: false
+    highDensity: false
+    pulseStandard: false
+  fonts:
+    0:
+      name: Font A
+      columns: 20
+  media:
+    width:
+      # 9x5.25mm per char, by 20 columns.
+      mm: 180
+      # 5x7 pixels per char, by 20 columns.
+      pixels: 100
+  notes: >
+    This is a two-line, ESC/POS-aware customer display from Aures. It has some
+    graphics support via custom fonts, but is otherwise text-only.
+    This profile is also suitable for the OCD-150 pole-mounted display.
+  codePages:
+    0: CP437
+    # Katakana (for Japan)
+    1: CP932
+    2: CP850
+    3: CP860
+    4: CP863
+    5: CP865
+    # Slawie
+    6: Unknown
+    # Russia
+    7: Unknown
+    # Greek
+    8: Unknown
+    9: CP852
+    10: CP862
+    11: CP866
+    12: CP1251
+    13: CP1254
+    14: CP1255
+    15: CP1257
+    16: CP1252
+    17: CP1253
+    19: CP858
+...

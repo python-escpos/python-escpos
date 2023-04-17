@@ -1,0 +1,25 @@
+---
+TM-T88IV-SA:
+  name: TM-T88IV South Asia
+  vendor: "Epson"
+  inherits: TM-T88IV
+  notes: >
+      Epson TM-T88IV profile (South Asia models)
+  fonts:
+    0:
+      name: Font A
+      columns: 42
+    1:
+      name: Font B
+      columns: 56
+  codePages:
+    0: CP437
+    # Thai Character Code 42
+    20: Unknown
+    # Thai Character Code 11
+    21: CP874
+    # Thai Character Code 18
+    26: Unknown
+    30: TCVN-3-1
+    31: TCVN-3-2
+...

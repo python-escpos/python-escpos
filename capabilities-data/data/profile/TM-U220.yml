@@ -1,0 +1,18 @@
+---
+TM-U220:
+  name: TM-U220
+  vendor: Epson
+  inherits: simple
+  notes: Two-color impact printer with 80mm output
+  features:
+    bitImageRaster: false
+    bitImageColumn: true
+    highDensity: false
+  colors:
+    0: black
+    1: alternate
+  media:
+    width:
+      mm: 80
+      pixels: Unknown
+...

@@ -1,0 +1,100 @@
+---
+POS-5890:
+  name: POS5890 Series
+  vendor: Zjiang
+  inherits: simple
+  fonts:
+    0:
+      name: Font A
+      columns: 32
+    1:
+      name: Font B
+      columns: 42
+  media:
+    width:
+      mm: 57.5
+      pixels: 384
+  notes: >
+      POS-5890 thermal printer series, also marketed under various other names.
+  codePages:
+    0: CP437
+    1: CP932
+    2: CP850
+    3: CP860
+    4: CP863
+    5: CP865
+    # West Europe
+    6: Unknown
+    # Greek
+    7: Unknown
+    # Hebrew
+    8: Unknown
+    # East Europe
+    9: Unknown
+    # Iran
+    10: Unknown
+    16: CP1252
+    17: CP866
+    18: CP852
+    19: CP858
+    # Iran II
+    20: Unknown
+    # Latvian
+    21: Unknown
+    # Arabic
+    22: Unknown
+    # PT151, 1251
+    23: Unknown
+    24: CP747
+    25: CP1257
+    27: CP1258
+    28: CP864
+    # Hebrew
+    31: Unknown
+    32: CP1255
+    50: CP437
+    52: CP437
+    53: CP858
+    54: CP852
+    55: CP860
+    56: CP861
+    57: CP863
+    58: CP865
+    59: CP866
+    60: CP855
+    61: CP857
+    62: CP862
+    63: CP864
+    64: CP737
+    65: CP851
+    66: CP869
+    68: CP772
+    69: CP774
+    71: CP1252
+    72: CP1250
+    73: CP1251
+    74: CP3840
+    76: CP3843
+    77: CP3844
+    78: CP3845
+    79: CP3846
+    80: CP3847
+    81: CP3848
+    83: CP2001
+    84: CP3001
+    85: CP3002
+    86: CP3011
+    87: CP3012
+    88: CP3021
+    89: CP3041
+    90: CP1253
+    91: CP1254
+    92: CP1256
+    93: CP720
+    94: CP1258
+    95: CP775
+    # Thai 2
+    96: Unknown
+    # Thai
+    255: Unknown
+...

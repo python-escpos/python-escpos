@@ -1,0 +1,13 @@
+---
+dist: trusty
+
+language: python
+
+install:
+  - sudo pip install yamllint 
+  - pip install pyyaml pyaml
+
+script:
+  - find data/ -name '*.yml' | xargs yamllint
+  - python scripts/collate.py
+...

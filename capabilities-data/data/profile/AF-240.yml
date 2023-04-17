@@ -1,0 +1,29 @@
+---
+AF-240:
+  name: AF-240 Customer Display
+  vendor: Oxhoo
+  inherits: simple
+  features:
+    bitImageRaster: false
+    bitImageColumn: false
+    graphics: false
+    highDensity: false
+    pulseStandard: false
+  fonts:
+    0:
+      name: Font A
+      columns: 20
+  media:
+    width:
+      # Approximate measurement
+      mm: 120
+      # 5x7 pixels per char, by 20 columns.
+      pixels: 100
+  notes: >
+    This is a two-line, ESC/POS-aware customer display from Oxhoo. The ESC/POS
+    command mode can be activated persistently by sending:
+
+        echo -ne "\n\x02\x05\x43\x31\x03" > /dev/ttyUSB0
+  codePages:
+    0: OXHOO-EUROPEAN
+...

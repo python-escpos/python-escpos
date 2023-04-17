@@ -1,0 +1,51 @@
+---
+Sunmi-V2:
+  name: Sunmi V2
+  vendor: Sunmi
+  notes: >
+      Sunmi mini-POS Android device with a built-in Virtual Bluetooth
+      thermal printer.
+  inherits: default
+  features:
+    # column mode doesn't work reliably on this device
+    bitImageColumn: false
+    bitImageRaster: true
+    # not tested, status unknown
+    graphics: false
+    # has no paper cutter
+    paperFullCut: false
+    paperPartCut: false
+  colors:
+    0: black
+  fonts:
+    0:
+      name: Font A
+      columns: 32
+    1:
+      name: Font B
+      columns: 42
+  media:
+    width:
+      mm: 57.5
+      pixels: 384
+  codePages:
+    0: CP437
+    2: CP850
+    3: CP860
+    4: CP863
+    5: CP865
+    13: CP857
+    14: CP737
+    15: ISO_8859-7
+    16: CP1252
+    17: CP866
+    18: CP852
+    19: CP858
+    # Thai Character Code 11
+    21: CP874
+    33: CP775
+    34: CP855
+    36: CP862
+    37: CP864
+    254: CP855
+...

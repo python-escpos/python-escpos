@@ -1,0 +1,9 @@
+---
+# More info on this printer is posted at
+# https://github.com/mike42/escpos-php/issues/6
+TEP-200M:
+  name: TEP200M Series
+  vendor: EPOS
+  notes: ""
+  inherits: default
+...

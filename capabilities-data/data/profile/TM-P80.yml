@@ -1,0 +1,21 @@
+---
+TM-P80:
+  name: TM-P80
+  vendor: Epson
+  inherits: default
+  notes: Portable printer (48-column mode)
+  fonts:
+    0:
+      name: Font A
+      columns: 42
+    1:
+      name: Font B
+      columns: 56
+    2:
+      name: Kanji
+      columns: 24
+  media:
+    width:
+      mm: 72
+      pixels: 576
+...

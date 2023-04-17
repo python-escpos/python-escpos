@@ -1,0 +1,47 @@
+---
+ZJ-5870:
+  name: ZJ-5870 Thermal Receipt Printer
+  vendor: ZiJiang
+  notes: >
+      ESC/POS Profile for ZiJiang ZJ-5870 Thermal Receipt Printer,
+      which may be branded AGPtEK or Esky,
+      and identifies itself as a POS-58 Thermal Printer on selftest.
+      This profile is suitable for alphanumberic character mode,
+      but is untested on Chinese character mode.
+      (Change modes by holding down feed button during power-on
+      until the mode LED turns off, then release immediately.)
+  features:
+    barcodeA: false
+    barcodeB: false
+    bitImageRaster: true
+    bitImageColumn: true
+    graphics: false
+    starCommands: false
+    qrCode: false
+    pdf417Code: false
+    highDensity: false
+    pulseStandard: true
+    pulseBel: false
+    paperFullCut: false
+    paperPartCut: false
+  colors:
+    0: black
+  fonts:
+    0:
+      name: Font A
+      columns: 32
+  media:
+    width:
+      mm: 48
+      pixels: 384
+  codePages:
+    0: CP437
+    1: CP932
+    2: CP850
+    3: CP860
+    4: CP863
+    5: CP865
+    16: CP1252
+    17: CP866
+    18: CP852
+...

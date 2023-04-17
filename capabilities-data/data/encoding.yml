@@ -1,0 +1,668 @@
+# encoding.yml: This file maps known code pages and other character encodings
+#   to a method of encoding.
+#
+# Its purpose is to account for the use of different code page names and
+# implementations, so that drivers have a common data set to use for converting
+# UTF-8 text into something that a printer is likely to understand.
+#
+# Where multiple encoders are listed, any of them can be used to give identical
+# results.
+
+---
+CP037:
+  iconv: CP037
+  python_encode: cp037
+
+CP038:
+  iconv: CP038
+
+CP273:
+  iconv: CP273
+  python_encode: cp273
+
+CP274:
+  iconv: CP274
+
+CP275:
+  iconv: CP275
+
+CP278:
+  iconv: CP278
+
+CP280:
+  iconv: CP280
+
+CP281:
+  iconv: CP281
+
+CP282:
+  iconv: CP282
+
+CP284:
+  iconv: CP284
+
+CP285:
+  iconv: CP285
+
+CP290:
+  iconv: CP290
+
+CP297:
+  iconv: CP297
+
+CP367:
+  iconv: CP367
+
+CP420:
+  iconv: CP420
+
+CP423:
+  iconv: CP423
+
+CP424:
+  iconv: CP424
+  python_encode: cp424
+
+CP437:
+  iconv: CP437
+  python_encode: cp437
+
+CP500:
+  iconv: CP500
+  python_encode: cp500
+
+CP720:
+  python_encode: cp720
+
+CP737:
+  iconv: CP737
+  python_encode: cp737
+
+CP747: {}
+
+CP770:
+  iconv: CP770
+
+CP771:
+  iconv: CP771
+
+CP772:
+  iconv: CP772
+
+CP773:
+  iconv: CP773
+
+CP774:
+  iconv: CP774
+
+CP775:
+  iconv: CP775
+  python_encode: cp775
+
+CP803:
+  iconv: CP803
+
+CP813:
+  iconv: CP813
+
+CP819:
+  iconv: CP819
+
+CP850:
+  iconv: CP850
+  python_encode: cp850
+
+CP851:
+  name: "Greek CP851"
+  notes: "Not used, due to inconsistencies between implementations."
+
+CP852:
+  iconv: CP852
+  python_encode: cp852
+
+CP853: {}
+
+CP855:
+  iconv: CP855
+  python_encode: cp855
+
+CP856:
+  iconv: CP856
+  python_encode: cp856
+
+CP857:
+  iconv: CP857
+  python_encode: cp857
+
+CP858:
+  python_encode: cp858
+
+CP860:
+  iconv: CP860
+  python_encode: cp860
+
+CP861:
+  iconv: CP861
+  python_encode: cp861
+
+CP862:
+  iconv: CP862
+  python_encode: cp862
+
+CP863:
+  iconv: CP863
+  python_encode: cp863
+
+CP864:
+  iconv: CP864
+  python_encode: cp864
+
+CP865:
+  iconv: CP865
+  python_encode: cp865
+
+CP866:
+  iconv: CP866
+  python_encode: cp866
+
+CP866NAV:
+  iconv: CP866NAV
+
+CP868:
+  iconv: CP868
+
+CP869:
+  iconv: CP869
+  python_encode: cp869
+
+CP870:
+  iconv: CP870
+
+CP871:
+  iconv: CP871
+
+CP874:
+  iconv: CP874
+  python_encode: cp874
+
+CP875:
+  iconv: CP875
+  python_encode: cp875
+
+CP880:
+  iconv: CP880
+
+CP891:
+  iconv: CP891
+
+CP901:
+  iconv: CP901
+
+CP902:
+  iconv: CP902
+
+CP903:
+  iconv: CP903
+
+CP904:
+  iconv: CP904
+
+CP905:
+  iconv: CP905
+
+CP912:
+  iconv: CP912
+
+CP915:
+  iconv: CP915
+
+CP916:
+  iconv: CP916
+
+CP918:
+  iconv: CP918
+
+CP920:
+  iconv: CP920
+
+CP921:
+  iconv: CP921
+
+CP922:
+  iconv: CP922
+
+CP928: {}
+
+CP930:
+  iconv: CP930
+
+CP932:
+  iconv: CP932
+  python_encode: cp932
+
+CP933:
+  iconv: CP933
+
+CP935:
+  iconv: CP935
+
+CP936:
+  iconv: CP936
+
+CP937:
+  iconv: CP937
+
+CP939:
+  iconv: CP939
+
+CP949:
+  iconv: CP949
+  python_encode: cp949
+
+CP950:
+  iconv: CP950
+  python_encode: cp950
+
+CP1001:
+  name: Unimplemented Star-specific CP1001
+
+CP1004:
+  iconv: CP1004
+
+CP1006:
+  python_encode: cp1006
+
+CP1008:
+  iconv: CP1008
+
+CP1025:
+  iconv: CP1025
+
+CP1026:
+  iconv: CP1026
+  python_encode: cp1026
+
+CP1046:
+  iconv: CP1046
+
+CP1047:
+  iconv: CP1047
+
+CP1070:
+  iconv: CP1070
+
+CP1079:
+  iconv: CP1079
+
+CP1081:
+  iconv: CP1081
+
+CP1084:
+  iconv: CP1084
+
+CP1089:
+  iconv: CP1089
+
+CP1097:
+  iconv: CP1097
+
+CP1098: {}
+
+CP1112:
+  iconv: CP1112
+
+CP1122:
+  iconv: CP1122
+
+CP1123:
+  iconv: CP1123
+
+CP1124:
+  iconv: CP1124
+
+CP1125:
+  iconv: CP1125
+  python_encode: cp1125
+
+CP1129:
+  iconv: CP1129
+
+CP1130:
+  iconv: CP1130
+
+CP1132:
+  iconv: CP1132
+
+CP1133:
+  iconv: CP1133
+
+CP1137:
+  iconv: CP1137
+
+CP1140:
+  iconv: CP1140
+  python_encode: cp1140
+
+CP1141:
+  iconv: CP1141
+
+CP1142:
+  iconv: CP1142
+
+CP1143:
+  iconv: CP1143
+
+CP1144:
+  iconv: CP1144
+
+CP1145:
+  iconv: CP1145
+
+CP1146:
+  iconv: CP1146
+
+CP1147:
+  iconv: CP1147
+
+CP1148:
+  iconv: CP1148
+
+CP1149:
+  iconv: CP1149
+
+CP1153:
+  iconv: CP1153
+
+CP1154:
+  iconv: CP1154
+
+CP1155:
+  iconv: CP1155
+
+CP1156:
+  iconv: CP1156
+
+CP1157:
+  iconv: CP1157
+
+CP1158:
+  iconv: CP1158
+
+CP1160:
+  iconv: CP1160
+
+CP1161:
+  iconv: CP1161
+
+CP1162:
+  iconv: CP1162
+
+CP1163:
+  iconv: CP1163
+
+CP1164:
+  iconv: CP1164
+
+CP1166:
+  iconv: CP1166
+
+CP1167:
+  iconv: CP1167
+
+CP1250:
+  iconv: CP1250
+  python_encode: cp1250
+
+CP1251:
+  iconv: CP1251
+  python_encode: cp1251
+
+CP1252:
+  iconv: CP1252
+  python_encode: cp1252
+
+CP1253:
+  iconv: CP1253
+  python_encode: cp1253
+
+CP1254:
+  iconv: CP1254
+  python_encode: cp1254
+
+CP1255:
+  iconv: CP1255
+  python_encode: cp1255
+
+CP1256:
+  iconv: CP1256
+  python_encode: cp1256
+
+CP1257:
+  iconv: CP1257
+  python_encode: cp1257
+
+CP1258:
+  iconv: CP1258
+  python_encode: cp1258
+
+CP1282:
+  iconv: CP1282
+
+CP1361:
+  iconv: CP1361
+
+CP1364:
+  iconv: CP1364
+
+CP1371:
+  iconv: CP1371
+
+CP1388:
+  iconv: CP1388
+
+CP1390:
+  iconv: CP1390
+
+CP1399:
+  iconv: CP1399
+
+CP2001:
+  name: Unimplemented Star-specific CP2001
+
+CP3001:
+  name: Unimplemented Star-specific CP3001
+
+CP3002:
+  name: Unimplemented Star-specific CP3002
+
+CP3011:
+  name: "CP3011 Latvian"
+  data:
+    - "ÇüéâäàåçêëèïîìÄÅ"
+    - "ÉæÆôöòûùÿÖÜ¢£¥₧ƒ"
+    - "áíóúñÑªº¿⌐¬½¼¡«»"
+    - "░▒▓│┤Ā╢ņ╕╣║╗╝╜╛┐"
+    - "└┴┬├─┼ā╟╚╔╩╦╠═╬╧"
+    - "Š╤čČ╘╒ģĪī┘┌█▄ūŪ▀"
+    - "αßΓπΣσµτΦΘΩδ∞φε∩"
+    - "ĒēĢķĶļĻžŽ∙·√Ņš■ "
+
+CP3012:
+  name: "CP3012 Cyrillic"
+  data:
+    - "АБВГДЕЖЗИЙКЛМНОП"
+    - "РСТУФХЦЧШЩЪЫЬЭЮЯ"
+    - "абвгдежзийклмноп"
+    - "░▒▓│┤Ā╢ņ╕╣║╗╝Ō╛┐"
+    - "└┴┬├─┼ā╟╚╔╩╦╠═╬╧"
+    - "Š╤čČ╘╒ģĪī┘┌█▄ūŪ▀"
+    - "рстуфхцчшщъыьэюя"
+    - "ĒēĢķĶļĻžŽ∙·√Ņš■ "
+
+CP3021:
+  name: Unimplemented Star-specific CP3021
+
+CP3041:
+  name: Unimplemented Star-specific CP3041
+
+CP3840:
+  name: Unimplemented Star-specific CP3840
+
+CP3841:
+  name: Unimplemented Star-specific CP3841
+
+CP3843:
+  name: Unimplemented Star-specific CP3843
+
+CP3844:
+  name: Unimplemented Star-specific CP3844
+
+CP3845:
+  name: Unimplemented Star-specific CP3845
+
+CP3847:
+  name: Unimplemented Star-specific CP3847
+
+CP3846:
+  name: Unimplemented Star-specific CP3846
+
+CP3848:
+  name: Unimplemented Star-specific CP3848
+
+CP4517:
+  iconv: CP4517
+
+CP4899:
+  iconv: CP4899
+
+CP4909:
+  iconv: CP4909
+
+CP4971:
+  iconv: CP4971
+
+CP5347:
+  iconv: CP5347
+
+CP9030:
+  iconv: CP9030
+
+CP9066:
+  iconv: CP9066
+
+CP9448:
+  iconv: CP9448
+
+CP10007:
+  iconv: CP10007
+
+CP12712:
+  iconv: CP12712
+
+CP16804:
+  iconv: CP16804
+
+ISO_8859-1:
+  iconv: "ISO_8859-1"
+  python_encode: "latin_1"
+
+ISO_8859-2:
+  iconv: "ISO_8859-2"
+  python_encode: "iso8859_2"
+
+ISO_8859-3:
+  iconv: "ISO_8859-3"
+  python_encode: "iso8859_3"
+
+ISO_8859-4:
+  iconv: "ISO_8859-4"
+  python_encode: "iso8859_4"
+
+ISO_8859-5:
+  iconv: "ISO_8859-5"
+  python_encode: "iso8859_5"
+
+ISO_8859-6:
+  iconv: "ISO_8859-6"
+  python_encode: "iso8859_6"
+
+ISO_8859-7:
+  iconv: "ISO_8859-7"
+  python_encode: "iso8859_7"
+
+ISO_8859-8:
+  iconv: "ISO_8859-8"
+  python_encode: "iso8859_8"
+
+ISO_8859-9:
+  iconv: "ISO_8859-9"
+  python_encode: "iso8859_9"
+
+ISO_8859-10:
+  iconv: "ISO_8859-10"
+  python_encode: "iso8859-10"
+
+ISO_8859-11:
+  iconv: "ISO_8859-11"
+  python_encode: "iso8859-11"
+
+ISO_8859-13:
+  iconv: "ISO_8859-13"
+  python_encode: "iso8859-13"
+
+ISO_8859-14:
+  iconv: "ISO_8859-14"
+  python_encode: "iso8859-14"
+
+ISO_8859-15:
+  iconv: "ISO_8859-15"
+  python_encode: "iso8859-15"
+
+ISO_8859-16:
+  iconv: "ISO_8859-16"
+  python_encode: "iso8859_16"
+
+RK1048:
+  iconv: RK1048
+
+TCVN-3-1:
+  name: "Vietnamese TCVN-3 1"
+  data:
+    - "                "
+    - "                "
+    - "        ăâêôơưđ "
+    - "     àảãáạ ằẳẵắ "
+    - "      ặầẩẫấậè ẻẽ"
+    - "éẹềểễếệìỉ   ĩíịò"
+    - " ỏõóọồổỗốộờởỡớợù"
+    - " ủũúụừửữứựỳỷỹýỵ "
+
+TCVN-3-2:
+  name: "Vietnamese TCVN-3 1"
+  data:
+    - "                "
+    - "                "
+    - " ĂÂ    Ð  ÊÔƠƯ  "
+    - "     ÀẢÃÁẠ ẰẲẴẮ "
+    - "      ẶẦẨẪẤẬÈ ẺẼ"
+    - "ÉẸỀỂỄẾỆÌỈ   ĨÍỊÒ"
+    - " ỎÕÓỌỒỔỖỐỘỜỞỠỚỢÙ"
+    - " ỦŨÚỤỪỬỮỨỰỲỶỸÝỴ "
+
+OXHOO-EUROPEAN:
+  name: Oxhoo-specific European
+  data:
+    - "ÇüéâäàåçêëèïîìÄÅ"
+    - "ÉæÆôöòûùÿÖÜñÑªº¿"
+    - "áíóú¢£¥₧ƒ¡ÃãÕõØø"
+    - "·¨°`´½¼×÷≤≥«»≠√¯"
+    - "⌠⌡∞◤↵↑↓→←┌┐└┘•®©"
+    # Some unidentified chars
+    - "™†§¶Γ◢Θ         "
+    - "ß   ε           "
+    - "τ               "
+
+Unknown:
+  name: Unknown
+  notes: Code page that has not yet been identified.
+...

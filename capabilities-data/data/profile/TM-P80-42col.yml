@@ -1,0 +1,21 @@
+---
+TM-P80-42col:
+  name: TM-P80 (42 column mode)
+  vendor: Epson
+  inherits: TM-P80
+  notes: Portable printer (42-column mode)
+  fonts:
+    0:
+      name: Font A
+      columns: 42
+    1:
+      name: Font B
+      columns: 60
+    2:
+      name: Kanji
+      columns: 21
+  media:
+    width:
+      mm: 63.6
+      pixels: 546
+...

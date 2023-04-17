@@ -1,0 +1,67 @@
+---
+SP2000:
+  name: SP2000 Series
+  vendor: Star Micronics
+  inherits: default
+  notes: Star SP2000 impact printer series with ESC/POS emulation enabled
+  features:
+    starCommands: true
+  codePages:
+    # "Normal"
+    0: CP437
+    1: CP437
+    2: CP932
+    3: CP437
+    4: CP858
+    5: CP852
+    6: CP860
+    7: CP861
+    8: CP863
+    9: CP865
+    10: CP866
+    11: CP855
+    12: CP857
+    13: CP862
+    14: CP864
+    15: CP737
+    16: CP851
+    17: CP869
+    18: CP928
+    19: CP772
+    20: CP774
+    21: CP874
+    32: CP1252
+    33: CP1250
+    34: CP1251
+    64: CP3840
+    65: CP3841
+    66: CP3843
+    67: CP3844
+    68: CP3845
+    69: CP3846
+    70: CP3847
+    71: CP3848
+    72: CP1001
+    73: CP2001
+    74: CP3001
+    75: CP3002
+    76: CP3011
+    77: CP3012
+    78: CP3021
+    79: CP3041
+    # Thai Character Code 42
+    96: Unknown
+    # Thai Character Code 11
+    97: Unknown
+    # Thai Character Code 13
+    98: Unknown
+    # Thai Character Code 14
+    99: Unknown
+    # Thai Character Code 16
+    100: Unknown
+    # Thai Character Code 17
+    101: Unknown
+    # Thai Character Code 18
+    102: Unknown
+    255: Unknown
+...

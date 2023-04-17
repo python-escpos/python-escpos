@@ -1,0 +1,96 @@
+---
+P822D:
+  name: P822D
+  vendor: PBM
+  inherits: default
+  notes: ""
+  features:
+    graphics: false
+  codePages:
+    0: CP437
+    # Katakana
+    1: Unknown
+    2: CP850
+    3: CP860
+    4: CP863
+    5: CP865
+    # Western Europe
+    6: Unknown
+    # Greek
+    7: Unknown
+    # Hebrew
+    8: Unknown
+    # Eastern europe
+    9: Unknown
+    # Iran
+    10: Unknown
+    16: CP1252
+    17: CP866
+    18: CP852
+    19: CP858
+    # Iran II
+    20: Unknown
+    # latvian
+    21: Unknown
+    # Arabic
+    22: Unknown
+    # PT151, 1251
+    23: Unknown
+    24: CP747
+    25: CP1257
+    # Vietnam
+    27: Unknown
+    28: CP864
+    29: CP1001
+    # Uigur
+    30: Unknown
+    # Hebrew
+    31: Unknown
+    32: CP1255
+    33: CP720
+    34: CP1256
+    35: CP1257
+    # Thai
+    255: Unknown
+    50: CP437
+    # Jatakana
+    51: Unknown
+    52: CP437
+    53: CP858
+    54: CP852
+    55: CP860
+    56: CP861
+    57: CP863
+    58: CP865
+    59: CP866
+    60: CP855
+    61: CP857
+    62: CP862
+    63: CP864
+    64: CP737
+    65: CP851
+    66: CP869
+    67: CP928
+    68: CP772
+    69: CP774
+    70: CP874
+    71: CP1252
+    72: CP1250
+    73: CP1251
+    74: CP3840
+    75: CP3841
+    76: CP3843
+    77: CP3844
+    78: CP3845
+    79: CP3846
+    80: CP3847
+    81: CP3848
+    82: CP1001
+    83: CP2001
+    84: CP3001
+    85: CP3002
+    86: CP3011
+    87: CP3012
+    88: CP3021
+    89: CP3041
+...
