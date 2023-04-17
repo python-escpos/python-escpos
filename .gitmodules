@@ -1,4 +1,0 @@
-[submodule "capabilities-data"]
-	path = capabilities-data
-	url = https://github.com/receipt-print-hq/escpos-printer-db.git
-	branch = master
