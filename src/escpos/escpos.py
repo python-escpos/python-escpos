@@ -592,7 +592,6 @@ class Escpos(object):
         text_distance=1,
         center=True,
     ):
-
         image_writer = ImageWriter()
 
         # Check if barcode type exists
