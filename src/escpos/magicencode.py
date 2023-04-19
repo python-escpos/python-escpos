@@ -77,7 +77,7 @@ class Encoder(object):
             assert len(encodable_chars) == 128
             return encodable_chars
         elif "python_encode" in codepage:
-            encodable_chars = [u" "] * 128
+            encodable_chars = [" "] * 128
             for i in range(0, 128):
                 codepoint = i + 128
                 try:

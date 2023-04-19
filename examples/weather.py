@@ -68,7 +68,7 @@ def forecast(idx):
     printer.text(deg)
     printer.text("\n")
     # take care of pesky unicode dash
-    printer.text(cond.replace(u"\u2013", "-").encode("utf-8"))
+    printer.text(cond.replace("\u2013", "-").encode("utf-8"))
     printer.text("\n \n")
 
 
