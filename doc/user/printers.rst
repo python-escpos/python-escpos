@@ -82,11 +82,7 @@ Supports both local and remote CUPS printers and servers.
 The printer must be properly configured in CUPS administration.
 The connector generates a print job that is added to the CUPS queue.
 
-.. autoclass:: escpos.printer.CupsPrinter
-      :members:
-      :special-members:
-      :member-order: bysource
-      :noindex:
+.. todo:: fix import in documentation
 
 LP
 ----
