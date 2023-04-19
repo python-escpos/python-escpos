@@ -9,13 +9,34 @@
 """
 
 
-import serial
+import os
 import socket
+import subprocess
+import sys
+
+import serial
 import usb.core
 import usb.util
 
 from .escpos import Escpos
 from .exceptions import USBNotFoundError
+
+_WIN32PRINT = False
+try:
+    import win32print
+
+    _WIN32PRINT = True
+except ImportError:
+    pass
+
+_CUPSPRINT = False
+try:
+    import cups
+    import tempfile
+
+    _CUPSPRINT = True
+except ImportError:
+    pass
 
 
 class Usb(Escpos):
@@ -371,14 +392,6 @@ class Dummy(Escpos):
         pass
 
 
-_WIN32PRINT = False
-try:
-    import win32print
-
-    _WIN32PRINT = True
-except ImportError:
-    pass
-
 if _WIN32PRINT:
 
     class Win32Raw(Escpos):
@@ -419,3 +432,171 @@ if _WIN32PRINT:
             if self.hPrinter is None:
                 raise Exception("Printer job not opened")
             win32print.WritePrinter(self.hPrinter, msg)
+
+
+if _CUPSPRINT:
+
+    class CupsPrinter(Escpos):
+        """Simple CUPS printer connector.
+
+        .. note::
+                Requires _pycups_ which in turn needs the cups development library package:
+                - Ubuntu/Debian: _libcups2-dev_
+                - OpenSuse/Fedora: _cups-devel_
+        """
+
+        def __init__(self, printer_name=None, *args, **kwargs):
+            """CupsPrinter class constructor.
+
+            :param printer_name: CUPS printer name (Optional)
+            :type printer_name: str
+            :param host: CUPS server host/ip (Optional)
+            :type host: str
+            :param port: CUPS server port (Optional)
+            :type port: int
+            """
+            Escpos.__init__(self, *args, **kwargs)
+            host, port = args or (
+                kwargs.get("host", cups.getServer()),
+                kwargs.get("port", cups.getPort()),
+            )
+            cups.setServer(host)
+            cups.setPort(port)
+            self.conn = cups.Connection()
+            self.tmpfile = None
+            self.printer_name = printer_name
+            self.job_name = ""
+            self.pending_job = False
+            self.open()
+
+        @property
+        def printers(self):
+            """Available CUPS printers."""
+            return self.conn.getPrinters()
+
+        def open(self, job_name="python-escpos"):
+            """Setup a new print job and target printer.
+
+            A call to this method is required to send new jobs to
+            the same CUPS connection.
+
+            Defaults to default CUPS printer.
+            Creates a new temporary file buffer.
+            """
+            self.job_name = job_name
+            if self.printer_name not in self.printers:
+                self.printer_name = self.conn.getDefault()
+            self.tmpfile = tempfile.NamedTemporaryFile(delete=True)
+
+        def _raw(self, msg):
+            """Append any command sent in raw format to temporary file
+
+            :param msg: arbitrary code to be printed
+            :type msg: bytes
+            """
+            self.pending_job = True
+            try:
+                self.tmpfile.write(msg)
+            except ValueError:
+                self.pending_job = False
+                raise ValueError("Printer job not opened")
+
+        def send(self):
+            """Send the print job to the printer."""
+            if self.pending_job:
+                # Rewind tempfile
+                self.tmpfile.seek(0)
+                # Print temporary file via CUPS printer.
+                self.conn.printFile(
+                    self.printer_name,
+                    self.tmpfile.name,
+                    self.job_name,
+                    {"document-format": cups.CUPS_FORMAT_RAW},
+                )
+            self._clear()
+
+        def _clear(self):
+            """Finish the print job.
+
+            Remove temporary file.
+            """
+            self.tmpfile.close()
+            self.pending_job = False
+
+        def _read(self):
+            """Return a single-item array with the accepting state of the print queue.
+
+            states: idle = [3], printing a job = [4], stopped = [5]
+            """
+            printer = self.printers.get(self.printer_name, {})
+            state = printer.get("printer-state")
+            if not state:
+                return []
+            return [state]
+
+        def close(self):
+            """Close CUPS connection.
+
+            Send pending job to the printer if needed.
+            """
+            if self.pending_job:
+                self.send()
+            if self.conn:
+                print("Closing CUPS connection to printer {}".format(self.printer_name))
+                self.conn = None
+
+
+if not sys.platform.startswith("win"):
+
+    class LP(Escpos):
+        """Simple UNIX lp command raw printing.
+
+        Thanks to `Oyami-Srk comment <https://github.com/python-escpos/python-escpos/pull/348#issuecomment-549558316>`_.
+        """
+
+        def __init__(self, printer_name: str, *args, **kwargs):
+            """LP class constructor.
+
+            :param printer_name: CUPS printer name (Optional)
+            :type printer_name: str
+            :param auto_flush: Automatic flush after every _raw() (Optional)
+            :type auto_flush: bool
+            """
+            Escpos.__init__(self, *args, **kwargs)
+            self.printer_name = printer_name
+            self.auto_flush = kwargs.get("auto_flush", True)
+            self.open()
+
+        def open(self):
+            """Invoke _lp_ in a new subprocess and wait for commands."""
+            self.lp = subprocess.Popen(
+                ["lp", "-d", self.printer_name, "-o", "raw"],
+                stdin=subprocess.PIPE,
+                stdout=open(os.devnull, "w"),
+            )
+
+        def close(self):
+            """Stop the subprocess."""
+            self.lp.terminate()
+
+        def flush(self):
+            """End line and wait for new commands"""
+            if self.lp.stdin.writable():
+                self.lp.stdin.write(b"\n")
+            if self.lp.stdin.closed is False:
+                self.lp.stdin.close()
+            self.lp.wait()
+            self.open()
+
+        def _raw(self, msg):
+            """Write raw command(s) to the printer.
+
+            :param msg: arbitrary code to be printed
+            :type msg: bytes
+            """
+            if self.lp.stdin.writable():
+                self.lp.stdin.write(msg)
+            else:
+                raise Exception("Not a valid pipe for lp process")
+            if self.auto_flush:
+                self.flush()
