@@ -255,7 +255,6 @@ def test_align_right():
 
 
 def test_densities():
-
     for density in range(8):
         instance = printer.Dummy()
         instance.set(density=density)
