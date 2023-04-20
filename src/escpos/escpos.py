@@ -417,6 +417,79 @@ class Escpos(object):
         align_ct=True,
         function_type=None,
         check=True,
+        force_software=False,
+    ):
+        """Print barcode.
+
+        Automatic hardware|software barcode renderer according to the printer capabilities.
+
+        Defaults to hardware barcode and its format types if supported.
+        Set force_software=True to force the software renderer.
+        """
+        hw_modes = ["barcodeA", "barcodeB"]
+        sw_modes = ["bitImageRaster", "graphics", "bitImageColumn"]
+        capable = {
+            "hw": [mode for mode in hw_modes if self.profile.supports(mode)] or None,
+            "sw": [mode for mode in sw_modes if self.profile.supports(mode)] or None,
+        }
+        if (not capable["hw"] and not capable["sw"]) or (
+            not capable["sw"] and force_software
+        ):
+            print(
+                f"""Profile {
+                    self.profile['name']
+                } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
+            )
+            return
+
+        if force_software or not capable["hw"]:
+            # Select the best possible render mode
+            impl = capable["sw"][0]
+            print(f"Using {impl} software barcode renderer")
+            # Translate hw to sw barcode type name if supported
+            sw_bc_type_names = {
+                "UPC-A": "upca",
+                "UPC-E": "",  # not implemented type
+                "EAN13": "ean13",
+                "EAN8": "ean8",
+                "CODE39": "code39",
+                "ITF": "itf",
+                "NW7": "nw-7",
+                "CODE93": "",  # not implemented type
+                "CODE128": "code128",
+                "GS1-128": "gs1_128",
+                "GS1 DataBar Omnidirectional": "",  # not implemented type
+                "GS1 DataBar Truncated": "",  # not implemented type
+                "GS1 DataBar Limited": "",  # not implemented type
+                "GS1 DataBar Expanded": "",  # not implemented type
+            }
+            bc = sw_bc_type_names.get(bc, bc)
+            self._sw_barcode(
+                bc,
+                code,
+                impl=impl,
+                module_width=5,  # TODO: _hw_barcode() size equivalence
+                module_height=0.2,  # TODO: _hw_barcode() size equivalence
+                text_distance=1,  # TODO: _hw_barcode() size equivalence
+            )
+            return
+
+        print("Using hardware barcode renderer")
+        self._hw_barcode(
+            code, bc, height, width, pos, font, align_ct, function_type, check
+        )
+
+    def _hw_barcode(
+        self,
+        code,
+        bc,
+        height=64,
+        width=3,
+        pos="BELOW",
+        font="A",
+        align_ct=True,
+        function_type=None,
+        check=True,
     ):
         """Print Barcode
 
@@ -582,7 +655,7 @@ class Escpos(object):
         if function_type.upper() == "A":
             self._raw(NUL)
 
-    def soft_barcode(
+    def _sw_barcode(
         self,
         barcode_type,
         data,
