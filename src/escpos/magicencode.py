@@ -253,8 +253,8 @@ class MagicEncode(object):
             self.write_with_encoding(self.encoding, text)
             return
 
-        if re.findall(r'[\u4e00-\u9fa5]', text):
-            self.driver._raw(text.encode('GB18030'))
+        if re.findall(r"[\u4e00-\u9fa5]", text):
+            self.driver._raw(text.encode("GB18030"))
             return
 
         # See how far we can go into the text with the current encoding
