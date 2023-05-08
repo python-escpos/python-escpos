@@ -6,6 +6,7 @@ $~
 .idea/
 .directory
 .cache/
+settings.json
 
 # temporary data
 temp
@@ -22,6 +23,9 @@ src/escpos/version.py
 .hypothesis
 .pytest_cache/
 
+# pyenv
+.python-version
+
 # testing temporary directories
 test/test-cli-output/
 
@@ -31,4 +35,8 @@ test/test-cli-output/
 *.swo
 
 # vscode
-.vscode/settings.json
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

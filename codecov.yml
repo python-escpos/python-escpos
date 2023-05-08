@@ -3,10 +3,9 @@ codecov:
 
 coverage:
   status:
-    project:
-      default:  # status context
-        target: auto
-        threshold: "1%"
+    project: off
+    patch: off
+    changes: off
   range: "60...100"
 
 comment: off

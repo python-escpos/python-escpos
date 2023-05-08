@@ -21,4 +21,4 @@ class CodePageManager:
         return self.data[encoding]
 
 
-CodePages = CodePageManager(CAPABILITIES['encodings'])
+CodePages = CodePageManager(CAPABILITIES["encodings"])

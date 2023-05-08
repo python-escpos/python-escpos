@@ -1,0 +1,13 @@
+name: Lint (Black code style)
+
+on: [push, pull_request]
+
+jobs:
+  black-code-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          version: "23.3.0"
+

@@ -8,10 +8,6 @@
 :license: MIT
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
 import pytest
 import mock
@@ -20,7 +16,7 @@ from escpos.printer import Dummy
 from PIL import Image
 
 
-@mock.patch('escpos.printer.Dummy.image', spec=Dummy)
+@mock.patch("escpos.printer.Dummy.image", spec=Dummy)
 def test_type_of_object_passed_to_image_function(img_function):
     """
     Test the type of object that is passed to the image function during non-native qr-printing.
