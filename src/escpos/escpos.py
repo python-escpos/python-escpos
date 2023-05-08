@@ -30,6 +30,11 @@ from .constants import (
     QR_ECLEVEL_M,
     QR_ECLEVEL_H,
     QR_ECLEVEL_Q,
+    SHEET_ROLL_MODE,
+    SHEET_SLIP_MODE,
+    SLIP_PRINT_AND_EJECT,
+    SLIP_SELECT,
+    SLIP_EJECT,
 )
 from .constants import (
     QR_MODEL_1,
@@ -1010,6 +1015,41 @@ class Escpos(object):
             return 1
         if status[0] & RT_MASK_PAPER == RT_MASK_PAPER:
             return 2
+
+    def target(self, type="ROLL"):
+        """Select where to print to
+
+        Print to the thermal printer by default (ROLL) or
+        print to the slip dot matrix printer if supported (SLIP)
+        """
+        if type.upper() == "ROLL":
+            self._raw(SHEET_ROLL_MODE)
+        elif type.upper() == "SLIP":
+            self._raw(SHEET_SLIP_MODE)
+        else:
+            raise ValueError("Unsupported target")
+
+    def eject_slip(self):
+        """Eject the slip/cheque"""
+        self._raw(SLIP_EJECT)
+
+    def print_and_eject_slip(self):
+        """Print and eject
+
+        Prints data from the buffer to the slip station and if the paper
+        sensor is covered, reverses the slip out the front of the printer
+        far enough to be accessible to the operator.
+        The impact station opens the platen in all cases.
+        """
+        self._raw(SLIP_PRINT_AND_EJECT)
+
+    def use_slip_only(self):
+        """Selects the Slip Station for all functions.
+
+        The receipt station is the default setting after the printer
+        is initialized or the Clear Printer (0x10) command is received
+        """
+        self._raw(SLIP_SELECT)
 
 
 class EscposIO(object):
