@@ -592,7 +592,6 @@ class Escpos(object):
         text_distance=1,
         center=True,
     ):
-
         image_writer = ImageWriter()
 
         # Check if barcode type exists
@@ -1075,7 +1074,7 @@ class EscposIO(object):
         for line in lines:
             self.printer.set(**params)
             if isinstance(text, six.text_type):
-                self.printer.text(u"{0}\n".format(line))
+                self.printer.text("{0}\n".format(line))
             else:
                 self.printer.text("{0}\n".format(line))
 
