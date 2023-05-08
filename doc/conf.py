@@ -66,8 +66,8 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"python-escpos"
-copyright = u"2016, Manuel F Martinez and others"
+project = "python-escpos"
+copyright = "2016, Manuel F Martinez and others"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -229,8 +229,8 @@ latex_documents = [
     (
         "index",
         "python-escpos.tex",
-        u"python-escpos Documentation",
-        u"Manuel F Martinez and others",
+        "python-escpos Documentation",
+        "Manuel F Martinez and others",
         "manual",
     ),
 ]
@@ -264,8 +264,8 @@ man_pages = [
     (
         "index",
         "python-escpos",
-        u"python-escpos Documentation",
-        [u"Manuel F Martinez and others"],
+        "python-escpos Documentation",
+        ["Manuel F Martinez and others"],
         1,
     )
 ]
@@ -283,8 +283,8 @@ texinfo_documents = [
     (
         "index",
         "python-escpos",
-        u"python-escpos Documentation",
-        u"Manuel F Martinez and others",
+        "python-escpos Documentation",
+        "Manuel F Martinez and others",
         "python-escpos",
         "One line description of project.",
         "Miscellaneous",

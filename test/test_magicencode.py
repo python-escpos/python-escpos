@@ -24,13 +24,13 @@ class TestEncoder:
     """
 
     def test_can_encode(self):
-        assert not Encoder({"CP437": 1}).can_encode("CP437", u"€")
-        assert Encoder({"CP437": 1}).can_encode("CP437", u"á")
+        assert not Encoder({"CP437": 1}).can_encode("CP437", "€")
+        assert Encoder({"CP437": 1}).can_encode("CP437", "á")
         assert not Encoder({"foobar": 1}).can_encode("foobar", "a")
 
     def test_find_suitable_encoding(self):
-        assert not Encoder({"CP437": 1}).find_suitable_encoding(u"€")
-        assert Encoder({"CP858": 1}).find_suitable_encoding(u"€") == "CP858"
+        assert not Encoder({"CP437": 1}).find_suitable_encoding("€")
+        assert Encoder({"CP858": 1}).find_suitable_encoding("€") == "CP858"
 
     @raises(ValueError)
     def test_get_encoding(self):
@@ -90,7 +90,7 @@ class TestMagicEncode:
                 encoder=Encoder({"CP437": 1}),
                 encoding="CP437",
             )
-            encode.write(u"€ ist teuro.")
+            encode.write("€ ist teuro.")
             assert driver.output == b"_ ist teuro."
 
     class TestForceEncoding:

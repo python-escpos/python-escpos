@@ -77,7 +77,7 @@ class Encoder(object):
             assert len(encodable_chars) == 128
             return encodable_chars
         elif "python_encode" in codepage:
-            encodable_chars = [u" "] * 128
+            encodable_chars = [" "] * 128
             for i in range(0, 128):
                 codepoint = i + 128
                 try:
@@ -183,7 +183,7 @@ class Encoder(object):
 
 
 def split_writable_text(encoder, text, encoding):
-    """Splits off as many characters from the begnning of text as
+    """Splits off as many characters from the beginning of text as
     are writable with "encoding". Returns a 2-tuple (writable, rest).
     """
     if not encoding:
