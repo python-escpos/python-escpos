@@ -82,6 +82,19 @@ from escpos.image import EscposImage
 from escpos.capabilities import get_profile, BARCODE_B
 
 
+# Remove special characters and whitespaces of the supported barcode names,
+# convert to uppercase and map them to their original names.
+HW_BARCODE_NAMES = {
+    "".join([char for char in name.upper() if char.isalnum()]): name
+    for bc_type in BARCODE_TYPES.values()
+    for name in bc_type
+}
+SW_BARCODE_NAMES = {
+    "".join([char for char in name.upper() if char.isalnum()]): name
+    for name in barcode.PROVIDED_BARCODES
+}
+
+
 @six.add_metaclass(ABCMeta)
 class Escpos(object):
     """ESC/POS Printer object
@@ -427,7 +440,7 @@ class Escpos(object):
         Set force_software=True to force the software renderer.
         """
         hw_modes = ["barcodeA", "barcodeB"]
-        sw_modes = ["bitImageRaster", "graphics", "bitImageColumn"]
+        sw_modes = ["graphics", "bitImageColumn", "bitImageRaster"]
         capable = {
             "hw": [mode for mode in hw_modes if self.profile.supports(mode)] or None,
             "sw": [mode for mode in sw_modes if self.profile.supports(mode)] or None,
@@ -435,47 +448,43 @@ class Escpos(object):
         if (not capable["hw"] and not capable["sw"]) or (
             not capable["sw"] and force_software
         ):
-            print(
+            raise BarcodeCodeError(
                 f"""Profile {
                     self.profile['name']
                 } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
             )
-            return
 
-        if force_software or not capable["hw"]:
-            # Select the best possible render mode
+        bc_alnum = "".join([char for char in bc.upper() if char.isalnum()])
+        capable_bc = {
+            "hw": HW_BARCODE_NAMES.get(bc_alnum),
+            "sw": SW_BARCODE_NAMES.get(bc_alnum),
+        }
+        if not any([*capable_bc.values()]):
+            raise BarcodeTypeError(f"Not supported or wrong barcode name {bc}.")
+
+        if force_software or not capable["hw"] or not capable_bc["hw"]:
+            # Select the best possible capable render mode
             impl = capable["sw"][0]
+            if force_software in capable["sw"]:
+                # Force to a specific mode
+                impl = force_software
             print(f"Using {impl} software barcode renderer")
-            # Translate hw to sw barcode type name if supported
-            sw_bc_type_names = {
-                "UPC-A": "upca",
-                "UPC-E": "",  # not implemented type
-                "EAN13": "ean13",
-                "EAN8": "ean8",
-                "CODE39": "code39",
-                "ITF": "itf",
-                "NW7": "nw-7",
-                "CODE93": "",  # not implemented type
-                "CODE128": "code128",
-                "GS1-128": "gs1_128",
-                "GS1 DataBar Omnidirectional": "",  # not implemented type
-                "GS1 DataBar Truncated": "",  # not implemented type
-                "GS1 DataBar Limited": "",  # not implemented type
-                "GS1 DataBar Expanded": "",  # not implemented type
-            }
-            bc = sw_bc_type_names.get(bc, bc)
+            # Set barcode type
+            bc = capable_bc["sw"] or bc
             self._sw_barcode(
                 bc,
                 code,
                 impl=impl,
                 module_height=5,  # TODO: _hw_barcode() size equivalence
                 module_width=0.2,  # TODO: _hw_barcode() size equivalence
-                text_distance=1,  # TODO: _hw_barcode() size equivalence
+                text_distance=2,  # TODO: _hw_barcode() size equivalence
+                font_size=6,
                 center=align_ct,
             )
             return
 
         print("Using hardware barcode renderer")
+        bc = capable_bc["hw"] or bc
         self._hw_barcode(
             code, bc, height, width, pos, font, align_ct, function_type, check
         )
@@ -575,27 +584,12 @@ class Escpos(object):
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
-        if function_type is None:
-            # Choose the function type automatically.
-            if bc in BARCODE_TYPES["A"]:
-                function_type = "A"
-            else:
-                if bc in BARCODE_TYPES["B"]:
-                    if not self.profile.supports(BARCODE_B):
-                        raise BarcodeTypeError(
-                            (
-                                "Barcode type '{bc} not supported for "
-                                "the current printer profile"
-                            ).format(bc=bc)
-                        )
-                    function_type = "B"
-                else:
-                    raise BarcodeTypeError(
-                        ("Barcode type '{bc} is not valid").format(bc=bc)
-                    )
+        # If function_type is specified, otherwise use guessing.
+        ft_guess = [ft for ft in ["A", "B"] if bc in BARCODE_TYPES.get(ft)]
+        ft_guess = ft_guess or [None]
+        function_type = function_type or ft_guess[0]
 
-        bc_types = BARCODE_TYPES[function_type.upper()]
-        if bc.upper() not in bc_types.keys():
+        if not function_type or not BARCODE_TYPES.get(function_type.upper()):
             raise BarcodeTypeError(
                 (
                     "Barcode '{bc}' not valid for barcode function type "
@@ -605,6 +599,7 @@ class Escpos(object):
                     function_type=function_type,
                 )
             )
+        bc_types = BARCODE_TYPES[function_type.upper()]
 
         if check and not self.check_barcode(bc, code):
             raise BarcodeCodeError(
@@ -663,7 +658,8 @@ class Escpos(object):
         impl="bitImageColumn",
         module_height=5,
         module_width=0.2,
-        text_distance=1,
+        text_distance=5,
+        font_size=10,
         center=True,
     ):
         image_writer = ImageWriter()
