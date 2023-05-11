@@ -1,6 +1,28 @@
 *********
 Changelog
 *********
+2023-05-11 - Version 3.0a9 - "Pride Comes Before A Fall"
+--------------------------------------------------------
+This release is the 10th alpha release of the new version 3.0.
+After three years hiatus, a new release is in work in order to
+finally get a version 3.0 out.
+
+changes
+^^^^^^^
+- Include support for CUPS based printer interfaces
+- Move the build toolchain to GitHub
+
+contributors
+^^^^^^^^^^^^
+- belono
+- brendanhowell
+- AlexandroJaez
+- NullYing
+- kedare
+- Foaly
+- patkan
+- and others
+
 2020-05-12 - Version 3.0a8 - "Only Slightly Bent"
 -------------------------------------------------
 This release is the ninth alpha release of the new version 3.0.
