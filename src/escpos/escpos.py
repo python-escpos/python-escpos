@@ -437,7 +437,57 @@ class Escpos(object):
         Automatic hardware|software barcode renderer according to the printer capabilities.
 
         Defaults to hardware barcode and its format types if supported.
-        Set force_software=True to force the software renderer.
+        Automatically switches to software barcode renderer if hardware does not
+        support a barcode type that is supported by software. (e.g. JAN, ISSN, etc.).
+
+        Set force_software=True to force the software renderer according to the profile.
+        Set force_software=graphics|bitImageColumn|bitImageRaster to specify a renderer.
+
+        Ignores caps, special chars and whitespaces in barcode type names.
+        So "EAN13", "ean-13", "Ean_13", "EAN 13" are all accepted.
+
+        :param code: alphanumeric data to be printed as bar code (payload).
+
+        :param bc: barcode format type (EAN13, CODE128, JAN, etc.).
+
+        :param height: barcode module height (in printer dots), has to be between 1 and 255.
+            *default*: 64
+        :type height: int
+
+        :param width: barcode module width (in printer dots), has to be between 2 and 6.
+            *default*: 3
+        :type width: int
+
+        :param pos: text position (ABOVE, BELOW, BOTH, OFF) relative to the barcode
+        (ignored in software renderer).
+            *default*: BELOW
+
+        :param font: select font A or B (ignored in software renderer).
+            *default*: A
+
+        :param align_ct: If *True*, center the barcode.
+            *default*: A
+        :type align_ct: bool
+
+        :param function_type: ESCPOS function type A or B. None to guess it from profile
+        (ignored in software renderer).
+            *default*: None
+
+        :param check: If *True*, checks that the code meets the requirements of the barcode type.
+            *default*: True
+        :type check: bool
+
+        :param force_software: If *True*, force the use of software barcode renderer from profile.
+        If *"graphics", "bitImageColumn" or "bitImageRaster"*, force the use of specific renderer.
+        :type force_software: bool | str
+
+        :raises: :py:exc:`~escpos.exceptions.BarcodeCodeError`,
+                 :py:exc:`~escpos.exceptions.BarcodeTypeError`
+
+        .. tip::
+            Get all supported formats at:
+            - Hardware: `~escpos.constants.BARCODE_FORMATS`
+            - Software: `https://python-barcode.readthedocs.io/en/stable/supported-formats.html`
         """
         hw_modes = ["barcodeA", "barcodeB"]
         sw_modes = ["graphics", "bitImageColumn", "bitImageRaster"]
@@ -521,9 +571,6 @@ class Escpos(object):
         If you do not want to center the barcode you can call the method with `align_ct=False`, which will disable
         automatic centering. Please note that when you use center alignment, then the alignment of text will be changed
         automatically to centered. You have to manually restore the alignment if necessary.
-
-        .. todo:: If further barcode-types are needed they could be rendered transparently as an image. (This could also
-                  be of help if the printer does not support types that others do.)
 
         :param code: alphanumeric data to be printed as bar code
         :param bc: barcode format, possible values are for type A are:
@@ -662,6 +709,60 @@ class Escpos(object):
         font_size=10,
         center=True,
     ):
+        """Print Barcode
+
+        This method allows to print barcodes. The rendering of the barcode is done by
+        the `barcode` library and sent to the printer as image through one of the
+        printer's supported implementations: graphics, bitImageColumn or bitImageRaster.
+
+        :param barcode_type: barcode format, possible values are:
+            * ean8
+            * ean8-guard
+            * ean13
+            * ean13-guard
+            * ean
+            * gtin
+            * ean14
+            * jan
+            * upc
+            * upca
+            * isbn
+            * isbn13
+            * gs1
+            * isbn10
+            * issn
+            * code39
+            * pzn
+            * code128
+            * itf
+            * gs1_128
+            * codabar
+            * nw-7
+        :type data: str
+
+        :param data: alphanumeric data to be printed as bar code (payload).
+        :type data: str
+
+        :param impl: image printing mode:
+            * graphics
+            * bitImageColumn
+            * bitImageRaster
+
+        :param module_height: barcode module height (in mm).
+        :type module_height: int | float
+
+        :param module_width: barcode module width (in mm).
+        :type module_width: int | float
+
+        :param text_distance: distance from the barcode to the code text (in dots).
+        :type text_distance: int
+
+        :param font_size: font size of the code text (in dots).
+        :type font_size: int
+
+        :param center: center the barcode.
+        :type center: bool
+        """
         image_writer = ImageWriter()
 
         # Check if barcode type exists
