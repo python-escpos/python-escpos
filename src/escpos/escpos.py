@@ -683,6 +683,7 @@ class Escpos(object):
                     "module_height": module_height,
                     "module_width": module_width,
                     "text_distance": text_distance,
+                    "font_size": font_size,
                 },
             )
 
