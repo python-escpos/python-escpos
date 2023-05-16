@@ -5,5 +5,5 @@ from escpos.printer import Usb
 p = Usb(0x0416, 0x5011, profile="POS-5890")
 
 # Some software barcodes
-p.soft_barcode("code128", "Hello")
-p.soft_barcode("code39", "1234")
+p.barcode("Hello", "code128", width=2, force_software="bitImageRaster")
+p.barcode("1234", "code39", width=2, force_software=True)

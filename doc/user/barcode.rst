@@ -1,17 +1,18 @@
 Printing Barcodes
 -----------------
-:Last Reviewed: 2016-07-31
+:Last Reviewed: 2023-05-16
 
-Most ESC/POS-printers implement barcode-printing.
-The barcode-commandset is implemented in the barcode-method.
-For a list of compatible barcodes you should check the manual of your printer.
-As a rule of thumb: even older Epson-models support most 1D-barcodes.
-To be sure just try some implementations and have a look at the notices below.
+Many printers implement barcode printing natively.
+This hardware renderered barcodes are fast but the supported formats are limited by the printer itself and different between models.
+However, almost all printers support printing images, so barcode renderization can be performed externally by software and then sent to the printer as an image.
+As a drawback, this operation is much slower and the user needs to know and choose the image implementation method supported by the printer's commandset.
 
 barcode-method
 ~~~~~~~~~~~~~~
-The barcode-method is rather low-level and orients itself on the implementation of ESC/POS.
-In the future this class could be supplemented by a high-level class that helps the user generating the payload.
+Since version 3.0, the ``barcode`` method unifies the previous ``barcode`` (hardware) and ``soft_barcode`` (software) methods.
+It is able to choose automatically the best printer implementation for barcode printing based on the capabilities of the printer and the type of barcode desired.
+To achieve this, it relies on the information contained in the escpos-printer-db profiles.
+The chosen profile needs to match the capabilities of the printer as closely as possible.
 
 .. py:currentmodule:: escpos.escpos
 
