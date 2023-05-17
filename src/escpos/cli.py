@@ -161,6 +161,11 @@ ESCPOS_COMMANDS = [
                 "help": "ESCPOS function type",
                 "choices": ["A", "B"],
             },
+            {
+                "option_strings": ("--force_software",),
+                "help": "Force render and print barcode as an image",
+                "choices": ["graphics", "bitImageColumn", "bitImageRaster"],
+            },
         ],
     },
     {
