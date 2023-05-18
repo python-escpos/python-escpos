@@ -29,7 +29,7 @@ When writing code please try to stick to these rules.
 
 Black Code Style
 ^^^^^^^^^^^^^^^^
-This project is formatted with the auto formatter black.
+This project is formatted with the auto formatter `black <https://github.com/psf/black>`_.
 Please format your contributions with black, otherwise they will be rejected.
 
 GIT
