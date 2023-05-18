@@ -2,14 +2,6 @@
 python-escpos - Python library to manipulate ESC/POS Printers
 #############################################################
 
-.. image:: https://travis-ci.org/python-escpos/python-escpos.svg?branch=master
-    :target: https://travis-ci.org/python-escpos/python-escpos
-    :alt: Continous Integration
-
-.. image:: https://codecov.io/github/python-escpos/python-escpos/coverage.svg?branch=master
-    :target: https://codecov.io/github/python-escpos/python-escpos?branch=master
-    :alt: Code Coverage
-
 .. image:: https://readthedocs.org/projects/python-escpos/badge/?version=latest
     :target: https://python-escpos.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
@@ -93,16 +85,20 @@ Another example based on the Serial printer class:
     p.cut()
 
 
-The full project-documentation is available on `Read the Docs <https://python-escpos.readthedocs.io>`_.
+The full project-documentation is available on
+`Read the Docs <https://python-escpos.readthedocs.io>`_.
 
 Contributing
 ------------
 
-This project is open for any contribution! Please see `CONTRIBUTING.rst <https://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_ for more information.
+This project is open for any contribution! Please see
+`CONTRIBUTING.rst <https://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_
+for more information.
 
 
 Disclaimer
 ----------
 
-None of the vendors cited in this project agree or endorse any of the patterns or implementations.
+None of the vendors cited in this project agree or endorse any of the
+patterns or implementations.
 Its names are used only to maintain context.
