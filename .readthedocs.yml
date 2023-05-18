@@ -8,6 +8,10 @@ build:
     python: "3.11"
 sphinx:
   configuration: doc/conf.py
+submodules:
+  include:
+    - all
+  recursive: true
 
 python:
   install:
