@@ -9,8 +9,7 @@ build:
 sphinx:
   configuration: doc/conf.py
 submodules:
-  include:
-    - all
+  include: capabilities-data
   recursive: true
 
 python:
