@@ -547,8 +547,8 @@ class Escpos(object):
                 impl=impl,
                 module_height=height * mmxpt,
                 module_width=width * mmxpt,
-                text_distance=2,  # TODO: _hw_barcode() size equivalence
-                font_size=6,  # TODO: _hw_barcode() size equivalence
+                text_distance=3,  # TODO: _hw_barcode() size equivalence
+                font_size=9,  # TODO: _hw_barcode() size equivalence
                 center=align_ct,
             )
             return
