@@ -482,7 +482,7 @@ class Escpos(object):
         :type width: int
 
         :param pos: text position (ABOVE, BELOW, BOTH, OFF) relative to the barcode
-        (ignored in software renderer).
+            (ignored in software renderer).
             *default*: BELOW
 
         :param font: select font A or B (ignored in software renderer).
@@ -493,7 +493,7 @@ class Escpos(object):
         :type align_ct: bool
 
         :param function_type: ESCPOS function type A or B. None to guess it from profile
-        (ignored in software renderer).
+            (ignored in software renderer).
             *default*: None
 
         :param check: If *True*, checks that the code meets the requirements of the barcode type.
@@ -501,7 +501,7 @@ class Escpos(object):
         :type check: bool
 
         :param force_software: If *True*, force the use of software barcode renderer from profile.
-        If *"graphics", "bitImageColumn" or "bitImageRaster"*, force the use of specific renderer.
+            If *"graphics", "bitImageColumn" or "bitImageRaster"*, force the use of specific renderer.
         :type force_software: bool | str
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeCodeError`,
