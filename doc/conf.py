@@ -122,6 +122,7 @@ pygments_style = "sphinx"
 # a list of builtin themes.
 if on_rtd:
     html_theme = "default"
+    print("recognized execution on RTD")
 else:
     try:
         import sphinx_rtd_theme

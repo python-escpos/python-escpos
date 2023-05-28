@@ -1,0 +1,27 @@
+version: 2
+formats:
+  - pdf
+  - epub
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+  apt_packages:
+    - graphviz
+    - libenchant-2-2
+    - gcc
+    - libcups2-dev
+    - python3-dev
+sphinx:
+  configuration: doc/conf.py
+submodules:
+  include:
+    - capabilities-data
+  recursive: true
+
+python:
+  install:
+    - requirements: doc/requirements.txt
+    - method: pip
+      path: .
+  system_packages: true

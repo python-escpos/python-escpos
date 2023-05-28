@@ -30,6 +30,11 @@ from .constants import (
     QR_ECLEVEL_M,
     QR_ECLEVEL_H,
     QR_ECLEVEL_Q,
+    SHEET_ROLL_MODE,
+    SHEET_SLIP_MODE,
+    SLIP_PRINT_AND_EJECT,
+    SLIP_SELECT,
+    SLIP_EJECT,
 )
 from .constants import (
     QR_MODEL_1,
@@ -794,21 +799,19 @@ class Escpos(object):
                 )
             )
 
-        # Render the barcode to a fake file
+        # Render the barcode
         barcode_class = barcode.get_barcode_class(barcode_type)
         my_code = barcode_class(data, writer=image_writer)
 
-        with open(os.devnull, "wb") as nullfile:
-            my_code.write(
-                nullfile,
-                {
-                    "module_height": module_height,
-                    "module_width": module_width,
-                    "quiet_zone": 0,  # horizontal padding
-                    "text_distance": text_distance,
-                    "font_size": font_size,
-                },
-            )
+        my_code.render(
+            writer_options={
+                "module_height": module_height,
+                "module_width": module_width,
+                "quiet_zone": 0,  # horizontal padding
+                "text_distance": text_distance,
+                "font_size": font_size,
+            }
+        )
 
         # Retrieve the Pillow image and print it
         image = my_code.writer._image
@@ -1207,6 +1210,41 @@ class Escpos(object):
             return 1
         if status[0] & RT_MASK_PAPER == RT_MASK_PAPER:
             return 2
+
+    def target(self, type="ROLL"):
+        """Select where to print to
+
+        Print to the thermal printer by default (ROLL) or
+        print to the slip dot matrix printer if supported (SLIP)
+        """
+        if type.upper() == "ROLL":
+            self._raw(SHEET_ROLL_MODE)
+        elif type.upper() == "SLIP":
+            self._raw(SHEET_SLIP_MODE)
+        else:
+            raise ValueError("Unsupported target")
+
+    def eject_slip(self):
+        """Eject the slip/cheque"""
+        self._raw(SLIP_EJECT)
+
+    def print_and_eject_slip(self):
+        """Print and eject
+
+        Prints data from the buffer to the slip station and if the paper
+        sensor is covered, reverses the slip out the front of the printer
+        far enough to be accessible to the operator.
+        The impact station opens the platen in all cases.
+        """
+        self._raw(SLIP_PRINT_AND_EJECT)
+
+    def use_slip_only(self):
+        """Selects the Slip Station for all functions.
+
+        The receipt station is the default setting after the printer
+        is initialized or the Clear Printer (0x10) command is received
+        """
+        self._raw(SLIP_SELECT)
 
 
 class EscposIO(object):
