@@ -419,6 +419,24 @@ class Escpos(object):
             regex, code
         )
 
+    def _dpi(self) -> int:
+        """Printer's DPI resolution."""
+        try:
+            dpi = int(self.profile.profile_data["media"]["dpi"])
+        except (KeyError, TypeError):
+            # Calculate the printer's DPI from the width info of the profile.
+            try:
+                px = self.profile.profile_data["media"]["width"]["pixels"]
+                mm = self.profile.profile_data["media"]["width"]["mm"]
+                mm -= 10  # paper width minus margin =~ printable area
+                dpi = int(px / (mm / 25.4))
+            except (KeyError, TypeError, ZeroDivisionError):
+                # Value on error.
+                dpi = 180
+                print(f"No printer's DPI info was found: Defaulting to {dpi}.")
+            self.profile.profile_data["media"]["dpi"] = dpi
+        return dpi
+
     def barcode(
         self,
         code,
@@ -521,14 +539,16 @@ class Escpos(object):
             print(f"Using {impl} software barcode renderer")
             # Set barcode type
             bc = capable_bc["sw"] or bc
+            # Get mm per point of the printer
+            mmxpt = 25.4 / self._dpi()
             self._sw_barcode(
                 bc,
                 code,
                 impl=impl,
-                module_height=5,  # TODO: _hw_barcode() size equivalence
-                module_width=0.2,  # TODO: _hw_barcode() size equivalence
+                module_height=height * mmxpt,
+                module_width=width * mmxpt,
                 text_distance=2,  # TODO: _hw_barcode() size equivalence
-                font_size=6,
+                font_size=6,  # TODO: _hw_barcode() size equivalence
                 center=align_ct,
             )
             return
@@ -764,6 +784,7 @@ class Escpos(object):
         :type center: bool
         """
         image_writer = ImageWriter()
+        image_writer.dpi = self._dpi()  # Image dpi has to match the printer's dpi
 
         # Check if barcode type exists
         if barcode_type not in barcode.PROVIDED_BARCODES:
@@ -783,6 +804,7 @@ class Escpos(object):
                 {
                     "module_height": module_height,
                     "module_width": module_width,
+                    "quiet_zone": 0,  # horizontal padding
                     "text_distance": text_distance,
                     "font_size": font_size,
                 },
