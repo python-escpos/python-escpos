@@ -521,9 +521,9 @@ class Escpos(object):
         if (not capable["hw"] and not capable["sw"]) or (
             not capable["sw"] and force_software
         ):
-            raise BarcodeCodeError(
+            raise BarcodeTypeError(
                 f"""Profile {
-                    self.profile['name']
+                    self.profile.profile_data['name']
                 } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
             )
 
