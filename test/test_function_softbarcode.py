@@ -13,13 +13,13 @@ def instance():
 def test_soft_barcode_ean8_invalid(instance):
     """test with an invalid barcode"""
     with pytest.raises(barcode.errors.BarcodeError):
-        instance.soft_barcode("ean8", "1234")
+        instance.barcode("1234", "ean8", force_software=True)
 
 
 def test_soft_barcode_ean8(instance):
     """test with a valid ean8 barcode"""
-    instance.soft_barcode("ean8", "1234567")
+    instance.barcode("1234567", "ean8", force_software=True)
 
 
 def test_soft_barcode_ean8_nocenter(instance):
-    instance.soft_barcode("ean8", "1234567", center=False)
+    instance.barcode("1234567", "ean8", align_ct=False, force_software=True)
