@@ -789,7 +789,6 @@ class Escpos(object):
         :type center: bool
         """
         image_writer = ImageWriter()
-        image_writer.dpi = self._dpi()  # Image dpi has to match the printer's dpi
 
         # Check if barcode type exists
         if barcode_type not in barcode.PROVIDED_BARCODES:
@@ -810,6 +809,7 @@ class Escpos(object):
                 "quiet_zone": 0,  # horizontal padding
                 "text_distance": text_distance,
                 "font_size": font_size,
+                "dpi": self._dpi(),  # Image dpi has to match the printer's dpi
             }
         )
 
