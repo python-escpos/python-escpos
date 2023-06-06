@@ -779,8 +779,8 @@ class Escpos(object):
         :param module_width: barcode module width (in mm).
         :type module_width: int | float
 
-        :param text_distance: distance from the barcode to the code text (in dots).
-        :type text_distance: int
+        :param text_distance: distance from the barcode to the code text (in mm).
+        :type text_distance: int | float
 
         :param font_size: font size of the code text (in dots).
         :type font_size: int
