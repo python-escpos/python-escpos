@@ -489,7 +489,7 @@ class Escpos(object):
             *default*: A
 
         :param align_ct: If *True*, center the barcode.
-            *default*: A
+            *default*: True
         :type align_ct: bool
 
         :param function_type: ESCPOS function type A or B. None to guess it from profile
