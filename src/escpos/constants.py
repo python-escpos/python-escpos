@@ -27,12 +27,12 @@ FS = b"\x1c"
 GS = b"\x1d"
 
 # Feed control sequences
-CTL_LF = b"\n"  # Print and line feed
-CTL_FF = b"\f"  # Form feed
-CTL_CR = b"\r"  # Carriage return
-CTL_HT = b"\t"  # Horizontal tab
-CTL_SET_HT = ESC + b"\x44"  # Set horizontal tab positions
-CTL_VT = b"\v"  # Vertical tab
+CTL_LF = b"\n"  #: Print and line feed
+CTL_FF = b"\f"  #: Form feed
+CTL_CR = b"\r"  #: Carriage return
+CTL_HT = b"\t"  #: Horizontal tab
+CTL_SET_HT = ESC + b"\x44"  #: Set horizontal tab positions
+CTL_VT = b"\v"  #: Vertical tab
 
 # Printer hardware
 HW_INIT = ESC + b"@"  # Clear data in buffer and reset modes
@@ -57,8 +57,8 @@ CD_KICK_5 = _CASH_DRAWER(b"\x01", 50, 50)  # Sends a pulse to pin 5 []
 
 # Paper Cutter
 _CUT_PAPER = lambda m: GS + b"V" + m
-PAPER_FULL_CUT = _CUT_PAPER(b"\x00")  # Full cut paper
-PAPER_PART_CUT = _CUT_PAPER(b"\x01")  # Partial cut paper
+PAPER_FULL_CUT = _CUT_PAPER(b"\x00")  #: Full cut paper
+PAPER_PART_CUT = _CUT_PAPER(b"\x01")  #: Partial cut paper
 
 # Beep (please note that the actual beep sequence may differ between devices)
 BEEP = b"\x07"
@@ -168,8 +168,8 @@ TXT_STYLE = {
 
 # Fonts
 SET_FONT = lambda n: ESC + b"\x4d" + n
-TXT_FONT_A = SET_FONT(b"\x00")  # Font type A
-TXT_FONT_B = SET_FONT(b"\x01")  # Font type B
+TXT_FONT_A = SET_FONT(b"\x00")  #: Font type A
+TXT_FONT_B = SET_FONT(b"\x01")  #: Font type B
 
 # Spacing
 LINESPACING_RESET = ESC + b"2"
@@ -179,23 +179,23 @@ LINESPACING_FUNCS = {
     180: ESC + b"3",  # line_spacing/180 of an inch, 0 <= line_spacing <= 255
 }
 
-# Prefix to change the codepage. You need to attach a byte to indicate
-# the codepage to use. We use escpos-printer-db as the data source.
+#: Prefix to change the codepage. You need to attach a byte to indicate
+#: the codepage to use. We use escpos-printer-db as the data source.
 CODEPAGE_CHANGE = ESC + b"\x74"
 
 # Barcode format
 _SET_BARCODE_TXT_POS = lambda n: GS + b"H" + n
-BARCODE_TXT_OFF = _SET_BARCODE_TXT_POS(b"\x00")  # HRI barcode chars OFF
-BARCODE_TXT_ABV = _SET_BARCODE_TXT_POS(b"\x01")  # HRI barcode chars above
-BARCODE_TXT_BLW = _SET_BARCODE_TXT_POS(b"\x02")  # HRI barcode chars below
-BARCODE_TXT_BTH = _SET_BARCODE_TXT_POS(b"\x03")  # HRI both above and below
+BARCODE_TXT_OFF = _SET_BARCODE_TXT_POS(b"\x00")  #: HRI barcode chars OFF
+BARCODE_TXT_ABV = _SET_BARCODE_TXT_POS(b"\x01")  #: HRI barcode chars above
+BARCODE_TXT_BLW = _SET_BARCODE_TXT_POS(b"\x02")  #: HRI barcode chars below
+BARCODE_TXT_BTH = _SET_BARCODE_TXT_POS(b"\x03")  #: HRI both above and below
 
 _SET_HRI_FONT = lambda n: GS + b"f" + n
-BARCODE_FONT_A = _SET_HRI_FONT(b"\x00")  # Font type A for HRI barcode chars
-BARCODE_FONT_B = _SET_HRI_FONT(b"\x01")  # Font type B for HRI barcode chars
+BARCODE_FONT_A = _SET_HRI_FONT(b"\x00")  #: Font type A for HRI barcode chars
+BARCODE_FONT_B = _SET_HRI_FONT(b"\x01")  #: Font type B for HRI barcode chars
 
-BARCODE_HEIGHT = GS + b"h"  # Barcode Height [1-255]
-BARCODE_WIDTH = GS + b"w"  # Barcode Width  [2-6]
+BARCODE_HEIGHT = GS + b"h"  #: Barcode Height [1-255]
+BARCODE_WIDTH = GS + b"w"  #: Barcode Width  [2-6]
 
 # NOTE: This isn't actually an ESC/POS command. It's the common prefix to the
 #      two "print bar code" commands:
@@ -204,7 +204,7 @@ BARCODE_WIDTH = GS + b"w"  # Barcode Width  [2-6]
 #      The latter command supports more barcode types
 _SET_BARCODE_TYPE = lambda m: GS + b"k" + six.int2byte(m)
 
-# Barcodes for printing function type A
+#: Barcodes for printing function type A
 BARCODE_TYPE_A = {
     "UPC-A": _SET_BARCODE_TYPE(0),
     "UPC-E": _SET_BARCODE_TYPE(1),
@@ -216,8 +216,8 @@ BARCODE_TYPE_A = {
     "CODABAR": _SET_BARCODE_TYPE(6),  # Same as NW7
 }
 
-# Barcodes for printing function type B
-# The first 8 are the same barcodes as type A
+#: Barcodes for printing function type B
+#: The first 8 are the same barcodes as type A
 BARCODE_TYPE_B = {
     "UPC-A": _SET_BARCODE_TYPE(65),
     "UPC-E": _SET_BARCODE_TYPE(66),
@@ -236,6 +236,7 @@ BARCODE_TYPE_B = {
     "GS1 DATABAR EXPANDED": _SET_BARCODE_TYPE(78),
 }
 
+#: supported barcode formats
 BARCODE_FORMATS = {
     "UPC-A": ([(11, 12)], "^[0-9]{11,12}$"),
     "UPC-E": ([(7, 8), (11, 12)], "^([0-9]{7,8}|[0-9]{11,12})$"),

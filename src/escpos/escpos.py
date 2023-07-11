@@ -507,10 +507,10 @@ class Escpos(object):
         :raises: :py:exc:`~escpos.exceptions.BarcodeCodeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`
 
-        .. tip::
+        .. note::
             Get all supported formats at:
-            - Hardware: `~escpos.constants.BARCODE_FORMATS`
-            - Software: `https://python-barcode.readthedocs.io/en/stable/supported-formats.html`
+              - Hardware: :py:const:`~escpos.constants.BARCODE_FORMATS`
+              - Software: `Python barcode documentation <https://python-barcode.readthedocs.io/en/stable/supported-formats.html>`_
         """
         hw_modes = ["barcodeA", "barcodeB"]
         sw_modes = ["graphics", "bitImageColumn", "bitImageRaster"]
