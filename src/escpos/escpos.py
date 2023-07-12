@@ -87,6 +87,19 @@ from escpos.image import EscposImage
 from escpos.capabilities import get_profile, BARCODE_B
 
 
+# Remove special characters and whitespaces of the supported barcode names,
+# convert to uppercase and map them to their original names.
+HW_BARCODE_NAMES = {
+    "".join([char for char in name.upper() if char.isalnum()]): name
+    for bc_type in BARCODE_TYPES.values()
+    for name in bc_type
+}
+SW_BARCODE_NAMES = {
+    "".join([char for char in name.upper() if char.isalnum()]): name
+    for name in barcode.PROVIDED_BARCODES
+}
+
+
 @six.add_metaclass(ABCMeta)
 class Escpos(object):
     """ESC/POS Printer object
@@ -411,7 +424,147 @@ class Escpos(object):
             regex, code
         )
 
+    def _dpi(self) -> int:
+        """Printer's DPI resolution."""
+        try:
+            dpi = int(self.profile.profile_data["media"]["dpi"])
+        except (KeyError, TypeError):
+            # Calculate the printer's DPI from the width info of the profile.
+            try:
+                px = self.profile.profile_data["media"]["width"]["pixels"]
+                mm = self.profile.profile_data["media"]["width"]["mm"]
+                mm -= 10  # paper width minus margin =~ printable area
+                dpi = int(px / (mm / 25.4))
+            except (KeyError, TypeError, ZeroDivisionError):
+                # Value on error.
+                dpi = 180
+                print(f"No printer's DPI info was found: Defaulting to {dpi}.")
+            self.profile.profile_data["media"]["dpi"] = dpi
+        return dpi
+
     def barcode(
+        self,
+        code,
+        bc,
+        height=64,
+        width=3,
+        pos="BELOW",
+        font="A",
+        align_ct=True,
+        function_type=None,
+        check=True,
+        force_software=False,
+    ):
+        """Print barcode.
+
+        Automatic hardware|software barcode renderer according to the printer capabilities.
+
+        Defaults to hardware barcode and its format types if supported.
+        Automatically switches to software barcode renderer if hardware does not
+        support a barcode type that is supported by software. (e.g. JAN, ISSN, etc.).
+
+        Set force_software=True to force the software renderer according to the profile.
+        Set force_software=graphics|bitImageColumn|bitImageRaster to specify a renderer.
+
+        Ignores caps, special chars and whitespaces in barcode type names.
+        So "EAN13", "ean-13", "Ean_13", "EAN 13" are all accepted.
+
+        :param code: alphanumeric data to be printed as bar code (payload).
+
+        :param bc: barcode format type (EAN13, CODE128, JAN, etc.).
+
+        :param height: barcode module height (in printer dots), has to be between 1 and 255.
+            *default*: 64
+        :type height: int
+
+        :param width: barcode module width (in printer dots), has to be between 2 and 6.
+            *default*: 3
+        :type width: int
+
+        :param pos: text position (ABOVE, BELOW, BOTH, OFF) relative to the barcode
+            (ignored in software renderer).
+            *default*: BELOW
+
+        :param font: select font A or B (ignored in software renderer).
+            *default*: A
+
+        :param align_ct: If *True*, center the barcode.
+            *default*: True
+        :type align_ct: bool
+
+        :param function_type: ESCPOS function type A or B. None to guess it from profile
+            (ignored in software renderer).
+            *default*: None
+
+        :param check: If *True*, checks that the code meets the requirements of the barcode type.
+            *default*: True
+        :type check: bool
+
+        :param force_software: If *True*, force the use of software barcode renderer from profile.
+            If *"graphics", "bitImageColumn" or "bitImageRaster"*, force the use of specific renderer.
+        :type force_software: bool | str
+
+        :raises: :py:exc:`~escpos.exceptions.BarcodeCodeError`,
+                 :py:exc:`~escpos.exceptions.BarcodeTypeError`
+
+        .. note::
+            Get all supported formats at:
+              - Hardware: :py:const:`~escpos.constants.BARCODE_FORMATS`
+              - Software: `Python barcode documentation <https://python-barcode.readthedocs.io/en/stable/supported-formats.html>`_
+        """
+        hw_modes = ["barcodeA", "barcodeB"]
+        sw_modes = ["graphics", "bitImageColumn", "bitImageRaster"]
+        capable = {
+            "hw": [mode for mode in hw_modes if self.profile.supports(mode)] or None,
+            "sw": [mode for mode in sw_modes if self.profile.supports(mode)] or None,
+        }
+        if (not capable["hw"] and not capable["sw"]) or (
+            not capable["sw"] and force_software
+        ):
+            raise BarcodeTypeError(
+                f"""Profile {
+                    self.profile.profile_data['name']
+                } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
+            )
+
+        bc_alnum = "".join([char for char in bc.upper() if char.isalnum()])
+        capable_bc = {
+            "hw": HW_BARCODE_NAMES.get(bc_alnum),
+            "sw": SW_BARCODE_NAMES.get(bc_alnum),
+        }
+        if not any([*capable_bc.values()]):
+            raise BarcodeTypeError(f"Not supported or wrong barcode name {bc}.")
+
+        if force_software or not capable["hw"] or not capable_bc["hw"]:
+            # Select the best possible capable render mode
+            impl = capable["sw"][0]
+            if force_software in capable["sw"]:
+                # Force to a specific mode
+                impl = force_software
+            print(f"Using {impl} software barcode renderer")
+            # Set barcode type
+            bc = capable_bc["sw"] or bc
+            # Get mm per point of the printer
+            mmxpt = 25.4 / self._dpi()
+            self._sw_barcode(
+                bc,
+                code,
+                impl=impl,
+                module_height=height * mmxpt,
+                module_width=width * mmxpt,
+                text_distance=3,  # TODO: _hw_barcode() size equivalence
+                font_size=9,  # TODO: _hw_barcode() size equivalence
+                center=align_ct,
+            )
+            return
+
+        print("Using hardware barcode renderer")
+        bc = capable_bc["hw"] or bc
+        self._hw_barcode(
+            code, bc, height, width, pos, font, align_ct, function_type, check
+        )
+
+    def _hw_barcode(
         self,
         code,
         bc,
@@ -443,9 +596,6 @@ class Escpos(object):
         If you do not want to center the barcode you can call the method with `align_ct=False`, which will disable
         automatic centering. Please note that when you use center alignment, then the alignment of text will be changed
         automatically to centered. You have to manually restore the alignment if necessary.
-
-        .. todo:: If further barcode-types are needed they could be rendered transparently as an image. (This could also
-                  be of help if the printer does not support types that others do.)
 
         :param code: alphanumeric data to be printed as bar code
         :param bc: barcode format, possible values are for type A are:
@@ -506,27 +656,12 @@ class Escpos(object):
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`,
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
-        if function_type is None:
-            # Choose the function type automatically.
-            if bc in BARCODE_TYPES["A"]:
-                function_type = "A"
-            else:
-                if bc in BARCODE_TYPES["B"]:
-                    if not self.profile.supports(BARCODE_B):
-                        raise BarcodeTypeError(
-                            (
-                                "Barcode type '{bc} not supported for "
-                                "the current printer profile"
-                            ).format(bc=bc)
-                        )
-                    function_type = "B"
-                else:
-                    raise BarcodeTypeError(
-                        ("Barcode type '{bc} is not valid").format(bc=bc)
-                    )
+        # If function_type is specified, otherwise use guessing.
+        ft_guess = [ft for ft in ["A", "B"] if bc in BARCODE_TYPES.get(ft)]
+        ft_guess = ft_guess or [None]
+        function_type = function_type or ft_guess[0]
 
-        bc_types = BARCODE_TYPES[function_type.upper()]
-        if bc.upper() not in bc_types.keys():
+        if not function_type or not BARCODE_TYPES.get(function_type.upper()):
             raise BarcodeTypeError(
                 (
                     "Barcode '{bc}' not valid for barcode function type "
@@ -536,6 +671,7 @@ class Escpos(object):
                     function_type=function_type,
                 )
             )
+        bc_types = BARCODE_TYPES[function_type.upper()]
 
         if check and not self.check_barcode(bc, code):
             raise BarcodeCodeError(
@@ -587,16 +723,71 @@ class Escpos(object):
         if function_type.upper() == "A":
             self._raw(NUL)
 
-    def soft_barcode(
+    def _sw_barcode(
         self,
         barcode_type,
         data,
         impl="bitImageColumn",
         module_height=5,
         module_width=0.2,
-        text_distance=1,
+        text_distance=5,
+        font_size=10,
         center=True,
     ):
+        """Print Barcode
+
+        This method allows to print barcodes. The rendering of the barcode is done by
+        the `barcode` library and sent to the printer as image through one of the
+        printer's supported implementations: graphics, bitImageColumn or bitImageRaster.
+
+        :param barcode_type: barcode format, possible values are:
+            * ean8
+            * ean8-guard
+            * ean13
+            * ean13-guard
+            * ean
+            * gtin
+            * ean14
+            * jan
+            * upc
+            * upca
+            * isbn
+            * isbn13
+            * gs1
+            * isbn10
+            * issn
+            * code39
+            * pzn
+            * code128
+            * itf
+            * gs1_128
+            * codabar
+            * nw-7
+        :type data: str
+
+        :param data: alphanumeric data to be printed as bar code (payload).
+        :type data: str
+
+        :param impl: image printing mode:
+            * graphics
+            * bitImageColumn
+            * bitImageRaster
+
+        :param module_height: barcode module height (in mm).
+        :type module_height: int | float
+
+        :param module_width: barcode module width (in mm).
+        :type module_width: int | float
+
+        :param text_distance: distance from the barcode to the code text (in mm).
+        :type text_distance: int | float
+
+        :param font_size: font size of the code text (in dots).
+        :type font_size: int
+
+        :param center: center the barcode.
+        :type center: bool
+        """
         image_writer = ImageWriter()
 
         # Check if barcode type exists
@@ -610,11 +801,15 @@ class Escpos(object):
         # Render the barcode
         barcode_class = barcode.get_barcode_class(barcode_type)
         my_code = barcode_class(data, writer=image_writer)
+
         my_code.render(
             writer_options={
                 "module_height": module_height,
                 "module_width": module_width,
+                "quiet_zone": 0,  # horizontal padding
                 "text_distance": text_distance,
+                "font_size": font_size,
+                "dpi": self._dpi(),  # Image dpi has to match the printer's dpi
             }
         )
 
