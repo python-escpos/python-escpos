@@ -1,13 +1,15 @@
 import re
 from os import environ, path
-import pkg_resources
+import atexit
 import pickle
 import logging
 import time
+import importlib_resources
 
 import six
 import yaml
 
+from contextlib import ExitStack
 from tempfile import mkdtemp
 import platform
 
@@ -20,10 +22,13 @@ pickle_dir = environ.get("ESCPOS_CAPABILITIES_PICKLE_DIR", mkdtemp())
 pickle_path = path.join(
     pickle_dir, "{v}.capabilities.pickle".format(v=platform.python_version())
 )
-# get a temporary file from pkg_resources if no file is specified in env
+# get a temporary file from importlib_resources if no file is specified in env
+file_manager = ExitStack()
+atexit.register(file_manager.close)
+ref = importlib_resources.files(__name__) / "capabilities.json"
 capabilities_path = environ.get(
     "ESCPOS_CAPABILITIES_FILE",
-    pkg_resources.resource_filename(__name__, "capabilities.json"),
+    file_manager.enter_context(importlib_resources.as_file(ref)),
 )
 
 # Load external printer database
