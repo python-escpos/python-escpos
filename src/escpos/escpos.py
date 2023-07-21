@@ -20,8 +20,6 @@ from re import match as re_match
 import barcode
 from barcode.writer import ImageWriter
 
-import os
-
 from .constants import (
     ESC,
     GS,
@@ -84,7 +82,7 @@ from .magicencode import MagicEncode
 
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from escpos.image import EscposImage
-from escpos.capabilities import get_profile, BARCODE_B
+from escpos.capabilities import get_profile
 
 
 # Remove special characters and whitespaces of the supported barcode names,
@@ -510,7 +508,8 @@ class Escpos(object):
         .. note::
             Get all supported formats at:
               - Hardware: :py:const:`~escpos.constants.BARCODE_FORMATS`
-              - Software: `Python barcode documentation <https://python-barcode.readthedocs.io/en/stable/supported-formats.html>`_
+              - Software:
+                `Python barcode documentation <https://python-barcode.readthedocs.io/en/stable/supported-formats.html>`_
         """
         hw_modes = ["barcodeA", "barcodeB"]
         sw_modes = ["graphics", "bitImageColumn", "bitImageRaster"]

@@ -40,7 +40,7 @@ class TestCLI:
         """Remove config file"""
         os.remove(CONFIGFILE)
 
-    def setup(self):
+    def setup_method(self):
         """Create a file to print to and set up env"""
         self.env = None
         self.default_args = None
@@ -62,7 +62,7 @@ class TestCLI:
         finally:
             fhandle.close()
 
-    def teardown(self):
+    def teardown_method(self):
         """Destroy printer file and env"""
         os.remove(DEVFILE)
         self.env.clear()

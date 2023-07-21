@@ -9,3 +9,4 @@ docutils>=0.12
 sphinxcontrib-spelling>=7.2.0
 python-barcode>=0.11.0,<1
 importlib-metadata
+importlib_resources
