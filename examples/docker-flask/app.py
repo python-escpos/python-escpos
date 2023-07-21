@@ -1,8 +1,5 @@
-import escpos
-from escpos.printer import *
-from flask import Flask, jsonify, request, redirect, session, url_for
-import sys
-from io import BytesIO
+from escpos.printer import CupsPrinter
+from flask import Flask
 
 # Initialize Flask app
 app = Flask(__name__)
