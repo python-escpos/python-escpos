@@ -20,8 +20,6 @@ from re import match as re_match
 import barcode
 from barcode.writer import ImageWriter
 
-import os
-
 from .constants import (
     ESC,
     GS,
