@@ -510,7 +510,8 @@ class Escpos(object):
         .. note::
             Get all supported formats at:
               - Hardware: :py:const:`~escpos.constants.BARCODE_FORMATS`
-              - Software: `Python barcode documentation <https://python-barcode.readthedocs.io/en/stable/supported-formats.html>`_
+              - Software:
+                `Python barcode documentation <https://python-barcode.readthedocs.io/en/stable/supported-formats.html>`_
         """
         hw_modes = ["barcodeA", "barcodeB"]
         sw_modes = ["graphics", "bitImageColumn", "bitImageRaster"]
