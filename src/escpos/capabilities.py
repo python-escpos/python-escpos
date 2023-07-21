@@ -8,7 +8,7 @@ import time
 import six
 import yaml
 
-from tempfile import gettempdir
+from tempfile import mkdtemp
 import platform
 
 from typing import Any, Dict
@@ -16,7 +16,7 @@ from typing import Any, Dict
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-pickle_dir = environ.get("ESCPOS_CAPABILITIES_PICKLE_DIR", gettempdir())
+pickle_dir = environ.get("ESCPOS_CAPABILITIES_PICKLE_DIR", mkdtemp())
 pickle_path = path.join(
     pickle_dir, "{v}.capabilities.pickle".format(v=platform.python_version())
 )
