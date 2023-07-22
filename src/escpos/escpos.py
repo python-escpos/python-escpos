@@ -14,7 +14,6 @@ This module contains the abstract base class :py:class:`Escpos`.
 import qrcode
 import textwrap
 import six
-import time
 from re import match as re_match
 
 import barcode
