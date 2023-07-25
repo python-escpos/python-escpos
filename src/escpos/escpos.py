@@ -58,6 +58,7 @@ from .constants import (
     CD_KICK_2,
     PAPER_FULL_CUT,
     PAPER_PART_CUT,
+    BUZZER,
 )
 from .constants import HW_RESET, HW_SELECT, HW_INIT
 from .constants import (
@@ -1242,6 +1243,24 @@ class Escpos(object):
         is initialized or the Clear Printer (0x10) command is received
         """
         self._raw(SLIP_SELECT)
+
+    def buzzer(self, times=2, duration=4):
+        """Activate the internal printer buzzer (only supported printers).
+
+        The 'times' paramreffers to the 'n' escpos command parameter, means how many
+        times the buzzer will be 'beeped'.
+
+        :param times: Integer between 1 and 9, indicates the buzzer beeps.
+        :param duration: Integer between 1 and 9, indicates the beep duration.
+        :returns: None
+        """
+
+        if not 1 <= times <= 9:
+            raise ValueError("times must be between 1 and 9")
+        if not 1 <= duration <= 9:
+            raise ValueError("duration must be between 1 and 9")
+
+        self._raw(BUZZER + six.int2byte(times) + six.int2byte(duration))
 
 
 class EscposIO(object):

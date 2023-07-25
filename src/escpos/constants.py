@@ -63,6 +63,9 @@ PAPER_PART_CUT = _CUT_PAPER(b"\x01")  #: Partial cut paper
 # Beep (please note that the actual beep sequence may differ between devices)
 BEEP = b"\x07"
 
+# Internal buzzer (only supported printers)
+BUZZER = ESC + b"\x42"
+
 # Panel buttons (e.g. the FEED button)
 _PANEL_BUTTON = lambda n: ESC + b"c5" + six.int2byte(n)
 PANEL_BUTTON_ON = _PANEL_BUTTON(0)  # enable all panel buttons
