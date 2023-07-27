@@ -1,0 +1,20 @@
+{% for item in data.profiles %}
+{% set printer = data.profiles[item] %}
+{% macro draw_with_underline(text, symbol='-') -%}
+{{ escape_rst(text) }}
+{{ escape_rst(text) | length * symbol }}
+{%- endmacro %}
+{{ draw_with_underline(printer.name) }}
+{{ escape_rst(printer.notes) }}
+
+Basic information
+^^^^^^^^^^^^^^^^^
+
+======================  ================================================================
+Name                    {{ escape_rst(printer.name|default('Unknown')) }}
+Vendor                  {{ escape_rst(printer.vendor|default('Unknown')) }}
+Media width (mm)        {{ escape_rst(printer.media.width.mm|default('Unknown')|string) }}
+Media width (pixels)    {{ escape_rst(printer.media.width.pixels|default('Unknown')|string) }}
+DPI                     {{ escape_rst(printer.media.dpi|default('Unknown')|string) }}
+======================  ================================================================
+{% endfor %}

@@ -15,6 +15,7 @@ Content
    user/installation
    user/methods
    user/printers
+   user/available-profiles
    user/raspi
    user/todo
    user/usage
