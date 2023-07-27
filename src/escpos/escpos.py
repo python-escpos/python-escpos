@@ -1247,8 +1247,8 @@ class Escpos(object):
     def buzzer(self, times=2, duration=4):
         """Activate the internal printer buzzer (only supported printers).
 
-        The 'times' paramreffers to the 'n' escpos command parameter, means how many
-        times the buzzer will be 'beeped'.
+        The 'times' parameter refers to the 'n' escpos command parameter,
+        which means how many times the buzzer will be 'beeped'.
 
         :param times: Integer between 1 and 9, indicates the buzzer beeps.
         :param duration: Integer between 1 and 9, indicates the beep duration.
