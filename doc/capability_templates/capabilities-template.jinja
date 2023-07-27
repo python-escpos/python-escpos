@@ -17,4 +17,41 @@ Media width (mm)        {{ escape_rst(printer.media.width.mm|default('Unknown')|
 Media width (pixels)    {{ escape_rst(printer.media.width.pixels|default('Unknown')|string) }}
 DPI                     {{ escape_rst(printer.media.dpi|default('Unknown')|string) }}
 ======================  ================================================================
+
+Fonts
+^^^^^
+
+.. todo:: list supported fonts (ID, Name, Columns)
+
+Colors
+^^^^^^
+
+.. todo:: list supported colors (ID, Name)
+
+Feature support
+^^^^^^^^^^^^^^^
+
+.. todo:: list features (parse table)
+
+================  =======
+barcodeA          check
+barcodeB          check
+bitImageColumn    check
+bitImageRaster    check
+graphics          check
+highDensity       check
+paperFullCut      check
+paperPartCut      check
+pdf417Code        check
+pulseBel          clear
+pulseStandard     check
+qrCode            check
+starCommands      clear
+================  =======
+
+Text code pages
+^^^^^^^^^^^^^^^
+
+.. todo: list code pages (ID, Encoding, link to Encoding list)
+
 {% endfor %}
