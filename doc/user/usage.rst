@@ -238,6 +238,8 @@ Here you can download an example, that will print a set of common barcodes:
 
     * :download:`barcode.bin </download/barcode.bin>` by `@mike42 <https://github.com/mike42>`_
 
+.. _advanced-usage-change-capabilities-profile:
+
 Advanced Usage: change capabilities-profile
 -------------------------------------------
 

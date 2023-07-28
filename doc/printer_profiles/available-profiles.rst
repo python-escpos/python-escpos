@@ -1,3 +1,5 @@
+.. _available-profiles:
+
 Available Profiles
 ------------------
 :Last Reviewed: 2023-07-27
