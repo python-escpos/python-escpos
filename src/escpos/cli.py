@@ -52,7 +52,7 @@ DEMO_FUNCTIONS = {
     "barcodes_a": [
         {"bc": "UPC-A", "code": "13243546576"},
         {"bc": "UPC-E", "code": "132435"},
-        {"bc": "EAN13", "code": "1324354657687"},
+        {"bc": "EAN13", "code": "4006381333931"},
         {"bc": "EAN8", "code": "1324354"},
         {"bc": "CODE39", "code": "TEST"},
         {"bc": "ITF", "code": "55867492279103"},
@@ -61,7 +61,7 @@ DEMO_FUNCTIONS = {
     "barcodes_b": [
         {"bc": "UPC-A", "code": "13243546576", "function_type": "B"},
         {"bc": "UPC-E", "code": "132435", "function_type": "B"},
-        {"bc": "EAN13", "code": "1324354657687", "function_type": "B"},
+        {"bc": "EAN13", "code": "4006381333931", "function_type": "B"},
         {"bc": "EAN8", "code": "1324354", "function_type": "B"},
         {"bc": "CODE39", "code": "TEST", "function_type": "B"},
         {"bc": "ITF", "code": "55867492279103", "function_type": "B"},
