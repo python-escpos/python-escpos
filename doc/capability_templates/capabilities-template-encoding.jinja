@@ -1,0 +1,28 @@
+{% for item in data.encodings %}
+{% set encoding = data.encodings[item] %}
+{% macro draw_with_underline(text, symbol='-') -%}
+{{ escape_rst(text) }}
+{{ escape_rst(text) | length * symbol }}
+{%- endmacro %}
+
+{{ '.. _encoding-label-' + item + ':' }}
+
+{{ draw_with_underline(encoding.name) }}
+
+{{ escape_rst(encoding.notes) }}
+
+Mapping Information
+^^^^^^^^^^^^^^^^^^^
+
+======================  ================================================================
+identifier              {{ escape_rst(item) }}
+Name                    {{ escape_rst(encoding.name|default('Unknown')) }}
+Iconv Name              {{ escape_rst(encoding.iconv|default('Unknown')) }}
+``python_encode`` Name  {{ escape_rst(encoding.python_encode|default('Unknown')) }}
+======================  ================================================================
+
+{% if encoding.data is defined %}
+{{ draw_with_underline('Code page data', symbol='^') }}
+{{ encoding.data }}
+{% endif %}
+{% endfor %}

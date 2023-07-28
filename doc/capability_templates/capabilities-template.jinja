@@ -4,10 +4,13 @@
 {{ escape_rst(text) }}
 {{ escape_rst(text) | length * symbol }}
 {%- endmacro %}
+
+{{ '.. _printer-label-' + item + ':' }}
+
 {{ draw_with_underline(printer.name) }}
 {{ escape_rst(printer.notes) }}
 
-You can select this profile in python-escpos with this identifier: `{{ item }}`.
+You can select this profile in python-escpos with this identifier: ``{{ item }}``.
 
 Basic information
 ^^^^^^^^^^^^^^^^^
@@ -53,6 +56,8 @@ starCommands      clear
 
 Text code pages
 ^^^^^^^^^^^^^^^
+
+todo example encoding: :ref:`encoding-label-CP3011`
 
 .. todo: list code pages (ID, Encoding, link to Encoding list)
 

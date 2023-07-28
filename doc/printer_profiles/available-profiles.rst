@@ -2,10 +2,14 @@ Available Profiles
 ------------------
 :Last Reviewed: 2023-07-27
 
-.. todo:: explain capabilities
-.. todo:: explain usage
-.. todo:: give hints on how to sideload and improve profiles (profile that is bundled with release can be replaced)
-.. todo:: Idea: move this to another chapter and create for each printer a page?
+The following list describes which printer profiles are
+available in this release.
+The existence of a profile is a hint, but no guarantee
+that this printer actually can be controlled by this library.
+
+If you find any issues with the described capabilities,
+please open an issue in the
+`ESC/POS printer database <https://github.com/receipt-print-hq/escpos-printer-db>`_.
 
 .. datatemplate:json:: ../../capabilities-data/dist/capabilities.json
    :template: capabilities-template.jinja
