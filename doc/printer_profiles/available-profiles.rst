@@ -2,7 +2,7 @@
 
 Available Profiles
 ------------------
-:Last Reviewed: 2023-07-27
+:Last Reviewed: 2023-07-29
 
 The following list describes which printer profiles are
 available in this release.

@@ -36,7 +36,13 @@ DPI                     {{ escape_rst(printer.media.dpi|default('Unknown')|strin
 Fonts
 ^^^^^
 
-.. todo:: list supported fonts (ID, Name, Columns)
++------------------+------------------------------+-----------------------+
+| ID               | Name                         | Columns               |
++==================+==============================+=======================+
+{% for id in printer.fonts -%}
+| {{ fill_line(escape_rst(id), 16) }} | {{ fill_line(escape_rst(printer.fonts[id].name), 28) }} | {{ fill_line(printer.fonts[id].columns|string, 21) }} |
++------------------+------------------------------+-----------------------+
+{% endfor %}
 
 
 Colors
@@ -54,23 +60,14 @@ Colors
 Feature support
 ^^^^^^^^^^^^^^^
 
-.. todo:: list features (parse table)
++-----------------------------------+----------------------------+
+| Feature                           | Supported                  |
++===================================+============================+
+{% for feature in printer.features -%}
+| {{ fill_line(escape_rst(feature), 33) }} | {{ fill_line(escape_rst(printer.features[feature]|string), 26) }} |
++-----------------------------------+----------------------------+
+{% endfor %}
 
-================  =======
-barcodeA          check
-barcodeB          check
-bitImageColumn    check
-bitImageRaster    check
-graphics          check
-highDensity       check
-paperFullCut      check
-paperPartCut      check
-pdf417Code        check
-pulseBel          clear
-pulseStandard     check
-qrCode            check
-starCommands      clear
-================  =======
 
 Text code pages
 ^^^^^^^^^^^^^^^
