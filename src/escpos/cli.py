@@ -67,7 +67,7 @@ DEMO_FUNCTIONS = {
         {"bc": "ITF", "code": "55867492279103", "function_type": "B"},
         {"bc": "NW7", "code": "A00000000A", "function_type": "B"},
         {"bc": "CODE93", "code": "A00000000A", "function_type": "B"},
-        {"bc": "CODE93", "code": "4006381333931", "function_type": "B"},
+        {"bc": "CODE93", "code": "1324354657687", "function_type": "B"},
         {"bc": "CODE128A", "code": "TEST", "function_type": "B"},
         {"bc": "CODE128B", "code": "TEST", "function_type": "B"},
         {"bc": "CODE128C", "code": "TEST", "function_type": "B"},
