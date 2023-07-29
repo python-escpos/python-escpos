@@ -16,16 +16,25 @@ Content
    user/methods
    user/printers
    user/raspi
-   user/todo
    user/usage
    user/barcode
 
 .. toctree::
    :maxdepth: 1
+   :caption: Printer profiles
+
+   printer_profiles/capabilities.rst
+   printer_profiles/available-profiles.rst
+   printer_profiles/available-encodings.rst
+
+.. toctree::
+   :maxdepth: 1
    :caption: Developer Documentation
 
+   dev/release-process
    dev/contributing
    dev/changelog
+   dev/todo
 
 .. toctree::
    :maxdepth: 1

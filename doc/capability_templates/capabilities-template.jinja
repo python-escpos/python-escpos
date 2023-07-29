@@ -1,0 +1,83 @@
+{% for item in data.profiles %}
+{% set printer = data.profiles[item] %}
+{% macro draw_with_underline(text, symbol='-') -%}
+{{ escape_rst(text) }}
+{{ escape_rst(text) | length * symbol }}
+{%- endmacro %}
+{% macro abort(error) %}
+{{ None['[ERROR] ' ~ error][0] }}
+{% endmacro %}
+{% macro fill_line(text, total, symbol=' ') -%}
+{%- if total < text|length -%}
+{{- abort("Line cannot be filled: must be longer") -}}
+{%- endif -%}
+{{- text + ((total - text|length ) * symbol ) -}}
+{%- endmacro %}
+
+{{ '.. _printer-label-' + item + ':' }}
+
+{{ draw_with_underline(printer.name) }}
+{{ escape_rst(printer.notes) }}
+
+You can select this profile in python-escpos with this identifier: ``{{ item }}``.
+(Set parameter to `profile='{{ item }}'`.)
+
+Basic information
+^^^^^^^^^^^^^^^^^
+
+======================  ================================================================
+Name                    {{ escape_rst(printer.name|default('Unknown')) }}
+Vendor                  {{ escape_rst(printer.vendor|default('Unknown')) }}
+Media width (mm)        {{ escape_rst(printer.media.width.mm|default('Unknown')|string) }}
+Media width (pixels)    {{ escape_rst(printer.media.width.pixels|default('Unknown')|string) }}
+DPI                     {{ escape_rst(printer.media.dpi|default('Unknown')|string) }}
+======================  ================================================================
+
+Fonts
+^^^^^
+
++------------------+------------------------------+-----------------------+
+| ID               | Name                         | Columns               |
++==================+==============================+=======================+
+{% for id in printer.fonts -%}
+| {{ fill_line(escape_rst(id), 16) }} | {{ fill_line(escape_rst(printer.fonts[id].name), 28) }} | {{ fill_line(printer.fonts[id].columns|string, 21) }} |
++------------------+------------------------------+-----------------------+
+{% endfor %}
+
+
+Colors
+^^^^^^
+
++------------------+----------------------------------------------------------------+
+| ID               | Color                                                          |
++==================+================================================================+
+{% for id in printer.colors -%}
+| {{ fill_line(escape_rst(id), 16) }} | {{ fill_line(escape_rst(printer.colors[id]), 62) }} |
++------------------+----------------------------------------------------------------+
+{% endfor %}
+
+
+Feature support
+^^^^^^^^^^^^^^^
+
++-----------------------------------+----------------------------+
+| Feature                           | Supported                  |
++===================================+============================+
+{% for feature in printer.features -%}
+| {{ fill_line(escape_rst(feature), 33) }} | {{ fill_line(escape_rst(printer.features[feature]|string), 26) }} |
++-----------------------------------+----------------------------+
+{% endfor %}
+
+
+Text code pages
+^^^^^^^^^^^^^^^
+
++------------------+----------------------------------------------------------------+
+| ID               | Encoding                                                       |
++==================+================================================================+
+{% for id in printer.codePages -%}
+| {{ fill_line(escape_rst(id), 16) }} | {{ fill_line(':ref:`encoding-label-'+printer.codePages[id]+'`', 62) }} |
++------------------+----------------------------------------------------------------+
+{% endfor %}
+
+{% endfor %}
