@@ -114,7 +114,7 @@ class Escpos(object):
     class.
     """
 
-    device = None
+    _device = False
 
     def __init__(self, profile=None, magic_encode_args=None, **kwargs) -> None:
         """Initialize ESCPOS Printer.
@@ -127,6 +127,22 @@ class Escpos(object):
     def __del__(self):
         """Call self.close upon deletion."""
         self.close()
+
+    @property
+    def device(self):
+        """Implements a self-open mechanism."""
+        if self._device is False:
+            # Open device if not previously opened
+            self.open()
+        return self._device
+
+    @device.setter
+    def device(self, new_device):
+        self._device = new_device
+
+    def open(self):
+        """Open a printer device/connection."""
+        pass
 
     @abstractmethod
     def _raw(self, msg: bytes) -> None:
