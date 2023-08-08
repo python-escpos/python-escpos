@@ -1,5 +1,6 @@
 Printing Barcodes
 -----------------
+
 :Last Reviewed: 2023-05-16
 
 Many printers implement barcode printing natively.

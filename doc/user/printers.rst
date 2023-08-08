@@ -1,6 +1,6 @@
-********
 Printers
-********
+========
+
 :Last Reviewed: 2022-11-25
 
 As of now there are 7 different type of printer implementations.

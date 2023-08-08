@@ -2,13 +2,15 @@
 python-escpos - Python library to manipulate ESC/POS Printers
 #############################################################
 
-.. image:: https://readthedocs.org/projects/python-escpos/badge/?version=latest
-    :target: https://python-escpos.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
+.. only:: html
+
+    .. image:: https://readthedocs.org/projects/python-escpos/badge/?version=latest
+        :target: https://python-escpos.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
 
 
 Description
-"""""""""""
+===========
 
 Python ESC/POS is a library which lets the user have access to all those printers handled
 by ESC/POS commands, as defined by Epson, from a Python application.
@@ -27,7 +29,7 @@ settings for the printer that you set. These settings are handled by
 `escpos-php <https://github.com/mike42/escpos-php>`_.
 
 Dependencies
-""""""""""""
+------------
 
 This library makes use of:
 
@@ -38,7 +40,7 @@ This library makes use of:
 * `python-barcode <https://github.com/WhyNotHugo/python-barcode>`_ for the generation of barcodes
 
 Documentation and Usage
-"""""""""""""""""""""""
+-----------------------
 
 The basic usage is:
 
@@ -89,7 +91,7 @@ The full project-documentation is available on
 `Read the Docs <https://python-escpos.readthedocs.io>`_.
 
 Contributing
-""""""""""""
+------------
 
 This project is open for any contribution! Please see
 `CONTRIBUTING.rst <https://python-escpos.readthedocs.io/en/latest/dev/contributing.html>`_
@@ -97,7 +99,7 @@ for more information.
 
 
 Disclaimer
-""""""""""
+----------
 
 None of the vendors cited in this project agree or endorse any of the
 patterns or implementations.
