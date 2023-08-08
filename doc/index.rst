@@ -12,6 +12,9 @@ Content
 User Documentation
 ==================
 
+This chapter describes the central points that
+are relevant to the user of this library.
+
 .. toctree::
    :maxdepth: 1
    :caption: User Documentation
@@ -26,6 +29,10 @@ User Documentation
 Printer profiles
 ================
 
+This chapter gives a listing of the available
+printer profiles. Details are described in
+:ref:`capabilities-profile-intro`.
+
 .. toctree::
    :maxdepth: 1
    :caption: Printer profiles
@@ -36,6 +43,9 @@ Printer profiles
 
 Developer Documentation
 =======================
+
+This chapter summarizes information for
+developers of this library.
 
 .. toctree::
    :maxdepth: 1
@@ -48,6 +58,9 @@ Developer Documentation
 
 API Documentation
 =================
+
+This chapter contains an auto-generated
+documentation of the API of this library.
 
 .. toctree::
    :maxdepth: 1

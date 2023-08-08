@@ -1,3 +1,5 @@
+.. _capabilities-profile-intro:
+
 Capabilities
 ------------
 :Last Reviewed: 2023-07-29
