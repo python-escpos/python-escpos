@@ -1,6 +1,5 @@
-***************
 Release process
-***************
+===============
 
 * Update authors file
 * Update changelog

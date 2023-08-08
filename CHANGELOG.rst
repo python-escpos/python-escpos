@@ -1,6 +1,6 @@
-*********
 Changelog
-*********
+=========
+
 2023-05-11 - Version 3.0a9 - "Pride Comes Before A Fall"
 --------------------------------------------------------
 This release is the 10th alpha release of the new version 3.0.

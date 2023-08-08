@@ -1,6 +1,5 @@
-************
 Contributing
-************
+============
 
 This project is open to any kind of contribution. You can help with improving the documentation, adding fixes to the
 code, providing test cases in code or as a description or just spreading the word. Please feel free to create an

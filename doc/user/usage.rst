@@ -1,6 +1,6 @@
-*****
 Usage
-*****
+=====
+
 :Last Reviewed: 2017-06-10
 
 Define your printer

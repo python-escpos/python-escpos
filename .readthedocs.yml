@@ -1,6 +1,7 @@
 version: 2
 formats:
   - epub
+  - pdf
 build:
   os: ubuntu-22.04
   tools:
@@ -11,6 +12,7 @@ build:
     - gcc
     - libcups2-dev
     - python3-dev
+    - xindy
 sphinx:
   configuration: doc/conf.py
 submodules:

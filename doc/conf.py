@@ -42,6 +42,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.graphviz",
     "sphinx.ext.inheritance_diagram",
+    "sphinx.ext.imgconverter",
     "sphinxcontrib.datatemplates",
     "sphinxcontrib.spelling",
 ]
@@ -68,7 +69,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "python-escpos"
-copyright = "2016, Manuel F Martinez and others"
+copyright = "2023, python-escpos developers"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -224,6 +225,8 @@ latex_elements = {
     #'preamble': '',
 }
 
+latex_engine = "xelatex"
+
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
@@ -232,7 +235,7 @@ latex_documents = [
         "index",
         "python-escpos.tex",
         "python-escpos Documentation",
-        "Manuel F Martinez and others",
+        "python-escpos developers",
         "manual",
     ),
 ]
@@ -267,7 +270,7 @@ man_pages = [
         "index",
         "python-escpos",
         "python-escpos Documentation",
-        ["Manuel F Martinez and others"],
+        ["python-escpos developers"],
         1,
     )
 ]
@@ -286,7 +289,7 @@ texinfo_documents = [
         "index",
         "python-escpos",
         "python-escpos Documentation",
-        "Manuel F Martinez and others",
+        "python-escpos developers",
         "python-escpos",
         "One line description of project.",
         "Miscellaneous",

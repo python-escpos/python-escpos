@@ -1,6 +1,6 @@
-*******
 Methods
-*******
+=======
+
 :Last Reviewed: 2017-01-25
 
 Escpos class
