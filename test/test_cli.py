@@ -4,9 +4,9 @@
 
 
 import os
-import sys
+import pytest
 from scripttest import TestFileEnvironment
-from nose.tools import assert_equal, nottest
+from nose.tools import nottest
 import escpos
 
 TEST_DIR = os.path.abspath("test/test-cli-output")
@@ -77,7 +77,7 @@ class TestCLI:
         """Test the version string"""
         result = self.env.run("python-escpos", "version")
         assert not result.stderr
-        assert_equal(escpos.__version__, result.stdout.strip())
+        assert escpos.__version__ == result.stdout.strip()
 
     @nottest  # disable this test as it is not that easy anymore to predict the outcome of this call
     def test_cli_text(self):
@@ -95,7 +95,7 @@ class TestCLI:
         )
         assert not result.stderr
         assert DEVFILE_NAME in result.files_updated.keys()
-        assert_equals(result.files_updated[DEVFILE_NAME].bytes, test_text + "\n")
+        assert result.files_updated[DEVFILE_NAME].bytes == test_text + "\n"
 
     def test_cli_text_inavlid_args(self):
         """Test a failure to send valid arguments"""
@@ -104,6 +104,6 @@ class TestCLI:
             expect_error=True,
             expect_stderr=True
         )
-        assert_equal(result.returncode, 2)
+        assert result.returncode == 2
         assert "error:" in result.stderr
         assert not result.files_updated
