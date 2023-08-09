@@ -440,9 +440,11 @@ if _CUPSPRINT:
         """Simple CUPS printer connector.
 
         .. note::
-                Requires ``pycups`` which in turn needs the cups development library package:
+
+            Requires ``pycups`` which in turn needs the cups development library package:
                 - Ubuntu/Debian: ``libcups2-dev``
                 - OpenSuse/Fedora: ``cups-devel``
+
         """
 
         def __init__(self, printer_name=None, *args, **kwargs):
