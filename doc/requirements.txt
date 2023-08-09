@@ -11,3 +11,4 @@ python-barcode>=0.11.0,<1
 importlib-metadata
 importlib_resources
 sphinxcontrib.datatemplates
+pycups
