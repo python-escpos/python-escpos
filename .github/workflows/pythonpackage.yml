@@ -49,5 +49,5 @@ jobs:
         fail_ci_if_error: true
         files: ./coverage.xml,!./cache
         flags: unittests
-        name: codecov-umbrella
+        name: coverage-tox-${{ matrix.python-version }}
         verbose: true
