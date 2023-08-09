@@ -6,7 +6,6 @@
 import os
 import pytest
 from scripttest import TestFileEnvironment
-from nose.tools import nottest
 import escpos
 
 TEST_DIR = os.path.abspath("test/test-cli-output")
@@ -15,15 +14,13 @@ DEVFILE_NAME = "testfile"
 
 DEVFILE = os.path.join(TEST_DIR, DEVFILE_NAME)
 CONFIGFILE = "testconfig.yaml"
-CONFIG_YAML = """
+CONFIG_YAML = f"""
 ---
 
 printer:
     type: file
-    devfile: {testfile}
-""".format(
-    testfile=DEVFILE,
-)
+    devfile: {DEVFILE}
+"""
 
 
 class TestCLI:
@@ -79,7 +76,9 @@ class TestCLI:
         assert not result.stderr
         assert escpos.__version__ == result.stdout.strip()
 
-    @nottest  # disable this test as it is not that easy anymore to predict the outcome of this call
+    @pytest.mark.skip(
+        reason="disable this test as it is not that easy anymore to predict the outcome of this call"
+    )
     def test_cli_text(self):
         """Make sure text returns what we sent it"""
         test_text = "this is some text"
@@ -102,7 +101,7 @@ class TestCLI:
         result = self.env.run(
             *(self.default_args + ("text", "--invalid-param", "some data")),
             expect_error=True,
-            expect_stderr=True
+            expect_stderr=True,
         )
         assert result.returncode == 2
         assert "error:" in result.stderr
