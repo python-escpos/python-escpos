@@ -10,7 +10,6 @@
 
 
 import pytest
-from nose.tools import raises, assert_raises
 from hypothesis import given, example
 import hypothesis.strategies as st
 from escpos.magicencode import MagicEncode, Encoder
@@ -32,9 +31,9 @@ class TestEncoder:
         assert not Encoder({"CP437": 1}).find_suitable_encoding("€")
         assert Encoder({"CP858": 1}).find_suitable_encoding("€") == "CP858"
 
-    @raises(ValueError)
     def test_get_encoding(self):
-        Encoder({}).get_encoding_name("latin1")
+        with pytest.raises(ValueError):
+            Encoder({}).get_encoding_name("latin1")
 
 
 class TestMagicEncode:

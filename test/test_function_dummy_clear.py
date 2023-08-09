@@ -1,4 +1,3 @@
-from nose.tools import assert_raises
 from escpos.printer import Dummy
 
 

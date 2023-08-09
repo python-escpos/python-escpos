@@ -52,7 +52,6 @@ We use basically standard rst-docstrings for Sphinx.
 Test
 ^^^^
 Try to write tests whenever possible. Our goal for the future is 100% coverage.
-We are currently using `nose` but might change in the future.
 You can copy the structure from other testcases. Please remember to adapt the docstrings.
 
 Further reading
