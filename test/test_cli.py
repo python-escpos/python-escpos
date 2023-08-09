@@ -5,10 +5,12 @@
 
 import os
 import pytest
-from scripttest import TestFileEnvironment
+from scripttest import TestFileEnvironment as TFE
+import tempfile
+import shutil
 import escpos
 
-TEST_DIR = os.path.abspath("test/test-cli-output")
+TEST_DIR = tempfile.mkdtemp() + "/cli-test"
 
 DEVFILE_NAME = "testfile"
 
@@ -36,13 +38,14 @@ class TestCLI:
     def teardown_class(cls):
         """Remove config file"""
         os.remove(CONFIGFILE)
+        shutil.rmtree(TEST_DIR)
 
     def setup_method(self):
         """Create a file to print to and set up env"""
         self.env = None
         self.default_args = None
 
-        self.env = TestFileEnvironment(
+        self.env = TFE(
             base_path=TEST_DIR,
             cwd=os.getcwd(),
         )
@@ -96,7 +99,7 @@ class TestCLI:
         assert DEVFILE_NAME in result.files_updated.keys()
         assert result.files_updated[DEVFILE_NAME].bytes == test_text + "\n"
 
-    def test_cli_text_inavlid_args(self):
+    def test_cli_text_invalid_args(self):
         """Test a failure to send valid arguments"""
         result = self.env.run(
             *(self.default_args + ("text", "--invalid-param", "some data")),
