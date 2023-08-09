@@ -8,7 +8,6 @@
 """
 
 
-from nose.tools import raises
 import pytest
 
 import escpos.printer as printer
@@ -66,25 +65,25 @@ def test_model():
     assert instance.output == expected
 
 
-@raises(ValueError)
 def test_invalid_ec():
     """Test invalid QR error correction"""
     instance = printer.Dummy()
-    instance.qr("1234", native=True, ec=-1)
+    with pytest.raises(ValueError):
+        instance.qr("1234", native=True, ec=-1)
 
 
-@raises(ValueError)
 def test_invalid_size():
     """Test invalid QR size"""
     instance = printer.Dummy()
-    instance.qr("1234", native=True, size=0)
+    with pytest.raises(ValueError):
+        instance.qr("1234", native=True, size=0)
 
 
-@raises(ValueError)
 def test_invalid_model():
     """Test invalid QR model"""
     instance = printer.Dummy()
-    instance.qr("1234", native=True, model="Hello")
+    with pytest.raises(ValueError):
+        instance.qr("1234", native=True, model="Hello")
 
 
 @pytest.mark.skip("this test has to be debugged")
@@ -103,11 +102,11 @@ def test_image():
     assert instance.output == expected
 
 
-@raises(ValueError)
 def test_image_invalid_model():
     """Test unsupported QR model as image"""
     instance = printer.Dummy()
-    instance.qr("1234", native=False, model=QR_MODEL_1)
+    with pytest.raises(ValueError):
+        instance.qr("1234", native=False, model=QR_MODEL_1)
 
 
 @pytest.fixture

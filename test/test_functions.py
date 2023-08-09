@@ -1,4 +1,4 @@
-from nose.tools import assert_raises
+import pytest
 from escpos.printer import Dummy
 
 
@@ -16,11 +16,11 @@ def test_line_spacing_rest():
 
 def test_line_spacing_error_handling():
     printer = Dummy()
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         printer.line_spacing(99, divisor=44)
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         printer.line_spacing(divisor=80, spacing=86)
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         printer.line_spacing(divisor=360, spacing=256)
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         printer.line_spacing(divisor=180, spacing=256)

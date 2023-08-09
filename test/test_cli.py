@@ -4,26 +4,25 @@
 
 
 import os
-import sys
-from scripttest import TestFileEnvironment
-from nose.tools import assert_equal, nottest
+import pytest
+from scripttest import TestFileEnvironment as TFE
+import tempfile
+import shutil
 import escpos
 
-TEST_DIR = os.path.abspath("test/test-cli-output")
+TEST_DIR = tempfile.mkdtemp() + "/cli-test"
 
 DEVFILE_NAME = "testfile"
 
 DEVFILE = os.path.join(TEST_DIR, DEVFILE_NAME)
 CONFIGFILE = "testconfig.yaml"
-CONFIG_YAML = """
+CONFIG_YAML = f"""
 ---
 
 printer:
     type: file
-    devfile: {testfile}
-""".format(
-    testfile=DEVFILE,
-)
+    devfile: {DEVFILE}
+"""
 
 
 class TestCLI:
@@ -39,13 +38,14 @@ class TestCLI:
     def teardown_class(cls):
         """Remove config file"""
         os.remove(CONFIGFILE)
+        shutil.rmtree(TEST_DIR)
 
     def setup_method(self):
         """Create a file to print to and set up env"""
         self.env = None
         self.default_args = None
 
-        self.env = TestFileEnvironment(
+        self.env = TFE(
             base_path=TEST_DIR,
             cwd=os.getcwd(),
         )
@@ -77,9 +77,11 @@ class TestCLI:
         """Test the version string"""
         result = self.env.run("python-escpos", "version")
         assert not result.stderr
-        assert_equal(escpos.__version__, result.stdout.strip())
+        assert escpos.__version__ == result.stdout.strip()
 
-    @nottest  # disable this test as it is not that easy anymore to predict the outcome of this call
+    @pytest.mark.skip(
+        reason="disable this test as it is not that easy anymore to predict the outcome of this call"
+    )
     def test_cli_text(self):
         """Make sure text returns what we sent it"""
         test_text = "this is some text"
@@ -95,15 +97,15 @@ class TestCLI:
         )
         assert not result.stderr
         assert DEVFILE_NAME in result.files_updated.keys()
-        assert_equals(result.files_updated[DEVFILE_NAME].bytes, test_text + "\n")
+        assert result.files_updated[DEVFILE_NAME].bytes == test_text + "\n"
 
-    def test_cli_text_inavlid_args(self):
+    def test_cli_text_invalid_args(self):
         """Test a failure to send valid arguments"""
         result = self.env.run(
             *(self.default_args + ("text", "--invalid-param", "some data")),
             expect_error=True,
-            expect_stderr=True
+            expect_stderr=True,
         )
-        assert_equal(result.returncode, 2)
+        assert result.returncode == 2
         assert "error:" in result.stderr
         assert not result.files_updated
