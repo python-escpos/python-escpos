@@ -7,17 +7,16 @@
 :license: MIT
 """
 
-
-from nose.tools import raises
-
+import pytest
 import escpos.escpos as escpos
 from abc import ABCMeta
 
 
-@raises(TypeError)
 def test_abstract_base_class_raises():
     """test whether the abstract base class raises an exception for ESC/POS"""
-    escpos.Escpos()  # This call should raise TypeError because of abstractmethod _raw()
+    with pytest.raises(TypeError):
+        # This call should raise TypeError because of abstractmethod _raw()
+        escpos.Escpos()
 
 
 def test_abstract_base_class():
