@@ -1,24 +1,31 @@
+.. _user_installation:
+
 Installation
 ============
 
-:Last Reviewed: 2016-07-23
+:Last Reviewed: 2023-08-10
 
 Installation with PIP
 ---------------------
-Installation should be rather straight-forward. python-escpos is on PyPi, so you can simply enter:
+Installation should be rather straight-forward. python-escpos is on PyPi,
+so you can simply enter:
 
     ::
 
         pip install python-escpos
 
-This should install all necessary dependencies. Apart from that python-escpos should also be
-available as a Debian package. If you want to always benefit from the newest stable releases you should probably
-install from PyPi.
+This should install all necessary dependencies. Apart from that
+python-escpos is for some versions also available as a Debian package.
+If you want to always benefit from the newest stable releases you should
+always install from PyPi.
+If you use the ``--pre`` parameter for ``pip``, you will get the latest
+pre-release.
 
 Setup udev for USB-Printers
 ---------------------------
 1. Get the *Product ID* and *Vendor ID* from the lsusb command
-   ``# lsusb  Bus 002 Device 001: ID 1a2b:1a2b Device name``
+   ``# lsusb  Bus 002 Device 001: ID 1a2b:1a2b Device name``.
+   (Or whichever way your system supplies to get the PID and VID.)
 
 2. Create a udev rule to let users belonging to *dialout* group use the
    printer. You can create the file

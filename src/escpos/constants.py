@@ -45,6 +45,8 @@ HW_RESET = ESC + b"\x3f\x0a\x00"  # Reset printer hardware
 _CASH_DRAWER = (
     lambda m, t1="", t2="": ESC + b"p" + m + six.int2byte(t1) + six.int2byte(t2)
 )
+
+#: decimal cash drawer kick sequence
 CD_KICK_DEC_SEQUENCE = (
     lambda esc, p, m, t1=50, t2=50: six.int2byte(esc)
     + six.int2byte(p)
@@ -52,8 +54,10 @@ CD_KICK_DEC_SEQUENCE = (
     + six.int2byte(t1)
     + six.int2byte(t2)
 )
-CD_KICK_2 = _CASH_DRAWER(b"\x00", 50, 50)  # Sends a pulse to pin 2 []
-CD_KICK_5 = _CASH_DRAWER(b"\x01", 50, 50)  # Sends a pulse to pin 5 []
+#: Sends a pulse to pin 2 []
+CD_KICK_2 = _CASH_DRAWER(b"\x00", 50, 50)
+#: Sends a pulse to pin 5 []
+CD_KICK_5 = _CASH_DRAWER(b"\x01", 50, 50)
 
 # Paper Cutter
 _CUT_PAPER = lambda m: GS + b"V" + m

@@ -1021,8 +1021,11 @@ class Escpos(object):
     def cashdraw(self, pin):
         """Send pulse to kick the cash drawer
 
-        Kick cash drawer on pin 2 or pin 5 according to default parameter.
-        For non default parameter send a decimal sequence i.e. [27,112,48] or [27,112,0,25,255]
+        Kick cash drawer on pin 2 (:py:const:`~escpos.constants.CD_KICK_2`)
+        or pin 5 (:py:const:`~escpos.constants.CD_KICK_5`)
+        according to the default parameters.
+        For non default parameters send a decimal sequence i.e.
+        [27,112,48] or [27,112,0,25,255].
 
         :param pin: pin number, 2 or 5 or list of decimals
         :raises: :py:exc:`~escpos.exceptions.CashDrawerError`
@@ -1094,7 +1097,7 @@ class Escpos(object):
     def print_and_feed(self, n=1):
         """Print data in print buffer and feed *n* lines
 
-        if n not in range (0, 255) then ValueError will be raised
+        If n not in range (0, 255) then a ValueError will be raised.
 
         :param n: number of n to feed. 0 <= n <= 255. default: 1
         :raises ValueError: if not 0 <= n <= 255
@@ -1144,17 +1147,24 @@ class Escpos(object):
     def panel_buttons(self, enable=True):
         """Controls the panel buttons on the printer (e.g. FEED)
 
-        When enable is set to False the panel buttons on the printer will be disabled. Calling the method with
-        enable=True or without argument will enable the panel buttons.
+        When enable is set to False the panel buttons on the printer
+        will be disabled.
+        Calling the method with `enable=True` or without argument
+        will enable the panel buttons.
 
-        If panel buttons are enabled, the function of the panel button, such as feeding, will be executed upon pressing
-        the button. If the panel buttons are disabled, pressing them will not have any effect.
+        If panel buttons are enabled, the function of the panel button,
+        such as feeding, will be executed upon pressing the button.
+        If the panel buttons are disabled, pressing them will not have
+        any effect.
 
-        This command is effective until the printer is initialized, reset or power-cycled. The default is enabled panel
-        buttons.
+        This command is effective until the printer is initialized,
+        resetted or power-cycled.
+        The default is enabled panel buttons.
 
-        Some panel buttons will always work, especially when printer is opened. See for more information the manual
-        of your printer and the escpos-command-reference.
+        Some panel buttons will always work, especially when the
+        printer is opened.
+        See for more information the manual of your printer and
+        the escpos-command-reference.
 
         :param enable: controls the panel buttons
         :rtype: None
@@ -1166,7 +1176,8 @@ class Escpos(object):
 
     def query_status(self, mode):
         """
-        Queries the printer for its status, and returns an array of integers containing it.
+        Queries the printer for its status, and returns an array
+        of integers containing it.
 
         :param mode: Integer that sets the status mode queried to the printer.
             - RT_STATUS_ONLINE: Printer status.

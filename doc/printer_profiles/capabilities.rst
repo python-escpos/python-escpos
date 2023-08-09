@@ -2,7 +2,7 @@
 
 Capabilities
 ------------
-:Last Reviewed: 2023-07-29
+:Last Reviewed: 2023-08-10
 
 Since the used command set often differs between printers,
 a model for supporting different printers is implemented.
