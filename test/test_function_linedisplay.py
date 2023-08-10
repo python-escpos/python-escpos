@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """tests for line display
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2017 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT

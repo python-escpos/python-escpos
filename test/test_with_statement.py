@@ -1,15 +1,15 @@
 #!/usr/bin/python
 """test the facility which enables usage of the with-statement
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
 
 
-import escpos.printer as printer
 import escpos.escpos as escpos
+import escpos.printer as printer
 
 
 def test_with_statement():

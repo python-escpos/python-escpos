@@ -13,12 +13,12 @@
 # Check out his github: https://github.com/AdamWhitcroft/climacons
 
 
-from datetime import datetime
 import calendar
-import urllib
 import json
-import time
 import os
+import time
+import urllib
+from datetime import datetime
 
 from escpos.printer import Usb
 

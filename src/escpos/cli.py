@@ -18,9 +18,10 @@ except ImportError:
     # this CLI works nevertheless without argcomplete
     pass  # noqa
 import sys
+
 import six
-from . import config
-from . import version
+
+from . import config, version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS

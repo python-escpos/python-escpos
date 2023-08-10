@@ -11,79 +11,86 @@ This module contains the abstract base class :py:class:`Escpos`.
 """
 
 
-import qrcode
 import textwrap
-import six
+from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
 
 import barcode
+import qrcode
+import six
 from barcode.writer import ImageWriter
 
+from escpos.capabilities import get_profile
+from escpos.image import EscposImage
+
 from .constants import (
-    ESC,
-    GS,
-    NUL,
-    QR_ECLEVEL_L,
-    QR_ECLEVEL_M,
-    QR_ECLEVEL_H,
-    QR_ECLEVEL_Q,
-    SHEET_ROLL_MODE,
-    SHEET_SLIP_MODE,
-    SLIP_PRINT_AND_EJECT,
-    SLIP_SELECT,
-    SLIP_EJECT,
-)
-from .constants import (
-    QR_MODEL_1,
-    QR_MODEL_2,
-    QR_MICRO,
-    BARCODE_TYPES,
+    BARCODE_FONT_A,
+    BARCODE_FONT_B,
+    BARCODE_FORMATS,
     BARCODE_HEIGHT,
-    BARCODE_WIDTH,
-)
-from .constants import BARCODE_FONT_A, BARCODE_FONT_B, BARCODE_FORMATS
-from .constants import (
-    BARCODE_TXT_OFF,
-    BARCODE_TXT_BTH,
     BARCODE_TXT_ABV,
     BARCODE_TXT_BLW,
-)
-from .constants import TXT_SIZE, TXT_NORMAL
-from .constants import SET_FONT
-from .constants import LINESPACING_FUNCS, LINESPACING_RESET
-from .constants import LINE_DISPLAY_OPEN, LINE_DISPLAY_CLEAR, LINE_DISPLAY_CLOSE
-from .constants import (
-    CD_KICK_DEC_SEQUENCE,
-    CD_KICK_5,
-    CD_KICK_2,
-    PAPER_FULL_CUT,
-    PAPER_PART_CUT,
+    BARCODE_TXT_BTH,
+    BARCODE_TXT_OFF,
+    BARCODE_TYPES,
+    BARCODE_WIDTH,
     BUZZER,
-)
-from .constants import HW_RESET, HW_SELECT, HW_INIT
-from .constants import (
-    CTL_VT,
+    CD_KICK_2,
+    CD_KICK_5,
+    CD_KICK_DEC_SEQUENCE,
     CTL_CR,
     CTL_FF,
     CTL_LF,
     CTL_SET_HT,
+    CTL_VT,
+    ESC,
+    GS,
+    HW_INIT,
+    HW_RESET,
+    HW_SELECT,
+    LINE_DISPLAY_CLEAR,
+    LINE_DISPLAY_CLOSE,
+    LINE_DISPLAY_OPEN,
+    LINESPACING_FUNCS,
+    LINESPACING_RESET,
+    NUL,
     PANEL_BUTTON_OFF,
     PANEL_BUTTON_ON,
+    PAPER_FULL_CUT,
+    PAPER_PART_CUT,
+    QR_ECLEVEL_H,
+    QR_ECLEVEL_L,
+    QR_ECLEVEL_M,
+    QR_ECLEVEL_Q,
+    QR_MICRO,
+    QR_MODEL_1,
+    QR_MODEL_2,
+    RT_MASK_LOWPAPER,
+    RT_MASK_NOPAPER,
+    RT_MASK_ONLINE,
+    RT_MASK_PAPER,
+    RT_STATUS_ONLINE,
+    RT_STATUS_PAPER,
+    SET_FONT,
+    SHEET_ROLL_MODE,
+    SHEET_SLIP_MODE,
+    SLIP_EJECT,
+    SLIP_PRINT_AND_EJECT,
+    SLIP_SELECT,
+    TXT_NORMAL,
+    TXT_SIZE,
+    TXT_STYLE,
 )
-from .constants import TXT_STYLE
-from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
-from .constants import RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
-
-from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
-from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
-from .exceptions import ImageWidthError
-
+from .exceptions import (
+    BarcodeCodeError,
+    BarcodeSizeError,
+    BarcodeTypeError,
+    CashDrawerError,
+    ImageWidthError,
+    SetVariableError,
+    TabPosError,
+)
 from .magicencode import MagicEncode
-
-from abc import ABCMeta, abstractmethod  # abstract base class support
-from escpos.image import EscposImage
-from escpos.capabilities import get_profile
-
 
 # Remove special characters and whitespaces of the supported barcode names,
 # convert to uppercase and map them to their original names.

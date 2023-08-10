@@ -1,9 +1,11 @@
 #!/usr/bin/python
 
-import escpos.printer as printer
-import pytest
-import mock
 import socket
+
+import mock
+import pytest
+
+import escpos.printer as printer
 
 
 @pytest.fixture

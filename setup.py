@@ -2,8 +2,8 @@
 
 import os
 import sys
-from setuptools import find_packages, setup
 
+from setuptools import find_packages, setup
 
 base_dir = os.path.dirname(__file__)
 src_dir = os.path.join(base_dir, "src")

@@ -1,17 +1,18 @@
 #!/usr/bin/python
 """tests for the text printing function
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
 
 
-import pytest
-import mock
-from hypothesis import given, assume
 import hypothesis.strategies as st
+import mock
+import pytest
+from hypothesis import assume, given
+
 from escpos.printer import Dummy
 
 

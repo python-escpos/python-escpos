@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
-import escpos.printer as printer
 import barcode.errors
 import pytest
+
+import escpos.printer as printer
 
 
 @pytest.fixture

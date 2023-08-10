@@ -12,9 +12,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
-
+import sys
 from importlib.metadata import version as imp_version
 
 on_rtd = os.getenv("READTHEDOCS") == "True"

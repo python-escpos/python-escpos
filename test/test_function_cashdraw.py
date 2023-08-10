@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
+import pytest
+
 import escpos.printer as printer
 from escpos.exceptions import CashDrawerError
-import pytest
 
 
 def test_raise_CashDrawerError():

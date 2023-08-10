@@ -1,4 +1,5 @@
 import pytest
+
 from escpos.printer import Dummy
 
 

@@ -31,8 +31,9 @@ except ImportError:
 
 _CUPSPRINT = False
 try:
-    import cups
     import tempfile
+
+    import cups
 
     _CUPSPRINT = True
 except ImportError:

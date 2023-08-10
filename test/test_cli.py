@@ -4,10 +4,12 @@
 
 
 import os
+import shutil
+import tempfile
+
 import pytest
 from scripttest import TestFileEnvironment as TFE
-import tempfile
-import shutil
+
 import escpos
 
 TEST_DIR = tempfile.mkdtemp() + "/cli-test"

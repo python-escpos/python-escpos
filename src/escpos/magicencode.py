@@ -13,12 +13,14 @@ The code is based on the encoding-code in py-xml-escpos by @fvdsn.
 """
 
 
+import re
 from builtins import bytes
+
+import six
+
+from .codepages import CodePages
 from .constants import CODEPAGE_CHANGE
 from .exceptions import Error
-from .codepages import CodePages
-import six
-import re
 
 
 class Encoder(object):

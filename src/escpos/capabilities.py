@@ -1,19 +1,17 @@
-import re
-from os import environ, path
 import atexit
-import pickle
 import logging
+import pickle
+import platform
+import re
 import time
-import importlib_resources
+from contextlib import ExitStack
+from os import environ, path
+from tempfile import mkdtemp
+from typing import Any, Dict
 
+import importlib_resources
 import six
 import yaml
-
-from contextlib import ExitStack
-from tempfile import mkdtemp
-import platform
-
-from typing import Any, Dict
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)

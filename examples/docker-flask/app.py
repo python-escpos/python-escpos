@@ -1,5 +1,6 @@
-from escpos.printer import CupsPrinter
 from flask import Flask
+
+from escpos.printer import CupsPrinter
 
 # Initialize Flask app
 app = Flask(__name__)

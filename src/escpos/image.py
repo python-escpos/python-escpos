@@ -10,6 +10,7 @@ This module contains the image format handler :py:class:`EscposImage`.
 
 
 import math
+
 from PIL import Image, ImageOps
 
 

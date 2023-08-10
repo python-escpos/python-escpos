@@ -9,7 +9,6 @@
 
 
 import pytest
-
 from PIL import Image
 
 import escpos.printer as printer

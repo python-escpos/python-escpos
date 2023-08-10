@@ -1,5 +1,5 @@
-import six
 import pytest
+import six
 
 from escpos import printer
 from escpos.constants import BUZZER

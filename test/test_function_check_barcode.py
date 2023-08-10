@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-import escpos.printer as printer
 import pytest
+
+import escpos.printer as printer
 
 
 @pytest.mark.parametrize(

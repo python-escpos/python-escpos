@@ -6,11 +6,11 @@ This module contains the implementations of abstract base class :py:class:`Confi
 
 
 import os
+
 import appdirs
 import yaml
 
-from . import printer
-from . import exceptions
+from . import exceptions, printer
 
 
 class Config(object):

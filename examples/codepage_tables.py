@@ -2,18 +2,19 @@
 """
 
 
-import six
 import sys
+
+import six
 
 from escpos import printer
 from escpos.constants import (
     CODEPAGE_CHANGE,
-    ESC,
-    CTL_LF,
-    CTL_FF,
     CTL_CR,
+    CTL_FF,
     CTL_HT,
+    CTL_LF,
     CTL_VT,
+    ESC,
 )
 
 
