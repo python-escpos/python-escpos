@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-""" Main class
+"""Main class
 
 This module contains the abstract base class :py:class:`Escpos`.
 
@@ -403,7 +403,8 @@ class Escpos(object):
 
     @staticmethod
     def check_barcode(bc, code):
-        """
+        """Check if barcode is OK.
+
         This method checks if the barcode is in the proper format.
         The validation concerns the barcode length and the set of characters, but won't compute/validate any checksum.
         The full set of requirement for each barcode type is available in the ESC/POS documentation.
@@ -582,7 +583,7 @@ class Escpos(object):
         function_type=None,
         check=True,
     ):
-        """Print Barcode
+        """Print Barcode.
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
         be supported by the unit. By default, this method will check whether your barcode text is correct, that is
@@ -886,7 +887,7 @@ class Escpos(object):
         double_height=False,
         custom_size=False,
     ):
-        """Set text properties by sending them to the printer
+        """Set text properties by sending them to the printer.
 
         :param align: horizontal position for text, possible values are:
 

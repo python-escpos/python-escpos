@@ -1,9 +1,11 @@
+"""Print example QR codes."""
 import sys
 
 from escpos.printer import Usb
 
 
 def usage():
+    """Print information on usage."""
     print("usage: qr_code.py <content>")
 
 

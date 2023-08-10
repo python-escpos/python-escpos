@@ -1,16 +1,17 @@
 #!/usr/bin/python
+"""Weather forecast example.
 
+Adapted script from Adafruit
+Weather forecast for Raspberry Pi w/Adafruit Mini Thermal Printer.
+Retrieves data from DarkSky.net's API, prints current conditions and
+forecasts for next two days.
+Weather example using nice bitmaps.
+Written by Adafruit Industries.  MIT license.
+Adapted and enhanced for escpos library by MrWunderbar666
 
-# Adapted script from Adafruit
-# Weather forecast for Raspberry Pi w/Adafruit Mini Thermal Printer.
-# Retrieves data from DarkSky.net's API, prints current conditions and
-# forecasts for next two days.
-# Weather example using nice bitmaps.
-# Written by Adafruit Industries.  MIT license.
-# Adapted and enhanced for escpos library by MrWunderbar666
-
-# Icons taken from https://adamwhitcroft.com/climacons/
-# Check out his github: https://github.com/AdamWhitcroft/climacons
+Icons taken from https://adamwhitcroft.com/climacons/
+Check out his github: https://github.com/AdamWhitcroft/climacons
+"""
 
 
 import calendar
@@ -22,7 +23,7 @@ from datetime import datetime
 
 from escpos.printer import Usb
 
-""" Setting up the main pathing """
+"""Set up the main pathing."""
 this_dir, this_filename = os.path.split(__file__)
 GRAPHICS_PATH = os.path.join(this_dir, "graphics/climacons/")
 
@@ -38,13 +39,14 @@ LONG = "114.189945"  # Your Location
 
 
 def forecast_icon(idx):
+    """Get right icon for forecast."""
     icon = data["daily"]["data"][idx]["icon"]
     image = GRAPHICS_PATH + icon + ".png"
     return image
 
 
-# Dumps one forecast line to the printer
 def forecast(idx):
+    """Dump one forecast line to the printer."""
     date = datetime.fromtimestamp(int(data["daily"]["data"][idx]["time"]))
     day = calendar.day_name[date.weekday()]
     lo = data["daily"]["data"][idx]["temperatureMin"]
@@ -73,6 +75,7 @@ def forecast(idx):
 
 
 def icon():
+    """Get icon."""
     icon = data["currently"]["icon"]
     image = GRAPHICS_PATH + icon + ".png"
     return image

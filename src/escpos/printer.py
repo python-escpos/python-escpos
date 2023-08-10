@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-""" This module contains the implementations of abstract base class :py:class:`Escpos`.
+"""This module contains the implementations of abstract base class :py:class:`Escpos`.
 
 :author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
@@ -41,7 +41,7 @@ except ImportError:
 
 
 class Usb(Escpos):
-    """USB printer
+    """USB printer.
 
     This class describes a printer that natively speaks USB.
 
@@ -63,7 +63,8 @@ class Usb(Escpos):
         *args,
         **kwargs
     ):  # noqa: N803
-        """
+        """Initialize USB printer.
+
         :param idVendor: Vendor ID
         :param idProduct: Product ID
         :param usb_args: Optional USB arguments (e.g. custom_match)
@@ -123,7 +124,7 @@ class Usb(Escpos):
             print("Could not set configuration: {0}".format(str(e)))
 
     def _raw(self, msg):
-        """Print any command sent in raw format
+        """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
         :type msg: bytes
@@ -131,18 +132,18 @@ class Usb(Escpos):
         self.device.write(self.out_ep, msg, self.timeout)
 
     def _read(self):
-        """Reads a data buffer and returns it to the caller."""
+        """Read a data buffer and return it to the caller."""
         return self.device.read(self.in_ep, 16)
 
     def close(self):
-        """Release USB interface"""
+        """Release USB interface."""
         if self.device:
             usb.util.dispose_resources(self.device)
         self.device = None
 
 
 class Serial(Escpos):
-    """Serial printer
+    """Serial printer.
 
     This class describes a printer that is connected by serial interface.
 
@@ -166,7 +167,7 @@ class Serial(Escpos):
         *args,
         **kwargs
     ):
-        """
+        """Initialize serial printer.
 
         :param devfile:  Device file under dev filesystem
         :param baudrate: Baud rate for serial transmission
@@ -190,7 +191,7 @@ class Serial(Escpos):
         self.open()
 
     def open(self):
-        """Setup serial port and set is as escpos device"""
+        """Set up serial port and set is as escpos device."""
         if self.device is not None and self.device.is_open:
             self.close()
         self.device = serial.Serial(
@@ -210,7 +211,7 @@ class Serial(Escpos):
             print("Unable to open serial printer on: {0}".format(str(self.devfile)))
 
     def _raw(self, msg):
-        """Print any command sent in raw format
+        """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
         :type msg: bytes
@@ -218,18 +219,18 @@ class Serial(Escpos):
         self.device.write(msg)
 
     def _read(self):
-        """Reads a data buffer and returns it to the caller."""
+        """Read the data buffer and return it to the caller."""
         return self.device.read(16)
 
     def close(self):
-        """Close Serial interface"""
+        """Close Serial interface."""
         if self.device is not None and self.device.is_open:
             self.device.flush()
             self.device.close()
 
 
 class Network(Escpos):
-    """Network printer
+    """Network printer.
 
     This class is used to attach to a networked printer. You can also use this in order to attach to a printer that
     is forwarded with ``socat``.
@@ -252,7 +253,7 @@ class Network(Escpos):
     """
 
     def __init__(self, host, port=9100, timeout=60, *args, **kwargs):
-        """
+        """Initialize network printer.
 
         :param host:    Printer's hostname or IP address
         :param port:    Port to write to
@@ -265,7 +266,7 @@ class Network(Escpos):
         self.open()
 
     def open(self):
-        """Open TCP socket with ``socket``-library and set it as escpos device"""
+        """Open TCP socket with ``socket``-library and set it as escpos device."""
         self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.device.settimeout(self.timeout)
         self.device.connect((self.host, self.port))
@@ -274,7 +275,7 @@ class Network(Escpos):
             print("Could not open socket for {0}".format(self.host))
 
     def _raw(self, msg):
-        """Print any command sent in raw format
+        """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
         :type msg: bytes
@@ -282,12 +283,11 @@ class Network(Escpos):
         self.device.sendall(msg)
 
     def _read(self):
-        """Read data from the TCP socket"""
-
+        """Read data from the TCP socket."""
         return self.device.recv(16)
 
     def close(self):
-        """Close TCP connection"""
+        """Close TCP connection."""
         if self.device is not None:
             try:
                 self.device.shutdown(socket.SHUT_RDWR)
@@ -297,7 +297,7 @@ class Network(Escpos):
 
 
 class File(Escpos):
-    """Generic file printer
+    """Generic file printer.
 
     This class is used for parallel port printer or other printers that are directly attached to the filesystem.
     Note that you should stay away from using USB-to-Parallel-Adapter since they are unreliable
@@ -311,7 +311,7 @@ class File(Escpos):
     """
 
     def __init__(self, devfile="/dev/usb/lp0", auto_flush=True, *args, **kwargs):
-        """
+        """Initialize file printer with device file.
 
         :param devfile: Device file under dev filesystem
         :param auto_flush: automatically call flush after every call of _raw()
@@ -322,18 +322,18 @@ class File(Escpos):
         self.open()
 
     def open(self):
-        """Open system file"""
+        """Open system file."""
         self.device = open(self.devfile, "wb")
 
         if self.device is None:
             print("Could not open the specified file {0}".format(self.devfile))
 
     def flush(self):
-        """Flush printing content"""
+        """Flush printing content."""
         self.device.flush()
 
     def _raw(self, msg):
-        """Print any command sent in raw format
+        """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
         :type msg: bytes
@@ -343,14 +343,14 @@ class File(Escpos):
             self.flush()
 
     def close(self):
-        """Close system file"""
+        """Close system file."""
         if self.device is not None:
             self.device.flush()
             self.device.close()
 
 
 class Dummy(Escpos):
-    """Dummy printer
+    """Dummy printer.
 
     This class is used for saving commands to a variable, for use in situations where
     there is no need to send commands to an actual printer. This includes
@@ -364,12 +364,12 @@ class Dummy(Escpos):
     """
 
     def __init__(self, *args, **kwargs):
-        """ """
+        """Init with empty output list."""
         Escpos.__init__(self, *args, **kwargs)
         self._output_list = []
 
     def _raw(self, msg):
-        """Print any command sent in raw format
+        """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
         :type msg: bytes
@@ -378,11 +378,11 @@ class Dummy(Escpos):
 
     @property
     def output(self):
-        """Get the data that was sent to this printer"""
+        """Get the data that was sent to this printer."""
         return b"".join(self._output_list)
 
     def clear(self):
-        """Clear the buffer of the printer
+        """Clear the buffer of the printer.
 
         This method can be called if you send the contents to a physical printer
         and want to use the Dummy printer for new output.
@@ -390,13 +390,20 @@ class Dummy(Escpos):
         del self._output_list[:]
 
     def close(self):
+        """Close not implemented for Dummy printer."""
         pass
 
 
 if _WIN32PRINT:
 
     class Win32Raw(Escpos):
+        """Printer binding for win32 API.
+
+        Uses the module pywin32 for printing.
+        """
+
         def __init__(self, printer_name=None, *args, **kwargs):
+            """Initialize default printer."""
             Escpos.__init__(self, *args, **kwargs)
             if printer_name is not None:
                 self.printer_name = printer_name
@@ -406,6 +413,7 @@ if _WIN32PRINT:
             self.open()
 
         def open(self, job_name="python-escpos"):
+            """Open connection to default printer."""
             if self.printer_name is None:
                 raise Exception("Printer not found")
             self.hPrinter = win32print.OpenPrinter(self.printer_name)
@@ -415,6 +423,7 @@ if _WIN32PRINT:
             win32print.StartPagePrinter(self.hPrinter)
 
         def close(self):
+            """Close connection to default printer."""
             if not self.hPrinter:
                 return
             win32print.EndPagePrinter(self.hPrinter)
@@ -449,7 +458,7 @@ if _CUPSPRINT:
         """
 
         def __init__(self, printer_name=None, *args, **kwargs):
-            """CupsPrinter class constructor.
+            """Class constructor for CupsPrinter.
 
             :param printer_name: CUPS printer name (Optional)
             :type printer_name: str
@@ -478,7 +487,7 @@ if _CUPSPRINT:
             return self.conn.getPrinters()
 
         def open(self, job_name="python-escpos"):
-            """Setup a new print job and target printer.
+            """Set up a new print job and target the printer.
 
             A call to this method is required to send new jobs to
             the same CUPS connection.
@@ -492,7 +501,7 @@ if _CUPSPRINT:
             self.tmpfile = tempfile.NamedTemporaryFile(delete=True)
 
         def _raw(self, msg):
-            """Append any command sent in raw format to temporary file
+            """Append any command sent in raw format to temporary file.
 
             :param msg: arbitrary code to be printed
             :type msg: bytes

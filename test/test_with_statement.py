@@ -13,8 +13,9 @@ import escpos.printer as printer
 
 
 def test_with_statement():
-    """Use with statement"""
+    """Use with statement
+
+    .. todo:: Extend these tests as they don't really do anything at the moment"""
     dummy_printer = printer.Dummy()
     with escpos.EscposIO(dummy_printer) as p:
         p.writelines("Some text.\n")
-    # TODO extend these tests as they don't really do anything at the moment

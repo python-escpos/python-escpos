@@ -1,5 +1,4 @@
-""" Example for printing barcodes.
-"""
+"""Example for printing barcodes."""
 from escpos.printer import Usb
 
 # Adapt to your needs

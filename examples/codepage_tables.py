@@ -1,5 +1,4 @@
-"""Prints code page tables.
-"""
+"""Prints code page tables."""
 
 
 import sys
@@ -19,6 +18,7 @@ from escpos.constants import (
 
 
 def main():
+    """Init printer and print codepage tables."""
     dummy = printer.Dummy()
 
     dummy.hw("init")
@@ -35,6 +35,7 @@ def main():
 
 
 def print_codepage(printer, codepage):
+    """Print a codepage."""
     if codepage.isdigit():
         codepage = int(codepage)
         printer._raw(CODEPAGE_CHANGE + six.int2byte(codepage))

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-""" Magic Encode
+"""Magic Encode.
 
 This module tries to convert an UTF-8 string to an encoded string for the printer.
 It uses trial and error in order to guess the right codepage.
@@ -24,8 +24,7 @@ from .exceptions import Error
 
 
 class Encoder(object):
-    """Takes a list of available code spaces. Picks the right one for a
-    given character.
+    """Take available code spaces and pick the right one for a given character.
 
     Note: To determine the code page, it needs to do the conversion, and
     thus already knows what the final byte in the target encoding would
@@ -41,20 +40,24 @@ class Encoder(object):
     """
 
     def __init__(self, codepage_map):
+        """Initialize encoder."""
         self.codepages = codepage_map
         self.available_encodings = set(codepage_map.keys())
         self.available_characters = {}
         self.used_encodings = set()
 
     def get_sequence(self, encoding):
+        """Get a sequence."""
         return int(self.codepages[encoding])
 
     def get_encoding_name(self, encoding):
-        """Given an encoding provided by the user, will return a
+        """Return a canonical encoding name.
+
+        Given an encoding provided by the user, will return a
         canonical encoding name; and also validate that the encoding
         is supported.
 
-        TODO: Support encoding aliases: pc437 instead of cp437.
+        .. todo:: Support encoding aliases: pc437 instead of cp437.
         """
         encoding = CodePages.get_encoding_name(encoding)
         if encoding not in self.codepages:
@@ -68,7 +71,7 @@ class Encoder(object):
 
     @staticmethod
     def _get_codepage_char_list(encoding):
-        """Get codepage character list
+        """Get codepage character list.
 
         Gets characters 128-255 for a given code page, as an array.
 
@@ -94,7 +97,7 @@ class Encoder(object):
         raise LookupError("Can't find a known encoding for {}".format(encoding))
 
     def _get_codepage_char_map(self, encoding):
-        """Get codepage character map
+        """Get codepage character map.
 
         Process an encoding and return a map of UTF-characters to code points
         in this encoding.
@@ -132,7 +135,7 @@ class Encoder(object):
 
     @staticmethod
     def _encode_char(char, charmap, defaultchar):
-        """Encode a single character with the given encoding map
+        """Encode a single character with the given encoding map.
 
         :param char: char to encode
         :param charmap: dictionary for mapping characters in this code page
@@ -144,7 +147,7 @@ class Encoder(object):
         return ord(defaultchar)
 
     def encode(self, text, encoding, defaultchar="?"):
-        """Encode text under the given encoding
+        """Encode text under the given encoding.
 
         :param text: Text to encode
         :param encoding: Encoding name to use (must be defined in capabilities)
@@ -161,7 +164,9 @@ class Encoder(object):
         return (key in self.used_encodings, index)
 
     def find_suitable_encoding(self, char):
-        """The order of our search is a specific one:
+        """Search in a specific order for a suitable encoding.
+
+        It is the following order:
 
         1. code pages that we already tried before; there is a good
            chance they might work again, reducing the search space,
@@ -186,7 +191,9 @@ class Encoder(object):
 
 
 def split_writable_text(encoder, text, encoding):
-    """Splits off as many characters from the beginning of text as
+    """Split up the writable text.
+
+    Splits off as many characters from the beginning of text as
     are writable with "encoding". Returns a 2-tuple (writable, rest).
     """
     if not encoding:
@@ -201,7 +208,9 @@ def split_writable_text(encoder, text, encoding):
 
 
 class MagicEncode(object):
-    """A helper that helps us to automatically switch to the right
+    """Help switching to the right code page.
+
+    A helper that helps us to automatically switch to the right
     code page to encode any given Unicode character.
 
     This will consider the printers supported codepages, according
@@ -215,7 +224,7 @@ class MagicEncode(object):
     def __init__(
         self, driver, encoding=None, disabled=False, defaultsymbol="?", encoder=None
     ):
-        """
+        """Initialize magic encode.
 
         :param driver:
         :param encoding: If you know the current encoding of the printer
@@ -237,7 +246,7 @@ class MagicEncode(object):
         self.disabled = disabled
 
     def force_encoding(self, encoding):
-        """Sets a fixed encoding. The change is emitted right away.
+        """Set a fixed encoding. The change is emitted right away.
 
         From now one, this buffer will switch the code page anymore.
         However, it will still keep track of the current code page.
@@ -250,7 +259,6 @@ class MagicEncode(object):
 
     def write(self, text):
         """Write the text, automatically switching encodings."""
-
         if self.disabled:
             self.write_with_encoding(self.encoding, text)
             return
@@ -279,12 +287,16 @@ class MagicEncode(object):
                 self.write_with_encoding(encoding, to_write)
 
     def _handle_character_failed(self, char):
-        """Called when no codepage was found to render a character."""
+        """Write a default symbol.
+
+        Called when no codepage was found to render a character.
+        """
         # Writing the default symbol via write() allows us to avoid
         # unnecesary codepage switches.
         self.write(self.defaultsymbol)
 
     def write_with_encoding(self, encoding, text):
+        """Write the text and inject necessary codepage switches."""
         if text is not None and type(text) is not six.text_type:
             raise Error(
                 "The supplied text has to be unicode, but is of type {type}.".format(

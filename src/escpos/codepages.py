@@ -14,7 +14,9 @@ class CodePageManager:
 
     @staticmethod
     def get_encoding_name(encoding):
-        # TODO resolve the encoding alias
+        """Get encoding name.
+
+        .. todo:: Resolve the encoding alias."""
         return encoding.upper()
 
     def get_encoding(self, encoding):

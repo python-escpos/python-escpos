@@ -1,3 +1,4 @@
+"""Handler for capabilities data."""
 import atexit
 import logging
 import pickle
@@ -58,9 +59,7 @@ PROFILES: Dict[str, Any] = CAPABILITIES["profiles"]
 
 
 class NotSupported(Exception):
-    """Raised if a requested feature is not supported by the
-    printer profile.
-    """
+    """Raised if a requested feature is not supported by the printer profile."""
 
     pass
 

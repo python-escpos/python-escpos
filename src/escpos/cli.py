@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # PYTHON_ARGCOMPLETE_OK
-""" CLI
+"""CLI.
 
 This module acts as a command line interface for python-escpos. It mirrors
 closely the available ESCPOS commands while adding a couple extra ones for convenience.
