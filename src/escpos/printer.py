@@ -423,7 +423,7 @@ if _WIN32PRINT:
             self.hPrinter = None
 
         def _raw(self, msg):
-            """Print any command sent in raw format
+            """Print any command sent in raw format.
 
             :param msg: arbitrary code to be printed
             :type msg: bytes
@@ -583,7 +583,7 @@ if not sys.platform.startswith("win"):
             self.lp.terminate()
 
         def flush(self):
-            """End line and wait for new commands"""
+            """End line and wait for new commands."""
             if self.lp.stdin.writable():
                 self.lp.stdin.write(b"\n")
             if self.lp.stdin.closed is False:
