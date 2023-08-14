@@ -8,7 +8,7 @@ import time
 from contextlib import ExitStack
 from os import environ, path
 from tempfile import mkdtemp
-from typing import Optional, Any, Dict
+from typing import Any, Dict, Optional
 
 import importlib_resources
 import six
