@@ -388,7 +388,7 @@ class Escpos(object):
             inp_number //= 256
         return outp
 
-    def charcode(self, code="AUTO"):
+    def charcode(self, code: str = "AUTO"):
         """Set Character Code Table.
 
         Sets the control sequence from ``CHARCODE`` in :py:mod:`escpos.constants` as active. It will be sent with
@@ -454,15 +454,15 @@ class Escpos(object):
         self,
         code,
         bc,
-        height=64,
-        width=3,
-        pos="BELOW",
-        font="A",
-        align_ct=True,
+        height: int = 64,
+        width: int = 3,
+        pos: str = "BELOW",
+        font: str = "A",
+        align_ct: bool = True,
         function_type=None,
-        check=True,
-        force_software=False,
-    ):
+        check: bool = True,
+        force_software: bool = False,
+    ) -> None:
         """Print barcode.
 
         Automatic hardware|software barcode renderer according to the printer capabilities.
@@ -577,13 +577,13 @@ class Escpos(object):
         self,
         code,
         bc,
-        height=64,
-        width=3,
-        pos="BELOW",
-        font="A",
-        align_ct=True,
+        height: int = 64,
+        width: int = 3,
+        pos: str = "BELOW",
+        font: str = "A",
+        align_ct: bool = True,
         function_type=None,
-        check=True,
+        check: bool = True,
     ):
         """Print Barcode.
 
@@ -736,12 +736,12 @@ class Escpos(object):
         self,
         barcode_type,
         data,
-        impl="bitImageColumn",
-        module_height=5,
-        module_width=0.2,
-        text_distance=5,
-        font_size=10,
-        center=True,
+        impl: str = "bitImageColumn",
+        module_height: int | float = 5,
+        module_width: int | float = 0.2,
+        text_distance: int | float = 5,
+        font_size: int = 10,
+        center: bool = True,
     ):
         """Print Barcode.
 
