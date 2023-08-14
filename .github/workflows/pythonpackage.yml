@@ -34,7 +34,7 @@ jobs:
       uses: isort/isort-action@master
       with:
         requirementsFiles: "requirements.txt doc/requirements.txt"
-        sortPaths: ['doc', 'src', 'examples', 'test', 'setup.py']
+        sortPaths: "./doc ./src ./examples ./test ./setup.py"
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
