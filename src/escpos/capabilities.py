@@ -8,7 +8,7 @@ import time
 from contextlib import ExitStack
 from os import environ, path
 from tempfile import mkdtemp
-from typing import Any, Dict
+from typing import Optional, Any, Dict
 
 import importlib_resources
 import six
@@ -106,7 +106,7 @@ class BaseProfile(object):
         return {v: k for k, v in self.codePages.items()}
 
 
-def get_profile(name: str = None, **kwargs):
+def get_profile(name: Optional[str] = None, **kwargs):
     """Get a profile by name.
 
     If no name is given, return the default profile.
