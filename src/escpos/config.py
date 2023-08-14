@@ -1,10 +1,7 @@
-""" ESC/POS configuration manager.
+"""ESC/POS configuration manager.
 
 This module contains the implementations of abstract base class :py:class:`Config`.
-
 """
-
-
 import os
 
 import appdirs
@@ -48,13 +45,11 @@ class Config(object):
         self._printer_config = None
 
     def load(self, config_path=None):
-        """Load and parse the configuration file using pyyaml
+        """Load and parse the configuration file using pyyaml.
 
         :param config_path: An optional file path, file handle, or byte string
             for the configuration file.
-
         """
-
         self._reset_config()
 
         if not config_path:
@@ -96,8 +91,9 @@ class Config(object):
         self._has_loaded = True
 
     def printer(self):
-        """Returns a printer that was defined in the config, or throws an
-        exception.
+        """Return a printer that was defined in the config.
+
+        Throw an exception on error.
 
         This method loads the default config if one hasn't beeen already loaded.
 

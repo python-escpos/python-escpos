@@ -77,11 +77,13 @@ class BaseProfile(object):
     profile_data: Dict[str, Any] = {}
 
     def __getattr__(self, name):
+        """Get a data element from the profile."""
         return self.profile_data[name]
 
     def get_font(self, font) -> int:
-        """Return the escpos index for `font`. Makes sure that
-        the requested `font` is valid.
+        """Return the escpos index for `font`.
+
+        Makes sure that the requested `font` is valid.
         """
         font = {"a": 0, "b": 1}.get(font, font)
         if not six.text_type(font) in self.fonts:
@@ -105,8 +107,9 @@ class BaseProfile(object):
 
 
 def get_profile(name: str = None, **kwargs):
-    """Get the profile by name; if no name is given, return the
-    default profile.
+    """Get a profile by name.
+
+    If no name is given, return the default profile.
     """
     if isinstance(name, Profile):
         return name
@@ -119,7 +122,9 @@ CLASS_CACHE = {}
 
 
 def get_profile_class(name: str):
-    """For the given profile name, load the data from the external
+    """Load a profile class.
+
+    For the given profile name, load the data from the external
     database, then generate dynamically a class.
     """
     if name not in CLASS_CACHE:
@@ -133,6 +138,7 @@ def get_profile_class(name: str):
 
 
 def clean(s):
+    """Clean profile name."""
     # Remove invalid characters
     s = re.sub("[^0-9a-zA-Z_]", "", s)
     # Remove leading characters until we find a letter or underscore
@@ -141,17 +147,20 @@ def clean(s):
 
 
 class Profile(get_profile_class("default")):
-    """
-    For users, who want to provide their profile
+    """Profile class for user usage.
+
+    For users, who want to provide their own profile.
     """
 
     def __init__(self, columns=None, features=None):
+        """Initialize profile."""
         super(Profile, self).__init__()
 
         self.columns = columns
         self.features = features or {}
 
     def get_columns(self, font):
+        """Get column count of printer."""
         if self.columns is not None:
             return self.columns
 
