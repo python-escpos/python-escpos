@@ -25,7 +25,7 @@ class CodePageManager:
         return encoding.upper()
 
     def get_encoding(self, encoding):
-        """Return the endocing data."""
+        """Return the encoding data."""
         return self.data[encoding]
 
 
