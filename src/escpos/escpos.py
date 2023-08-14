@@ -737,9 +737,9 @@ class Escpos(object):
         barcode_type,
         data,
         impl: str = "bitImageColumn",
-        module_height: int | float = 5,
-        module_width: int | float = 0.2,
-        text_distance: int | float = 5,
+        module_height: (int | float) = 5,
+        module_width: (int | float) = 0.2,
+        text_distance: (int | float) = 5,
         font_size: int = 10,
         center: bool = True,
     ):
@@ -783,13 +783,13 @@ class Escpos(object):
             * bitImageRaster
 
         :param module_height: barcode module height (in mm).
-        :type module_height: int | float
+        :type module_height: (int | float)
 
         :param module_width: barcode module width (in mm).
-        :type module_width: int | float
+        :type module_width: (int | float)
 
         :param text_distance: distance from the barcode to the code text (in mm).
-        :type text_distance: int | float
+        :type text_distance: (int | float)
 
         :param font_size: font size of the code text (in dots).
         :type font_size: int
