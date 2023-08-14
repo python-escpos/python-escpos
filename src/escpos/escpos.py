@@ -462,7 +462,7 @@ class Escpos(object):
         align_ct: bool = True,
         function_type=None,
         check: bool = True,
-        force_software: bool = False,
+        force_software: Union[bool, str] = False,
     ) -> None:
         """Print barcode.
 
@@ -546,9 +546,11 @@ class Escpos(object):
             raise BarcodeTypeError(f"Not supported or wrong barcode name {bc}.")
 
         if force_software or not capable["hw"] or not capable_bc["hw"]:
+            # based on earlier checks, we require that software mode is not None
+            assert capable["sw"] is not None
             # Select the best possible capable render mode
             impl = capable["sw"][0]
-            if force_software in capable["sw"]:
+            if force_software in capable["sw"] and isinstance(force_software, str):
                 # Force to a specific mode
                 impl = force_software
             print(f"Using {impl} software barcode renderer")
