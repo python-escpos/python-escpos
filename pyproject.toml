@@ -10,4 +10,6 @@ addopts = "--doctest-modules"
 testpaths = [
     "test",
     "src",
+    "src/escpos",
+    "escpos",
 ]
