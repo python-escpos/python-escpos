@@ -128,7 +128,7 @@ class Escpos(object):
         self.close()
 
     @abstractmethod
-    def _raw(self, msg):
+    def _raw(self, msg: bytes):
         """Send raw data to the printer.
 
         This function has to be individually implemented by the implementations.
