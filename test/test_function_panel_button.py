@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """tests for panel button function
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT

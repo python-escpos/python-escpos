@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-python-escpos enables you to manipulate escpos-printers
-"""
+"""python-escpos enables you to manipulate escpos-printers."""
 
 __all__ = ["constants", "escpos", "exceptions", "printer"]
 

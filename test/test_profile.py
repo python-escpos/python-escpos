@@ -1,5 +1,6 @@
 import pytest
-from escpos.capabilities import get_profile, NotSupported, BARCODE_B, Profile
+
+from escpos.capabilities import BARCODE_B, NotSupported, Profile, get_profile
 
 
 @pytest.fixture

@@ -1,9 +1,10 @@
 #!/usr/bin/python
 
-import escpos.printer as printer
-from escpos.capabilities import Profile, BARCODE_B
-from escpos.exceptions import BarcodeTypeError, BarcodeCodeError
 import pytest
+
+import escpos.printer as printer
+from escpos.capabilities import BARCODE_B, Profile
+from escpos.exceptions import BarcodeCodeError, BarcodeTypeError
 
 
 @pytest.mark.parametrize(

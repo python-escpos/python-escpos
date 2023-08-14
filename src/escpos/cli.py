@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # PYTHON_ARGCOMPLETE_OK
-""" CLI
+"""CLI.
 
 This module acts as a command line interface for python-escpos. It mirrors
 closely the available ESCPOS commands while adding a couple extra ones for convenience.
@@ -18,15 +18,18 @@ except ImportError:
     # this CLI works nevertheless without argcomplete
     pass  # noqa
 import sys
+
 import six
-from . import config
-from . import version
+
+from . import config, version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
 def str_to_bool(string):
-    """Used as a type in argparse so that we get back a proper
-    bool instead of always True
+    """Convert string to Bool.
+
+    Used as a type in argparse so that we get back a proper
+    bool instead of always True.
     """
     return string.lower() in ("y", "yes", "1", "true")
 
@@ -452,13 +455,11 @@ ESCPOS_COMMANDS = [
 
 
 def main():
-    """
+    """Handle main entry point of CLI script.
 
     Handles loading of configuration and creating and processing of command
     line arguments. Called when run from a CLI.
-
     """
-
     parser = argparse.ArgumentParser(
         description="CLI for python-escpos",
         epilog="Printer configuration is defined in the python-escpos config"
@@ -569,8 +570,9 @@ def main():
 
 
 def demo(printer, **kwargs):
-    """
-    Prints demos. Called when CLI is passed `demo`. This function
+    """Print demos.
+
+    Called when CLI is passed `demo`. This function
     uses the DEMO_FUNCTIONS dictionary.
 
     :param printer: A printer from escpos.printer

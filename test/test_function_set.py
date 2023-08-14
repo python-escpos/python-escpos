@@ -1,9 +1,7 @@
 import six
 
 import escpos.printer as printer
-from escpos.constants import TXT_NORMAL, TXT_STYLE, SET_FONT
-from escpos.constants import TXT_SIZE
-
+from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
 
 # Default test, please copy and paste this block to test set method calls
 

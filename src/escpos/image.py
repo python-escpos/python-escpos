@@ -1,4 +1,4 @@
-""" Image format handling class
+"""Image format handling class.
 
 This module contains the image format handler :py:class:`EscposImage`.
 
@@ -10,6 +10,7 @@ This module contains the image format handler :py:class:`EscposImage`.
 
 
 import math
+
 from PIL import Image, ImageOps
 
 
@@ -22,8 +23,7 @@ class EscposImage(object):
     """
 
     def __init__(self, img_source):
-        """
-        Load in an image
+        """Load in an image.
 
         :param img_source: PIL.Image, or filename to load one from.
         """
@@ -49,30 +49,23 @@ class EscposImage(object):
 
     @property
     def width(self):
-        """
-        Width of image in pixels
-        """
+        """Return width of image in pixels."""
         width_pixels, _ = self._im.size
         return width_pixels
 
     @property
     def width_bytes(self):
-        """
-        Width of image if you use 8 pixels per byte and 0-pad at the end.
-        """
+        """Return width of image if you use 8 pixels per byte and 0-pad at the end."""
         return (self.width + 7) >> 3
 
     @property
     def height(self):
-        """
-        Height of image in pixels
-        """
+        """Height of image in pixels."""
         _, height_pixels = self._im.size
         return height_pixels
 
     def to_column_format(self, high_density_vertical=True):
-        """
-        Extract slices of an image as equal-sized blobs of column-format data.
+        """Extract slices of an image as equal-sized blobs of column-format data.
 
         :param high_density_vertical: Printed line height in dots
         """
@@ -89,14 +82,11 @@ class EscposImage(object):
             left += line_height
 
     def to_raster_format(self):
-        """
-        Convert image to raster-format binary
-        """
+        """Convert image to raster-format binary."""
         return self._im.tobytes()
 
     def split(self, fragment_height):
-        """
-        Split an image into multiple fragments after fragment_height pixels
+        """Split an image into multiple fragments after fragment_height pixels.
 
         :param fragment_height: height of fragment
         :return: list of PIL objects
@@ -113,7 +103,7 @@ class EscposImage(object):
         return fragments
 
     def center(self, max_width):
-        """In-place image centering
+        """Center image in place.
 
         :param: Maximum width in order to deduce x offset for centering
         :return: None

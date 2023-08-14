@@ -2,19 +2,20 @@
 #  -*- coding: utf-8 -*-
 """tests for the magic encode module
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
 
 
-import pytest
-from hypothesis import given, example
 import hypothesis.strategies as st
-from escpos.magicencode import MagicEncode, Encoder
-from escpos.katakana import encode_katakana
+import pytest
+from hypothesis import example, given
+
 from escpos.exceptions import CharCodeError, Error
+from escpos.katakana import encode_katakana
+from escpos.magicencode import Encoder, MagicEncode
 
 
 class TestEncoder:

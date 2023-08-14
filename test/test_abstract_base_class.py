@@ -1,15 +1,17 @@
 #!/usr/bin/python
 """verifies that the metaclass abc is properly used by ESC/POS
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 Patrick Kanzler
 :license: MIT
 """
 
-import pytest
-import escpos.escpos as escpos
 from abc import ABCMeta
+
+import pytest
+
+import escpos.escpos as escpos
 
 
 def test_abstract_base_class_raises():

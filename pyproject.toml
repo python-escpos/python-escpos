@@ -1,3 +1,15 @@
 [tool.black]
 extend-exclude = 'capabilities-data'
 
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--doctest-modules --cov escpos --cov-report=xml"
+testpaths = [
+    "test",
+    "src",
+    "src/escpos",
+    "escpos",
+]

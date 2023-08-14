@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """test the raising of errors with the error module
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2017 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
@@ -9,6 +9,7 @@
 
 
 import pytest
+
 import escpos
 import escpos.exceptions
 

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-""" Main class
+"""Main class.
 
 This module contains the abstract base class :py:class:`Escpos`.
 
@@ -11,79 +11,87 @@ This module contains the abstract base class :py:class:`Escpos`.
 """
 
 
-import qrcode
 import textwrap
-import six
+from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
+from typing import Union
 
 import barcode
+import qrcode
+import six
 from barcode.writer import ImageWriter
 
+from escpos.capabilities import get_profile
+from escpos.image import EscposImage
+
 from .constants import (
-    ESC,
-    GS,
-    NUL,
-    QR_ECLEVEL_L,
-    QR_ECLEVEL_M,
-    QR_ECLEVEL_H,
-    QR_ECLEVEL_Q,
-    SHEET_ROLL_MODE,
-    SHEET_SLIP_MODE,
-    SLIP_PRINT_AND_EJECT,
-    SLIP_SELECT,
-    SLIP_EJECT,
-)
-from .constants import (
-    QR_MODEL_1,
-    QR_MODEL_2,
-    QR_MICRO,
-    BARCODE_TYPES,
+    BARCODE_FONT_A,
+    BARCODE_FONT_B,
+    BARCODE_FORMATS,
     BARCODE_HEIGHT,
-    BARCODE_WIDTH,
-)
-from .constants import BARCODE_FONT_A, BARCODE_FONT_B, BARCODE_FORMATS
-from .constants import (
-    BARCODE_TXT_OFF,
-    BARCODE_TXT_BTH,
     BARCODE_TXT_ABV,
     BARCODE_TXT_BLW,
-)
-from .constants import TXT_SIZE, TXT_NORMAL
-from .constants import SET_FONT
-from .constants import LINESPACING_FUNCS, LINESPACING_RESET
-from .constants import LINE_DISPLAY_OPEN, LINE_DISPLAY_CLEAR, LINE_DISPLAY_CLOSE
-from .constants import (
-    CD_KICK_DEC_SEQUENCE,
-    CD_KICK_5,
-    CD_KICK_2,
-    PAPER_FULL_CUT,
-    PAPER_PART_CUT,
+    BARCODE_TXT_BTH,
+    BARCODE_TXT_OFF,
+    BARCODE_TYPES,
+    BARCODE_WIDTH,
     BUZZER,
-)
-from .constants import HW_RESET, HW_SELECT, HW_INIT
-from .constants import (
-    CTL_VT,
+    CD_KICK_2,
+    CD_KICK_5,
+    CD_KICK_DEC_SEQUENCE,
     CTL_CR,
     CTL_FF,
     CTL_LF,
     CTL_SET_HT,
+    CTL_VT,
+    ESC,
+    GS,
+    HW_INIT,
+    HW_RESET,
+    HW_SELECT,
+    LINE_DISPLAY_CLEAR,
+    LINE_DISPLAY_CLOSE,
+    LINE_DISPLAY_OPEN,
+    LINESPACING_FUNCS,
+    LINESPACING_RESET,
+    NUL,
     PANEL_BUTTON_OFF,
     PANEL_BUTTON_ON,
+    PAPER_FULL_CUT,
+    PAPER_PART_CUT,
+    QR_ECLEVEL_H,
+    QR_ECLEVEL_L,
+    QR_ECLEVEL_M,
+    QR_ECLEVEL_Q,
+    QR_MICRO,
+    QR_MODEL_1,
+    QR_MODEL_2,
+    RT_MASK_LOWPAPER,
+    RT_MASK_NOPAPER,
+    RT_MASK_ONLINE,
+    RT_MASK_PAPER,
+    RT_STATUS_ONLINE,
+    RT_STATUS_PAPER,
+    SET_FONT,
+    SHEET_ROLL_MODE,
+    SHEET_SLIP_MODE,
+    SLIP_EJECT,
+    SLIP_PRINT_AND_EJECT,
+    SLIP_SELECT,
+    TXT_NORMAL,
+    TXT_SIZE,
+    TXT_STYLE,
 )
-from .constants import TXT_STYLE
-from .constants import RT_STATUS_ONLINE, RT_MASK_ONLINE
-from .constants import RT_STATUS_PAPER, RT_MASK_PAPER, RT_MASK_LOWPAPER, RT_MASK_NOPAPER
-
-from .exceptions import BarcodeTypeError, BarcodeSizeError, TabPosError
-from .exceptions import CashDrawerError, SetVariableError, BarcodeCodeError
-from .exceptions import ImageWidthError
-
+from .exceptions import (
+    BarcodeCodeError,
+    BarcodeSizeError,
+    BarcodeTypeError,
+    CashDrawerError,
+    ImageWidthError,
+    SetVariableError,
+    TabPosError,
+)
 from .magicencode import MagicEncode
-
-from abc import ABCMeta, abstractmethod  # abstract base class support
-from escpos.image import EscposImage
-from escpos.capabilities import get_profile
-
 
 # Remove special characters and whitespaces of the supported barcode names,
 # convert to uppercase and map them to their original names.
@@ -100,7 +108,7 @@ SW_BARCODE_NAMES = {
 
 @six.add_metaclass(ABCMeta)
 class Escpos(object):
-    """ESC/POS Printer object
+    """ESC/POS Printer object.
 
     This class is the abstract base class for an esc/pos-printer. The printer implementations are children of this
     class.
@@ -109,19 +117,20 @@ class Escpos(object):
     device = None
 
     def __init__(self, profile=None, magic_encode_args=None, **kwargs):
-        """Initialize ESCPOS Printer
+        """Initialize ESCPOS Printer.
 
-        :param profile: Printer profile"""
+        :param profile: Printer profile
+        """
         self.profile = get_profile(profile)
         self.magic = MagicEncode(self, **(magic_encode_args or {}))
 
     def __del__(self):
-        """call self.close upon deletion"""
+        """Call self.close upon deletion."""
         self.close()
 
     @abstractmethod
-    def _raw(self, msg):
-        """Sends raw data to the printer
+    def _raw(self, msg: bytes):
+        """Send raw data to the printer.
 
         This function has to be individually implemented by the implementations.
 
@@ -131,7 +140,9 @@ class Escpos(object):
         pass
 
     def _read(self):
-        """Returns a NotImplementedError if the instance of the class doesn't override this method.
+        """Read from printer.
+
+        Returns a NotImplementedError if the instance of the class doesn't override this method.
         :raises NotImplementedError
         """
         raise NotImplementedError()
@@ -145,7 +156,7 @@ class Escpos(object):
         fragment_height=960,
         center=False,
     ):
-        """Print an image
+        """Print an image.
 
         You can select whether the printer should print in high density or not. The default value is high density.
         When printing in low density, the image will be stretched.
@@ -252,8 +263,7 @@ class Escpos(object):
             self._raw(b"".join(outp))
 
     def _image_send_graphics_data(self, m, fn, data):
-        """
-        Wrapper for GS ( L, to calculate and send correct data length.
+        """Calculate and send correct data length for `GS ( L`.
 
         :param m: Modifier//variant for function. Usually '0'
         :param fn: Function number to use, as byte
@@ -272,7 +282,7 @@ class Escpos(object):
         center=False,
         impl="bitImageRaster",
     ):
-        """Print QR Code for the provided string
+        """Print QR Code for the provided string.
 
         :param content: The content of the code. Numeric data will be more efficiently compacted.
         :param ec: Error-correction level to use. One of QR_ECLEVEL_L (default), QR_ECLEVEL_M, QR_ECLEVEL_Q or
@@ -345,7 +355,7 @@ class Escpos(object):
         self._send_2d_code_data(six.int2byte(81), cn, b"", b"0")
 
     def _send_2d_code_data(self, fn, cn, data, m=b""):
-        """Wrapper for GS ( k, to calculate and send correct data length.
+        """Calculate and send correct data length for`GS ( k`.
 
         :param fn: Function to use.
         :param cn: Output code type. Affects available data.
@@ -379,8 +389,8 @@ class Escpos(object):
             inp_number //= 256
         return outp
 
-    def charcode(self, code="AUTO"):
-        """Set Character Code Table
+    def charcode(self, code: str = "AUTO"):
+        """Set Character Code Table.
 
         Sets the control sequence from ``CHARCODE`` in :py:mod:`escpos.constants` as active. It will be sent with
         the next text sequence. If you set the variable code to ``AUTO`` it will try to automatically guess the
@@ -396,7 +406,8 @@ class Escpos(object):
 
     @staticmethod
     def check_barcode(bc, code):
-        """
+        """Check if barcode is OK.
+
         This method checks if the barcode is in the proper format.
         The validation concerns the barcode length and the set of characters, but won't compute/validate any checksum.
         The full set of requirement for each barcode type is available in the ESC/POS documentation.
@@ -444,15 +455,15 @@ class Escpos(object):
         self,
         code,
         bc,
-        height=64,
-        width=3,
-        pos="BELOW",
-        font="A",
-        align_ct=True,
+        height: int = 64,
+        width: int = 3,
+        pos: str = "BELOW",
+        font: str = "A",
+        align_ct: bool = True,
         function_type=None,
-        check=True,
-        force_software=False,
-    ):
+        check: bool = True,
+        force_software: Union[bool, str] = False,
+    ) -> None:
         """Print barcode.
 
         Automatic hardware|software barcode renderer according to the printer capabilities.
@@ -535,9 +546,11 @@ class Escpos(object):
             raise BarcodeTypeError(f"Not supported or wrong barcode name {bc}.")
 
         if force_software or not capable["hw"] or not capable_bc["hw"]:
+            # based on earlier checks, we require that software mode is not None
+            assert capable["sw"] is not None
             # Select the best possible capable render mode
             impl = capable["sw"][0]
-            if force_software in capable["sw"]:
+            if force_software in capable["sw"] and isinstance(force_software, str):
                 # Force to a specific mode
                 impl = force_software
             print(f"Using {impl} software barcode renderer")
@@ -567,15 +580,15 @@ class Escpos(object):
         self,
         code,
         bc,
-        height=64,
-        width=3,
-        pos="BELOW",
-        font="A",
-        align_ct=True,
+        height: int = 64,
+        width: int = 3,
+        pos: str = "BELOW",
+        font: str = "A",
+        align_ct: bool = True,
         function_type=None,
-        check=True,
+        check: bool = True,
     ):
-        """Print Barcode
+        """Print Barcode.
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
         be supported by the unit. By default, this method will check whether your barcode text is correct, that is
@@ -726,14 +739,14 @@ class Escpos(object):
         self,
         barcode_type,
         data,
-        impl="bitImageColumn",
-        module_height=5,
-        module_width=0.2,
-        text_distance=5,
-        font_size=10,
-        center=True,
+        impl: str = "bitImageColumn",
+        module_height: Union[int, float] = 5,
+        module_width: Union[int, float] = 0.2,
+        text_distance: Union[int, float] = 5,
+        font_size: int = 10,
+        center: bool = True,
     ):
-        """Print Barcode
+        """Print Barcode.
 
         This method allows to print barcodes. The rendering of the barcode is done by
         the `barcode` library and sent to the printer as image through one of the
@@ -773,13 +786,13 @@ class Escpos(object):
             * bitImageRaster
 
         :param module_height: barcode module height (in mm).
-        :type module_height: int | float
+        :type module_height: Union[int, float]
 
         :param module_width: barcode module width (in mm).
-        :type module_width: int | float
+        :type module_width: Union[int, float]
 
         :param text_distance: distance from the barcode to the code text (in mm).
-        :type text_distance: int | float
+        :type text_distance: Union[int, float]
 
         :param font_size: font size of the code text (in dots).
         :type font_size: int
@@ -817,7 +830,7 @@ class Escpos(object):
         self.image(image, impl=impl, center=center)
 
     def text(self, txt):
-        """Print alpha-numeric text
+        """Print alpha-numeric text.
 
         The text has to be encoded in the currently selected codepage.
         The input text has to be encoded in unicode.
@@ -829,7 +842,7 @@ class Escpos(object):
         self.magic.write(txt)
 
     def textln(self, txt=""):
-        """Print alpha-numeric text with a newline
+        """Print alpha-numeric text with a newline.
 
         The text has to be encoded in the currently selected codepage.
         The input text has to be encoded in unicode.
@@ -840,7 +853,7 @@ class Escpos(object):
         self.text("{}\n".format(txt))
 
     def ln(self, count=1):
-        """Print a newline or more
+        """Print a newline or more.
 
         :param count: number of newlines to print
         :raises: :py:exc:`ValueError` if count < 0
@@ -851,7 +864,7 @@ class Escpos(object):
             self.text("\n" * count)
 
     def block_text(self, txt, font="0", columns=None):
-        """Text is printed wrapped to specified columns
+        """Print text wrapped to specifiec columns.
 
         Text has to be encoded in unicode.
 
@@ -879,7 +892,7 @@ class Escpos(object):
         double_height=False,
         custom_size=False,
     ):
-        """Set text properties by sending them to the printer
+        """Set text properties by sending them to the printer.
 
         :param align: horizontal position for text, possible values are:
 
@@ -918,7 +931,6 @@ class Escpos(object):
         :type height: int
         :type density: int
         """
-
         if custom_size:
             if (
                 1 <= width <= 8
@@ -996,7 +1008,6 @@ class Escpos(object):
         :param feed: print and feed before cutting. default: true
         :raises ValueError: if mode not in ('FULL', 'PART')
         """
-
         if not feed:
             self._raw(GS + b"V" + six.int2byte(66) + b"\x00")
             return
@@ -1019,7 +1030,7 @@ class Escpos(object):
                 self._raw(PAPER_PART_CUT)
 
     def cashdraw(self, pin):
-        """Send pulse to kick the cash drawer
+        """Send pulse to kick the cash drawer.
 
         Kick cash drawer on pin 2 (:py:const:`~escpos.constants.CD_KICK_2`)
         or pin 5 (:py:const:`~escpos.constants.CD_KICK_5`)
@@ -1041,7 +1052,7 @@ class Escpos(object):
                 raise CashDrawerError(err)
 
     def linedisplay_select(self, select_display=False):
-        """Selects the line display or the printer
+        """Select the line display or the printer.
 
         This method is used for line displays that are daisy-chained between your computer and printer.
         If you set `select_display` to true, only the display is selected and if you set it to false,
@@ -1056,15 +1067,14 @@ class Escpos(object):
             self._raw(LINE_DISPLAY_CLOSE)
 
     def linedisplay_clear(self):
-        """Clears the line display and resets the cursor
+        """Clear the line display and resets the .
 
         This method is used for line displays that are daisy-chained between your computer and printer.
         """
         self._raw(LINE_DISPLAY_CLEAR)
 
     def linedisplay(self, text):
-        """
-        Display text on a line display connected to your printer
+        """Display text on a line display connected to your printer.
 
         You should connect a line display to your printer. You can do this by daisy-chaining
         the display between your computer and printer.
@@ -1077,7 +1087,7 @@ class Escpos(object):
         self.linedisplay_select(select_display=False)
 
     def hw(self, hw):
-        """Hardware operations
+        """Hardware operations.
 
         :param hw: hardware action, may be:
 
@@ -1095,7 +1105,7 @@ class Escpos(object):
             pass
 
     def print_and_feed(self, n=1):
-        """Print data in print buffer and feed *n* lines
+        """Print data in print buffer and feed *n* lines.
 
         If n not in range (0, 255) then a ValueError will be raised.
 
@@ -1109,7 +1119,7 @@ class Escpos(object):
             raise ValueError("n must be betwen 0 and 255")
 
     def control(self, ctl, count=5, tab_size=8):
-        """Feed control sequences
+        """Feed control sequences.
 
         :param ctl: string for the following control sequences:
 
@@ -1145,7 +1155,7 @@ class Escpos(object):
             self._raw(CTL_VT)
 
     def panel_buttons(self, enable=True):
-        """Controls the panel buttons on the printer (e.g. FEED)
+        """Control the panel buttons on the printer (e.g. FEED).
 
         When enable is set to False the panel buttons on the printer
         will be disabled.
@@ -1175,9 +1185,9 @@ class Escpos(object):
             self._raw(PANEL_BUTTON_OFF)
 
     def query_status(self, mode):
-        """
-        Queries the printer for its status, and returns an array
-        of integers containing it.
+        """Query the printer for its status.
+
+        Returns an array of integers containing it.
 
         :param mode: Integer that sets the status mode queried to the printer.
             - RT_STATUS_ONLINE: Printer status.
@@ -1189,8 +1199,7 @@ class Escpos(object):
         return status
 
     def is_online(self):
-        """
-        Queries the online status of the printer.
+        """Query the online status of the printer.
 
         :returns: When online, returns ``True``; ``False`` otherwise.
         :rtype: bool
@@ -1201,8 +1210,7 @@ class Escpos(object):
         return not (status[0] & RT_MASK_ONLINE)
 
     def paper_status(self):
-        """
-        Queries the paper status of the printer.
+        """Query the paper status of the printer.
 
         Returns 2 if there is plenty of paper, 1 if the paper has arrived to
         the near-end sensor and 0 if there is no paper.
@@ -1221,7 +1229,7 @@ class Escpos(object):
             return 2
 
     def target(self, type="ROLL"):
-        """Select where to print to
+        """Select where to print to.
 
         Print to the thermal printer by default (ROLL) or
         print to the slip dot matrix printer if supported (SLIP)
@@ -1234,11 +1242,11 @@ class Escpos(object):
             raise ValueError("Unsupported target")
 
     def eject_slip(self):
-        """Eject the slip/cheque"""
+        """Eject the slip/cheque."""
         self._raw(SLIP_EJECT)
 
     def print_and_eject_slip(self):
-        """Print and eject
+        """Print and eject.
 
         Prints data from the buffer to the slip station and if the paper
         sensor is covered, reverses the slip out the front of the printer
@@ -1248,7 +1256,7 @@ class Escpos(object):
         self._raw(SLIP_PRINT_AND_EJECT)
 
     def use_slip_only(self):
-        """Selects the Slip Station for all functions.
+        """Select the Slip Station for all functions.
 
         The receipt station is the default setting after the printer
         is initialized or the Clear Printer (0x10) command is received
@@ -1256,7 +1264,7 @@ class Escpos(object):
         self._raw(SLIP_SELECT)
 
     def buzzer(self, times=2, duration=4):
-        """Activate the internal printer buzzer (only supported printers).
+        """Activate the internal printer buzzer on supported printers.
 
         The 'times' parameter refers to the 'n' escpos command parameter,
         which means how many times the buzzer will be 'beeped'.
@@ -1265,7 +1273,6 @@ class Escpos(object):
         :param duration: Integer between 1 and 9, indicates the beep duration.
         :returns: None
         """
-
         if not 1 <= times <= 9:
             raise ValueError("times must be between 1 and 9")
         if not 1 <= duration <= 9:
@@ -1275,7 +1282,7 @@ class Escpos(object):
 
 
 class EscposIO(object):
-    """ESC/POS Printer IO object
+    r"""ESC/POS Printer IO object.
 
     Allows the class to be used together with the `with`-statement. You have to define a printer instance
     and assign it to the EscposIO class.
@@ -1295,7 +1302,8 @@ class EscposIO(object):
     """
 
     def __init__(self, printer, autocut=True, autoclose=True, **kwargs):
-        """
+        """Initialize object.
+
         :param printer: An EscPos-printer object
         :type printer: escpos.Escpos
         :param autocut: If True, paper is automatically cut after the `with`-statement *default*: True
@@ -1307,7 +1315,7 @@ class EscposIO(object):
         self.autoclose = autoclose
 
     def set(self, **kwargs):
-        """Set the printer-parameters
+        """Set the printer-parameters.
 
         Controls which parameters will be passed to :py:meth:`Escpos.set() <escpos.escpos.Escpos.set()>`.
         For more information on the parameters see the :py:meth:`set() <escpos.escpos.Escpos.set()>`-methods
@@ -1319,6 +1327,7 @@ class EscposIO(object):
         self.params.update(kwargs)
 
     def writelines(self, text, **kwargs):
+        """Print text."""
         params = dict(self.params)
         params.update(kwargs)
 
@@ -1341,14 +1350,18 @@ class EscposIO(object):
                 self.printer.text("{0}\n".format(line))
 
     def close(self):
-        """called upon closing the `with`-statement"""
+        """Close printer.
+
+        Called upon closing the `with`-statement.
+        """
         self.printer.close()
 
     def __enter__(self, **kwargs):
+        """Enter context."""
         return self
 
     def __exit__(self, type, value, traceback):
-        """
+        """Cut and close if configured.
 
         If :py:attr:`autocut <escpos.escpos.EscposIO.autocut>` is `True` (set by this class' constructor),
         then :py:meth:`printer.cut() <escpos.escpos.Escpos.cut()>` will be called here.

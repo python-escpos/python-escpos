@@ -2,18 +2,18 @@
 #  -*- coding: utf-8 -*-
 """tests for the non-native part of qr()
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
 
 
-import pytest
 import mock
+import pytest
+from PIL import Image
 
 from escpos.printer import Dummy
-from PIL import Image
 
 
 @mock.patch("escpos.printer.Dummy.image", spec=Dummy)

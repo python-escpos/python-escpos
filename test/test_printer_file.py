@@ -2,16 +2,15 @@
 #  -*- coding: utf-8 -*-
 """tests for the File printer
 
-:author: `Patrick Kanzler <patrick.kanzler@fablab.fau.de>`_
+:author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
 
 
-import six
-
 import pytest
+import six
 from hypothesis import given, settings
 from hypothesis.strategies import text
 
