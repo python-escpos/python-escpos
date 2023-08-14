@@ -6,7 +6,7 @@ profile = "black"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--doctest-modules"
+addopts = "--doctest-modules --cov escpos --cov-report=xml"
 testpaths = [
     "test",
     "src",
