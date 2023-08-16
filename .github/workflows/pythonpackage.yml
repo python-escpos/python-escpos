@@ -27,6 +27,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        sudo apt-get install -y graphviz libenchant-2-2 gcc libcups2-dev python3-dev xindy
         python -m pip install --upgrade pip
         pip install flake8 pytest tox tox-gh-actions
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
