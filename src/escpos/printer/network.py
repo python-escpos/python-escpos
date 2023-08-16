@@ -8,9 +8,9 @@
 :license: MIT
 """
 
-from ..escpos import Escpos
-
 import socket
+
+from ..escpos import Escpos
 
 
 class Network(Escpos):

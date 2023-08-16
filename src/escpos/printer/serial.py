@@ -8,9 +8,9 @@
 :license: MIT
 """
 
-from ..escpos import Escpos
-
 import serial
+
+from ..escpos import Escpos
 
 
 class Serial(Escpos):

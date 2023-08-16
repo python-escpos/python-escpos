@@ -8,13 +8,11 @@
 :license: MIT
 """
 
-from ..escpos import Escpos
-
-
 import os
-import sys
 import subprocess
+import sys
 
+from ..escpos import Escpos
 
 if not sys.platform.startswith("win"):
 
