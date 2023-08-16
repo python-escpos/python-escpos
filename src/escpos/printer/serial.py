@@ -24,10 +24,10 @@ except ImportError:
     pass
 
 
-def is_usable():
+def is_usable()->bool:
     """Indicate whether this component can be used due to dependencies."""
     usable = False
-    if not _DEP_PYSERIAL:
+    if _DEP_PYSERIAL:
         usable = True
     return usable
 
@@ -38,7 +38,7 @@ def dependency_pyserial(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if pyserial not installed."""
-        if is_usable():
+        if not is_usable():
             raise RuntimeError(
                 "Printing with Serial requires the pyserial library to"
                 "be installed. Please refer to the documentation on"
@@ -60,6 +60,14 @@ class Serial(Escpos):
         :parts: 1
 
     """
+    @staticmethod
+    def is_usable() -> bool:
+        """Indicate whether this printer class is usable.
+
+        Will return True if dependencies are available.
+        Will return False if not.
+        """
+        return is_usable()
 
     @dependency_pyserial
     def __init__(

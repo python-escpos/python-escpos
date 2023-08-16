@@ -24,10 +24,10 @@ except ImportError:
     pass
 
 
-def is_usable():
+def is_usable() -> bool:
     """Indicate whether this component can be used due to dependencies."""
     usable = False
-    if not _DEP_USB:
+    if _DEP_USB:
         usable = True
     return usable
 
@@ -38,7 +38,7 @@ def dependency_usb(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if usb not installed."""
-        if is_usable():
+        if not is_usable():
             raise RuntimeError(
                 "Printing with USB connection requires a usb library to"
                 "be installed. Please refer to the documentation on"
@@ -60,6 +60,15 @@ class Usb(Escpos):
         :parts: 1
 
     """
+
+    @staticmethod
+    def is_usable() -> bool:
+        """Indicate whether this printer class is usable.
+
+        Will return True if dependencies are available.
+        Will return False if not.
+        """
+        return is_usable()
 
     def __init__(
         self,

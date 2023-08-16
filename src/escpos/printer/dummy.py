@@ -11,7 +11,7 @@
 from ..escpos import Escpos
 
 
-def is_usable():
+def is_usable() -> bool:
     """Indicate whether this component can be used due to dependencies."""
     return True
 
@@ -29,6 +29,15 @@ class Dummy(Escpos):
         :parts: 1
 
     """
+
+    @staticmethod
+    def is_usable() -> bool:
+        """Indicate whether this printer class is usable.
+
+        Will return True if dependencies are available.
+        Will return False if not.
+        """
+        return is_usable()
 
     def __init__(self, *args, **kwargs):
         """Init with empty output list."""

@@ -16,10 +16,10 @@ import sys
 from ..escpos import Escpos
 
 
-def is_usable():
+def is_usable() -> bool:
     """Indicate whether this component can be used due to dependencies."""
     usable = False
-    if not sys.platform.startswith("win"):
+    if sys.platform.startswith("win"):
         usable = True
     return usable
 
@@ -30,7 +30,7 @@ def dependency_linux_lp(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if not on a non-Windows system."""
-        if is_usable():
+        if not is_usable():
             raise RuntimeError(
                 "This printer driver depends on LP which is not"
                 "available on Windows systems."
@@ -51,6 +51,15 @@ class LP(Escpos):
         :parts: 1
 
     """
+
+    @staticmethod
+    def is_usable() -> bool:
+        """Indicate whether this printer class is usable.
+
+        Will return True if dependencies are available.
+        Will return False if not.
+        """
+        return is_usable()
 
     def __init__(self, printer_name: str, *args, **kwargs):
         """LP class constructor.

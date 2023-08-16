@@ -23,10 +23,10 @@ except ImportError:
     pass
 
 
-def is_usable():
+def is_usable() -> bool:
     """Indicate whether this component can be used due to dependencies."""
     usable = False
-    if not _DEP_WIN32PRINT:
+    if _DEP_WIN32PRINT:
         usable = True
     return usable
 
@@ -37,7 +37,7 @@ def dependency_win32print(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if win32print not installed."""
-        if is_usable():
+        if not is_usable():
             raise RuntimeError(
                 "Printing with Win32Raw requires a win32print library to"
                 "be installed. Please refer to the documentation on"
@@ -59,6 +59,15 @@ class Win32Raw(Escpos):
         :parts: 1
 
     """
+
+    @staticmethod
+    def is_usable() -> bool:
+        """Indicate whether this printer class is usable.
+
+        Will return True if dependencies are available.
+        Will return False if not.
+        """
+        return is_usable()
 
     @dependency_win32print
     def __init__(self, printer_name=None, *args, **kwargs):
