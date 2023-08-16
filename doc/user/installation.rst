@@ -12,7 +12,7 @@ so you can simply enter:
 
     ::
 
-        pip install python-escpos
+        pip install python-escpos[all]
 
 This should install all necessary dependencies. Apart from that
 python-escpos is for some versions also available as a Debian package.
