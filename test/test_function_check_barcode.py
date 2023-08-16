@@ -5,6 +5,7 @@
 import pytest
 
 import escpos.printer as printer
+import escpos.escpos
 
 
 @pytest.mark.parametrize(
@@ -48,7 +49,7 @@ import escpos.printer as printer
     ],
 )
 def test_check_valid_barcode(bctype, data):
-    assert printer.Escpos.check_barcode(bctype, data)
+    assert escpos.escpos.Escpos.check_barcode(bctype, data)
 
 
 @pytest.mark.parametrize(
@@ -104,4 +105,4 @@ def test_check_valid_barcode(bctype, data):
     ],
 )
 def test_check_invalid_barcode(bctype, data):
-    assert not printer.Escpos.check_barcode(bctype, data)
+    assert not escpos.escpos.Escpos.check_barcode(bctype, data)
