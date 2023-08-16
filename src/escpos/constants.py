@@ -5,7 +5,7 @@ This module contains constants that are described in the esc/pos-documentation.
 Since there is no definitive and unified specification for all esc/pos-like printers the constants could later be
 moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/escpos-php>`_.
 
-:author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
+:author: python-escpos developers
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT

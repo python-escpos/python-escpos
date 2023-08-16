@@ -2,7 +2,7 @@
 #  -*- coding: utf-8 -*-
 """This module contains the implementations of abstract base class :py:class:`Escpos`.
 
-:author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
+:author: python-escpos developers
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT

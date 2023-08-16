@@ -19,7 +19,7 @@ Result/Exit codes:
     - `210` = Configuration syntax error :py:exc:`~escpos.exceptions.ConfigSyntaxError`
     - `220` = Configuration section not found :py:exc:`~escpos.exceptions.ConfigSectionMissingError`
 
-:author: `Manuel F Martinez <manpaz@bashlinux.com>`_ and others
+:author: python-escpos developers
 :organization: Bashlinux and `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT
