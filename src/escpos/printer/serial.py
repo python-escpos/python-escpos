@@ -8,9 +8,37 @@
 :license: MIT
 """
 
-import serial
+
+import functools
 
 from ..escpos import Escpos
+
+#: keeps track if the pyserial dependency could be loaded (:py:class:`escpos.printer.Serial`)
+_DEP_PYSERIAL = False
+
+try:
+    import serial
+
+    _DEP_PYSERIAL = True
+except ImportError:
+    pass
+
+
+def dependency_pyserial(func):
+    """Indicate dependency on pyserial."""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        """Throw a RuntimeError if pyserial not installed."""
+        if not _DEP_PYSERIAL:
+            raise RuntimeError(
+                "Printing with Serial requires the pyserial library to"
+                "be installed. Please refer to the documentation on"
+                "what to install and install the dependencies for pyserial."
+            )
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 class Serial(Escpos):
@@ -25,14 +53,15 @@ class Serial(Escpos):
 
     """
 
+    @dependency_pyserial
     def __init__(
         self,
         devfile="/dev/ttyS0",
         baudrate=9600,
         bytesize=8,
         timeout=1,
-        parity=serial.PARITY_NONE,
-        stopbits=serial.STOPBITS_ONE,
+        parity=None,
+        stopbits=None,
         xonxoff=False,
         dsrdtr=True,
         *args,
@@ -54,13 +83,20 @@ class Serial(Escpos):
         self.baudrate = baudrate
         self.bytesize = bytesize
         self.timeout = timeout
-        self.parity = parity
-        self.stopbits = stopbits
+        if parity:
+            self.parity = parity
+        else:
+            self.parity = serial.PARITY_NONE
+        if stopbits:
+            self.stopbits = stopbits
+        else:
+            self.stopbits = serial.STOPBITS_ONE
         self.xonxoff = xonxoff
         self.dsrdtr = dsrdtr
 
         self.open()
 
+    @dependency_pyserial
     def open(self):
         """Set up serial port and set is as escpos device."""
         if self.device is not None and self.device.is_open:
