@@ -13,7 +13,7 @@ import socket
 from ..escpos import Escpos
 
 
-def is_usable()->bool:
+def is_usable() -> bool:
     """Indicate whether this component can be used due to dependencies."""
     return True
 
@@ -40,6 +40,7 @@ class Network(Escpos):
         :parts: 1
 
     """
+
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.

@@ -24,7 +24,7 @@ except ImportError:
     pass
 
 
-def is_usable()->bool:
+def is_usable() -> bool:
     """Indicate whether this component can be used due to dependencies."""
     usable = False
     if _DEP_PYSERIAL:
@@ -60,6 +60,7 @@ class Serial(Escpos):
         :parts: 1
 
     """
+
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
