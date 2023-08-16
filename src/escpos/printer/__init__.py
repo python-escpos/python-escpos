@@ -20,5 +20,3 @@ __all__ = [
     "CupsPrinter",
     "Win32Raw",
 ]
-
-# TODO check which printers are importable and add only those to the namespace
