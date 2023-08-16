@@ -27,7 +27,14 @@ Result/Exit codes:
 
 
 class Error(Exception):
-    """Base class for ESC/POS errors."""
+    """Base class for ESC/POS errors.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
+    """
 
     def __init__(self, msg, status=None):
         """Initialize Error object."""
@@ -48,6 +55,12 @@ class BarcodeTypeError(Error):
     This exception indicates that no known barcode-type has been entered. The barcode-type has to be
     one of those specified in :py:meth:`escpos.escpos.Escpos.barcode`.
     The returned error code is `10`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -67,6 +80,12 @@ class BarcodeSizeError(Error):
     This exception indicates that the values for the barcode size are out of range.
     The size of the barcode has to be in the range that is specified in :py:meth:`escpos.escpos.Escpos.barcode`.
     The resulting returncode is `20`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -86,6 +105,12 @@ class BarcodeCodeError(Error):
     No data for the barcode has been supplied in :py:meth:`escpos.escpos.Escpos.barcode` or the the `check` parameter
     was True and the check failed.
     The returncode for this exception is `30`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -103,6 +128,12 @@ class ImageSizeError(Error):
     """Image height is longer than 255px and can't be printed.
 
     The returncode for this exception is `40`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -122,6 +153,12 @@ class ImageWidthError(Error):
     """Image width is too large.
 
     The return code for this exception is `41`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -140,6 +177,12 @@ class TextError(Error):
 
     This exception is raised when an empty string is passed to :py:meth:`escpos.escpos.Escpos.text`.
     The returncode for this exception is `50`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -160,6 +203,12 @@ class CashDrawerError(Error):
 
     A valid pin number has to be passed onto the method :py:meth:`escpos.escpos.Escpos.cashdraw`.
     The returncode for this exception is `60`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -181,6 +230,12 @@ class TabPosError(Error):
 
     This exception is raised by :py:meth:`escpos.escpos.Escpos.control`.
     The returncode for this exception is `70`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -201,6 +256,12 @@ class CharCodeError(Error):
 
     The supplied charcode-name in :py:meth:`escpos.escpos.Escpos.charcode` is unknown.
     Ths returncode for this exception is `80`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -219,6 +280,12 @@ class USBNotFoundError(Error):
 
     The USB device seems to be not plugged in.
     Ths returncode for this exception is `90`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -237,6 +304,12 @@ class SetVariableError(Error):
 
     Check set variables against minimum and maximum values
     Ths returncode for this exception is `100`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -258,6 +331,12 @@ class ConfigNotFoundError(Error):
 
     The default or passed configuration file could not be read
     Ths returncode for this exception is `200`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -276,6 +355,12 @@ class ConfigSyntaxError(Error):
 
     The syntax is incorrect
     Ths returncode for this exception is `210`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):
@@ -294,6 +379,12 @@ class ConfigSectionMissingError(Error):
 
     The part of the config asked for doesn't exist in the loaded configuration
     Ths returncode for this exception is `220`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Dummy
+        :parts: 1
+
     """
 
     def __init__(self, msg=""):

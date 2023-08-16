@@ -400,6 +400,12 @@ if _WIN32PRINT:
         """Printer binding for win32 API.
 
         Uses the module pywin32 for printing.
+
+        inheritance:
+
+        .. inheritance-diagram:: escpos.printer.Dummy
+            :parts: 1
+
         """
 
         def __init__(self, printer_name=None, *args, **kwargs):
@@ -454,6 +460,11 @@ if _CUPSPRINT:
             Requires ``pycups`` which in turn needs the cups development library package:
                 - Ubuntu/Debian: ``libcups2-dev``
                 - OpenSuse/Fedora: ``cups-devel``
+
+        inheritance:
+
+        .. inheritance-diagram:: escpos.printer.Dummy
+            :parts: 1
 
         """
 
@@ -564,6 +575,12 @@ if not sys.platform.startswith("win"):
         """Simple UNIX lp command raw printing.
 
         Thanks to `Oyami-Srk comment <https://github.com/python-escpos/python-escpos/pull/348#issuecomment-549558316>`_.
+
+        inheritance:
+
+        .. inheritance-diagram:: escpos.printer.Dummy
+            :parts: 1
+
         """
 
         def __init__(self, printer_name: str, *args, **kwargs):
