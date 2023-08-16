@@ -4,7 +4,6 @@
 
 import pytest
 
-import escpos.printer as printer
 import escpos.escpos
 
 
