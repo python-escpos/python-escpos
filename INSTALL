@@ -4,7 +4,7 @@ python-escpos
 This library is available over pypi. So for most of the use-cases it should be sufficient to run
 
 ```
-pip install python-escpos --user  # add --pre if you want to install pre-releases
+pip install python-escpos[all] --user  # add --pre if you want to install pre-releases
 ```
 
 For more information please read the documentation at https://python-escpos.readthedocs.io/en/latest/user/installation.html

@@ -1,7 +1,7 @@
 Printers
 ========
 
-:Last Reviewed: 2023-08-10
+:Last Reviewed: 2023-08-23
 
 As of now there are 8 different types of printer implementations.
 
@@ -116,4 +116,8 @@ This driver uses a native WIN32 interface of Windows in order to print.
 Please refer to the code for documentation as this driver is currently
 not included in the documentation build.
 
-.. todo:: Include Win32Raw in documentation build
+.. autoclass:: escpos.printer.Win32Raw
+      :members:
+      :special-members:
+      :member-order: bysource
+      :noindex:

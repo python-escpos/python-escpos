@@ -12,7 +12,7 @@ so you can simply enter:
 
     ::
 
-        pip install python-escpos
+        pip install python-escpos[all]
 
 This should install all necessary dependencies. Apart from that
 python-escpos is for some versions also available as a Debian package.
@@ -20,6 +20,14 @@ If you want to always benefit from the newest stable releases you should
 always install from PyPi.
 If you use the ``--pre`` parameter for ``pip``, you will get the latest
 pre-release.
+
+The following installation options exist:
+
+ * `all`: install all packages available for this platform
+ * `usb`: install packages required for USB printers
+ * `serial`: install packages required for serial printers
+ * `win32`: install packages required for win32 printing (only Windows)
+ * `cups`: install packages required for CUPS printing
 
 Setup udev for USB-Printers
 ---------------------------
