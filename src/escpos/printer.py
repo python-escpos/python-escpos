@@ -403,7 +403,7 @@ if _WIN32PRINT:
 
         inheritance:
 
-        .. inheritance-diagram:: escpos.printer.Dummy
+        .. inheritance-diagram:: escpos.printer.Win32Raw
             :parts: 1
 
         """
@@ -463,7 +463,7 @@ if _CUPSPRINT:
 
         inheritance:
 
-        .. inheritance-diagram:: escpos.printer.Dummy
+        .. inheritance-diagram:: escpos.printer.CupsPrinter
             :parts: 1
 
         """
@@ -578,7 +578,7 @@ if not sys.platform.startswith("win"):
 
         inheritance:
 
-        .. inheritance-diagram:: escpos.printer.Dummy
+        .. inheritance-diagram:: escpos.printer.LP
             :parts: 1
 
         """

@@ -31,7 +31,7 @@ class Error(Exception):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.Error
         :parts: 1
 
     """
@@ -58,7 +58,7 @@ class BarcodeTypeError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.BarcodeTypeError
         :parts: 1
 
     """
@@ -83,7 +83,7 @@ class BarcodeSizeError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.BarcodeSizeError
         :parts: 1
 
     """
@@ -108,7 +108,7 @@ class BarcodeCodeError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.BarcodeCodeError
         :parts: 1
 
     """
@@ -131,7 +131,7 @@ class ImageSizeError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.ImageSizeError
         :parts: 1
 
     """
@@ -156,7 +156,7 @@ class ImageWidthError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.ImageWidthError
         :parts: 1
 
     """
@@ -180,7 +180,7 @@ class TextError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.TextError
         :parts: 1
 
     """
@@ -206,7 +206,7 @@ class CashDrawerError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.CashDrawerError
         :parts: 1
 
     """
@@ -233,7 +233,7 @@ class TabPosError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.TabPosError
         :parts: 1
 
     """
@@ -259,7 +259,7 @@ class CharCodeError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.CharCodeError
         :parts: 1
 
     """
@@ -283,7 +283,7 @@ class USBNotFoundError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.USBNotFoundError
         :parts: 1
 
     """
@@ -307,7 +307,7 @@ class SetVariableError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.SetVariableError
         :parts: 1
 
     """
@@ -334,7 +334,7 @@ class ConfigNotFoundError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.ConfigNotFoundError
         :parts: 1
 
     """
@@ -358,7 +358,7 @@ class ConfigSyntaxError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.ConfigSyntaxError
         :parts: 1
 
     """
@@ -382,7 +382,7 @@ class ConfigSectionMissingError(Error):
 
     inheritance:
 
-    .. inheritance-diagram:: escpos.printer.Dummy
+    .. inheritance-diagram:: escpos.exceptions.ConfigSectionMissingError
         :parts: 1
 
     """
