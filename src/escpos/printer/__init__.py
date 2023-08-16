@@ -2,7 +2,7 @@
 """printer implementations."""
 
 # from .win32raw import Win32Raw
-# from .cups import CupsPrinter
+from .cups import CupsPrinter
 from .dummy import Dummy
 from .file import File
 from .lp import LP
@@ -17,7 +17,7 @@ __all__ = [
     "Serial",
     "LP",
     "Dummy",
-    # "CupsPrinter",
+    "CupsPrinter",
     # "Win32Raw",
 ]
 
