@@ -21,6 +21,14 @@ always install from PyPi.
 If you use the ``--pre`` parameter for ``pip``, you will get the latest
 pre-release.
 
+The following installation options exist:
+
+ * `all`: install all packages available for this platform
+ * `usb`: install packages required for USB printers
+ * `serial`: install packages required for serial printers
+ * `win32`: install packages required for win32 printing (only Windows)
+ * `cups`: install packages required for CUPS printing
+
 Setup udev for USB-Printers
 ---------------------------
 1. Get the *Product ID* and *Vendor ID* from the lsusb command
