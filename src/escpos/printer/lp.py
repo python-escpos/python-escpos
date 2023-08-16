@@ -16,13 +16,21 @@ import sys
 from ..escpos import Escpos
 
 
+def is_usable():
+    """Indicate whether this component can be used due to dependencies."""
+    usable = False
+    if not sys.platform.startswith("win"):
+        usable = True
+    return usable
+
+
 def dependency_linux_lp(func):
     """Indicate dependency on non Windows."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if not on a non-Windows system."""
-        if not sys.platform.startswith("win"):
+        if is_usable():
             raise RuntimeError(
                 "This printer driver depends on LP which is not"
                 "available on Windows systems."

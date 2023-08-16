@@ -24,13 +24,21 @@ except ImportError:
     pass
 
 
+def is_usable():
+    """Indicate whether this component can be used due to dependencies."""
+    usable = False
+    if not _DEP_PYSERIAL:
+        usable = True
+    return usable
+
+
 def dependency_pyserial(func):
     """Indicate dependency on pyserial."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if pyserial not installed."""
-        if not _DEP_PYSERIAL:
+        if is_usable():
             raise RuntimeError(
                 "Printing with Serial requires the pyserial library to"
                 "be installed. Please refer to the documentation on"

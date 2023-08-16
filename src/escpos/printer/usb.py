@@ -7,12 +7,46 @@
 :copyright: Copyright (c) 2012-2023 Bashlinux and python-escpos
 :license: MIT
 """
-
-import usb.core
-import usb.util
+import functools
 
 from ..escpos import Escpos
 from ..exceptions import USBNotFoundError
+
+#: keeps track if the usb dependency could be loaded (:py:class:`escpos.printer.Usb`)
+_DEP_USB = False
+
+try:
+    import usb.core
+    import usb.util
+
+    _DEP_USB = True
+except ImportError:
+    pass
+
+
+def is_usable():
+    """Indicate whether this component can be used due to dependencies."""
+    usable = False
+    if not _DEP_USB:
+        usable = True
+    return usable
+
+
+def dependency_usb(func):
+    """Indicate dependency on usb."""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        """Throw a RuntimeError if usb not installed."""
+        if is_usable():
+            raise RuntimeError(
+                "Printing with USB connection requires a usb library to"
+                "be installed. Please refer to the documentation on"
+                "what to install and install the dependencies for USB."
+            )
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 class Usb(Escpos):
@@ -37,7 +71,7 @@ class Usb(Escpos):
         out_ep=0x01,
         *args,
         **kwargs
-    ):  # noqa: N803
+    ):
         """Initialize USB printer.
 
         :param idVendor: Vendor ID
@@ -59,6 +93,7 @@ class Usb(Escpos):
             usb_args["idProduct"] = idProduct
         self.open(usb_args)
 
+    @dependency_usb
     def open(self, usb_args):
         """Search device on USB tree and set it as escpos device.
 
@@ -110,6 +145,7 @@ class Usb(Escpos):
         """Read a data buffer and return it to the caller."""
         return self.device.read(self.in_ep, 16)
 
+    @dependency_usb
     def close(self):
         """Release USB interface."""
         if self.device:

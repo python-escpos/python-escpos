@@ -26,6 +26,13 @@ except ImportError:
 
 # TODO: dev build mode that let's the wrapper bypass?
 
+def is_usable():
+    """Indicate whether this component can be used due to dependencies."""
+    usable = False
+    if not _DEP_PYCUPS:
+        usable = True
+    return usable
+
 
 def dependency_pycups(func):
     """Indicate dependency on pycups."""
@@ -33,7 +40,7 @@ def dependency_pycups(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if pycups is not imported."""
-        if not _DEP_PYCUPS:
+        if is_usable():
             raise RuntimeError(
                 "Printing with PyCups requires the pycups library to"
                 "be installed. Please refer to the documentation on"

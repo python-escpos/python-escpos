@@ -8,68 +8,99 @@
 :license: MIT
 """
 
+import functools
+
 from ..escpos import Escpos
 
-_WIN32PRINT = False
+#: keeps track if the win32print dependency could be loaded (:py:class:`escpos.printer.Win32Raw`)
+_DEP_WIN32PRINT = False
+
 try:
     import win32print
 
-    _WIN32PRINT = True
+    _DEP_WIN32PRINT = True
 except ImportError:
     pass
 
 
-if _WIN32PRINT:
+def is_usable():
+    """Indicate whether this component can be used due to dependencies."""
+    usable = False
+    if not _DEP_WIN32PRINT:
+        usable = True
+    return usable
 
-    class Win32Raw(Escpos):
-        """Printer binding for win32 API.
 
-        Uses the module pywin32 for printing.
+def dependency_win32print(func):
+    """Indicate dependency on win32print."""
 
-        inheritance:
-
-        .. inheritance-diagram:: escpos.printer.Win32Raw
-            :parts: 1
-
-        """
-
-        def __init__(self, printer_name=None, *args, **kwargs):
-            """Initialize default printer."""
-            Escpos.__init__(self, *args, **kwargs)
-            if printer_name is not None:
-                self.printer_name = printer_name
-            else:
-                self.printer_name = win32print.GetDefaultPrinter()
-            self.hPrinter = None
-            self.open()
-
-        def open(self, job_name="python-escpos"):
-            """Open connection to default printer."""
-            if self.printer_name is None:
-                raise Exception("Printer not found")
-            self.hPrinter = win32print.OpenPrinter(self.printer_name)
-            self.current_job = win32print.StartDocPrinter(
-                self.hPrinter, 1, (job_name, None, "RAW")
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        """Throw a RuntimeError if win32print not installed."""
+        if is_usable():
+            raise RuntimeError(
+                "Printing with Win32Raw requires a win32print library to"
+                "be installed. Please refer to the documentation on"
+                "what to install and install the dependencies for win32print."
             )
-            win32print.StartPagePrinter(self.hPrinter)
+        return func(*args, **kwargs)
 
-        def close(self):
-            """Close connection to default printer."""
-            if not self.hPrinter:
-                return
-            win32print.EndPagePrinter(self.hPrinter)
-            win32print.EndDocPrinter(self.hPrinter)
-            win32print.ClosePrinter(self.hPrinter)
-            self.hPrinter = None
+    return wrapper
 
-        def _raw(self, msg):
-            """Print any command sent in raw format.
 
-            :param msg: arbitrary code to be printed
-            :type msg: bytes
-            """
-            if self.printer_name is None:
-                raise Exception("Printer not found")
-            if self.hPrinter is None:
-                raise Exception("Printer job not opened")
-            win32print.WritePrinter(self.hPrinter, msg)
+class Win32Raw(Escpos):
+    """Printer binding for win32 API.
+
+    Uses the module pywin32 for printing.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.printer.Win32Raw
+        :parts: 1
+
+    """
+
+    @dependency_win32print
+    def __init__(self, printer_name=None, *args, **kwargs):
+        """Initialize default printer."""
+        Escpos.__init__(self, *args, **kwargs)
+        if printer_name is not None:
+            self.printer_name = printer_name
+        else:
+            self.printer_name = win32print.GetDefaultPrinter()
+        self.hPrinter = None
+        self.open()
+
+    @dependency_win32print
+    def open(self, job_name="python-escpos"):
+        """Open connection to default printer."""
+        if self.printer_name is None:
+            raise Exception("Printer not found")
+        self.hPrinter = win32print.OpenPrinter(self.printer_name)
+        self.current_job = win32print.StartDocPrinter(
+            self.hPrinter, 1, (job_name, None, "RAW")
+        )
+        win32print.StartPagePrinter(self.hPrinter)
+
+    @dependency_win32print
+    def close(self):
+        """Close connection to default printer."""
+        if not self.hPrinter:
+            return
+        win32print.EndPagePrinter(self.hPrinter)
+        win32print.EndDocPrinter(self.hPrinter)
+        win32print.ClosePrinter(self.hPrinter)
+        self.hPrinter = None
+
+    @dependency_win32print
+    def _raw(self, msg):
+        """Print any command sent in raw format.
+
+        :param msg: arbitrary code to be printed
+        :type msg: bytes
+        """
+        if self.printer_name is None:
+            raise Exception("Printer not found")
+        if self.hPrinter is None:
+            raise Exception("Printer job not opened")
+        win32print.WritePrinter(self.hPrinter, msg)

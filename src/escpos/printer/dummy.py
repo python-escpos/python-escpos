@@ -11,6 +11,11 @@
 from ..escpos import Escpos
 
 
+def is_usable():
+    """Indicate whether this component can be used due to dependencies."""
+    return True
+
+
 class Dummy(Escpos):
     """Dummy printer.
 
