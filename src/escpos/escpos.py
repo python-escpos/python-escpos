@@ -114,7 +114,7 @@ class Escpos(object):
     class.
     """
 
-    _device = False
+    _device = False  # False -> Uninitialized
 
     def __init__(self, profile=None, magic_encode_args=None, **kwargs) -> None:
         """Initialize ESCPOS Printer.
@@ -130,9 +130,14 @@ class Escpos(object):
 
     @property
     def device(self):
-        """Implements a self-open mechanism."""
+        """Implements a self-open mechanism.
+
+        An attempt to get the property before open the connection
+        will cause the connection to open.
+        """
         if self._device is False:
             # Open device if not previously opened
+            self._device = None  # None -> Initialized
             self.open()
         return self._device
 
