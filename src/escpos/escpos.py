@@ -14,7 +14,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 import textwrap
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
-from typing import Union
+from typing import Optional, Union
 
 import barcode
 import qrcode
@@ -878,20 +878,20 @@ class Escpos(object):
 
     def set(
         self,
-        align="left",
-        font="a",
-        bold=False,
-        underline=0,
-        width=1,
-        height=1,
-        density=9,
-        invert=False,
-        smooth=False,
-        flip=False,
-        double_width=False,
-        double_height=False,
-        custom_size=False,
-    ):
+        align: Optional[str] = "left",
+        font: Optional[str] = "a",
+        bold: Optional[bool] = False,
+        underline: Optional[int] = 0,
+        width: Optional[int] = 1,
+        height: Optional[int] = 1,
+        density: Optional[int] = 9,
+        invert: Optional[bool] = False,
+        smooth: Optional[bool] = False,
+        flip: Optional[bool] = False,
+        double_width: Optional[bool] = False,
+        double_height: Optional[bool] = False,
+        custom_size: Optional[bool] = False,
+    ) -> None:
         """Set text properties by sending them to the printer.
 
         :param align: horizontal position for text, possible values are:
@@ -933,10 +933,10 @@ class Escpos(object):
         """
         if custom_size:
             if (
-                1 <= width <= 8
-                and 1 <= height <= 8
-                and isinstance(width, int)
+                isinstance(width, int)
                 and isinstance(height, int)
+                and 1 <= width <= 8
+                and 1 <= height <= 8
             ):
                 size_byte = TXT_STYLE["width"][width] + TXT_STYLE["height"][height]
                 self._raw(TXT_SIZE + six.int2byte(size_byte))
@@ -963,7 +963,8 @@ class Escpos(object):
         if density != 9:
             self._raw(TXT_STYLE["density"][density])
 
-        self._raw(TXT_STYLE["invert"][invert])
+        if invert is not None:
+            self._raw(TXT_STYLE["invert"][invert])
 
     def line_spacing(self, spacing=None, divisor=180):
         """Set line character spacing.
