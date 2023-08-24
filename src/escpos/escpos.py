@@ -116,7 +116,7 @@ class Escpos(object):
 
     device = None
 
-    def __init__(self, profile=None, magic_encode_args=None, **kwargs):
+    def __init__(self, profile=None, magic_encode_args=None, **kwargs) -> None:
         """Initialize ESCPOS Printer.
 
         :param profile: Printer profile
