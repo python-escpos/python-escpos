@@ -34,6 +34,7 @@ root = os.path.relpath(os.path.join(os.path.dirname(__file__), ".."))
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx_autodoc_typehints",
     "sphinx.ext.doctest",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
