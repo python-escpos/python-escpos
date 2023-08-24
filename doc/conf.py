@@ -47,6 +47,9 @@ extensions = [
     "sphinxcontrib.spelling",
 ]
 
+# mock the following modules for autodoc
+autodoc_mock_imports = ["qrcode"]
+
 # supress warnings for external images
 suppress_warnings = [
     "image.nonlocal_uri",
