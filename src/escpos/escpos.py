@@ -14,7 +14,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 import textwrap
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
-from typing import Union
+from typing import Optional, Union, List
 
 import barcode
 import qrcode
@@ -129,13 +129,12 @@ class Escpos(object):
         self.close()
 
     @abstractmethod
-    def _raw(self, msg: bytes):
+    def _raw(self, msg: bytes) -> None:
         """Send raw data to the printer.
 
         This function has to be individually implemented by the implementations.
 
         :param msg: message string to be sent to the printer
-        :type msg: bytes
         """
         pass
 
@@ -155,7 +154,7 @@ class Escpos(object):
         impl="bitImageRaster",
         fragment_height=960,
         center=False,
-    ):
+    ) -> None:
         """Print an image.
 
         You can select whether the printer should print in high density or not. The default value is high density.
@@ -262,7 +261,7 @@ class Escpos(object):
             outp.append(ESC + b"2")  # Reset line-feed size
             self._raw(b"".join(outp))
 
-    def _image_send_graphics_data(self, m, fn, data):
+    def _image_send_graphics_data(self, m, fn, data) -> None:
         """Calculate and send correct data length for `GS ( L`.
 
         :param m: Modifier//variant for function. Usually '0'
@@ -281,7 +280,7 @@ class Escpos(object):
         native=False,
         center=False,
         impl="bitImageRaster",
-    ):
+    ) -> None:
         """Print QR Code for the provided string.
 
         :param content: The content of the code. Numeric data will be more efficiently compacted.
@@ -354,7 +353,7 @@ class Escpos(object):
         self._send_2d_code_data(six.int2byte(80), cn, content.encode("utf-8"), b"0")
         self._send_2d_code_data(six.int2byte(81), cn, b"", b"0")
 
-    def _send_2d_code_data(self, fn, cn, data, m=b""):
+    def _send_2d_code_data(self, fn, cn, data, m=b"") -> None:
         """Calculate and send correct data length for`GS ( k`.
 
         :param fn: Function to use.
@@ -368,7 +367,7 @@ class Escpos(object):
         self._raw(GS + b"(k" + header + cn + fn + m + data)
 
     @staticmethod
-    def _int_low_high(inp_number, out_bytes):
+    def _int_low_high(inp_number: int, out_bytes: int) -> bytes:
         """Generate multiple bytes for a number: In lower and higher parts, or more parts as needed.
 
         :param inp_number: Input number
@@ -389,7 +388,7 @@ class Escpos(object):
             inp_number //= 256
         return outp
 
-    def charcode(self, code: str = "AUTO"):
+    def charcode(self, code: str = "AUTO") -> None:
         """Set Character Code Table.
 
         Sets the control sequence from ``CHARCODE`` in :py:mod:`escpos.constants` as active. It will be sent with
@@ -405,7 +404,7 @@ class Escpos(object):
             self.magic.force_encoding(code)
 
     @staticmethod
-    def check_barcode(bc, code):
+    def check_barcode(bc: str, code: str):
         """Check if barcode is OK.
 
         This method checks if the barcode is in the proper format.
@@ -484,11 +483,9 @@ class Escpos(object):
 
         :param height: barcode module height (in printer dots), has to be between 1 and 255.
             *default*: 64
-        :type height: int
 
         :param width: barcode module width (in printer dots), has to be between 2 and 6.
             *default*: 3
-        :type width: int
 
         :param pos: text position (ABOVE, BELOW, BOTH, OFF) relative to the barcode
             (ignored in software renderer).
@@ -499,7 +496,6 @@ class Escpos(object):
 
         :param align_ct: If *True*, center the barcode.
             *default*: True
-        :type align_ct: bool
 
         :param function_type: ESCPOS function type A or B. None to guess it from profile
             (ignored in software renderer).
@@ -507,11 +503,9 @@ class Escpos(object):
 
         :param check: If *True*, checks that the code meets the requirements of the barcode type.
             *default*: True
-        :type check: bool
 
         :param force_software: If *True*, force the use of software barcode renderer from profile.
             If *"graphics", "bitImageColumn" or "bitImageRaster"*, force the use of specific renderer.
-        :type force_software: bool | str
 
         :raises: :py:exc:`~escpos.exceptions.BarcodeCodeError`,
                  :py:exc:`~escpos.exceptions.BarcodeTypeError`
@@ -587,7 +581,7 @@ class Escpos(object):
         align_ct: bool = True,
         function_type=None,
         check: bool = True,
-    ):
+    ) -> None:
         """Print Barcode.
 
         This method allows to print barcodes. The rendering of the barcode is done by the printer and therefore has to
@@ -634,10 +628,8 @@ class Escpos(object):
             If none is specified, the method raises :py:exc:`~escpos.exceptions.BarcodeTypeError`.
         :param height: barcode height, has to be between 1 and 255
             *default*: 64
-        :type height: int
         :param width: barcode width, has to be between 2 and 6
             *default*: 3
-        :type width: int
         :param pos: where to place the text relative to the barcode, *default*: BELOW
 
             * ABOVE
@@ -652,7 +644,6 @@ class Escpos(object):
 
         :param align_ct: If this parameter is True the barcode will be centered. Otherwise no alignment command will be
                          issued.
-        :type align_ct: bool
 
         :param function_type: Choose between ESCPOS function type A or B,
             depending on printer support and desired barcode. If not given,
@@ -737,8 +728,8 @@ class Escpos(object):
 
     def _sw_barcode(
         self,
-        barcode_type,
-        data,
+        barcode_type: str,
+        data: str,
         impl: str = "bitImageColumn",
         module_height: Union[int, float] = 5,
         module_width: Union[int, float] = 0.2,
@@ -775,10 +766,8 @@ class Escpos(object):
             * gs1_128
             * codabar
             * nw-7
-        :type data: str
 
         :param data: alphanumeric data to be printed as bar code (payload).
-        :type data: str
 
         :param impl: image printing mode:
             * graphics
@@ -786,19 +775,14 @@ class Escpos(object):
             * bitImageRaster
 
         :param module_height: barcode module height (in mm).
-        :type module_height: Union[int, float]
 
         :param module_width: barcode module width (in mm).
-        :type module_width: Union[int, float]
 
         :param text_distance: distance from the barcode to the code text (in mm).
-        :type text_distance: Union[int, float]
 
         :param font_size: font size of the code text (in dots).
-        :type font_size: int
 
         :param center: center the barcode.
-        :type center: bool
         """
         image_writer = ImageWriter()
 
@@ -965,7 +949,7 @@ class Escpos(object):
 
         self._raw(TXT_STYLE["invert"][invert])
 
-    def line_spacing(self, spacing=None, divisor=180):
+    def line_spacing(self, spacing: Optional[int] = None, divisor: int = 180) -> None:
         """Set line character spacing.
 
         If no spacing is given, we reset it to the default.
@@ -997,7 +981,7 @@ class Escpos(object):
 
         self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
 
-    def cut(self, mode="FULL", feed=True):
+    def cut(self, mode: str = "FULL", feed: bool = True) -> None:
         """Cut paper.
 
         Without any arguments the paper will be cut completely. With 'mode=PART' a partial cut will
@@ -1029,7 +1013,7 @@ class Escpos(object):
             elif self.profile.supports("paperPartCut"):
                 self._raw(PAPER_PART_CUT)
 
-    def cashdraw(self, pin):
+    def cashdraw(self, pin) -> None:
         """Send pulse to kick the cash drawer.
 
         Kick cash drawer on pin 2 (:py:const:`~escpos.constants.CD_KICK_2`)
@@ -1051,7 +1035,7 @@ class Escpos(object):
             except TypeError as err:
                 raise CashDrawerError(err)
 
-    def linedisplay_select(self, select_display=False):
+    def linedisplay_select(self, select_display: bool = False) -> None:
         """Select the line display or the printer.
 
         This method is used for line displays that are daisy-chained between your computer and printer.
@@ -1059,21 +1043,20 @@ class Escpos(object):
         only the printer is selected.
 
         :param select_display: whether the display should be selected or the printer
-        :type select_display: bool
         """
         if select_display:
             self._raw(LINE_DISPLAY_OPEN)
         else:
             self._raw(LINE_DISPLAY_CLOSE)
 
-    def linedisplay_clear(self):
+    def linedisplay_clear(self) -> None:
         """Clear the line display and resets the .
 
         This method is used for line displays that are daisy-chained between your computer and printer.
         """
         self._raw(LINE_DISPLAY_CLEAR)
 
-    def linedisplay(self, text):
+    def linedisplay(self, text: str) -> None:
         """Display text on a line display connected to your printer.
 
         You should connect a line display to your printer. You can do this by daisy-chaining
@@ -1086,7 +1069,7 @@ class Escpos(object):
         self.text(text)
         self.linedisplay_select(select_display=False)
 
-    def hw(self, hw):
+    def hw(self, hw: str) -> None:
         """Hardware operations.
 
         :param hw: hardware action, may be:
@@ -1104,7 +1087,7 @@ class Escpos(object):
         else:  # DEFAULT: DOES NOTHING
             pass
 
-    def print_and_feed(self, n=1):
+    def print_and_feed(self, n: int = 1) -> None:
         """Print data in print buffer and feed *n* lines.
 
         If n not in range (0, 255) then a ValueError will be raised.
@@ -1118,7 +1101,7 @@ class Escpos(object):
         else:
             raise ValueError("n must be betwen 0 and 255")
 
-    def control(self, ctl, count=5, tab_size=8):
+    def control(self, ctl: str, count: int = 5, tab_size: int = 8) -> None:
         """Feed control sequences.
 
         :param ctl: string for the following control sequences:
@@ -1154,7 +1137,7 @@ class Escpos(object):
         elif ctl.upper() == "VT":
             self._raw(CTL_VT)
 
-    def panel_buttons(self, enable=True):
+    def panel_buttons(self, enable: bool = True) -> None:
         """Control the panel buttons on the printer (e.g. FEED).
 
         When enable is set to False the panel buttons on the printer
@@ -1177,14 +1160,13 @@ class Escpos(object):
         the escpos-command-reference.
 
         :param enable: controls the panel buttons
-        :rtype: None
         """
         if enable:
             self._raw(PANEL_BUTTON_ON)
         else:
             self._raw(PANEL_BUTTON_OFF)
 
-    def query_status(self, mode):
+    def query_status(self, mode: bytes) -> List[int]:
         """Query the printer for its status.
 
         Returns an array of integers containing it.
@@ -1192,17 +1174,15 @@ class Escpos(object):
         :param mode: Integer that sets the status mode queried to the printer.
             - RT_STATUS_ONLINE: Printer status.
             - RT_STATUS_PAPER: Paper sensor.
-        :rtype: array(integer)
         """
         self._raw(mode)
         status = self._read()
         return status
 
-    def is_online(self):
+    def is_online(self) -> bool:
         """Query the online status of the printer.
 
         :returns: When online, returns ``True``; ``False`` otherwise.
-        :rtype: bool
         """
         status = self.query_status(RT_STATUS_ONLINE)
         if len(status) == 0:
@@ -1216,7 +1196,6 @@ class Escpos(object):
         the near-end sensor and 0 if there is no paper.
 
         :returns: 2: Paper is adequate. 1: Paper ending. 0: No paper.
-        :rtype: int
         """
         status = self.query_status(RT_STATUS_PAPER)
         if len(status) == 0:
@@ -1228,7 +1207,7 @@ class Escpos(object):
         if status[0] & RT_MASK_PAPER == RT_MASK_PAPER:
             return 2
 
-    def target(self, type="ROLL"):
+    def target(self, type: str = "ROLL") -> None:
         """Select where to print to.
 
         Print to the thermal printer by default (ROLL) or
@@ -1241,11 +1220,11 @@ class Escpos(object):
         else:
             raise ValueError("Unsupported target")
 
-    def eject_slip(self):
+    def eject_slip(self) -> None:
         """Eject the slip/cheque."""
         self._raw(SLIP_EJECT)
 
-    def print_and_eject_slip(self):
+    def print_and_eject_slip(self) -> None:
         """Print and eject.
 
         Prints data from the buffer to the slip station and if the paper
@@ -1255,7 +1234,7 @@ class Escpos(object):
         """
         self._raw(SLIP_PRINT_AND_EJECT)
 
-    def use_slip_only(self):
+    def use_slip_only(self) -> None:
         """Select the Slip Station for all functions.
 
         The receipt station is the default setting after the printer
@@ -1263,7 +1242,7 @@ class Escpos(object):
         """
         self._raw(SLIP_SELECT)
 
-    def buzzer(self, times=2, duration=4):
+    def buzzer(self, times: int = 2, duration: int = 4) -> None:
         """Activate the internal printer buzzer on supported printers.
 
         The 'times' parameter refers to the 'n' escpos command parameter,
@@ -1301,11 +1280,12 @@ class EscposIO(object):
     After the `with`-statement the printer automatically cuts the paper if `autocut` is `True`.
     """
 
-    def __init__(self, printer, autocut=True, autoclose=True, **kwargs):
+    def __init__(
+        self, printer: Escpos, autocut: bool = True, autoclose: bool = True, **kwargs
+    ) -> None:
         """Initialize object.
 
         :param printer: An EscPos-printer object
-        :type printer: escpos.Escpos
         :param autocut: If True, paper is automatically cut after the `with`-statement *default*: True
         :param kwargs: These arguments will be passed to :py:meth:`escpos.Escpos.set()`
         """
@@ -1314,7 +1294,7 @@ class EscposIO(object):
         self.autocut = autocut
         self.autoclose = autoclose
 
-    def set(self, **kwargs):
+    def set(self, **kwargs) -> None:
         """Set the printer-parameters.
 
         Controls which parameters will be passed to :py:meth:`Escpos.set() <escpos.escpos.Escpos.set()>`.
