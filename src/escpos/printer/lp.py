@@ -19,7 +19,7 @@ from ..escpos import Escpos
 def is_usable() -> bool:
     """Indicate whether this component can be used due to dependencies."""
     usable = False
-    if sys.platform.startswith("win"):
+    if not sys.platform.startswith("win"):
         usable = True
     return usable
 
