@@ -72,12 +72,11 @@ class LP(Escpos):
         Escpos.__init__(self, *args, **kwargs)
         self.printer_name = printer_name
         self.auto_flush = kwargs.get("auto_flush", True)
-        self.open()
 
     @dependency_linux_lp
     def open(self):
         """Invoke _lp_ in a new subprocess and wait for commands."""
-        self.lp = subprocess.Popen(
+        self.device = subprocess.Popen(
             ["lp", "-d", self.printer_name, "-o", "raw"],
             stdin=subprocess.PIPE,
             stdout=open(os.devnull, "w"),
@@ -85,15 +84,18 @@ class LP(Escpos):
 
     def close(self):
         """Stop the subprocess."""
-        self.lp.terminate()
+        if not self._device:
+            return
+        self.device.terminate()
+        self.device = None
 
     def flush(self):
         """End line and wait for new commands."""
-        if self.lp.stdin.writable():
-            self.lp.stdin.write(b"\n")
-        if self.lp.stdin.closed is False:
-            self.lp.stdin.close()
-        self.lp.wait()
+        if self.device.stdin.writable():
+            self.device.stdin.write(b"\n")
+        if self.device.stdin.closed is False:
+            self.device.stdin.close()
+        self.device.wait()
         self.open()
 
     def _raw(self, msg):
@@ -102,8 +104,8 @@ class LP(Escpos):
         :param msg: arbitrary code to be printed
         :type msg: bytes
         """
-        if self.lp.stdin.writable():
-            self.lp.stdin.write(msg)
+        if self.device.stdin.writable():
+            self.device.stdin.write(msg)
         else:
             raise Exception("Not a valid pipe for lp process")
         if self.auto_flush:

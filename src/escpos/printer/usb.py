@@ -95,20 +95,16 @@ class Usb(Escpos):
         self.in_ep = in_ep
         self.out_ep = out_ep
 
-        usb_args = usb_args or {}
+        self.usb_args = usb_args or {}
         if idVendor:
-            usb_args["idVendor"] = idVendor
+            self.usb_args["idVendor"] = idVendor
         if idProduct:
-            usb_args["idProduct"] = idProduct
-        self.open(usb_args)
+            self.usb_args["idProduct"] = idProduct
 
     @dependency_usb
-    def open(self, usb_args):
-        """Search device on USB tree and set it as escpos device.
-
-        :param usb_args: USB arguments
-        """
-        self.device = usb.core.find(**usb_args)
+    def open(self):
+        """Search device on USB tree and set it as escpos device."""
+        self.device = usb.core.find(**self.usb_args)
         if self.device is None:
             raise USBNotFoundError("Device not found or cable not plugged in.")
 
@@ -157,6 +153,7 @@ class Usb(Escpos):
     @dependency_usb
     def close(self):
         """Release USB interface."""
-        if self.device:
-            usb.util.dispose_resources(self.device)
+        if not self._device:
+            return
+        usb.util.dispose_resources(self.device)
         self.device = None

@@ -20,6 +20,9 @@ try:
     import cups
 
     _DEP_PYCUPS = True
+    # Store server defaults before further configuration
+    DEFAULT_HOST = cups.getServer()
+    DEFAULT_PORT = cups.getPort()
 except ImportError:
     pass
 
@@ -89,37 +92,37 @@ class CupsPrinter(Escpos):
         :type port: int
         """
         Escpos.__init__(self, *args, **kwargs)
-        host, port = args or (
-            kwargs.get("host", cups.getServer()),
-            kwargs.get("port", cups.getPort()),
+        self.host, self.port = args or (
+            kwargs.get("host", DEFAULT_HOST),
+            kwargs.get("port", DEFAULT_PORT),
         )
-        cups.setServer(host)
-        cups.setPort(port)
-        self.conn = cups.Connection()
-        self.tmpfile = None
+        self.tmpfile = tempfile.NamedTemporaryFile(delete=True)
         self.printer_name = printer_name
         self.job_name = ""
         self.pending_job = False
-        self.open()
 
     @property
     def printers(self):
         """Available CUPS printers."""
-        return self.conn.getPrinters()
+        return self.device.getPrinters()
 
     def open(self, job_name="python-escpos"):
         """Set up a new print job and target the printer.
 
         A call to this method is required to send new jobs to
-        the same CUPS connection.
+        the same CUPS connection after close.
 
         Defaults to default CUPS printer.
         Creates a new temporary file buffer.
         """
+        cups.setServer(self.host)
+        cups.setPort(self.port)
+        self.device = cups.Connection()
         self.job_name = job_name
         if self.printer_name not in self.printers:
-            self.printer_name = self.conn.getDefault()
-        self.tmpfile = tempfile.NamedTemporaryFile(delete=True)
+            self.printer_name = self.device.getDefault()
+        if self.tmpfile.closed:
+            self.tmpfile = tempfile.NamedTemporaryFile(delete=True)
 
     def _raw(self, msg):
         """Append any command sent in raw format to temporary file.
@@ -141,7 +144,7 @@ class CupsPrinter(Escpos):
             # Rewind tempfile
             self.tmpfile.seek(0)
             # Print temporary file via CUPS printer.
-            self.conn.printFile(
+            self.device.printFile(
                 self.printer_name,
                 self.tmpfile.name,
                 self.job_name,
@@ -173,8 +176,9 @@ class CupsPrinter(Escpos):
 
         Send pending job to the printer if needed.
         """
+        if not self._device:
+            return
         if self.pending_job:
             self.send()
-        if self.conn:
-            print("Closing CUPS connection to printer {}".format(self.printer_name))
-            self.conn = None
+        print("Closing CUPS connection to printer {}".format(self.printer_name))
+        self.device = None

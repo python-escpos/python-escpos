@@ -61,7 +61,6 @@ class Network(Escpos):
         self.host = host
         self.port = port
         self.timeout = timeout
-        self.open()
 
     def open(self):
         """Open TCP socket with ``socket``-library and set it as escpos device."""
@@ -69,7 +68,7 @@ class Network(Escpos):
         self.device.settimeout(self.timeout)
         self.device.connect((self.host, self.port))
 
-        if self.device is None:
+        if not self.device:
             print("Could not open socket for {0}".format(self.host))
 
     def _raw(self, msg):
@@ -86,9 +85,11 @@ class Network(Escpos):
 
     def close(self):
         """Close TCP connection."""
-        if self.device is not None:
-            try:
-                self.device.shutdown(socket.SHUT_RDWR)
-            except socket.error:
-                pass
-            self.device.close()
+        if not self._device:
+            return
+        try:
+            self.device.shutdown(socket.SHUT_RDWR)
+        except socket.error:
+            pass
+        self.device.close()
+        self.device = None

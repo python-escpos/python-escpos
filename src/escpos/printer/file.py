@@ -48,13 +48,12 @@ class File(Escpos):
         Escpos.__init__(self, *args, **kwargs)
         self.devfile = devfile
         self.auto_flush = auto_flush
-        self.open()
 
     def open(self):
         """Open system file."""
         self.device = open(self.devfile, "wb")
 
-        if self.device is None:
+        if not self.device:
             print("Could not open the specified file {0}".format(self.devfile))
 
     def flush(self):
@@ -73,6 +72,8 @@ class File(Escpos):
 
     def close(self):
         """Close system file."""
-        if self.device is not None:
-            self.device.flush()
-            self.device.close()
+        if not self._device:
+            return
+        self.device.flush()
+        self.device.close()
+        self.device = None

@@ -111,12 +111,10 @@ class Serial(Escpos):
         self.xonxoff = xonxoff
         self.dsrdtr = dsrdtr
 
-        self.open()
-
     @dependency_pyserial
     def open(self):
         """Set up serial port and set is as escpos device."""
-        if self.device is not None and self.device.is_open:
+        if self.device and self.device.is_open:
             self.close()
         self.device = serial.Serial(
             port=self.devfile,
@@ -129,7 +127,7 @@ class Serial(Escpos):
             dsrdtr=self.dsrdtr,
         )
 
-        if self.device is not None:
+        if self.device:
             print("Serial printer enabled")
         else:
             print("Unable to open serial printer on: {0}".format(str(self.devfile)))
@@ -148,6 +146,9 @@ class Serial(Escpos):
 
     def close(self):
         """Close Serial interface."""
-        if self.device is not None and self.device.is_open:
+        if not self._device:
+            return
+        if self.device.is_open:
             self.device.flush()
             self.device.close()
+        self.device = None
