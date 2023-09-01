@@ -180,5 +180,5 @@ class CupsPrinter(Escpos):
             return
         if self.pending_job:
             self.send()
-        print("Closing CUPS connection to printer {}".format(self.printer_name))
+        print(f"Closing CUPS connection to printer {self.printer_name}")
         self.device = None
