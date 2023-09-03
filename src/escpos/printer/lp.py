@@ -61,7 +61,7 @@ class LP(Escpos):
         """
         return is_usable()
 
-    def __init__(self, printer_name: str, *args, **kwargs):
+    def __init__(self, printer_name: str = "", *args, **kwargs):
         """LP class constructor.
 
         :param printer_name: CUPS printer name (Optional)

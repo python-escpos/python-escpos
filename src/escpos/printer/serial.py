@@ -10,6 +10,7 @@
 
 
 import functools
+from typing import Union
 
 from ..escpos import Escpos
 
@@ -73,14 +74,14 @@ class Serial(Escpos):
     @dependency_pyserial
     def __init__(
         self,
-        devfile="/dev/ttyS0",
-        baudrate=9600,
-        bytesize=8,
-        timeout=1,
-        parity=None,
-        stopbits=None,
-        xonxoff=False,
-        dsrdtr=True,
+        devfile: str = "/dev/ttyS0",
+        baudrate: int = 9600,
+        bytesize: int = 8,
+        timeout: Union[int, float] = 1,
+        parity=None,  # type: str?
+        stopbits=None,  # type: int?
+        xonxoff: bool = False,
+        dsrdtr: bool = True,
         *args,
         **kwargs
     ):

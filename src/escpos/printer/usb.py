@@ -8,6 +8,7 @@
 :license: MIT
 """
 import functools
+from typing import Dict, Union
 
 from ..escpos import Escpos
 from ..exceptions import USBNotFoundError
@@ -72,12 +73,12 @@ class Usb(Escpos):
 
     def __init__(
         self,
-        idVendor,
-        idProduct,
-        usb_args=None,
-        timeout=0,
-        in_ep=0x82,
-        out_ep=0x01,
+        idVendor: str = "",
+        idProduct: str = "",
+        usb_args: Dict[str, str] = {},
+        timeout: Union[int, float] = 0,
+        in_ep=0x82,  # type: int?
+        out_ep=0x01,  # type: int?
         *args,
         **kwargs
     ):

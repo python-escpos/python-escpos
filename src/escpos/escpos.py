@@ -129,7 +129,7 @@ class Escpos(object):
         self.close()
 
     @property
-    def device(self):
+    def device(self) -> object:
         """Implements a self-open mechanism.
 
         An attempt to get the property before open the connection

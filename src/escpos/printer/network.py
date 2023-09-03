@@ -9,6 +9,7 @@
 """
 
 import socket
+from typing import Union
 
 from ..escpos import Escpos
 
@@ -50,7 +51,14 @@ class Network(Escpos):
         """
         return is_usable()
 
-    def __init__(self, host, port=9100, timeout=60, *args, **kwargs):
+    def __init__(
+        self,
+        host: str = None,
+        port: int = 9100,
+        timeout: Union[int, float] = 60,
+        *args,
+        **kwargs
+    ):
         """Initialize network printer.
 
         :param host:    Printer's hostname or IP address

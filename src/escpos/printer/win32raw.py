@@ -70,7 +70,7 @@ class Win32Raw(Escpos):
         return is_usable()
 
     @dependency_win32print
-    def __init__(self, printer_name=None, *args, **kwargs):
+    def __init__(self, printer_name: str = "", *args, **kwargs):
         """Initialize default printer."""
         Escpos.__init__(self, *args, **kwargs)
         if printer_name is not None:

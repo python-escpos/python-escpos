@@ -39,7 +39,9 @@ class File(Escpos):
         """
         return is_usable()
 
-    def __init__(self, devfile="/dev/usb/lp0", auto_flush=True, *args, **kwargs):
+    def __init__(
+        self, devfile: str = "/dev/usb/lp0", auto_flush: bool = True, *args, **kwargs
+    ):
         """Initialize file printer with device file.
 
         :param devfile: Device file under dev filesystem

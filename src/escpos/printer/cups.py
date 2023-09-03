@@ -24,6 +24,7 @@ try:
     DEFAULT_HOST = cups.getServer()
     DEFAULT_PORT = cups.getPort()
 except ImportError:
+    print("Error")
     pass
 
 
@@ -81,7 +82,7 @@ class CupsPrinter(Escpos):
         return is_usable()
 
     @dependency_pycups
-    def __init__(self, printer_name=None, *args, **kwargs):
+    def __init__(self, printer_name: str = "", *args, **kwargs):
         """Class constructor for CupsPrinter.
 
         :param printer_name: CUPS printer name (Optional)
