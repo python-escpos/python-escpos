@@ -872,6 +872,7 @@ class Escpos(object):
         invert: Optional[bool] = None,
         smooth: Optional[bool] = None,
         flip: Optional[bool] = None,
+        normal_textsize: Optional[bool] = None,
         double_width: Optional[bool] = None,
         double_height: Optional[bool] = None,
         custom_size: Optional[bool] = None,
@@ -891,6 +892,7 @@ class Escpos(object):
             special values 'a' or 'b', referring to fonts 0 and 1.
         :param bold: text in bold
         :param underline: underline mode for text, decimal range 0-2
+        :param normal_textsize: switch to normal textsize if True
         :param double_height: doubles the height of the text
         :param double_width: doubles the width of the text
         :param custom_size: uses custom size specified by width and height
@@ -902,7 +904,7 @@ class Escpos(object):
         :param smooth: True enables text smoothing. Effective on 4x4 size text and larger
         :param flip: True enables upside-down printing
         """
-        if custom_size is not None and custom_size:
+        if custom_size:
             if (
                 isinstance(width, int)
                 and isinstance(height, int)
@@ -913,7 +915,7 @@ class Escpos(object):
                 self._raw(TXT_SIZE + six.int2byte(size_byte))
             else:
                 raise SetVariableError()
-        elif custom_size is not None:
+        elif normal_textsize or double_height or double_width:
             self._raw(TXT_NORMAL)
             if double_width and double_height:
                 self._raw(TXT_STYLE["size"]["2x"])
@@ -924,6 +926,7 @@ class Escpos(object):
             else:
                 self._raw(TXT_STYLE["size"]["normal"])
         else:
+            # no text size handling requested
             pass
 
         if flip is not None:
@@ -993,6 +996,7 @@ class Escpos(object):
         :param smooth: True enables text smoothing. Effective on 4x4 size text and larger, *default*: False
         :param flip: True enables upside-down printing, *default*: False
         """
+        normal_textsize = not custom_size and not double_width and not double_height
         self.set(
             align=align,
             font=font,
@@ -1004,6 +1008,7 @@ class Escpos(object):
             invert=invert,
             smooth=smooth,
             flip=flip,
+            normal_textsize=normal_textsize,
             double_width=double_width,
             double_height=double_height,
             custom_size=custom_size,

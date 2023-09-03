@@ -1,4 +1,5 @@
 import six
+import pytest
 
 import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
@@ -54,6 +55,18 @@ def test_set_size_2h():
     assert instance.output == b"".join(expected_sequence)
 
 
+def test_set_size_2h_no_default():
+    instance = printer.Dummy()
+    instance.set(double_height=True)
+
+    expected_sequence = (
+        TXT_NORMAL,
+        TXT_STYLE["size"]["2h"],  # Double height text size
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
 def test_set_size_2w():
     instance = printer.Dummy()
     instance.set_with_default(double_width=True)
@@ -68,6 +81,18 @@ def test_set_size_2w():
         SET_FONT(b"\x00"),  # Default font
         TXT_STYLE["align"]["left"],  # Align left
         TXT_STYLE["invert"][False],  # Inverted OFF
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
+def test_set_size_2w_no_default():
+    instance = printer.Dummy()
+    instance.set(double_width=True)
+
+    expected_sequence = (
+        TXT_NORMAL,
+        TXT_STYLE["size"]["2w"],  # Double width text size
     )
 
     assert instance.output == b"".join(expected_sequence)
@@ -92,6 +117,18 @@ def test_set_size_2x():
     assert instance.output == b"".join(expected_sequence)
 
 
+def test_set_size_2x_no_default():
+    instance = printer.Dummy()
+    instance.set(double_width=True, double_height=True)
+
+    expected_sequence = (
+        TXT_NORMAL,
+        TXT_STYLE["size"]["2x"],  # Quad area text size
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
 def test_set_size_custom():
     instance = printer.Dummy()
     instance.set_with_default(custom_size=True, width=8, height=7)
@@ -106,6 +143,20 @@ def test_set_size_custom():
         SET_FONT(b"\x00"),  # Default font
         TXT_STYLE["align"]["left"],  # Align left
         TXT_STYLE["invert"][False],  # Inverted OFF
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
+@pytest.mark.parametrize("width", [1, 8])
+@pytest.mark.parametrize("height", [1, 8])
+def test_set_size_custom_no_default(width, height):
+    instance = printer.Dummy()
+    instance.set(custom_size=True, width=width, height=height)
+
+    expected_sequence = (
+        TXT_SIZE,  # Custom text size, no normal reset
+        six.int2byte(TXT_STYLE["width"][width] + TXT_STYLE["height"][height]),
     )
 
     assert instance.output == b"".join(expected_sequence)
