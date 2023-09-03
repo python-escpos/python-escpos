@@ -3,6 +3,7 @@ import pytest
 
 import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
+from escpos.exceptions import SetVariableError
 
 
 def test_default_values_with_default():
@@ -162,6 +163,14 @@ def test_set_size_custom_no_default(width, height):
     assert instance.output == b"".join(expected_sequence)
 
 
+@pytest.mark.parametrize("width", [None, 0, 9, 10, 4444])
+@pytest.mark.parametrize("height", [None, 0, 9, 10, 4444])
+def test_set_size_custom_invalid_input(width, height):
+    instance = printer.Dummy()
+    with pytest.raises(SetVariableError):
+        instance.set(custom_size=True, width=width, height=height)
+
+
 # Flip
 
 
@@ -180,6 +189,15 @@ def test_set_flip():
         TXT_STYLE["align"]["left"],  # Align left
         TXT_STYLE["invert"][False],  # Inverted OFF
     )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
+def test_set_flip_no_default():
+    instance = printer.Dummy()
+    instance.set(flip=True)
+
+    expected_sequence = (TXT_STYLE["flip"][True],)  # Flip ON
 
     assert instance.output == b"".join(expected_sequence)
 
