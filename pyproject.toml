@@ -13,3 +13,15 @@ testpaths = [
     "src/escpos",
     "escpos",
 ]
+
+[[tool.mypy.overrides]]
+module = ["pytest",
+          "jaconv",
+          "scripttest",
+          "barcode.*",
+          "qrcode",
+          "usb.*",
+          "cups",
+          "win32print"
+         ]
+ignore_missing_imports = true
