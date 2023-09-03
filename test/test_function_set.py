@@ -4,7 +4,7 @@ import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
 
 
-def test_default_values():
+def test_default_values_with_default():
     """Default test, please copy and paste this block to test set method calls"""
     instance = printer.Dummy()
     instance.set_with_default()
@@ -22,6 +22,14 @@ def test_default_values():
     )
 
     assert instance.output == b"".join(expected_sequence)
+
+
+def test_default_values():
+    """Default test"""
+    instance = printer.Dummy()
+    instance.set()
+
+    assert instance.output == b""
 
 
 # Size tests

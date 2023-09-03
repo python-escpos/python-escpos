@@ -871,12 +871,15 @@ class Escpos(object):
         density: Optional[int] = None,
         invert: Optional[bool] = None,
         smooth: Optional[bool] = None,
-        flip: bool = None,
+        flip: Optional[bool] = None,
         double_width: Optional[bool] = None,
         double_height: Optional[bool] = None,
         custom_size: Optional[bool] = None,
     ) -> None:
         """Set text properties by sending them to the printer.
+
+        If a value for a parameter is not supplied, nothing is sent
+        for this type of format.
 
         :param align: horizontal position for text, possible values are:
 
@@ -884,36 +887,20 @@ class Escpos(object):
             * 'left'
             * 'right'
 
-            *default*: 'left'
-
         :param font: font given as an index, a name, or one of the
             special values 'a' or 'b', referring to fonts 0 and 1.
-        :param bold: text in bold, *default*: False
-        :param underline: underline mode for text, decimal range 0-2,  *default*: 0
+        :param bold: text in bold
+        :param underline: underline mode for text, decimal range 0-2
         :param double_height: doubles the height of the text
         :param double_width: doubles the width of the text
         :param custom_size: uses custom size specified by width and height
             parameters. Cannot be used with double_width or double_height.
-        :param width: text width multiplier when custom_size is used, decimal range 1-8,  *default*: 1
-        :param height: text height multiplier when custom_size is used, decimal range 1-8, *default*: 1
+        :param width: text width multiplier when custom_size is used, decimal range 1-8
+        :param height: text height multiplier when custom_size is used, decimal range 1-8
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
-        :param invert: True enables white on black printing, *default*: False
-        :param smooth: True enables text smoothing. Effective on 4x4 size text and larger, *default*: False
-        :param flip: True enables upside-down printing, *default*: False
-
-        :type font: str
-        :type invert: bool
-        :type bold: bool
-        :type underline: bool
-        :type smooth: bool
-        :type flip: bool
-        :type custom_size: bool
-        :type double_width: bool
-        :type double_height: bool
-        :type align: str
-        :type width: int
-        :type height: int
-        :type density: int
+        :param invert: True enables white on black printing
+        :param smooth: True enables text smoothing. Effective on 4x4 size text and larger
+        :param flip: True enables upside-down printing
         """
         if custom_size is not None and custom_size:
             if (
