@@ -92,4 +92,4 @@ class Network(Escpos):
         except socket.error:
             pass
         self.device.close()
-        self.device = None
+        self._device = False

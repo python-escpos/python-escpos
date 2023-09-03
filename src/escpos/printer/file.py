@@ -76,4 +76,4 @@ class File(Escpos):
             return
         self.device.flush()
         self.device.close()
-        self.device = None
+        self._device = False

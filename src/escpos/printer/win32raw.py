@@ -97,7 +97,7 @@ class Win32Raw(Escpos):
         win32print.EndPagePrinter(self.device)
         win32print.EndDocPrinter(self.device)
         win32print.ClosePrinter(self.device)
-        self.device = None
+        self._device = False
 
     @dependency_win32print
     def _raw(self, msg):

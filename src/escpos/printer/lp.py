@@ -87,7 +87,7 @@ class LP(Escpos):
         if not self._device:
             return
         self.device.terminate()
-        self.device = None
+        self._device = False
 
     def flush(self):
         """End line and wait for new commands."""

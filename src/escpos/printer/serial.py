@@ -151,4 +151,4 @@ class Serial(Escpos):
         if self.device.is_open:
             self.device.flush()
             self.device.close()
-        self.device = None
+        self._device = False

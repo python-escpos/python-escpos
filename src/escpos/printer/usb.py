@@ -156,4 +156,4 @@ class Usb(Escpos):
         if not self._device:
             return
         usb.util.dispose_resources(self.device)
-        self.device = None
+        self._device = False
