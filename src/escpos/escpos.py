@@ -573,7 +573,7 @@ class Escpos(object):
     def _hw_barcode(
         self,
         code,
-        bc,
+        bc: str,
         height: int = 64,
         width: int = 3,
         pos: str = "BELOW",
@@ -660,7 +660,7 @@ class Escpos(object):
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
         # If function_type is specified, otherwise use guessing.
-        ft_guess = [ft for ft in ["A", "B"] if bc in BARCODE_TYPES.get(ft)]
+        ft_guess = [ft for ft in ["A", "B"] if bc in BARCODE_TYPES.get(ft, {"": b""})]
         ft_guess = ft_guess or [None]
         function_type = function_type or ft_guess[0]
 
