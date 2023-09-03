@@ -8,7 +8,7 @@ import time
 from contextlib import ExitStack
 from os import environ, path
 from tempfile import mkdtemp
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Type
 
 import importlib_resources
 import six
@@ -121,7 +121,7 @@ def get_profile(name: Optional[str] = None, **kwargs):
 CLASS_CACHE = {}
 
 
-def get_profile_class(name: str):
+def get_profile_class(name: str) -> Type[BaseProfile]:
     """Load a profile class.
 
     For the given profile name, load the data from the external
