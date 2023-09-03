@@ -572,14 +572,14 @@ class Escpos(object):
 
     def _hw_barcode(
         self,
-        code,
+        code: str,
         bc: str,
         height: int = 64,
         width: int = 3,
         pos: str = "BELOW",
         font: str = "A",
         align_ct: bool = True,
-        function_type=None,
+        function_type: Optional[str] = None,
         check: bool = True,
     ) -> None:
         """Print Barcode.
@@ -661,7 +661,7 @@ class Escpos(object):
         """
         # If function_type is specified, otherwise use guessing.
         ft_guess = [ft for ft in ["A", "B"] if bc in BARCODE_TYPES.get(ft, {"": b""})]
-        ft_guess = ft_guess or [None]
+        ft_guess = ft_guess or [""]
         function_type = function_type or ft_guess[0]
 
         if not function_type or not BARCODE_TYPES.get(function_type.upper()):
