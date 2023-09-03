@@ -1,5 +1,5 @@
-import six
 import pytest
+import six
 
 import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
