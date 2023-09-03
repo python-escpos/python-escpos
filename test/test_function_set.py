@@ -8,7 +8,7 @@ from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
 
 def test_default_values():
     instance = printer.Dummy()
-    instance.set()
+    instance.set_with_default()
 
     expected_sequence = (
         TXT_NORMAL,
@@ -30,7 +30,7 @@ def test_default_values():
 
 def test_set_size_2h():
     instance = printer.Dummy()
-    instance.set(double_height=True)
+    instance.set_with_default(double_height=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -49,7 +49,7 @@ def test_set_size_2h():
 
 def test_set_size_2w():
     instance = printer.Dummy()
-    instance.set(double_width=True)
+    instance.set_with_default(double_width=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -68,7 +68,7 @@ def test_set_size_2w():
 
 def test_set_size_2x():
     instance = printer.Dummy()
-    instance.set(double_height=True, double_width=True)
+    instance.set_with_default(double_height=True, double_width=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -87,7 +87,7 @@ def test_set_size_2x():
 
 def test_set_size_custom():
     instance = printer.Dummy()
-    instance.set(custom_size=True, width=8, height=7)
+    instance.set_with_default(custom_size=True, width=8, height=7)
 
     expected_sequence = (
         TXT_SIZE,  # Custom text size, no normal reset
@@ -109,7 +109,7 @@ def test_set_size_custom():
 
 def test_set_flip():
     instance = printer.Dummy()
-    instance.set(flip=True)
+    instance.set_with_default(flip=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -131,7 +131,7 @@ def test_set_flip():
 
 def test_smooth():
     instance = printer.Dummy()
-    instance.set(smooth=True)
+    instance.set_with_default(smooth=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -153,7 +153,7 @@ def test_smooth():
 
 def test_set_bold():
     instance = printer.Dummy()
-    instance.set(bold=True)
+    instance.set_with_default(bold=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -172,7 +172,7 @@ def test_set_bold():
 
 def test_set_underline():
     instance = printer.Dummy()
-    instance.set(underline=1)
+    instance.set_with_default(underline=1)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -191,7 +191,7 @@ def test_set_underline():
 
 def test_set_underline2():
     instance = printer.Dummy()
-    instance.set(underline=2)
+    instance.set_with_default(underline=2)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -213,7 +213,7 @@ def test_set_underline2():
 
 def test_align_center():
     instance = printer.Dummy()
-    instance.set(align="center")
+    instance.set_with_default(align="center")
 
     expected_sequence = (
         TXT_NORMAL,
@@ -232,7 +232,7 @@ def test_align_center():
 
 def test_align_right():
     instance = printer.Dummy()
-    instance.set(align="right")
+    instance.set_with_default(align="right")
 
     expected_sequence = (
         TXT_NORMAL,
@@ -255,7 +255,7 @@ def test_align_right():
 def test_densities():
     for density in range(8):
         instance = printer.Dummy()
-        instance.set(density=density)
+        instance.set_with_default(density=density)
 
         expected_sequence = (
             TXT_NORMAL,
@@ -278,7 +278,7 @@ def test_densities():
 
 def test_invert():
     instance = printer.Dummy()
-    instance.set(invert=True)
+    instance.set_with_default(invert=True)
 
     expected_sequence = (
         TXT_NORMAL,
