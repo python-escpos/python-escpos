@@ -47,6 +47,11 @@ jobs:
         tox
       env:
         ESCPOS_CAPABILITIES_FILE: /home/runner/work/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
+    - name: Test mypy with tox
+      run: |
+        tox -e mypy
+      env:
+        ESCPOS_CAPABILITIES_FILE: /home/runner/work/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
