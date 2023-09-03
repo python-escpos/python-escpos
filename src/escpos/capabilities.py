@@ -146,7 +146,11 @@ def clean(s):
     return str(s)
 
 
-class Profile(get_profile_class("default")):
+# mute the mypy type issue with this dynamic base class function for now (: Any)
+ProfileBaseClass: Any = get_profile_class("default")
+
+
+class Profile(ProfileBaseClass):
     """Profile class for user usage.
 
     For users, who want to provide their own profile.
