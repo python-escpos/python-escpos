@@ -917,10 +917,10 @@ class Escpos(object):
         """
         if custom_size:
             if (
-                1 <= width <= 8
-                and 1 <= height <= 8
-                and isinstance(width, int)
+                isinstance(width, int)
                 and isinstance(height, int)
+                and 1 <= width <= 8
+                and 1 <= height <= 8
             ):
                 size_byte = TXT_STYLE["width"][width] + TXT_STYLE["height"][height]
                 self._raw(TXT_SIZE + six.int2byte(size_byte))

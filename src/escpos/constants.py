@@ -12,33 +12,37 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 """
 
 
+from typing import Dict
+
 import six
+
+from .types import ConstTxtStyleClass
 
 # Control characters
 # as labelled in https://www.novopos.ch/client/EPSON/TM-T20/TM-T20_eng_qr.pdf
-NUL = b"\x00"
-EOT = b"\x04"
-ENQ = b"\x05"
-DLE = b"\x10"
-DC4 = b"\x14"
-CAN = b"\x18"
-ESC = b"\x1b"
-FS = b"\x1c"
-GS = b"\x1d"
+NUL: bytes = b"\x00"
+EOT: bytes = b"\x04"
+ENQ: bytes = b"\x05"
+DLE: bytes = b"\x10"
+DC4: bytes = b"\x14"
+CAN: bytes = b"\x18"
+ESC: bytes = b"\x1b"
+FS: bytes = b"\x1c"
+GS: bytes = b"\x1d"
 
 # Feed control sequences
-CTL_LF = b"\n"  #: Print and line feed
-CTL_FF = b"\f"  #: Form feed
-CTL_CR = b"\r"  #: Carriage return
-CTL_HT = b"\t"  #: Horizontal tab
-CTL_SET_HT = ESC + b"\x44"  #: Set horizontal tab positions
-CTL_VT = b"\v"  #: Vertical tab
+CTL_LF: bytes = b"\n"  #: Print and line feed
+CTL_FF: bytes = b"\f"  #: Form feed
+CTL_CR: bytes = b"\r"  #: Carriage return
+CTL_HT: bytes = b"\t"  #: Horizontal tab
+CTL_SET_HT: bytes = ESC + b"\x44"  #: Set horizontal tab positions
+CTL_VT: bytes = b"\v"  #: Vertical tab
 
 # Printer hardware
-HW_INIT = ESC + b"@"  # Clear data in buffer and reset modes
-HW_SELECT = ESC + b"=\x01"  # Printer select
+HW_INIT: bytes = ESC + b"@"  # Clear data in buffer and reset modes
+HW_SELECT: bytes = ESC + b"=\x01"  # Printer select
 
-HW_RESET = ESC + b"\x3f\x0a\x00"  # Reset printer hardware
+HW_RESET: bytes = ESC + b"\x3f\x0a\x00"  # Reset printer hardware
 # (TODO: Where is this specified?)
 
 # Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
@@ -55,54 +59,54 @@ CD_KICK_DEC_SEQUENCE = (
     + six.int2byte(t2)
 )
 #: Sends a pulse to pin 2 []
-CD_KICK_2 = _CASH_DRAWER(b"\x00", 50, 50)
+CD_KICK_2: bytes = _CASH_DRAWER(b"\x00", 50, 50)
 #: Sends a pulse to pin 5 []
-CD_KICK_5 = _CASH_DRAWER(b"\x01", 50, 50)
+CD_KICK_5: bytes = _CASH_DRAWER(b"\x01", 50, 50)
 
 # Paper Cutter
 _CUT_PAPER = lambda m: GS + b"V" + m
-PAPER_FULL_CUT = _CUT_PAPER(b"\x00")  #: Full cut paper
-PAPER_PART_CUT = _CUT_PAPER(b"\x01")  #: Partial cut paper
+PAPER_FULL_CUT: bytes = _CUT_PAPER(b"\x00")  #: Full cut paper
+PAPER_PART_CUT: bytes = _CUT_PAPER(b"\x01")  #: Partial cut paper
 
 # Beep (please note that the actual beep sequence may differ between devices)
-BEEP = b"\x07"
+BEEP: bytes = b"\x07"
 
 # Internal buzzer (only supported printers)
-BUZZER = ESC + b"\x42"
+BUZZER: bytes = ESC + b"\x42"
 
 # Panel buttons (e.g. the FEED button)
 _PANEL_BUTTON = lambda n: ESC + b"c5" + six.int2byte(n)
-PANEL_BUTTON_ON = _PANEL_BUTTON(0)  # enable all panel buttons
-PANEL_BUTTON_OFF = _PANEL_BUTTON(1)  # disable all panel buttons
+PANEL_BUTTON_ON: bytes = _PANEL_BUTTON(0)  # enable all panel buttons
+PANEL_BUTTON_OFF: bytes = _PANEL_BUTTON(1)  # disable all panel buttons
 
 # Line display printing
-LINE_DISPLAY_OPEN = ESC + b"\x3d\x02"
-LINE_DISPLAY_CLEAR = ESC + b"\x40"
-LINE_DISPLAY_CLOSE = ESC + b"\x3d\x01"
+LINE_DISPLAY_OPEN: bytes = ESC + b"\x3d\x02"
+LINE_DISPLAY_CLEAR: bytes = ESC + b"\x40"
+LINE_DISPLAY_CLOSE: bytes = ESC + b"\x3d\x01"
 
 # Sheet modes
-SHEET_SLIP_MODE = ESC + b"\x63\x30\x04"  # slip paper
-SHEET_ROLL_MODE = ESC + b"\x63\x30\x01"  # paper roll
+SHEET_SLIP_MODE: bytes = ESC + b"\x63\x30\x04"  # slip paper
+SHEET_ROLL_MODE: bytes = ESC + b"\x63\x30\x01"  # paper roll
 
 # Slip specific codes
-SLIP_EJECT = ESC + b"\x4b\xc0"  # Eject the slip or cheque
-SLIP_SELECT = FS  # Select the slip station as default station
-SLIP_SET_WAIT_TIME = (
+SLIP_EJECT: bytes = ESC + b"\x4b\xc0"  # Eject the slip or cheque
+SLIP_SELECT: bytes = FS  # Select the slip station as default station
+SLIP_SET_WAIT_TIME: bytes = (
     ESC + b"\x1b\x66"
 )  # Set timeout waiting for a slip/cheque to be inserted
-SLIP_PRINT_AND_EJECT = (
+SLIP_PRINT_AND_EJECT: bytes = (
     b"\x0c"  # Print the buffer and eject (after waiting for the paper to be inserted)
 )
 
 # Text format
 # TODO: Acquire the "ESC/POS Application Programming Guide for Paper Roll
 #       Printers" and tidy up this stuff too.
-TXT_SIZE = GS + b"!"
+TXT_SIZE: bytes = GS + b"!"
 
-TXT_NORMAL = ESC + b"!\x00"  # Normal text
+TXT_NORMAL: bytes = ESC + b"!\x00"  # Normal text
 
-
-TXT_STYLE = {
+#: text style dictionary for :py:meth:`escpos.escpos.Escpos.set`
+TXT_STYLE: ConstTxtStyleClass = {
     "bold": {
         False: ESC + b"\x45\x00",  # Bold font OFF
         True: ESC + b"\x45\x01",  # Bold font ON
@@ -175,12 +179,12 @@ TXT_STYLE = {
 
 # Fonts
 SET_FONT = lambda n: ESC + b"\x4d" + n
-TXT_FONT_A = SET_FONT(b"\x00")  #: Font type A
-TXT_FONT_B = SET_FONT(b"\x01")  #: Font type B
+TXT_FONT_A: bytes = SET_FONT(b"\x00")  #: Font type A
+TXT_FONT_B: bytes = SET_FONT(b"\x01")  #: Font type B
 
 # Spacing
 LINESPACING_RESET = ESC + b"2"
-LINESPACING_FUNCS = {
+LINESPACING_FUNCS: Dict[int, bytes] = {
     60: ESC + b"A",  # line_spacing/60 of an inch, 0 <= line_spacing <= 85
     360: ESC + b"+",  # line_spacing/360 of an inch, 0 <= line_spacing <= 255
     180: ESC + b"3",  # line_spacing/180 of an inch, 0 <= line_spacing <= 255
@@ -188,21 +192,21 @@ LINESPACING_FUNCS = {
 
 #: Prefix to change the codepage. You need to attach a byte to indicate
 #: the codepage to use. We use escpos-printer-db as the data source.
-CODEPAGE_CHANGE = ESC + b"\x74"
+CODEPAGE_CHANGE: bytes = ESC + b"\x74"
 
 # Barcode format
 _SET_BARCODE_TXT_POS = lambda n: GS + b"H" + n
-BARCODE_TXT_OFF = _SET_BARCODE_TXT_POS(b"\x00")  #: HRI barcode chars OFF
-BARCODE_TXT_ABV = _SET_BARCODE_TXT_POS(b"\x01")  #: HRI barcode chars above
-BARCODE_TXT_BLW = _SET_BARCODE_TXT_POS(b"\x02")  #: HRI barcode chars below
-BARCODE_TXT_BTH = _SET_BARCODE_TXT_POS(b"\x03")  #: HRI both above and below
+BARCODE_TXT_OFF: bytes = _SET_BARCODE_TXT_POS(b"\x00")  #: HRI barcode chars OFF
+BARCODE_TXT_ABV: bytes = _SET_BARCODE_TXT_POS(b"\x01")  #: HRI barcode chars above
+BARCODE_TXT_BLW: bytes = _SET_BARCODE_TXT_POS(b"\x02")  #: HRI barcode chars below
+BARCODE_TXT_BTH: bytes = _SET_BARCODE_TXT_POS(b"\x03")  #: HRI both above and below
 
 _SET_HRI_FONT = lambda n: GS + b"f" + n
-BARCODE_FONT_A = _SET_HRI_FONT(b"\x00")  #: Font type A for HRI barcode chars
-BARCODE_FONT_B = _SET_HRI_FONT(b"\x01")  #: Font type B for HRI barcode chars
+BARCODE_FONT_A: bytes = _SET_HRI_FONT(b"\x00")  #: Font type A for HRI barcode chars
+BARCODE_FONT_B: bytes = _SET_HRI_FONT(b"\x01")  #: Font type B for HRI barcode chars
 
-BARCODE_HEIGHT = GS + b"h"  #: Barcode Height [1-255]
-BARCODE_WIDTH = GS + b"w"  #: Barcode Width  [2-6]
+BARCODE_HEIGHT: bytes = GS + b"h"  #: Barcode Height [1-255]
+BARCODE_WIDTH: bytes = GS + b"w"  #: Barcode Width  [2-6]
 
 # NOTE: This isn't actually an ESC/POS command. It's the common prefix to the
 #      two "print bar code" commands:
@@ -212,7 +216,7 @@ BARCODE_WIDTH = GS + b"w"  #: Barcode Width  [2-6]
 _SET_BARCODE_TYPE = lambda m: GS + b"k" + six.int2byte(m)
 
 #: Barcodes for printing function type A
-BARCODE_TYPE_A = {
+BARCODE_TYPE_A: Dict[str, bytes] = {
     "UPC-A": _SET_BARCODE_TYPE(0),
     "UPC-E": _SET_BARCODE_TYPE(1),
     "EAN13": _SET_BARCODE_TYPE(2),
@@ -225,7 +229,7 @@ BARCODE_TYPE_A = {
 
 #: Barcodes for printing function type B
 #: The first 8 are the same barcodes as type A
-BARCODE_TYPE_B = {
+BARCODE_TYPE_B: Dict[str, bytes] = {
     "UPC-A": _SET_BARCODE_TYPE(65),
     "UPC-E": _SET_BARCODE_TYPE(66),
     "EAN13": _SET_BARCODE_TYPE(67),
@@ -265,36 +269,36 @@ BARCODE_FORMATS = {
     ),
 }
 
-BARCODE_TYPES = {
+BARCODE_TYPES: Dict[str, Dict[str, bytes]] = {
     "A": BARCODE_TYPE_A,
     "B": BARCODE_TYPE_B,
 }
 
 # QRCode error correction levels
-QR_ECLEVEL_L = 0
-QR_ECLEVEL_M = 1
-QR_ECLEVEL_Q = 2
-QR_ECLEVEL_H = 3
+QR_ECLEVEL_L: int = 0
+QR_ECLEVEL_M: int = 1
+QR_ECLEVEL_Q: int = 2
+QR_ECLEVEL_H: int = 3
 
 # QRcode models
-QR_MODEL_1 = 1
-QR_MODEL_2 = 2
-QR_MICRO = 3
+QR_MODEL_1: int = 1
+QR_MODEL_2: int = 2
+QR_MICRO: int = 3
 
 # Image format
 # NOTE: _PRINT_RASTER_IMG is the obsolete ESC/POS "print raster bit image"
 #       command. The constants include a fragment of the data's header.
 _PRINT_RASTER_IMG = lambda data: GS + b"v0" + data
-S_RASTER_N = _PRINT_RASTER_IMG(b"\x00")  # Set raster image normal size
-S_RASTER_2W = _PRINT_RASTER_IMG(b"\x01")  # Set raster image double width
-S_RASTER_2H = _PRINT_RASTER_IMG(b"\x02")  # Set raster image double height
-S_RASTER_Q = _PRINT_RASTER_IMG(b"\x03")  # Set raster image quadruple
+S_RASTER_N: bytes = _PRINT_RASTER_IMG(b"\x00")  # Set raster image normal size
+S_RASTER_2W: bytes = _PRINT_RASTER_IMG(b"\x01")  # Set raster image double width
+S_RASTER_2H: bytes = _PRINT_RASTER_IMG(b"\x02")  # Set raster image double height
+S_RASTER_Q: bytes = _PRINT_RASTER_IMG(b"\x03")  # Set raster image quadruple
 
 # Status Command
-RT_STATUS = DLE + EOT
-RT_STATUS_ONLINE = RT_STATUS + b"\x01"
-RT_STATUS_PAPER = RT_STATUS + b"\x04"
-RT_MASK_ONLINE = 8
-RT_MASK_PAPER = 18
-RT_MASK_LOWPAPER = 30
-RT_MASK_NOPAPER = 114
+RT_STATUS: bytes = DLE + EOT
+RT_STATUS_ONLINE: bytes = RT_STATUS + b"\x01"
+RT_STATUS_PAPER: bytes = RT_STATUS + b"\x04"
+RT_MASK_ONLINE: int = 8
+RT_MASK_PAPER: int = 18
+RT_MASK_LOWPAPER: int = 30
+RT_MASK_NOPAPER: int = 114
