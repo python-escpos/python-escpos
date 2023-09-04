@@ -1,1 +1,2 @@
 -e .
+typing_extensions
