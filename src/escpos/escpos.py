@@ -142,7 +142,7 @@ class Escpos(object):
         return self._device
 
     @device.setter
-    def device(self, new_device):
+    def device(self, new_device: object):
         self._device = new_device
 
     def open(self):
