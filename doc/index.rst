@@ -53,6 +53,7 @@ developers of this library.
 
    dev/release-process
    dev/contributing
+   dev/repository
    dev/changelog
    dev/todo
 

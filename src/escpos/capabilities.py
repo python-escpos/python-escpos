@@ -50,12 +50,39 @@ if full_load:
     logger.debug("Loading and pickling capabilities")
     with open(capabilities_path) as cp, open(pickle_path, "wb") as pp:
         CAPABILITIES = yaml.safe_load(cp)
+        if not CAPABILITIES:
+            # yaml could not be loaded
+            print(
+                f"Capabilities yaml from {capabilities_path} could not be loaded.\n"
+                "This python package seems to be broken. If it has been installed "
+                "from official sources, please report an issue on GitHub.\n"
+                "Currently loaded capabilities:\n"
+                f"{CAPABILITIES}"
+            )
+            CAPABILITIES = {
+                "profiles": {
+                    "default": {
+                        "name": "BrokenDefault",
+                        "notes": "The integrated capabilities file could not be found and has been replaced.",
+                        "codePages": {"0": "Broken"},
+                        "features": {},
+                    },
+                },
+                "encodings": {
+                    "Broken": {
+                        "name": "Broken",
+                        "notes": "The configuration is broken.",
+                    }
+                },
+            }
+            print(
+                "Created a minimal backup profile, "
+                "many functionalities of the library will not work:\n"
+                f"{CAPABILITIES}"
+            )
         pickle.dump(CAPABILITIES, pp, protocol=2)
 
 logger.debug("Finished loading capabilities took %.2fs", time.time() - t0)
-
-
-PROFILES: Dict[str, Any] = CAPABILITIES["profiles"]
 
 
 class NotSupported(Exception):
@@ -128,7 +155,8 @@ def get_profile_class(name: str) -> Type[BaseProfile]:
     database, then generate dynamically a class.
     """
     if name not in CLASS_CACHE:
-        profile_data = PROFILES[name]
+        profiles: Dict[str, Any] = CAPABILITIES["profiles"]
+        profile_data = profiles[name]
         profile_name = clean(name)
         class_name = "{}{}Profile".format(profile_name[0].upper(), profile_name[1:])
         new_class = type(class_name, (BaseProfile,), {"profile_data": profile_data})
