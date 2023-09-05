@@ -1,5 +1,7 @@
 ESC
+Esc
 POS
+Pos
 Escpos
 Escpos
 escpos
@@ -7,9 +9,15 @@ escpos
 barcodes
 baudrate
 charcode
+dev
+dialout
+ean
+Ean
 lp
 lsusb
 printcap
 programmatically
 Raspbian
+Todo
 traceback
+udev

@@ -110,7 +110,7 @@ SW_BARCODE_NAMES = {
 class Escpos(object):
     """ESC/POS Printer object.
 
-    This class is the abstract base class for an esc/pos-printer. The printer implementations are children of this
+    This class is the abstract base class for an Esc/Pos-printer. The printer implementations are children of this
     class.
     """
 
@@ -391,9 +391,11 @@ class Escpos(object):
     def charcode(self, code: str = "AUTO") -> None:
         """Set Character Code Table.
 
-        Sets the control sequence from ``CHARCODE`` in :py:mod:`escpos.constants` as active. It will be sent with
-        the next text sequence. If you set the variable code to ``AUTO`` it will try to automatically guess the
-        right codepage. (This is the standard behaviour.)
+        Sets the control sequence from ``CHARCODE`` in :py:mod:`escpos.constants` as active.
+        It will be sent with the next text sequence.
+        If you set the variable code to ``AUTO`` it will try to automatically guess the
+        right codepage.
+        (This is the standard behavior.)
 
         :param code: Name of CharCode
         :raises: :py:exc:`~escpos.exceptions.CharCodeError`

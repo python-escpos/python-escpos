@@ -12,7 +12,7 @@ printers.
 
 .. note::
       This driver is not suited for USB-to-Serial-adapters
-      and similiar devices, but only for those implementing native USB.
+      and similar devices, but only for those implementing native USB.
 
 .. autoclass:: escpos.printer.Usb
     :members:
