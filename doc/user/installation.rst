@@ -39,7 +39,7 @@ and that the capabilities data is properly integrated.
 When packaging from source please read the developer
 information in :ref:`developer-manual-repository`.
 
-If your packaging methode breaks the resource system from setuptools,
+If your packaging method breaks the resource system from setuptools,
 it might be necessary to supply the path to the capabilities file:
 :ref:`advanced-usage-change-capabilities-profile`.
 
