@@ -848,7 +848,7 @@ class Escpos(object):
             self.text("\n" * count)
 
     def block_text(self, txt, font="0", columns=None):
-        """Print text wrapped to specifiec columns.
+        """Print text wrapped to specific columns.
 
         Text has to be encoded in unicode.
 
