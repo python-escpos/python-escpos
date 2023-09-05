@@ -1,7 +1,15 @@
-Raspbian
 ESC
 POS
 Escpos
 Escpos
+escpos
+
+barcodes
 baudrate
+charcode
+lp
 lsusb
+printcap
+programmatically
+Raspbian
+traceback
