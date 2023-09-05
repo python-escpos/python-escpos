@@ -29,6 +29,20 @@ The following installation options exist:
  * `win32`: install packages required for win32 printing (only Windows)
  * `cups`: install packages required for CUPS printing
 
+Other installation methods
+--------------------------
+Officially, no other installation methods are supplied.
+
+If you want to install nevertheless from another source,
+please make sure that you have received the correct package
+and that the capabilities data is properly integrated.
+When packaging from source please read the developer
+information in :ref:`developer-manual-repository`.
+
+If your packaging methode breaks the resource system from setuptools,
+it might be necessary to supply the path to the capabilities file:
+:ref:`advanced-usage-change-capabilities-profile`.
+
 Setup udev for USB-Printers
 ---------------------------
 1. Get the *Product ID* and *Vendor ID* from the lsusb command
