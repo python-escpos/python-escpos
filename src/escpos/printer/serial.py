@@ -10,7 +10,7 @@
 
 
 import functools
-from typing import Union
+from typing import Union, Optional
 
 from ..escpos import Escpos
 
@@ -78,8 +78,8 @@ class Serial(Escpos):
         baudrate: int = 9600,
         bytesize: int = 8,
         timeout: Union[int, float] = 1,
-        parity=None,  # type: str?
-        stopbits=None,  # type: int?
+        parity: Optional[str] = None,
+        stopbits: Optional[int] = None,
         xonxoff: bool = False,
         dsrdtr: bool = True,
         *args,

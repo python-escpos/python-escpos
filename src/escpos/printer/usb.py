@@ -77,8 +77,8 @@ class Usb(Escpos):
         idProduct: str = "",
         usb_args: Dict[str, str] = {},
         timeout: Union[int, float] = 0,
-        in_ep=0x82,  # type: int?
-        out_ep=0x01,  # type: int?
+        in_ep: int = 0x82,
+        out_ep: int = 0x01,
         *args,
         **kwargs
     ):

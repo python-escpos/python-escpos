@@ -53,7 +53,7 @@ class Network(Escpos):
 
     def __init__(
         self,
-        host: str = None,
+        host: str = "",
         port: int = 9100,
         timeout: Union[int, float] = 60,
         *args,
