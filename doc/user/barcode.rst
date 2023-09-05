@@ -11,7 +11,7 @@ rendering can be performed externally by software and then sent
 to the printer as an image.
 As a drawback, this operation is much slower and the user needs
 to know and choose the image implementation method supported by
-the printer's commandset.
+the printer's command-set.
 
 barcode-method
 ~~~~~~~~~~~~~~

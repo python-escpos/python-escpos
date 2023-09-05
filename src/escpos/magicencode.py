@@ -28,7 +28,7 @@ class Encoder(object):
 
     Note: To determine the code page, it needs to do the conversion, and
     thus already knows what the final byte in the target encoding would
-    be. Nevertheless, the API of this class doesn't return the byte.
+    be. Nevertheless, the API of this class does not return the byte.
 
     The caller use to do the character conversion itself.
 
@@ -117,7 +117,7 @@ class Encoder(object):
         return codepage_char_map
 
     def can_encode(self, encoding, char):
-        """Determine if a character is encodeable in the given code page.
+        """Determine if a character is encodable in the given code page.
 
         :param encoding: The name of the encoding.
         :param char: The character to attempt to encode.
@@ -171,7 +171,7 @@ class Encoder(object):
         1. code pages that we already tried before; there is a good
            chance they might work again, reducing the search space,
            and by re-using already used encodings we might also
-           reduce the number of codepage change instructiosn we have
+           reduce the number of codepage change instruction we have
            to send. Still, any performance gains will presumably be
            fairly minor.
 

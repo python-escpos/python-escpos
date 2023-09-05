@@ -21,6 +21,6 @@ The identifier can be found in :ref:`available-profiles`.
 This documentation describes the profiles in the database file that
 is bundled with this release.
 If another configuration is to be used, this chapter can be followed
-for information on how to sideload another `capabilities`-database:
+for information on how to side-load another `capabilities`-database:
 :ref:`advanced-usage-change-capabilities-profile`.
 

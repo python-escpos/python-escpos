@@ -146,7 +146,7 @@ And for linux::
 
     $HOME/.config/python-escpos/config.yaml
 
-If you aren't sure, run::
+If you are not sure, run::
 
     from escpos import config
     c = config.Config()
