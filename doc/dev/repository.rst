@@ -12,6 +12,6 @@ working with the project (e.g. for packaging a
 development version).
 
 * Make sure that the git project is complete. A call to git status for example should succeed.
-* Make sure that you have checked out all available subprojects.
+* Make sure that you have checked out all available sub-projects.
 * Proper initialization of submodules can be ensured with ``git submodule update --init --recursive``
 
