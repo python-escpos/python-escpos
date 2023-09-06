@@ -14,7 +14,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 import textwrap
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
-from typing import List, Optional, Union, Literal
+from typing import List, Literal, Optional, Union
 
 import barcode
 import qrcode

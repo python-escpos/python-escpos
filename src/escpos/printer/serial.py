@@ -10,7 +10,7 @@
 
 
 import functools
-from typing import Union, Optional
+from typing import Optional, Union
 
 from ..escpos import Escpos
 
