@@ -11,4 +11,7 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "python.formatting.provider": "black",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
 }
