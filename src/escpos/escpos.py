@@ -14,7 +14,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 import textwrap
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Literal
 
 import barcode
 import qrcode
@@ -114,7 +114,11 @@ class Escpos(object):
     class.
     """
 
-    _device = False  # False -> Uninitialized
+    # device status:
+    #   False -> Not initialized
+    #   None -> Initialized but not connected
+    #   object -> The connection object (Usb(), Serial(), Network(), etc.)
+    _device: Union[Literal[False], Literal[None], object] = False
 
     def __init__(self, profile=None, magic_encode_args=None, **kwargs) -> None:
         """Initialize ESCPOS Printer.
@@ -129,7 +133,7 @@ class Escpos(object):
         self.close()
 
     @property
-    def device(self) -> object:
+    def device(self) -> Union[Literal[False], Literal[None], object]:
         """Implements a self-open mechanism.
 
         An attempt to get the property before open the connection
@@ -142,7 +146,7 @@ class Escpos(object):
         return self._device
 
     @device.setter
-    def device(self, new_device: object):
+    def device(self, new_device: Union[Literal[False], Literal[None], object]):
         self._device = new_device
 
     def open(self):
