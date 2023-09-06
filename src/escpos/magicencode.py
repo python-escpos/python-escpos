@@ -31,12 +31,6 @@ class Encoder(object):
     be. Nevertheless, the API of this class does not return the byte.
 
     The caller use to do the character conversion itself.
-
-        $ python -m timeit -s "{u'ö':'a'}.get(u'ö')"
-        100000000 loops, best of 3: 0.0133 usec per loop
-
-        $ python -m timeit -s "u'ö'.encode('latin1')"
-        100000000 loops, best of 3: 0.0141 usec per loop
     """
 
     def __init__(self, codepage_map):
