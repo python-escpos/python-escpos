@@ -1,6 +1,22 @@
 Changelog
 =========
 
+2023-0x-xx - Version 3.0 - "Quietly Confident"
+----------------------------------------------
+This is the major release of the new version 3.0.
+A big thank you to @belono for their many contributions
+for the finalization of v3!
+
+TODO summary of changes (rough)
+
+changes
+^^^^^^^
+- TODO summary of changes (details)
+
+contributors
+^^^^^^^^^^^^
+- TODO all contributors since last v2 release.
+
 2023-05-11 - Version 3.0a9 - "Pride Comes Before A Fall"
 --------------------------------------------------------
 This release is the 10th alpha release of the new version 3.0.
