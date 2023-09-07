@@ -63,7 +63,8 @@ Setup udev for USB-Printers
 
 Enabling tab-completion in CLI
 ------------------------------
-python-escpos has a CLI with tab-completion. This is realised with ``argcomplete``.
+python-escpos has a CLI with tab-completion.
+This is realized with ``argcomplete``.
 In order for this to work you have to enable tab-completion, which is described in
 the `manual of argcomplete <https://argcomplete.readthedocs.io>`__.
 

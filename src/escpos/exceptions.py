@@ -79,7 +79,7 @@ class BarcodeSizeError(Error):
 
     This exception indicates that the values for the barcode size are out of range.
     The size of the barcode has to be in the range that is specified in :py:meth:`escpos.escpos.Escpos.barcode`.
-    The resulting returncode is `20`.
+    The resulting return code is `20`.
 
     inheritance:
 
@@ -104,7 +104,7 @@ class BarcodeCodeError(Error):
 
     No data for the barcode has been supplied in :py:meth:`escpos.escpos.Escpos.barcode` or the the `check` parameter
     was True and the check failed.
-    The returncode for this exception is `30`.
+    The return code for this exception is `30`.
 
     inheritance:
 
@@ -127,7 +127,7 @@ class BarcodeCodeError(Error):
 class ImageSizeError(Error):
     """Image height is longer than 255px and can't be printed.
 
-    The returncode for this exception is `40`.
+    The return code for this exception is `40`.
 
     inheritance:
 
@@ -176,7 +176,7 @@ class TextError(Error):
     """Text string must be supplied to the `text()` method.
 
     This exception is raised when an empty string is passed to :py:meth:`escpos.escpos.Escpos.text`.
-    The returncode for this exception is `50`.
+    The return code for this exception is `50`.
 
     inheritance:
 
@@ -202,7 +202,7 @@ class CashDrawerError(Error):
     """Valid pin must be set in order to send pulse.
 
     A valid pin number has to be passed onto the method :py:meth:`escpos.escpos.Escpos.cashdraw`.
-    The returncode for this exception is `60`.
+    The return code for this exception is `60`.
 
     inheritance:
 
@@ -229,7 +229,7 @@ class TabPosError(Error):
     Both values multiplied must not exceed 255, since it is the maximum tab value.
 
     This exception is raised by :py:meth:`escpos.escpos.Escpos.control`.
-    The returncode for this exception is `70`.
+    The return code for this exception is `70`.
 
     inheritance:
 
@@ -255,7 +255,7 @@ class CharCodeError(Error):
     """Valid char code must be set.
 
     The supplied charcode-name in :py:meth:`escpos.escpos.Escpos.charcode` is unknown.
-    Ths returncode for this exception is `80`.
+    The return code for this exception is `80`.
 
     inheritance:
 
@@ -276,10 +276,10 @@ class CharCodeError(Error):
 
 
 class USBNotFoundError(Error):
-    """Device wasn't found (probably not plugged in).
+    """Device was not found (probably not plugged in).
 
     The USB device seems to be not plugged in.
-    Ths returncode for this exception is `90`.
+    The return code for this exception is `90`.
 
     inheritance:
 
@@ -303,7 +303,7 @@ class SetVariableError(Error):
     """A set method variable was out of range.
 
     Check set variables against minimum and maximum values
-    Ths returncode for this exception is `100`.
+    The return code for this exception is `100`.
 
     inheritance:
 
@@ -330,7 +330,7 @@ class ConfigNotFoundError(Error):
     """The configuration file was not found.
 
     The default or passed configuration file could not be read
-    Ths returncode for this exception is `200`.
+    The return code for this exception is `200`.
 
     inheritance:
 
@@ -354,7 +354,7 @@ class ConfigSyntaxError(Error):
     """The configuration file is invalid.
 
     The syntax is incorrect
-    Ths returncode for this exception is `210`.
+    The return code for this exception is `210`.
 
     inheritance:
 
@@ -377,8 +377,8 @@ class ConfigSyntaxError(Error):
 class ConfigSectionMissingError(Error):
     """The configuration file is missing a section.
 
-    The part of the config asked for doesn't exist in the loaded configuration
-    Ths returncode for this exception is `220`.
+    The part of the config asked for does not exist in the loaded configuration
+    The return code for this exception is `220`.
 
     inheritance:
 

@@ -12,7 +12,7 @@ Description
 Python ESC/POS is a library which lets the user have access to all those printers handled
 by ESC/POS commands, as defined by Epson, from a Python application.
 
-The library tries to implement the functions provided by the ESC/POS-commandset and supports sending text, images,
+The library tries to implement the functions provided by the ESC/POS-command-set and supports sending text, images,
 barcodes and qr-codes to the printer.
 
 Text can be aligned/justified and fonts can be changed by size, type and weight.

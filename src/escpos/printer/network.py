@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the Network printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -21,18 +21,22 @@ def is_usable() -> bool:
 class Network(Escpos):
     """Network printer.
 
-    This class is used to attach to a networked printer. You can also use this in order to attach to a printer that
+    This class is used to attach to a networked printer.
+    You can also use this in order to attach to a printer that
     is forwarded with ``socat``.
 
-    If you have a local printer on parallel port ``/dev/usb/lp0`` then you could start ``socat`` with:
+    If you have a local printer on parallel port ``/dev/usb/lp0``
+    then you could start ``socat`` with:
 
     .. code-block:: none
 
         socat -u TCP4-LISTEN:4242,reuseaddr,fork OPEN:/dev/usb/lp0
 
     Then you should be able to attach to port ``4242`` with this class.
-    Otherwise the normal usecase would be to have a printer with ethernet interface. This type of printer should
-    work the same with this class. For the address of the printer check its manuals.
+    Otherwise the normal use case would be to have a printer with
+    Ethernet interface.
+    This type of printer should work the same with this class.
+    For the address of the printer check its manuals.
 
     inheritance:
 
@@ -53,7 +57,7 @@ class Network(Escpos):
     def __init__(self, host, port=9100, timeout=60, *args, **kwargs):
         """Initialize network printer.
 
-        :param host:    Printer's hostname or IP address
+        :param host:    Printer's host name or IP address
         :param port:    Port to write to
         :param timeout: timeout in seconds for the socket-library
         """
