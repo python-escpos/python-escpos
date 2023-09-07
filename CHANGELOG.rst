@@ -1,24 +1,24 @@
 Changelog
 =========
 
-20xx-xx-xx - Version x.x - ""
------------------------------
-`Release description`
+2023-0x-xx - Version 3.0 - "Quietly Confident"
+----------------------------------------------
+This is the major release of the new version 3.0.
+A big thank you to @belono for their many contributions
+for the finalization of v3!
+
+TODO summary of changes (rough)
 
 changes
 ^^^^^^^
-- some
-- thing
-- has
-- changed
+- TODO summary of changes (details)
 
 - fix the encoding search so that lower encodings are found first
 - add GitHub action for test on Windows
 
 contributors
 ^^^^^^^^^^^^
-- list
-- contributors
+- TODO all contributors since last v2 release.
 
 -  Scott Rotondo  in `#570 <https://github.com/python-escpos/python-escpos/issues/570>`_
 -  Patrick Kanzler
