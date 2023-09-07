@@ -4,14 +4,14 @@ Printing Barcodes
 :Last Reviewed: 2023-08-10
 
 Many printers implement barcode printing natively.
-This hardware renderered barcodes are fast but the supported
+These hardware rendered barcodes are fast but the supported
 formats are limited by the printer itself and different between models.
 However, almost all printers support printing images, so barcode
 rendering can be performed externally by software and then sent
 to the printer as an image.
 As a drawback, this operation is much slower and the user needs
 to know and choose the image implementation method supported by
-the printer's commandset.
+the printer's command-set.
 
 barcode-method
 ~~~~~~~~~~~~~~

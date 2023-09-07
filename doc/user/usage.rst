@@ -146,7 +146,7 @@ And for linux::
 
     $HOME/.config/python-escpos/config.yaml
 
-If you aren't sure, run::
+If you are not sure, run::
 
     from escpos import config
     c = config.Config()
@@ -206,10 +206,12 @@ For normal usage you can simply pass your text to the printers ``text()``-functi
 the right codepage and then send the encoded data to the printer. If this feature does not work, please try to
 isolate the error and then create an issue on the GitHub project page.
 
-If you want or need to you can manually set the codepage. For this please use the ``charcode()``-function. You can set
-any key-value that is in ``CHARCODE``. If something is wrong, an ``CharCodeError`` will be raised.
-After you have manually set the codepage the printer won't change it anymore. You can revert to normal behaviour
-by setting charcode to ``AUTO``.
+If you want or need to you can manually set the codepage.
+For this please use the ``charcode()``-function.
+You can set any key-value that is in ``CHARCODE``.
+If something is wrong, an ``CharCodeError`` will be raised.
+After you have manually set the codepage the printer won't change it anymore.
+You can revert to normal behavior by setting charcode to ``AUTO``.
 
 Advanced Usage: Print from binary blob
 --------------------------------------

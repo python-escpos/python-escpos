@@ -10,7 +10,7 @@ finally get a version 3.0 out.
 changes
 ^^^^^^^
 - Include support for CUPS based printer interfaces
-- Move the build toolchain to GitHub
+- Move the build tool chain to GitHub
 
 contributors
 ^^^^^^^^^^^^
@@ -67,7 +67,7 @@ contributors
 - Alexander Bougakov
 - Brian
 - Yaisel Hurtado
-- Maximilan Wagenbach
+- Maximilian Wagenbach
 - Patrick Kanzler
 
 2019-06-19 - Version 3.0a6 - "Mistake not..."
@@ -79,7 +79,7 @@ released.
 changes
 ^^^^^^^
 - fix inclusion of the capabilities-file
-- execute CI jobs also on Windows and macOS-targets
+- execute CI jobs also on Windows and MacOS-targets
 - improve documentation
 
 contributors
@@ -214,7 +214,7 @@ changes
 - feature: the driver tries now to guess the appropriate codepage and sets it automatically (called "magic encode")
 - as an alternative you can force the codepage with the old API
 - updated and improved documentation
-- changed constructor of main class due to introduction of capablities
+- changed constructor of main class due to introduction of capabilities
 - changed interface of method `blocktext`, changed behavior of multiple methods, for details refer to the documentation
   on `python-escpos.readthedocs.io <https://python-escpos.readthedocs.io>`_
 - add support for custom cash drawer sequence
@@ -239,7 +239,7 @@ changes
 - fix improper API-use in qrcode()
 - change setup.py shebang to make it compatible with virtualenvs.
 - add constants for sheet mode and colors
-- support changing the linespacing
+- support changing the line spacing
 
 contributors
 ^^^^^^^^^^^^
@@ -293,8 +293,8 @@ changes
 - packaging: configured the coverage-analysis codecov.io
 - GitHub: improved issues-template
 - documentation: add troubleshooting tip to network-interface
-- the module, cli and documentation is now aware of the version of python-escpos
-- the cli does now support basic tabcompletion
+- the module, CLI and documentation is now aware of the version of python-escpos
+- the CLI does now support basic tab completion
 
 contributors
 ^^^^^^^^^^^^
@@ -312,7 +312,7 @@ changes
 - refactor complete code in order to be compatible with Python 2 and 3
 - modernize packaging
 - add testing and CI
-- merge various forks into codebase, fixing multiple issues with barcode-, QR-printing, cashdraw and structure
+- merge various forks into codebase, fixing multiple issues with barcode-, QR-printing, cash-draw and structure
 - improve the documentation
 - extend support of barcode-codes to type B
 - add function to disable panel-buttons
@@ -383,7 +383,7 @@ contributors
 --------------------------
 
 - Issue #5: Fixed vertical tab
-- Issue #9: Fixed identation inconsistence
+- Issue #9: Fixed indentation inconsistency
 
 2013-03-14 - Version 1.0.1
 --------------------------
@@ -394,6 +394,6 @@ contributors
 2012-11-15 - Version 1.0
 ------------------------
 
-- Issue #2: Added ethernet support
+- Issue #2: Added Ethernet support
 - Issue #3: Added compatibility with libusb-1.0.1
 - Issue #4: Fixed typo in escpos.py

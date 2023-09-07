@@ -1,8 +1,8 @@
 #  -*- coding: utf-8 -*-
 """ Set of ESC/POS Commands (Constants)
 
-This module contains constants that are described in the esc/pos-documentation.
-Since there is no definitive and unified specification for all esc/pos-like printers the constants could later be
+This module contains constants that are described in the Esc/Pos-documentation.
+Since there is no definitive and unified specification for all Esc/Pos-like printers the constants could later be
 moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/escpos-php>`_.
 
 :author: python-escpos developers
