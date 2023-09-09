@@ -316,3 +316,15 @@ spelling_ignore_pypi_package_names = True
 spelling_ignore_wiki_words = True
 spelling_ignore_python_builtins = True
 spelling_ignore_importable_modules = True
+spelling_ignore_contributor_names = True
+spelling_word_list_filename = ["spelling_wordlist.txt", "../AUTHORS"]
+spelling_show_suggestions = True
+spelling_suggestion_limit = 3
+spelling_warning = True
+spelling_exclude_patterns = [
+    "**/capabilities.json",
+    "../../capabilities-data/dist/capabilities.json",
+    "**/available-encodings.rst",
+    "**/available-profiles.rst",
+    "dev/todo.rst",
+]

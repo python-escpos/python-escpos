@@ -26,7 +26,7 @@ from . import config, version
 
 # Must be defined before it's used in DEMO_FUNCTIONS
 def str_to_bool(string):
-    """Convert string to Bool.
+    """Convert string to bool.
 
     Used as a type in argparse so that we get back a proper
     bool instead of always True.

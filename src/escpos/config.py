@@ -13,7 +13,7 @@ from . import exceptions, printer
 class Config(object):
     """Configuration handler class.
 
-    This class loads configuration from a default or specificed directory. It
+    This class loads configuration from a default or specified directory. It
     can create your defined printer and return it to you.
     """
 
@@ -95,7 +95,7 @@ class Config(object):
 
         Throw an exception on error.
 
-        This method loads the default config if one hasn't beeen already loaded.
+        This method loads the default config if one has not been already loaded.
 
         """
         if not self._has_loaded:
