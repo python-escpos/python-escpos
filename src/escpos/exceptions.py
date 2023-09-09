@@ -13,7 +13,8 @@ Result/Exit codes:
     - `60` = Invalid pin to send Cash Drawer pulse :py:exc:`~escpos.exceptions.CashDrawerError`
     - `70` = Invalid number of tab positions :py:exc:`~escpos.exceptions.TabPosError`
     - `80` = Invalid char code :py:exc:`~escpos.exceptions.CharCodeError`
-    - `90` = USB device not found :py:exc:`~escpos.exceptions.USBNotFoundError`
+    - `90` = Device not found :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+    - `91` = USB device not found :py:exc:`~escpos.exceptions.USBNotFoundError`
     - `100` = Set variable out of range :py:exc:`~escpos.exceptions.SetVariableError`
     - `200` = Configuration not found :py:exc:`~escpos.exceptions.ConfigNotFoundError`
     - `210` = Configuration syntax error :py:exc:`~escpos.exceptions.ConfigSyntaxError`
@@ -303,7 +304,7 @@ class USBNotFoundError(DeviceNotFoundError):
     """USB device was not found (probably not plugged in).
 
     The USB device seems to be not plugged in.
-    The return code for this exception is `90`.
+    The return code for this exception is `91`.
 
     inheritance:
 
@@ -311,6 +312,12 @@ class USBNotFoundError(DeviceNotFoundError):
         :parts: 1
 
     """
+
+    def __init__(self, msg=""):
+        """Initialize USBNotFoundError object."""
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 91
 
     def __str__(self):
         """Return string representation of USBNotFoundError."""
