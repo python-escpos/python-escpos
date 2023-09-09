@@ -275,8 +275,32 @@ class CharCodeError(Error):
         return "Valid char code must be set ({msg})".format(msg=self.msg)
 
 
-class USBNotFoundError(Error):
-    """Device was not found (probably not plugged in).
+class DeviceNotFoundError(Error):
+    """Device was not found.
+
+    The device seems to be not accessible.
+    The return code for this exception is `90`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.exceptions.Error
+        :parts: 1
+
+    """
+
+    def __init__(self, msg=""):
+        """Initialize DeviceNotFoundError object."""
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 90
+
+    def __str__(self):
+        """Return string representation of DeviceNotFoundError."""
+        return f"Device not found ({self.msg})"
+
+
+class USBNotFoundError(DeviceNotFoundError):
+    """USB device was not found (probably not plugged in).
 
     The USB device seems to be not plugged in.
     The return code for this exception is `90`.
@@ -288,15 +312,9 @@ class USBNotFoundError(Error):
 
     """
 
-    def __init__(self, msg=""):
-        """Initialize USBNotFoundError object."""
-        Error.__init__(self, msg)
-        self.msg = msg
-        self.resultcode = 90
-
     def __str__(self):
         """Return string representation of USBNotFoundError."""
-        return "USB device not found ({msg})".format(msg=self.msg)
+        return f"USB device not found ({self.msg})"
 
 
 class SetVariableError(Error):
