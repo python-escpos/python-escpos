@@ -10,15 +10,19 @@
 
 
 import functools
-from typing import Optional, Union
+import logging
+from typing import Optional, Type, Union
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 #: keeps track if the pyserial dependency could be loaded (:py:class:`escpos.printer.Serial`)
 _DEP_PYSERIAL = False
 
 try:
     import serial
+
+    # import serial.SerialException
 
     _DEP_PYSERIAL = True
 except ImportError:
@@ -74,7 +78,7 @@ class Serial(Escpos):
     @dependency_pyserial
     def __init__(
         self,
-        devfile: str = "/dev/ttyS0",
+        devfile: str = "",
         baudrate: int = 9600,
         bytesize: int = 8,
         timeout: Union[int, float] = 1,
@@ -83,7 +87,7 @@ class Serial(Escpos):
         xonxoff: bool = False,
         dsrdtr: bool = True,
         *args,
-        **kwargs
+        **kwargs,
     ):
         """Initialize serial printer.
 
@@ -113,25 +117,42 @@ class Serial(Escpos):
         self.dsrdtr = dsrdtr
 
     @dependency_pyserial
-    def open(self):
-        """Set up serial port and set is as escpos device."""
-        if self.device and self.device.is_open:
-            self.close()
-        self.device = serial.Serial(
-            port=self.devfile,
-            baudrate=self.baudrate,
-            bytesize=self.bytesize,
-            parity=self.parity,
-            stopbits=self.stopbits,
-            timeout=self.timeout,
-            xonxoff=self.xonxoff,
-            dsrdtr=self.dsrdtr,
-        )
+    def open(self, raise_not_found: bool = True) -> None:
+        """Set up serial port and set is as escpos device.
 
-        if self.device:
-            print("Serial printer enabled")
-        else:
-            print("Unable to open serial printer on: {0}".format(str(self.devfile)))
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device and self.device.is_open:
+            self.close()
+
+        try:
+            # Open device
+            self.device: Optional[Type[serial.Serial]] = serial.Serial(
+                port=self.devfile,
+                baudrate=self.baudrate,
+                bytesize=self.bytesize,
+                parity=self.parity,
+                stopbits=self.stopbits,
+                timeout=self.timeout,
+                xonxoff=self.xonxoff,
+                dsrdtr=self.dsrdtr,
+            )
+        except (ValueError, serial.SerialException) as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to open serial printer on {self.devfile}:\n{e}"
+                )
+            else:
+                logging.error("Serial device %s not found", self.devfile)
+                return
+        logging.info("Serial printer enabled")
 
     def _raw(self, msg):
         """Print any command sent in raw format.
@@ -149,6 +170,7 @@ class Serial(Escpos):
         """Close Serial interface."""
         if not self._device:
             return
+        logging.info("Closing Serial connection to printer %s", self.devfile)
         if self.device.is_open:
             self.device.flush()
             self.device.close()

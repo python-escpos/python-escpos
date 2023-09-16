@@ -8,10 +8,11 @@
 :license: MIT
 """
 import functools
-from typing import Dict, Union
+import logging
+from typing import Dict, Optional, Type, Union
 
 from ..escpos import Escpos
-from ..exceptions import USBNotFoundError
+from ..exceptions import DeviceNotFoundError, USBNotFoundError
 
 #: keeps track if the usb dependency could be loaded (:py:class:`escpos.printer.Usb`)
 _DEP_USB = False
@@ -80,7 +81,7 @@ class Usb(Escpos):
         in_ep: int = 0x82,
         out_ep: int = 0x01,
         *args,
-        **kwargs
+        **kwargs,
     ):
         """Initialize USB printer.
 
@@ -103,21 +104,54 @@ class Usb(Escpos):
             self.usb_args["idProduct"] = idProduct
 
     @dependency_usb
-    def open(self):
-        """Search device on USB tree and set it as escpos device."""
-        self.device = usb.core.find(**self.usb_args)
-        if self.device is None:
-            raise USBNotFoundError("Device not found or cable not plugged in.")
+    def open(self, raise_not_found: bool = True) -> None:
+        """Search device on USB tree and set it as escpos device.
 
-        self.idVendor = self.device.idVendor
-        self.idProduct = self.device.idProduct
+        By default raise an exception if device is not found.
 
-        # pyusb has three backends: libusb0, libusb1 and openusb but
-        # only libusb1 backend implements the methods is_kernel_driver_active()
-        # and detach_kernel_driver().
-        # This helps enable this library to work on Windows.
-        if self.device.backend.__module__.endswith("libusb1"):
-            check_driver = None
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        :raises: :py:exc:`~escpos.exceptions.USBNotFoundError`
+        """
+        if self._device:
+            self.close()
+
+        # Open device
+        try:
+            self.device: Optional[Type[usb.core.Device]] = usb.core.find(
+                **self.usb_args
+            )
+            assert self.device, USBNotFoundError(
+                f"Device {tuple(self.usb_args.values())} not found"
+                + " or cable not plugged in."
+            )
+            self._check_driver()
+            self._configure_usb()
+        except (AssertionError, usb.core.USBError) as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to open USB printer on {tuple(self.usb_args.values())}:"
+                    + f"\n{e}"
+                )
+            else:
+                logging.error("USB device %s not found", tuple(self.usb_args.values()))
+                return
+        logging.info("USB printer enabled")
+
+    def _check_driver(self) -> None:
+        """Check the driver.
+
+        pyusb has three backends: libusb0, libusb1 and openusb but
+        only libusb1 backend implements the methods is_kernel_driver_active()
+        and detach_kernel_driver().
+        This helps enable this library to work on Windows.
+        """
+        if self._device and self.device.backend.__module__.endswith("libusb1"):
+            check_driver: Optional[bool] = None
 
             try:
                 check_driver = self.device.is_kernel_driver_active(0)
@@ -131,13 +165,17 @@ class Usb(Escpos):
                     pass
                 except usb.core.USBError as e:
                     if check_driver is not None:
-                        print("Could not detatch kernel driver: {0}".format(str(e)))
+                        logging.error("Could not detatch kernel driver: %s", str(e))
 
+    def _configure_usb(self) -> None:
+        """Configure USB."""
+        if not self.device:
+            return
         try:
             self.device.set_configuration()
             self.device.reset()
         except usb.core.USBError as e:
-            print("Could not set configuration: {0}".format(str(e)))
+            logging.error("Could not set configuration: %s", str(e))
 
     def _raw(self, msg):
         """Print any command sent in raw format.
@@ -156,5 +194,8 @@ class Usb(Escpos):
         """Release USB interface."""
         if not self._device:
             return
+        logging.info(
+            "Closing Usb connection to printer %s", tuple(self.usb_args.values())
+        )
         usb.util.dispose_resources(self.device)
         self._device = False

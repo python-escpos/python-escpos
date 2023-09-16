@@ -9,13 +9,16 @@
 """
 
 import functools
+import logging
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 #: keeps track if the win32print dependency could be loaded (:py:class:`escpos.printer.Win32Raw`)
 _DEP_WIN32PRINT = False
 
 try:
+    import pywintypes
     import win32print
 
     _DEP_WIN32PRINT = True
@@ -73,27 +76,66 @@ class Win32Raw(Escpos):
     def __init__(self, printer_name: str = "", *args, **kwargs):
         """Initialize default printer."""
         Escpos.__init__(self, *args, **kwargs)
-        if printer_name is not None:
-            self.printer_name = printer_name
-        else:
-            self.printer_name = win32print.GetDefaultPrinter()
+        self.printer_name = printer_name
+        self.job_name = ""
+
+    @property
+    def printers(self) -> dict:
+        """Available Windows printers."""
+        return {
+            printer["pPrinterName"]: printer
+            for printer in win32print.EnumPrinters(
+                win32print.PRINTER_ENUM_NAME, None, 4
+            )
+        }
 
     @dependency_win32print
-    def open(self, job_name="python-escpos"):
-        """Open connection to default printer."""
-        if self.printer_name is None:
-            raise Exception("Printer not found")
-        self.device = win32print.OpenPrinter(self.printer_name)
-        self.current_job = win32print.StartDocPrinter(
-            self.device, 1, (job_name, None, "RAW")
-        )
-        win32print.StartPagePrinter(self.device)
+    def open(
+        self, job_name: str = "python-escpos", raise_not_found: bool = True
+    ) -> None:
+        """Open connection to default printer.
+
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device:
+            self.close()
+
+        self.job_name = job_name
+        try:
+            # Name validation, set default if no given name
+            self.printer_name = self.printer_name or win32print.GetDefaultPrinter()
+            assert self.printer_name in self.printers, "Incorrect printer name"
+            # Open device
+            self.device = win32print.OpenPrinter(self.printer_name)
+            if self.device:
+                self.current_job = win32print.StartDocPrinter(
+                    self.device, 1, (job_name, None, "RAW")
+                )
+                win32print.StartPagePrinter(self.device)
+        except (AssertionError, pywintypes.error) as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to start a print job for the printer {self.printer_name}:"
+                    + f"\n{e}"
+                )
+            else:
+                logging.error("Win32Raw printing %s not available", self.printer_name)
+                return
+        logging.info("Win32Raw printer enabled")
 
     @dependency_win32print
     def close(self):
         """Close connection to default printer."""
         if not self._device:
             return
+        logging.info("Closing Win32Raw connection to printer %s", self.printer_name)
         win32print.EndPagePrinter(self.device)
         win32print.EndDocPrinter(self.device)
         win32print.ClosePrinter(self.device)

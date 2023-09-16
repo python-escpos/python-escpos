@@ -8,10 +8,12 @@
 :license: MIT
 """
 
+import logging
 import socket
 from typing import Union
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 
 def is_usable() -> bool:
@@ -61,7 +63,7 @@ class Network(Escpos):
         port: int = 9100,
         timeout: Union[int, float] = 60,
         *args,
-        **kwargs
+        **kwargs,
     ):
         """Initialize network printer.
 
@@ -74,14 +76,35 @@ class Network(Escpos):
         self.port = port
         self.timeout = timeout
 
-    def open(self):
-        """Open TCP socket with ``socket``-library and set it as escpos device."""
-        self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.device.settimeout(self.timeout)
-        self.device.connect((self.host, self.port))
+    def open(self, raise_not_found: bool = True) -> None:
+        """Open TCP socket with ``socket``-library and set it as escpos device.
 
-        if not self.device:
-            print("Could not open socket for {0}".format(self.host))
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device:
+            self.close()
+
+        try:
+            # Open device
+            self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.device.settimeout(self.timeout)
+            self.device.connect((self.host, self.port))
+        except OSError as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Could not open socket for {self.host}:\n{e}"
+                )
+            else:
+                logging.error("Network device %s not found", self.host)
+                return
+        logging.info("Network printer enabled")
 
     def _raw(self, msg):
         """Print any command sent in raw format.
@@ -99,6 +122,7 @@ class Network(Escpos):
         """Close TCP connection."""
         if not self._device:
             return
+        logging.info("Closing Network connection to printer %s", self.host)
         try:
             self.device.shutdown(socket.SHUT_RDWR)
         except socket.error:

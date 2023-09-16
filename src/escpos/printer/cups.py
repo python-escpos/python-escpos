@@ -9,9 +9,12 @@
 """
 
 import functools
+import logging
 import tempfile
+from typing import Optional, Type
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 #: keeps track if the pycups dependency could be loaded (:py:class:`escpos.printer.CupsPrinter`)
 _DEP_PYCUPS = False
@@ -24,7 +27,6 @@ try:
     DEFAULT_HOST = cups.getServer()
     DEFAULT_PORT = cups.getPort()
 except ImportError:
-    print("Error")
     pass
 
 
@@ -103,27 +105,60 @@ class CupsPrinter(Escpos):
         self.pending_job = False
 
     @property
-    def printers(self):
+    def printers(self) -> dict:
         """Available CUPS printers."""
-        return self.device.getPrinters()
+        if self.device:
+            return self.device.getPrinters()
+        return {}
 
-    def open(self, job_name="python-escpos"):
+    def open(
+        self, job_name: str = "python-escpos", raise_not_found: bool = True
+    ) -> None:
         """Set up a new print job and target the printer.
 
         A call to this method is required to send new jobs to
-        the same CUPS connection after close.
+        the CUPS connection after close.
 
         Defaults to default CUPS printer.
         Creates a new temporary file buffer.
+
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
         """
+        if self._device:
+            self.close()
+
         cups.setServer(self.host)
         cups.setPort(self.port)
-        self.device = cups.Connection()
         self.job_name = job_name
-        if self.printer_name not in self.printers:
-            self.printer_name = self.device.getDefault()
         if self.tmpfile.closed:
             self.tmpfile = tempfile.NamedTemporaryFile(delete=True)
+
+        try:
+            # Open device
+            self.device: Optional[Type[cups.Connection]] = cups.Connection()
+            if self.device:
+                # Name validation, set default if no given name
+                self.printer_name = self.printer_name or self.device.getDefault()
+                assert self.printer_name in self.printers, "Incorrect printer name"
+        except (RuntimeError, AssertionError) as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to start a print job for the printer {self.printer_name}:"
+                    + f"\n{e}"
+                )
+            else:
+                logging.error(
+                    "CupsPrinter printing %s not available", self.printer_name
+                )
+                return
+        logging.info("CupsPrinter printer enabled")
 
     def _raw(self, msg):
         """Append any command sent in raw format to temporary file.
@@ -181,5 +216,5 @@ class CupsPrinter(Escpos):
             return
         if self.pending_job:
             self.send()
-        print(f"Closing CUPS connection to printer {self.printer_name}")
+        logging.info("Closing CUPS connection to printer %s", self.printer_name)
         self._device = False

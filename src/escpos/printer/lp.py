@@ -9,11 +9,13 @@
 """
 
 import functools
-import os
+import logging
 import subprocess
 import sys
+from typing import ByteString
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 
 def is_usable() -> bool:
@@ -74,18 +76,48 @@ class LP(Escpos):
         self.auto_flush = kwargs.get("auto_flush", True)
 
     @dependency_linux_lp
-    def open(self):
-        """Invoke _lp_ in a new subprocess and wait for commands."""
+    def open(self, raise_not_found: bool = True) -> None:
+        """Invoke _lp_ in a new subprocess and wait for commands.
+
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device:
+            self.close()
+
+        # Open device
         self.device = subprocess.Popen(
             ["lp", "-d", self.printer_name, "-o", "raw"],
             stdin=subprocess.PIPE,
-            stdout=open(os.devnull, "w"),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
         )
+
+        error: ByteString = b""
+        if self.device and self.device.stderr:
+            error = self.device.stderr.read()
+        if bool(error):
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to start a print job for the printer {self.printer_name}:"
+                    + f"\n{error!r}"
+                )
+            else:
+                logging.error("LP printing %s not available", self.printer_name)
+                return
+        logging.info("LP printer enabled")
 
     def close(self):
         """Stop the subprocess."""
         if not self._device:
             return
+        logging.info("Closing LP connection to printer %s", self.printer_name)
         self.device.terminate()
         self._device = False
 
