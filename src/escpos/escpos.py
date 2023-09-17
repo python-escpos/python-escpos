@@ -894,7 +894,7 @@ class Escpos(object):
             special values 'a' or 'b', referring to fonts 0 and 1.
         :param bold: text in bold
         :param underline: underline mode for text, decimal range 0-2
-        :param normal_textsize: switch to normal textsize if True
+        :param normal_textsize: switch to normal text size if True
         :param double_height: doubles the height of the text
         :param double_width: doubles the width of the text
         :param custom_size: uses custom size specified by width and height

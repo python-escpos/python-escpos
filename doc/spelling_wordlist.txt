@@ -66,6 +66,7 @@ Christoph
 Heuel
 Qian
 Lehtonen
+Kanzler
 
 barcode
 barcodes
