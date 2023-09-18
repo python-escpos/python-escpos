@@ -88,7 +88,6 @@ class CupsPrinter(Escpos):
         """Class constructor for CupsPrinter.
 
         :param printer_name: CUPS printer name (Optional)
-        :type printer_name: str
         :param host: CUPS server host/ip (Optional)
         :type host: str
         :param port: CUPS server port (Optional)

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the Serial printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -21,8 +21,6 @@ _DEP_PYSERIAL = False
 
 try:
     import serial
-
-    # import serial.SerialException
 
     _DEP_PYSERIAL = True
 except ImportError:

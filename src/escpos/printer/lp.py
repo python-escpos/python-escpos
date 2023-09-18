@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the LP printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -67,7 +67,6 @@ class LP(Escpos):
         """LP class constructor.
 
         :param printer_name: CUPS printer name (Optional)
-        :type printer_name: str
         :param auto_flush: Automatic flush after every _raw() (Optional)
         :type auto_flush: bool
         """

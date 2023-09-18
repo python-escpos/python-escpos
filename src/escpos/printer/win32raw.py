@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the Win32Raw printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
