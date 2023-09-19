@@ -599,14 +599,14 @@ class Escpos(object):
 
     def _hw_barcode(
         self,
-        code,
-        bc,
+        code: str,
+        bc: str,
         height: int = 64,
         width: int = 3,
         pos: str = "BELOW",
         font: str = "A",
         align_ct: bool = True,
-        function_type=None,
+        function_type: Optional[str] = None,
         check: bool = True,
     ) -> None:
         """Print Barcode.
@@ -687,8 +687,8 @@ class Escpos(object):
                  :py:exc:`~escpos.exceptions.BarcodeCodeError`
         """
         # If function_type is specified, otherwise use guessing.
-        ft_guess = [ft for ft in ["A", "B"] if bc in BARCODE_TYPES.get(ft)]
-        ft_guess = ft_guess or [None]
+        ft_guess = [ft for ft in ["A", "B"] if bc in BARCODE_TYPES.get(ft, {"": b""})]
+        ft_guess = ft_guess or [""]
         function_type = function_type or ft_guess[0]
 
         if not function_type or not BARCODE_TYPES.get(function_type.upper()):
@@ -889,21 +889,116 @@ class Escpos(object):
 
     def set(
         self,
-        align="left",
-        font="a",
-        bold=False,
-        underline=0,
-        width=1,
-        height=1,
-        density=9,
-        invert=False,
-        smooth=False,
-        flip=False,
-        double_width=False,
-        double_height=False,
-        custom_size=False,
-    ):
+        align: Optional[str] = None,
+        font: Optional[str] = None,
+        bold: Optional[bool] = None,
+        underline: Optional[int] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        density: Optional[int] = None,
+        invert: Optional[bool] = None,
+        smooth: Optional[bool] = None,
+        flip: Optional[bool] = None,
+        normal_textsize: Optional[bool] = None,
+        double_width: Optional[bool] = None,
+        double_height: Optional[bool] = None,
+        custom_size: Optional[bool] = None,
+    ) -> None:
         """Set text properties by sending them to the printer.
+
+        If a value for a parameter is not supplied, nothing is sent
+        for this type of format.
+
+        :param align: horizontal position for text, possible values are:
+
+            * 'center'
+            * 'left'
+            * 'right'
+
+        :param font: font given as an index, a name, or one of the
+            special values 'a' or 'b', referring to fonts 0 and 1.
+        :param bold: text in bold
+        :param underline: underline mode for text, decimal range 0-2
+        :param normal_textsize: switch to normal text size if True
+        :param double_height: doubles the height of the text
+        :param double_width: doubles the width of the text
+        :param custom_size: uses custom size specified by width and height
+            parameters. Cannot be used with double_width or double_height.
+        :param width: text width multiplier when custom_size is used, decimal range 1-8
+        :param height: text height multiplier when custom_size is used, decimal range 1-8
+        :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
+        :param invert: True enables white on black printing
+        :param smooth: True enables text smoothing. Effective on 4x4 size text and larger
+        :param flip: True enables upside-down printing
+        """
+        if custom_size:
+            if (
+                isinstance(width, int)
+                and isinstance(height, int)
+                and 1 <= width <= 8
+                and 1 <= height <= 8
+            ):
+                size_byte = TXT_STYLE["width"][width] + TXT_STYLE["height"][height]
+                self._raw(TXT_SIZE + six.int2byte(size_byte))
+            else:
+                raise SetVariableError()
+        elif normal_textsize or double_height or double_width:
+            self._raw(TXT_NORMAL)
+            if double_width and double_height:
+                self._raw(TXT_STYLE["size"]["2x"])
+            elif double_width:
+                self._raw(TXT_STYLE["size"]["2w"])
+            elif double_height:
+                self._raw(TXT_STYLE["size"]["2h"])
+            else:
+                self._raw(TXT_STYLE["size"]["normal"])
+        else:
+            # no text size handling requested
+            pass
+
+        if flip is not None:
+            self._raw(TXT_STYLE["flip"][flip])
+        if smooth is not None:
+            self._raw(TXT_STYLE["smooth"][smooth])
+        if bold is not None:
+            self._raw(TXT_STYLE["bold"][bold])
+        if underline is not None:
+            self._raw(TXT_STYLE["underline"][underline])
+        if font is not None:
+            self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+        if align is not None:
+            self._raw(TXT_STYLE["align"][align])
+
+        if density is not None and density != 9:
+            self._raw(TXT_STYLE["density"][density])
+
+        if invert is not None:
+            self._raw(TXT_STYLE["invert"][invert])
+
+    def set_with_default(
+        self,
+        align: Optional[str] = "left",
+        font: Optional[str] = "a",
+        bold: Optional[bool] = False,
+        underline: Optional[int] = 0,
+        width: Optional[int] = 1,
+        height: Optional[int] = 1,
+        density: Optional[int] = 9,
+        invert: Optional[bool] = False,
+        smooth: Optional[bool] = False,
+        flip: Optional[bool] = False,
+        double_width: Optional[bool] = False,
+        double_height: Optional[bool] = False,
+        custom_size: Optional[bool] = False,
+    ) -> None:
+        """Set default text properties by sending them to the printer.
+
+        This function has the behavior of the `set()`-method from before
+        version 3.
+        If a parameter to this method is not supplied, a default value
+        will be sent.
+        Otherwise this method forwards the values to the
+        :py:meth:`escpos.Escpos.set()`.
 
         :param align: horizontal position for text, possible values are:
 
@@ -927,54 +1022,24 @@ class Escpos(object):
         :param invert: True enables white on black printing, *default*: False
         :param smooth: True enables text smoothing. Effective on 4x4 size text and larger, *default*: False
         :param flip: True enables upside-down printing, *default*: False
-
-        :type font: str
-        :type invert: bool
-        :type bold: bool
-        :type underline: bool
-        :type smooth: bool
-        :type flip: bool
-        :type custom_size: bool
-        :type double_width: bool
-        :type double_height: bool
-        :type align: str
-        :type width: int
-        :type height: int
-        :type density: int
         """
-        if custom_size:
-            if (
-                isinstance(width, int)
-                and isinstance(height, int)
-                and 1 <= width <= 8
-                and 1 <= height <= 8
-            ):
-                size_byte = TXT_STYLE["width"][width] + TXT_STYLE["height"][height]
-                self._raw(TXT_SIZE + six.int2byte(size_byte))
-            else:
-                raise SetVariableError()
-        else:
-            self._raw(TXT_NORMAL)
-            if double_width and double_height:
-                self._raw(TXT_STYLE["size"]["2x"])
-            elif double_width:
-                self._raw(TXT_STYLE["size"]["2w"])
-            elif double_height:
-                self._raw(TXT_STYLE["size"]["2h"])
-            else:
-                self._raw(TXT_STYLE["size"]["normal"])
-
-        self._raw(TXT_STYLE["flip"][flip])
-        self._raw(TXT_STYLE["smooth"][smooth])
-        self._raw(TXT_STYLE["bold"][bold])
-        self._raw(TXT_STYLE["underline"][underline])
-        self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
-        self._raw(TXT_STYLE["align"][align])
-
-        if density != 9:
-            self._raw(TXT_STYLE["density"][density])
-
-        self._raw(TXT_STYLE["invert"][invert])
+        normal_textsize = not custom_size and not double_width and not double_height
+        self.set(
+            align=align,
+            font=font,
+            bold=bold,
+            underline=underline,
+            width=width,
+            height=height,
+            density=density,
+            invert=invert,
+            smooth=smooth,
+            flip=flip,
+            normal_textsize=normal_textsize,
+            double_width=double_width,
+            double_height=double_height,
+            custom_size=custom_size,
+        )
 
     def line_spacing(self, spacing: Optional[int] = None, divisor: int = 180) -> None:
         """Set line character spacing.

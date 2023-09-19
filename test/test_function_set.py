@@ -1,14 +1,15 @@
+import pytest
 import six
 
 import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
+from escpos.exceptions import SetVariableError
 
-# Default test, please copy and paste this block to test set method calls
 
-
-def test_default_values():
+def test_default_values_with_default():
+    """Default test, please copy and paste this block to test set method calls"""
     instance = printer.Dummy()
-    instance.set()
+    instance.set_with_default()
 
     expected_sequence = (
         TXT_NORMAL,
@@ -25,12 +26,20 @@ def test_default_values():
     assert instance.output == b"".join(expected_sequence)
 
 
+def test_default_values():
+    """Default test"""
+    instance = printer.Dummy()
+    instance.set()
+
+    assert instance.output == b""
+
+
 # Size tests
 
 
 def test_set_size_2h():
     instance = printer.Dummy()
-    instance.set(double_height=True)
+    instance.set_with_default(double_height=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -47,9 +56,21 @@ def test_set_size_2h():
     assert instance.output == b"".join(expected_sequence)
 
 
+def test_set_size_2h_no_default():
+    instance = printer.Dummy()
+    instance.set(double_height=True)
+
+    expected_sequence = (
+        TXT_NORMAL,
+        TXT_STYLE["size"]["2h"],  # Double height text size
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
 def test_set_size_2w():
     instance = printer.Dummy()
-    instance.set(double_width=True)
+    instance.set_with_default(double_width=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -66,9 +87,21 @@ def test_set_size_2w():
     assert instance.output == b"".join(expected_sequence)
 
 
+def test_set_size_2w_no_default():
+    instance = printer.Dummy()
+    instance.set(double_width=True)
+
+    expected_sequence = (
+        TXT_NORMAL,
+        TXT_STYLE["size"]["2w"],  # Double width text size
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
 def test_set_size_2x():
     instance = printer.Dummy()
-    instance.set(double_height=True, double_width=True)
+    instance.set_with_default(double_height=True, double_width=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -85,9 +118,21 @@ def test_set_size_2x():
     assert instance.output == b"".join(expected_sequence)
 
 
+def test_set_size_2x_no_default():
+    instance = printer.Dummy()
+    instance.set(double_width=True, double_height=True)
+
+    expected_sequence = (
+        TXT_NORMAL,
+        TXT_STYLE["size"]["2x"],  # Quad area text size
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
 def test_set_size_custom():
     instance = printer.Dummy()
-    instance.set(custom_size=True, width=8, height=7)
+    instance.set_with_default(custom_size=True, width=8, height=7)
 
     expected_sequence = (
         TXT_SIZE,  # Custom text size, no normal reset
@@ -104,12 +149,34 @@ def test_set_size_custom():
     assert instance.output == b"".join(expected_sequence)
 
 
+@pytest.mark.parametrize("width", [1, 8])
+@pytest.mark.parametrize("height", [1, 8])
+def test_set_size_custom_no_default(width, height):
+    instance = printer.Dummy()
+    instance.set(custom_size=True, width=width, height=height)
+
+    expected_sequence = (
+        TXT_SIZE,  # Custom text size, no normal reset
+        six.int2byte(TXT_STYLE["width"][width] + TXT_STYLE["height"][height]),
+    )
+
+    assert instance.output == b"".join(expected_sequence)
+
+
+@pytest.mark.parametrize("width", [None, 0, 9, 10, 4444])
+@pytest.mark.parametrize("height", [None, 0, 9, 10, 4444])
+def test_set_size_custom_invalid_input(width, height):
+    instance = printer.Dummy()
+    with pytest.raises(SetVariableError):
+        instance.set(custom_size=True, width=width, height=height)
+
+
 # Flip
 
 
 def test_set_flip():
     instance = printer.Dummy()
-    instance.set(flip=True)
+    instance.set_with_default(flip=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -126,12 +193,21 @@ def test_set_flip():
     assert instance.output == b"".join(expected_sequence)
 
 
+def test_set_flip_no_default():
+    instance = printer.Dummy()
+    instance.set(flip=True)
+
+    expected_sequence = (TXT_STYLE["flip"][True],)  # Flip ON
+
+    assert instance.output == b"".join(expected_sequence)
+
+
 # Smooth
 
 
 def test_smooth():
     instance = printer.Dummy()
-    instance.set(smooth=True)
+    instance.set_with_default(smooth=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -153,7 +229,7 @@ def test_smooth():
 
 def test_set_bold():
     instance = printer.Dummy()
-    instance.set(bold=True)
+    instance.set_with_default(bold=True)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -172,7 +248,7 @@ def test_set_bold():
 
 def test_set_underline():
     instance = printer.Dummy()
-    instance.set(underline=1)
+    instance.set_with_default(underline=1)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -191,7 +267,7 @@ def test_set_underline():
 
 def test_set_underline2():
     instance = printer.Dummy()
-    instance.set(underline=2)
+    instance.set_with_default(underline=2)
 
     expected_sequence = (
         TXT_NORMAL,
@@ -213,7 +289,7 @@ def test_set_underline2():
 
 def test_align_center():
     instance = printer.Dummy()
-    instance.set(align="center")
+    instance.set_with_default(align="center")
 
     expected_sequence = (
         TXT_NORMAL,
@@ -232,7 +308,7 @@ def test_align_center():
 
 def test_align_right():
     instance = printer.Dummy()
-    instance.set(align="right")
+    instance.set_with_default(align="right")
 
     expected_sequence = (
         TXT_NORMAL,
@@ -255,7 +331,7 @@ def test_align_right():
 def test_densities():
     for density in range(8):
         instance = printer.Dummy()
-        instance.set(density=density)
+        instance.set_with_default(density=density)
 
         expected_sequence = (
             TXT_NORMAL,
@@ -278,7 +354,7 @@ def test_densities():
 
 def test_invert():
     instance = printer.Dummy()
-    instance.set(invert=True)
+    instance.set_with_default(invert=True)
 
     expected_sequence = (
         TXT_NORMAL,
