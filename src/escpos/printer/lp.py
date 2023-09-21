@@ -12,7 +12,6 @@ import functools
 import logging
 import subprocess
 import sys
-from typing import ByteString
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -74,8 +73,41 @@ class LP(Escpos):
         self.printer_name = printer_name
         self.auto_flush = kwargs.get("auto_flush", True)
 
+    @property
+    def printers(self) -> dict:
+        """Available CUPS printers."""
+        p_names = subprocess.run(
+            ["lpstat", "-e"],  # Get printer names
+            capture_output=True,
+            text=True,
+        )
+        p_devs = subprocess.run(
+            ["lpstat", "-v"],  # Get attached devices
+            capture_output=True,
+            text=True,
+        )
+        # List and trim output lines
+        names = [name for name in p_names.stdout.split("\n") if name]
+        devs = [dev for dev in p_devs.stdout.split("\n") if dev]
+        # return a dict of {printer name: attached device} pairs
+        return {name: dev.split()[-1] for name in names for dev in devs if name in dev}
+
+    def _get_system_default_printer(self) -> str:
+        """Return the system's default printer name."""
+        p_name = subprocess.run(
+            ["lpstat", "-d"],
+            capture_output=True,
+            text=True,
+        )
+        name = p_name.stdout.split()[-1]
+        if name not in self.printers:
+            return ""
+        return name
+
     @dependency_linux_lp
-    def open(self, raise_not_found: bool = True) -> None:
+    def open(
+        self, job_name: str = "python-escpos", raise_not_found: bool = True
+    ) -> None:
         """Invoke _lp_ in a new subprocess and wait for commands.
 
         By default raise an exception if device is not found.
@@ -88,24 +120,25 @@ class LP(Escpos):
         if self._device:
             self.close()
 
-        # Open device
-        self.device = subprocess.Popen(
-            ["lp", "-d", self.printer_name, "-o", "raw"],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE,
-        )
-
-        error: ByteString = b""
-        if self.device and self.device.stderr:
-            error = self.device.stderr.read()
-        if bool(error):
+        self.job_name = job_name
+        try:
+            # Name validation, set default if no given name
+            self.printer_name = self.printer_name or self._get_system_default_printer()
+            assert self.printer_name in self.printers, "Incorrect printer name"
+            # Open device
+            self.device = subprocess.Popen(
+                ["lp", "-d", self.printer_name, "-t", self.job_name, "-o", "raw"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except (AssertionError, subprocess.SubprocessError) as e:
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
                 raise DeviceNotFoundError(
                     f"Unable to start a print job for the printer {self.printer_name}:"
-                    + f"\n{error!r}"
+                    + f"\n{e}"
                 )
             else:
                 logging.error("LP printing %s not available", self.printer_name)
@@ -138,6 +171,6 @@ class LP(Escpos):
         if self.device.stdin.writable():
             self.device.stdin.write(msg)
         else:
-            raise Exception("Not a valid pipe for lp process")
+            raise subprocess.SubprocessError("Not a valid pipe for lp process")
         if self.auto_flush:
             self.flush()
