@@ -11,7 +11,7 @@
 
 import functools
 import logging
-from typing import Optional, Type, Union
+from typing import Optional, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -125,12 +125,13 @@ class Serial(Escpos):
 
         :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
         """
-        if self._device and self.device.is_open:
-            self.close()
+        if self._device:
+            if self.device and self.device.is_open:
+                self.close()
 
         try:
             # Open device
-            self.device: Optional[Type[serial.Serial]] = serial.Serial(
+            self.device: Optional[serial.Serial] = serial.Serial(
                 port=self.devfile,
                 baudrate=self.baudrate,
                 bytesize=self.bytesize,

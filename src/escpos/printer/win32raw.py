@@ -114,7 +114,7 @@ class Win32Raw(Escpos):
             self.device = win32print.OpenPrinter(self.printer_name)
             if self.device:
                 self.current_job = win32print.StartDocPrinter(
-                    self.device, 1, (job_name, None, "RAW")
+                    hprinter=self.device, level=1, _tuple=(job_name, None, "RAW")
                 )
                 win32print.StartPagePrinter(self.device)
         except (AssertionError, pywintypes.error) as e:
