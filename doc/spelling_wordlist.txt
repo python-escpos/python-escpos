@@ -89,6 +89,7 @@ ean
 Ean
 encodable
 fff
+fullimage
 io
 json
 latin
