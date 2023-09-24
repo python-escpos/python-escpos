@@ -11,6 +11,7 @@ It requires you to have a configuration file. See documentation for details.
 
 
 import argparse
+import platform
 
 try:
     import argcomplete
@@ -21,7 +22,9 @@ import sys
 
 import six
 
-from . import config, version
+from . import config
+from . import printer as escpos_printer_module
+from . import version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
@@ -454,6 +457,36 @@ ESCPOS_COMMANDS = [
 ]
 
 
+def print_extended_information() -> None:
+    print(f"* python-escpos version: `{version.version}`")
+    print(
+        f"* python version: `{platform.python_implementation()} v{platform.python_version()}`"
+    )
+    print(f"* platform: `{platform.platform()}`")
+    print(
+        f"* printer driver `USB` is usable: `{escpos_printer_module.Usb.is_usable()}`"
+    )
+    print(
+        f"* printer driver `File` is usable: `{escpos_printer_module.File.is_usable()}`"
+    )
+    print(
+        f"* printer driver `Network` is usable: `{escpos_printer_module.Network.is_usable()}`"
+    )
+    print(
+        f"* printer driver `Serial` is usable: `{escpos_printer_module.Serial.is_usable()}`"
+    )
+    print(f"* printer driver `LP` is usable: `{escpos_printer_module.LP.is_usable()}`")
+    print(
+        f"* printer driver `Dummy` is usable: `{escpos_printer_module.Dummy.is_usable()}`"
+    )
+    print(
+        f"* printer driver `CupsPrinter` is usable: `{escpos_printer_module.CupsPrinter.is_usable()}`"
+    )
+    print(
+        f"* printer driver `Win32Raw` is usable: `{escpos_printer_module.Win32Raw.is_usable()}`"
+    )
+
+
 def main():
     """Handle main entry point of CLI script.
 
@@ -520,9 +553,15 @@ def main():
     )
 
     parser_command_version = command_subparsers.add_parser(
-        "version", help="Print the version of python-escpos"
+        "version", help="Print the version information of python-escpos"
     )
     parser_command_version.set_defaults(version=True)
+
+    parser_command_version_extended = command_subparsers.add_parser(
+        "version_extended",
+        help="Print the extended version information of python-escpos (for bug reports)",
+    )
+    parser_command_version_extended.set_defaults(version_extended=True)
 
     # hook in argcomplete
     if "argcomplete" in globals():
@@ -541,6 +580,11 @@ def main():
     print_version = command_arguments.pop("version", None)
     if print_version:
         print(version.version)
+        sys.exit()
+
+    print_version_extended = command_arguments.pop("version_extended", None)
+    if print_version_extended:
+        print_extended_information()
         sys.exit()
 
     # If there was a config path passed, grab it

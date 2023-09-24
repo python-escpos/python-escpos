@@ -18,7 +18,8 @@ I have:
  **Printer:** Manufacturer Model XVI
 
 <!-- since version 2.0.1 you can type 'python-escpos version' in your shell.
-Alternatively you could use '__version__' in module escpos. -->
+Starting with python-escpos version 3.0, please replace the information below
+with the output of `python-escpos version_extended`. -->
  **python-escpos version:** 0.0.0
 
  **python version:** 0.0
