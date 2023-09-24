@@ -487,12 +487,8 @@ def print_extended_information() -> None:
     )
 
 
-def main():
-    """Handle main entry point of CLI script.
-
-    Handles loading of configuration and creating and processing of command
-    line arguments. Called when run from a CLI.
-    """
+def generate_parser() -> argparse.ArgumentParser:
+    """Generate an argparse parser."""
     parser = argparse.ArgumentParser(
         description="CLI for python-escpos",
         epilog="Printer configuration is defined in the python-escpos config"
@@ -562,6 +558,17 @@ def main():
         help="Print the extended version information of python-escpos (for bug reports)",
     )
     parser_command_version_extended.set_defaults(version_extended=True)
+
+    return parser
+
+
+def main():
+    """Handle main entry point of CLI script.
+
+    Handles loading of configuration and creating and processing of command
+    line arguments. Called when run from a CLI.
+    """
+    parser = generate_parser()
 
     # hook in argcomplete
     if "argcomplete" in globals():
