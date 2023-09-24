@@ -300,7 +300,7 @@ ESCPOS_COMMANDS = [
             },
             {
                 "option_strings": ("--histeq",),
-                "help": "Equalize the histrogram",
+                "help": "Equalize the histogram",
                 "type": str_to_bool,
             },
             {
@@ -458,6 +458,7 @@ ESCPOS_COMMANDS = [
 
 
 def print_extended_information() -> None:
+    """Print diagnostic information for bug reports."""
     print(f"* python-escpos version: `{version.version}`")
     print(
         f"* python version: `{platform.python_implementation()} v{platform.python_version()}`"
