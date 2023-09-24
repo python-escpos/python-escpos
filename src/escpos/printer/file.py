@@ -99,6 +99,7 @@ class File(Escpos):
         if not self._device:
             return
         logging.info("Closing File connection to printer %s", self.devfile)
-        self.device.flush()
+        if not self.auto_flush:
+            self.flush()
         self.device.close()
         self._device = False

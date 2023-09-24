@@ -67,11 +67,11 @@ class LP(Escpos):
 
         :param printer_name: CUPS printer name (Optional)
         :param auto_flush: Automatic flush after every _raw() (Optional)
-        :type auto_flush: bool
+        :type auto_flush: bool (Defaults False)
         """
         Escpos.__init__(self, *args, **kwargs)
         self.printer_name = printer_name
-        self.auto_flush = kwargs.get("auto_flush", True)
+        self.auto_flush = kwargs.get("auto_flush", False)
 
     @property
     def printers(self) -> dict:
@@ -150,6 +150,8 @@ class LP(Escpos):
         if not self._device:
             return
         logging.info("Closing LP connection to printer %s", self.printer_name)
+        if not self.auto_flush:
+            self.flush()
         self.device.terminate()
         self._device = False
 
