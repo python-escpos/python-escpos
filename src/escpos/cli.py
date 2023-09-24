@@ -11,7 +11,7 @@ It requires you to have a configuration file. See documentation for details.
 
 import argparse
 import platform
-from typing import Any
+from typing import Any, Dict, List
 
 try:
     import argcomplete
@@ -95,7 +95,7 @@ DEMO_FUNCTIONS = {
 # parser: A dict of args for command_parsers.add_parser
 # defaults: A dict of args for subparser.set_defaults
 # arguments: A list of dicts of args for subparser.add_argument
-ESCPOS_COMMANDS: list[dict[str, Any]] = [
+ESCPOS_COMMANDS: List[Dict[str, Any]] = [
     {
         "parser": {
             "name": "qr",
