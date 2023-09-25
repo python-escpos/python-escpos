@@ -165,7 +165,7 @@ class Serial(Escpos):
         """Read the data buffer and return it to the caller."""
         return self.device.read(16)
 
-    def close(self):
+    def close(self) -> None:
         """Close Serial interface."""
         if not self._device:
             return
