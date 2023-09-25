@@ -190,7 +190,7 @@ class Usb(Escpos):
         return self.device.read(self.in_ep, 16)
 
     @dependency_usb
-    def close(self):
+    def close(self) -> None:
         """Release USB interface."""
         if not self._device:
             return
