@@ -94,7 +94,7 @@ class File(Escpos):
         if self.auto_flush:
             self.flush()
 
-    def close(self):
+    def close(self) -> None:
         """Close system file."""
         if not self._device:
             return
