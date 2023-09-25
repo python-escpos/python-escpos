@@ -145,7 +145,7 @@ class LP(Escpos):
                 return
         logging.info("LP printer enabled")
 
-    def close(self):
+    def close(self) -> None:
         """Stop the subprocess."""
         if not self._device:
             return
