@@ -155,7 +155,7 @@ class LP(Escpos):
         self.device.terminate()
         self._device = False
 
-    def flush(self):
+    def flush(self) -> None:
         """End line and wait for new commands."""
         if self.device.stdin.writable():
             self.device.stdin.write(b"\n")
