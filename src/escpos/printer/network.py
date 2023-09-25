@@ -118,7 +118,7 @@ class Network(Escpos):
         """Read data from the TCP socket."""
         return self.device.recv(16)
 
-    def close(self):
+    def close(self) -> None:
         """Close TCP connection."""
         if not self._device:
             return
