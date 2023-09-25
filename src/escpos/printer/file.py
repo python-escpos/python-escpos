@@ -80,7 +80,7 @@ class File(Escpos):
                 return
         logging.info("File printer enabled")
 
-    def flush(self):
+    def flush(self) -> None:
         """Flush printing content."""
         self.device.flush()
 
