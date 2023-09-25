@@ -131,7 +131,7 @@ class Win32Raw(Escpos):
         logging.info("Win32Raw printer enabled")
 
     @dependency_win32print
-    def close(self):
+    def close(self) -> None:
         """Close connection to default printer."""
         if not self._device:
             return
