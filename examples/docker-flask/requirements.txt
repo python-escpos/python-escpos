@@ -6,7 +6,7 @@ Flask==2.3.2
 itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.2
-Pillow==9.5.0
+Pillow==10.0.1
 pycups==2.0.1
 pypng==0.20220715.0
 pyserial==3.5
