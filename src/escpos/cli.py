@@ -9,8 +9,9 @@ It requires you to have a configuration file. See documentation for details.
 
 """
 
-
 import argparse
+import platform
+from typing import Any, Dict, List
 
 try:
     import argcomplete
@@ -21,7 +22,9 @@ import sys
 
 import six
 
-from . import config, version
+from . import config
+from . import printer as escpos_printer_module
+from . import version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
@@ -92,7 +95,7 @@ DEMO_FUNCTIONS = {
 # parser: A dict of args for command_parsers.add_parser
 # defaults: A dict of args for subparser.set_defaults
 # arguments: A list of dicts of args for subparser.add_argument
-ESCPOS_COMMANDS = [
+ESCPOS_COMMANDS: List[Dict[str, Any]] = [
     {
         "parser": {
             "name": "qr",
@@ -297,7 +300,7 @@ ESCPOS_COMMANDS = [
             },
             {
                 "option_strings": ("--histeq",),
-                "help": "Equalize the histrogram",
+                "help": "Equalize the histogram",
                 "type": str_to_bool,
             },
             {
@@ -454,12 +457,39 @@ ESCPOS_COMMANDS = [
 ]
 
 
-def main():
-    """Handle main entry point of CLI script.
+def print_extended_information() -> None:
+    """Print diagnostic information for bug reports."""
+    print(f"* python-escpos version: `{version.version}`")
+    print(
+        f"* python version: `{platform.python_implementation()} v{platform.python_version()}`"
+    )
+    print(f"* platform: `{platform.platform()}`")
+    print(
+        f"* printer driver `USB` is usable: `{escpos_printer_module.Usb.is_usable()}`"
+    )
+    print(
+        f"* printer driver `File` is usable: `{escpos_printer_module.File.is_usable()}`"
+    )
+    print(
+        f"* printer driver `Network` is usable: `{escpos_printer_module.Network.is_usable()}`"
+    )
+    print(
+        f"* printer driver `Serial` is usable: `{escpos_printer_module.Serial.is_usable()}`"
+    )
+    print(f"* printer driver `LP` is usable: `{escpos_printer_module.LP.is_usable()}`")
+    print(
+        f"* printer driver `Dummy` is usable: `{escpos_printer_module.Dummy.is_usable()}`"
+    )
+    print(
+        f"* printer driver `CupsPrinter` is usable: `{escpos_printer_module.CupsPrinter.is_usable()}`"
+    )
+    print(
+        f"* printer driver `Win32Raw` is usable: `{escpos_printer_module.Win32Raw.is_usable()}`"
+    )
 
-    Handles loading of configuration and creating and processing of command
-    line arguments. Called when run from a CLI.
-    """
+
+def generate_parser() -> argparse.ArgumentParser:
+    """Generate an argparse parser."""
     parser = argparse.ArgumentParser(
         description="CLI for python-escpos",
         epilog="Printer configuration is defined in the python-escpos config"
@@ -520,9 +550,26 @@ def main():
     )
 
     parser_command_version = command_subparsers.add_parser(
-        "version", help="Print the version of python-escpos"
+        "version", help="Print the version information of python-escpos"
     )
     parser_command_version.set_defaults(version=True)
+
+    parser_command_version_extended = command_subparsers.add_parser(
+        "version_extended",
+        help="Print the extended version information of python-escpos (for bug reports)",
+    )
+    parser_command_version_extended.set_defaults(version_extended=True)
+
+    return parser
+
+
+def main():
+    """Handle main entry point of CLI script.
+
+    Handles loading of configuration and creating and processing of command
+    line arguments. Called when run from a CLI.
+    """
+    parser = generate_parser()
 
     # hook in argcomplete
     if "argcomplete" in globals():
@@ -541,6 +588,11 @@ def main():
     print_version = command_arguments.pop("version", None)
     if print_version:
         print(version.version)
+        sys.exit()
+
+    print_version_extended = command_arguments.pop("version_extended", None)
+    if print_version_extended:
+        print_extended_information()
         sys.exit()
 
     # If there was a config path passed, grab it

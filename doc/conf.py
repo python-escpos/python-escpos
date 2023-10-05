@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.graphviz",
     "sphinx.ext.inheritance_diagram",
     "sphinx.ext.imgconverter",
+    "sphinxarg.ext",
     "sphinxcontrib.datatemplates",
     "sphinxcontrib.spelling",
 ]

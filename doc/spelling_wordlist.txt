@@ -67,6 +67,7 @@ Heuel
 Qian
 Lehtonen
 Kanzler
+Rotondo
 
 barcode
 barcodes
@@ -89,6 +90,7 @@ ean
 Ean
 encodable
 fff
+fullimage
 io
 json
 latin
