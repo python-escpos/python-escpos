@@ -12,10 +12,14 @@ changes
 - has
 - changed
 
+- fix the encoding search so that lower encodings are found first
+
 contributors
 ^^^^^^^^^^^^
 - list
 - contributors
+
+-  Scott Rotondo  in `#570 <https://github.com/python-escpos/python-escpos/issues/570>`_
 
 2023-05-11 - Version 3.0a9 - "Pride Comes Before A Fall"
 --------------------------------------------------------
