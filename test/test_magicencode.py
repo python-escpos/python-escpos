@@ -32,6 +32,13 @@ class TestEncoder:
         assert not Encoder({"CP437": 1}).find_suitable_encoding("€")
         assert Encoder({"CP858": 1}).find_suitable_encoding("€") == "CP858"
 
+    def test_find_suitable_encoding_unnecessary_codepage_swap(self):
+        enc = Encoder({"CP857": 1, "CP437": 2, "CP1252": 3, "CP852": 4, "CP858": 5})
+        # desired behavior would be that the encoder always stays in the lower
+        # available codepages if possible
+        for character in ("Á", "É", "Í", "Ó", "Ú"):
+            assert enc.find_suitable_encoding(character) == "CP857"
+
     def test_get_encoding(self):
         with pytest.raises(ValueError):
             Encoder({}).get_encoding_name("latin1")
