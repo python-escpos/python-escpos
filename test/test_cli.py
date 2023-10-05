@@ -81,6 +81,14 @@ class TestCLI:
         assert not result.stderr
         assert escpos.__version__ == result.stdout.strip()
 
+    def test_cli_version_extended(self):
+        """Test the extended version information"""
+        result = self.env.run("python-escpos", "version_extended")
+        assert not result.stderr
+        assert escpos.__version__ in result.stdout
+        # test that additional information on e.g. Serial is printed
+        assert "Serial" in result.stdout
+
     @pytest.mark.skip(
         reason="disable this test as it is not that easy anymore to predict the outcome of this call"
     )

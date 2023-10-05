@@ -24,6 +24,7 @@ are relevant to the user of this library.
    user/printers
    user/raspi
    user/usage
+   user/cli-user
    user/barcode
 
 Printer profiles
