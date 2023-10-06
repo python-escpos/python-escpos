@@ -72,6 +72,7 @@ class LP(Escpos):
         Escpos.__init__(self, *args, **kwargs)
         self.printer_name = printer_name
         self.auto_flush = kwargs.get("auto_flush", False)
+        self._flushed = False
 
     @property
     def printers(self) -> dict:
@@ -106,7 +107,10 @@ class LP(Escpos):
 
     @dependency_linux_lp
     def open(
-        self, job_name: str = "python-escpos", raise_not_found: bool = True
+        self,
+        job_name: str = "python-escpos",
+        raise_not_found: bool = True,
+        _close_opened: bool = True,
     ) -> None:
         """Invoke _lp_ in a new subprocess and wait for commands.
 
@@ -117,8 +121,10 @@ class LP(Escpos):
 
         :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
         """
-        if self._device:
+        if self._device and _close_opened:
             self.close()
+
+        self._is_closing = False
 
         self.job_name = job_name
         try:
@@ -150,6 +156,7 @@ class LP(Escpos):
         if not self._device:
             return
         logging.info("Closing LP connection to printer %s", self.printer_name)
+        self._is_closing = True
         if not self.auto_flush:
             self.flush()
         self.device.terminate()
@@ -157,12 +164,17 @@ class LP(Escpos):
 
     def flush(self) -> None:
         """End line and wait for new commands."""
+        if self._flushed:
+            return
+
         if self.device.stdin.writable():
             self.device.stdin.write(b"\n")
         if self.device.stdin.closed is False:
             self.device.stdin.close()
         self.device.wait()
-        self.open()
+        self._flushed = True
+        if not self._is_closing:
+            self.open(_close_opened=False)
 
     def _raw(self, msg):
         """Write raw command(s) to the printer.
@@ -174,5 +186,6 @@ class LP(Escpos):
             self.device.stdin.write(msg)
         else:
             raise subprocess.SubprocessError("Not a valid pipe for lp process")
+        self._flushed = False
         if self.auto_flush:
             self.flush()
