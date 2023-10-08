@@ -11,7 +11,7 @@
 
 import functools
 import logging
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -63,6 +63,8 @@ class Serial(Escpos):
         :parts: 1
 
     """
+
+    _device: Union[Literal[False], Literal[None], serial.Serial] = False
 
     @staticmethod
     def is_usable() -> bool:
@@ -170,7 +172,7 @@ class Serial(Escpos):
         if not self._device:
             return
         logging.info("Closing Serial connection to printer %s", self.devfile)
-        if self.device.is_open:
-            self.device.flush()
-            self.device.close()
+        if self._device and self._device.is_open:
+            self._device.flush()
+            self._device.close()
         self._device = False

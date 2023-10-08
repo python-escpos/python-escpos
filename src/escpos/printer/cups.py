@@ -11,7 +11,7 @@
 import functools
 import logging
 import tempfile
-from typing import Optional, Type
+from typing import Literal, Optional, Type, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -73,6 +73,8 @@ class CupsPrinter(Escpos):
         :parts: 1
 
     """
+
+    _device: Union[Literal[False], Literal[None], cups.Connection] = False
 
     @staticmethod
     def is_usable() -> bool:

@@ -10,6 +10,7 @@
 
 import functools
 import logging
+from typing import Literal, Optional, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -18,6 +19,7 @@ from ..exceptions import DeviceNotFoundError
 _DEP_WIN32PRINT = False
 
 try:
+    import _win32typing
     import pywintypes
     import win32print
 
@@ -62,6 +64,8 @@ class Win32Raw(Escpos):
         :parts: 1
 
     """
+
+    _device: Union[Literal[False], Literal[None], _win32typing.PyPrinterHANDLE] = False
 
     @staticmethod
     def is_usable() -> bool:
@@ -111,7 +115,9 @@ class Win32Raw(Escpos):
             self.printer_name = self.printer_name or win32print.GetDefaultPrinter()
             assert self.printer_name in self.printers, "Incorrect printer name"
             # Open device
-            self.device = win32print.OpenPrinter(self.printer_name)
+            self.device: Optional[
+                _win32typing.PyPrinterHANDLE
+            ] = win32print.OpenPrinter(self.printer_name)
             if self.device:
                 self.current_job = win32print.StartDocPrinter(
                     hprinter=self.device, level=1, _tuple=(job_name, None, "RAW")
@@ -136,9 +142,9 @@ class Win32Raw(Escpos):
         if not self._device:
             return
         logging.info("Closing Win32Raw connection to printer %s", self.printer_name)
-        win32print.EndPagePrinter(self.device)
-        win32print.EndDocPrinter(self.device)
-        win32print.ClosePrinter(self.device)
+        win32print.EndPagePrinter(self._device)
+        win32print.EndDocPrinter(self._device)
+        win32print.ClosePrinter(self._device)
         self._device = False
 
     @dependency_win32print

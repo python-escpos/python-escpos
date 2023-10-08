@@ -9,7 +9,7 @@
 """
 import functools
 import logging
-from typing import Dict, Optional, Type, Union
+from typing import Dict, Literal, Optional, Type, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError, USBNotFoundError
@@ -62,6 +62,8 @@ class Usb(Escpos):
         :parts: 1
 
     """
+
+    _device: Union[Literal[False], Literal[None], Type[usb.core.Device]] = False
 
     @staticmethod
     def is_usable() -> bool:
@@ -197,5 +199,5 @@ class Usb(Escpos):
         logging.info(
             "Closing Usb connection to printer %s", tuple(self.usb_args.values())
         )
-        usb.util.dispose_resources(self.device)
+        usb.util.dispose_resources(self._device)
         self._device = False

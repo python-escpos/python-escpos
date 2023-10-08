@@ -12,6 +12,7 @@ import functools
 import logging
 import subprocess
 import sys
+from typing import Literal, Optional, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -52,6 +53,8 @@ class LP(Escpos):
         :parts: 1
 
     """
+
+    _device: Union[Literal[False], Literal[None], subprocess.Popen] = False
 
     @staticmethod
     def is_usable() -> bool:
@@ -132,7 +135,7 @@ class LP(Escpos):
             self.printer_name = self.printer_name or self._get_system_default_printer()
             assert self.printer_name in self.printers, "Incorrect printer name"
             # Open device
-            self.device = subprocess.Popen(
+            self.device: Optional[subprocess.Popen] = subprocess.Popen(
                 ["lp", "-d", self.printer_name, "-t", self.job_name, "-o", "raw"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.DEVNULL,
@@ -159,11 +162,14 @@ class LP(Escpos):
         self._is_closing = True
         if not self.auto_flush:
             self.flush()
-        self.device.terminate()
+        self._device.terminate()
         self._device = False
 
     def flush(self) -> None:
         """End line and wait for new commands."""
+        if not self.device or not self.device.stdin:
+            return
+
         if self._flushed:
             return
 

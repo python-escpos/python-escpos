@@ -9,6 +9,7 @@
 """
 
 import logging
+from typing import IO, Literal, Optional, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -32,6 +33,8 @@ class File(Escpos):
         :parts: 1
 
     """
+
+    _device: Union[Literal[False], Literal[None], IO[bytes]] = False
 
     @staticmethod
     def is_usable() -> bool:
@@ -67,7 +70,7 @@ class File(Escpos):
 
         try:
             # Open device
-            self.device = open(self.devfile, "wb")
+            self.device: Optional[IO[bytes]] = open(self.devfile, "wb")
         except OSError as e:
             # Raise exception or log error and cancel
             self.device = None
@@ -82,7 +85,8 @@ class File(Escpos):
 
     def flush(self) -> None:
         """Flush printing content."""
-        self.device.flush()
+        if self.device:
+            self.device.flush()
 
     def _raw(self, msg):
         """Print any command sent in raw format.
@@ -101,5 +105,5 @@ class File(Escpos):
         logging.info("Closing File connection to printer %s", self.devfile)
         if not self.auto_flush:
             self.flush()
-        self.device.close()
+        self._device.close()
         self._device = False

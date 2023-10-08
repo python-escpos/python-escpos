@@ -10,7 +10,7 @@
 
 import logging
 import socket
-from typing import Union
+from typing import Literal, Optional, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -47,6 +47,8 @@ class Network(Escpos):
         :parts: 1
 
     """
+
+    _device: Union[Literal[False], Literal[None], socket.socket] = False
 
     @staticmethod
     def is_usable() -> bool:
@@ -91,7 +93,9 @@ class Network(Escpos):
 
         try:
             # Open device
-            self.device = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.device: Optional[socket.socket] = socket.socket(
+                socket.AF_INET, socket.SOCK_STREAM
+            )
             self.device.settimeout(self.timeout)
             self.device.connect((self.host, self.port))
         except OSError as e:
@@ -124,8 +128,8 @@ class Network(Escpos):
             return
         logging.info("Closing Network connection to printer %s", self.host)
         try:
-            self.device.shutdown(socket.SHUT_RDWR)
+            self._device.shutdown(socket.SHUT_RDWR)
         except socket.error:
             pass
-        self.device.close()
+        self._device.close()
         self._device = False
