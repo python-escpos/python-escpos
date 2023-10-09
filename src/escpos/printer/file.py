@@ -34,8 +34,6 @@ class File(Escpos):
 
     """
 
-    _device: Union[Literal[False], Literal[None], IO[bytes]] = False
-
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
@@ -54,6 +52,8 @@ class File(Escpos):
         Escpos.__init__(self, *args, **kwargs)
         self.devfile = devfile
         self.auto_flush = auto_flush
+
+        self._device: Union[Literal[False], Literal[None], IO[bytes]] = False
 
     def open(self, raise_not_found: bool = True) -> None:
         """Open system file.

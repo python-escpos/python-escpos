@@ -74,8 +74,6 @@ class CupsPrinter(Escpos):
 
     """
 
-    _device: Union[Literal[False], Literal[None], cups.Connection] = False
-
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
@@ -104,6 +102,10 @@ class CupsPrinter(Escpos):
         self.printer_name = printer_name
         self.job_name = ""
         self.pending_job = False
+
+        self._device: Union[
+            Literal[False], Literal[None], Type[cups.Connection]
+        ] = False
 
     @property
     def printers(self) -> dict:

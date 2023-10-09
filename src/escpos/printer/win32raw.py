@@ -65,10 +65,6 @@ class Win32Raw(Escpos):
 
     """
 
-    _device: Union[
-        Literal[False], Literal[None], "_win32typing.PyPrinterHANDLE"  # noqa: F821
-    ] = False
-
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
@@ -84,6 +80,10 @@ class Win32Raw(Escpos):
         Escpos.__init__(self, *args, **kwargs)
         self.printer_name = printer_name
         self.job_name = ""
+
+        self._device: Union[
+            Literal[False], Literal[None], "_win32typing.PyPrinterHANDLE"  # noqa: F821
+        ] = False
 
     @property
     @dependency_win32print

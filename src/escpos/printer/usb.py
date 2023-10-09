@@ -63,8 +63,6 @@ class Usb(Escpos):
 
     """
 
-    _device: Union[Literal[False], Literal[None], Type[usb.core.Device]] = False
-
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
@@ -104,6 +102,10 @@ class Usb(Escpos):
             self.usb_args["idVendor"] = idVendor
         if idProduct:
             self.usb_args["idProduct"] = idProduct
+
+        self._device: Union[
+            Literal[False], Literal[None], Type[usb.core.Device]
+        ] = False
 
     @dependency_usb
     def open(self, raise_not_found: bool = True) -> None:

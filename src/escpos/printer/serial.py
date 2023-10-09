@@ -64,8 +64,6 @@ class Serial(Escpos):
 
     """
 
-    _device: Union[Literal[False], Literal[None], serial.Serial] = False
-
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
@@ -115,6 +113,8 @@ class Serial(Escpos):
             self.stopbits = serial.STOPBITS_ONE
         self.xonxoff = xonxoff
         self.dsrdtr = dsrdtr
+
+        self._device: Union[Literal[False], Literal[None], serial.Serial] = False
 
     @dependency_pyserial
     def open(self, raise_not_found: bool = True) -> None:

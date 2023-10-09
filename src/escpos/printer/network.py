@@ -48,8 +48,6 @@ class Network(Escpos):
 
     """
 
-    _device: Union[Literal[False], Literal[None], socket.socket] = False
-
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
@@ -77,6 +75,8 @@ class Network(Escpos):
         self.host = host
         self.port = port
         self.timeout = timeout
+
+        self._device: Union[Literal[False], Literal[None], socket.socket] = False
 
     def open(self, raise_not_found: bool = True) -> None:
         """Open TCP socket with ``socket``-library and set it as escpos device.

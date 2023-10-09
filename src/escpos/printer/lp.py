@@ -54,8 +54,6 @@ class LP(Escpos):
 
     """
 
-    _device: Union[Literal[False], Literal[None], subprocess.Popen] = False
-
     @staticmethod
     def is_usable() -> bool:
         """Indicate whether this printer class is usable.
@@ -76,6 +74,8 @@ class LP(Escpos):
         self.printer_name = printer_name
         self.auto_flush = kwargs.get("auto_flush", False)
         self._flushed = False
+
+        self._device: Union[Literal[False], Literal[None], subprocess.Popen] = False
 
     @property
     def printers(self) -> dict:
