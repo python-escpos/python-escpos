@@ -18,6 +18,7 @@ from ..exceptions import DeviceNotFoundError
 #: keeps track if the win32print dependency could be loaded (:py:class:`escpos.printer.Win32Raw`)
 _DEP_WIN32PRINT = False
 
+
 try:
     import _win32typing
     import pywintypes
@@ -65,7 +66,9 @@ class Win32Raw(Escpos):
 
     """
 
-    _device: Union[Literal[False], Literal[None], _win32typing.PyPrinterHANDLE] = False
+    _device: Union[
+        Literal[False], Literal[None], "_win32typing.PyPrinterHANDLE"
+    ] = False
 
     @staticmethod
     def is_usable() -> bool:
@@ -84,6 +87,7 @@ class Win32Raw(Escpos):
         self.job_name = ""
 
     @property
+    @dependency_win32print
     def printers(self) -> dict:
         """Available Windows printers."""
         return {
@@ -116,7 +120,7 @@ class Win32Raw(Escpos):
             assert self.printer_name in self.printers, "Incorrect printer name"
             # Open device
             self.device: Optional[
-                _win32typing.PyPrinterHANDLE
+                "_win32typing.PyPrinterHANDLE"
             ] = win32print.OpenPrinter(self.printer_name)
             if self.device:
                 self.current_job = win32print.StartDocPrinter(
