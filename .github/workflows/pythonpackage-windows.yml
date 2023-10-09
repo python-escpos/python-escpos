@@ -1,7 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
-name: Python package
+name: Python package on Windows
 
 on:
   push:
@@ -12,10 +9,10 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.11', '3.12']
 
     steps:
     - uses: actions/checkout@v4
@@ -27,16 +24,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y graphviz libenchant-2-2 gcc libcups2-dev python3-dev xindy
         python -m pip install --upgrade pip
         pip install flake8 pytest tox tox-gh-actions
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Check sorting of imports
-      uses: isort/isort-action@master
-      with:
-        requirementsFiles: "requirements.txt doc/requirements.txt"
-        sortPaths: "./doc ./src ./examples ./test ./setup.py"
+        If (Test-Path .\requirements.txt) { pip install -r .\requirements.txt }
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -47,12 +37,12 @@ jobs:
       run: |
         tox
       env:
-        ESCPOS_CAPABILITIES_FILE: /home/runner/work/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
+        ESCPOS_CAPABILITIES_FILE: D:\a\python-escpos\python-escpos\capabilities-data\dist\capabilities.json
     - name: Test mypy with tox
       run: |
         tox -e mypy
       env:
-        ESCPOS_CAPABILITIES_FILE: /home/runner/work/python-escpos/python-escpos/capabilities-data/dist/capabilities.json
+        ESCPOS_CAPABILITIES_FILE: D:\a\python-escpos\python-escpos\capabilities-data\dist\capabilities.json
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
