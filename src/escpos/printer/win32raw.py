@@ -20,6 +20,7 @@ _DEP_WIN32PRINT = False
 
 
 try:
+    import _win32typing
     import pywintypes
     import win32print
 
@@ -82,7 +83,7 @@ class Win32Raw(Escpos):
         self.job_name = ""
 
         self._device: Union[
-            Literal[False], Literal[None], "_win32typing.PyPrinterHANDLE"  # noqa: F821
+            Literal[False], Literal[None], "_win32typing.PyPrinterHANDLE"
         ] = False
 
     @property
@@ -119,11 +120,11 @@ class Win32Raw(Escpos):
             assert self.printer_name in self.printers, "Incorrect printer name"
             # Open device
             self.device: Optional[
-                "_win32typing.PyPrinterHANDLE"  # noqa: F821
+                "_win32typing.PyPrinterHANDLE"
             ] = win32print.OpenPrinter(self.printer_name)
             if self.device:
                 self.current_job = win32print.StartDocPrinter(
-                    self.device, 1, (job_name, None, "RAW")
+                    self.device, (job_name, None, "RAW"), 1
                 )
                 win32print.StartPagePrinter(self.device)
         except (AssertionError, pywintypes.error) as e:
