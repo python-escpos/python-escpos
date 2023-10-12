@@ -20,8 +20,8 @@ _DEP_WIN32PRINT = False
 
 
 try:
-    import _win32typing
     import pywintypes
+    import win32helper.win32typing as _win32typing  # pywin32-stubs package
     import win32print
 
     _DEP_WIN32PRINT = True
@@ -92,9 +92,7 @@ class Win32Raw(Escpos):
         """Available Windows printers."""
         return {
             printer["pPrinterName"]: printer
-            for printer in win32print.EnumPrinters(
-                win32print.PRINTER_ENUM_NAME, None, 4
-            )
+            for printer in win32print.EnumPrinters(win32print.PRINTER_ENUM_NAME, "", 4)
         }
 
     @dependency_win32print
@@ -124,7 +122,7 @@ class Win32Raw(Escpos):
             ] = win32print.OpenPrinter(self.printer_name)
             if self.device:
                 self.current_job = win32print.StartDocPrinter(
-                    self.device, (job_name, None, "RAW"), 1
+                    self.device, 1, (job_name, None, "RAW")
                 )
                 win32print.StartPagePrinter(self.device)
         except (AssertionError, pywintypes.error) as e:
