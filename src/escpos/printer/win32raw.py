@@ -87,7 +87,6 @@ class Win32Raw(Escpos):
         ] = False
 
     @property
-    @dependency_win32print
     def printers(self) -> dict:
         """Available Windows printers."""
         return {
@@ -95,7 +94,6 @@ class Win32Raw(Escpos):
             for printer in win32print.EnumPrinters(win32print.PRINTER_ENUM_NAME, "", 4)
         }
 
-    @dependency_win32print
     def open(
         self, job_name: str = "python-escpos", raise_not_found: bool = True
     ) -> None:
@@ -138,7 +136,6 @@ class Win32Raw(Escpos):
                 return
         logging.info("Win32Raw printer enabled")
 
-    @dependency_win32print
     def close(self) -> None:
         """Close connection to default printer."""
         if not self._device:
@@ -149,7 +146,6 @@ class Win32Raw(Escpos):
         win32print.ClosePrinter(self._device)
         self._device = False
 
-    @dependency_win32print
     def _raw(self, msg):
         """Print any command sent in raw format.
 

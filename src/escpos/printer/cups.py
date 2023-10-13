@@ -176,7 +176,6 @@ class CupsPrinter(Escpos):
             self.pending_job = False
             raise ValueError("Printer job not opened")
 
-    @dependency_pycups
     def send(self):
         """Send the print job to the printer."""
         if self.pending_job:

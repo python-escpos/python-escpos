@@ -63,6 +63,7 @@ class LP(Escpos):
         """
         return is_usable()
 
+    @dependency_linux_lp
     def __init__(self, printer_name: str = "", *args, **kwargs):
         """LP class constructor.
 
@@ -108,7 +109,6 @@ class LP(Escpos):
             return ""
         return name
 
-    @dependency_linux_lp
     def open(
         self,
         job_name: str = "python-escpos",
