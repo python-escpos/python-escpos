@@ -10,7 +10,7 @@
 
 import functools
 import logging
-from typing import Literal, Optional, Union
+from typing import Literal, Optional, Type, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -20,8 +20,6 @@ _DEP_WIN32PRINT = False
 
 
 try:
-    import pywintypes
-    import win32helper.win32typing as _win32typing  # pywin32-stubs package
     import win32print
 
     _DEP_WIN32PRINT = True
@@ -83,7 +81,9 @@ class Win32Raw(Escpos):
         self.job_name = ""
 
         self._device: Union[
-            Literal[False], Literal[None], "_win32typing.PyPrinterHANDLE"
+            Literal[False],
+            Literal[None],
+            Type[win32print.OpenPrinter],
         ] = False
 
     @property
@@ -118,14 +118,14 @@ class Win32Raw(Escpos):
             assert self.printer_name in self.printers, "Incorrect printer name"
             # Open device
             self.device: Optional[
-                "_win32typing.PyPrinterHANDLE"
+                Type[win32print.OpenPrinter]
             ] = win32print.OpenPrinter(self.printer_name)
             if self.device:
                 self.current_job = win32print.StartDocPrinter(
                     self.device, 1, (job_name, None, "RAW")
                 )
                 win32print.StartPagePrinter(self.device)
-        except (AssertionError, pywintypes.error) as e:
+        except AssertionError as e:
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
