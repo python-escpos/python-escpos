@@ -7,21 +7,87 @@ This is the major release of the new version 3.0.
 A big thank you to @belono for their many contributions
 for the finalization of v3!
 
-TODO summary of changes (rough)
+The third major release of this library dropy support for
+Python 2 and required a Python version of at least 3.8.
+The API has been reworked to be more consistent and two
+new concepts have been introduced:
+
+`Capabilities` allow the library to know which features
+the currently used printer implements and send fitting
+commands.
+`Magic Encode` is a new feature that uses the
+capability information and encodes Unicode automatically
+with the correct code page while sending also the
+code page change commands.
+
+The license of the project has been changed to MIT
+in accordance with its contributors.
+
+The changes listed here are a summary of the changes
+of the previous alpha releases. For details please
+read the changelog of the alpha releases.
+
 
 changes
 ^^^^^^^
-- TODO summary of changes (details)
-
+- change the project's license to MIT in accordance with the contributors (see python-escpos/python-escpos#171)
+- feature: add "capabilities" which are shared with escpos-php, capabilities are stored in
+  `escpos-printer-db <https://github.com/receipt-print-hq/escpos-printer-db>`_
+- feature: the driver tries now to guess the appropriate codepage and sets it automatically (called "magic encode")
+- as an alternative you can force the codepage with the old API
 - fix the encoding search so that lower encodings are found first
-- add GitHub action for test on Windows
+- automatically handle cases where full cut or partial cut is not available
+- refactor of the set-method
+- preliminary support of POS "line display" printing
+- add support for software-based barcode-rendering
+- make feed for cut optional
+- implemented paper sensor querying command
+- Include support for CUPS based printer interfaces
+- add Win32Raw-Printer on Windows-platforms
+- add and improve Windows support of USB-class
+- pickle capabilities for faster startup
 
 contributors
 ^^^^^^^^^^^^
-- TODO all contributors since last v2 release.
+This is a list of contributors since the last v2 release.
 
--  Scott Rotondo  in `#570 <https://github.com/python-escpos/python-escpos/issues/570>`_
--  Patrick Kanzler
+- Ahmed Tahri
+- akeonly
+- Alexander Bougakov
+- AlexandroJaez
+- Asuki Kono
+- belono
+- brendanhowell
+- Brian
+- Christoph Heuel
+- csoft2k
+- Curtis // mashedkeyboard
+- Dmytro Katyukha
+- Foaly
+- Gerard Marull-Paretas
+- Justin Vieira
+- kedare
+- kennedy
+- Lucy Linder
+- Maximilian Wagenbach
+- Michael Billington
+- Michael Elsdörfer
+- mrwunderbar666
+- NullYing
+- Omer Akram
+- Patrick Kanzler
+- primax79
+- Ramon Poca
+- reck31
+- Romain Porte
+- Sam Cheng
+- Scott Rotondo
+- Sergio Pulgarin
+- Thijs Triemstra
+- Yaisel Hurtado
+- ysuolmai
+
+and others
 
 2023-05-11 - Version 3.0a9 - "Pride Comes Before A Fall"
 --------------------------------------------------------
