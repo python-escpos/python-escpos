@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the LP printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -9,11 +9,13 @@
 """
 
 import functools
-import os
+import logging
 import subprocess
 import sys
+from typing import Literal, Optional, Union
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 
 def is_usable() -> bool:
@@ -61,40 +63,124 @@ class LP(Escpos):
         """
         return is_usable()
 
-    def __init__(self, printer_name: str, *args, **kwargs):
+    @dependency_linux_lp
+    def __init__(self, printer_name: str = "", *args, **kwargs):
         """LP class constructor.
 
         :param printer_name: CUPS printer name (Optional)
-        :type printer_name: str
         :param auto_flush: Automatic flush after every _raw() (Optional)
-        :type auto_flush: bool
+        :type auto_flush: bool (Defaults False)
         """
         Escpos.__init__(self, *args, **kwargs)
         self.printer_name = printer_name
-        self.auto_flush = kwargs.get("auto_flush", True)
-        self.open()
+        self.auto_flush = kwargs.get("auto_flush", False)
+        self._flushed = False
 
-    @dependency_linux_lp
-    def open(self):
-        """Invoke _lp_ in a new subprocess and wait for commands."""
-        self.lp = subprocess.Popen(
-            ["lp", "-d", self.printer_name, "-o", "raw"],
-            stdin=subprocess.PIPE,
-            stdout=open(os.devnull, "w"),
+        self._device: Union[Literal[False], Literal[None], subprocess.Popen] = False
+
+    @property
+    def printers(self) -> dict:
+        """Available CUPS printers."""
+        p_names = subprocess.run(
+            ["lpstat", "-e"],  # Get printer names
+            capture_output=True,
+            text=True,
         )
+        p_devs = subprocess.run(
+            ["lpstat", "-v"],  # Get attached devices
+            capture_output=True,
+            text=True,
+        )
+        # List and trim output lines
+        names = [name for name in p_names.stdout.split("\n") if name]
+        devs = [dev for dev in p_devs.stdout.split("\n") if dev]
+        # return a dict of {printer name: attached device} pairs
+        return {name: dev.split()[-1] for name in names for dev in devs if name in dev}
 
-    def close(self):
+    def _get_system_default_printer(self) -> str:
+        """Return the system's default printer name."""
+        p_name = subprocess.run(
+            ["lpstat", "-d"],
+            capture_output=True,
+            text=True,
+        )
+        name = p_name.stdout.split()[-1]
+        if name not in self.printers:
+            return ""
+        return name
+
+    def open(
+        self,
+        job_name: str = "python-escpos",
+        raise_not_found: bool = True,
+        _close_opened: bool = True,
+    ) -> None:
+        """Invoke _lp_ in a new subprocess and wait for commands.
+
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device and _close_opened:
+            self.close()
+
+        self._is_closing = False
+
+        self.job_name = job_name
+        try:
+            # Name validation, set default if no given name
+            self.printer_name = self.printer_name or self._get_system_default_printer()
+            assert self.printer_name in self.printers, "Incorrect printer name"
+            # Open device
+            self.device: Optional[subprocess.Popen] = subprocess.Popen(
+                ["lp", "-d", self.printer_name, "-t", self.job_name, "-o", "raw"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except (AssertionError, subprocess.SubprocessError) as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to start a print job for the printer {self.printer_name}:"
+                    + f"\n{e}"
+                )
+            else:
+                logging.error("LP printing %s not available", self.printer_name)
+                return
+        logging.info("LP printer enabled")
+
+    def close(self) -> None:
         """Stop the subprocess."""
-        self.lp.terminate()
+        if not self._device:
+            return
+        logging.info("Closing LP connection to printer %s", self.printer_name)
+        self._is_closing = True
+        if not self.auto_flush:
+            self.flush()
+        self._device.terminate()
+        self._device = False
 
-    def flush(self):
+    def flush(self) -> None:
         """End line and wait for new commands."""
-        if self.lp.stdin.writable():
-            self.lp.stdin.write(b"\n")
-        if self.lp.stdin.closed is False:
-            self.lp.stdin.close()
-        self.lp.wait()
-        self.open()
+        if not self.device or not self.device.stdin:
+            return
+
+        if self._flushed:
+            return
+
+        if self.device.stdin.writable():
+            self.device.stdin.write(b"\n")
+        if self.device.stdin.closed is False:
+            self.device.stdin.close()
+        self.device.wait()
+        self._flushed = True
+        if not self._is_closing:
+            self.open(_close_opened=False)
 
     def _raw(self, msg):
         """Write raw command(s) to the printer.
@@ -102,9 +188,10 @@ class LP(Escpos):
         :param msg: arbitrary code to be printed
         :type msg: bytes
         """
-        if self.lp.stdin.writable():
-            self.lp.stdin.write(msg)
+        if self.device.stdin.writable():
+            self.device.stdin.write(msg)
         else:
-            raise Exception("Not a valid pipe for lp process")
+            raise subprocess.SubprocessError("Not a valid pipe for lp process")
+        self._flushed = False
         if self.auto_flush:
             self.flush()

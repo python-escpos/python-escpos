@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the File printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -8,7 +8,11 @@
 :license: MIT
 """
 
+import logging
+from typing import IO, Literal, Optional, Union
+
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 
 def is_usable() -> bool:
@@ -39,7 +43,7 @@ class File(Escpos):
         """
         return is_usable()
 
-    def __init__(self, devfile="/dev/usb/lp0", auto_flush=True, *args, **kwargs):
+    def __init__(self, devfile: str = "", auto_flush: bool = True, *args, **kwargs):
         """Initialize file printer with device file.
 
         :param devfile: Device file under dev filesystem
@@ -48,18 +52,41 @@ class File(Escpos):
         Escpos.__init__(self, *args, **kwargs)
         self.devfile = devfile
         self.auto_flush = auto_flush
-        self.open()
 
-    def open(self):
-        """Open system file."""
-        self.device = open(self.devfile, "wb")
+        self._device: Union[Literal[False], Literal[None], IO[bytes]] = False
 
-        if self.device is None:
-            print("Could not open the specified file {0}".format(self.devfile))
+    def open(self, raise_not_found: bool = True) -> None:
+        """Open system file.
 
-    def flush(self):
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device:
+            self.close()
+
+        try:
+            # Open device
+            self.device: Optional[IO[bytes]] = open(self.devfile, "wb")
+        except OSError as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Could not open the specified file {self.devfile}:\n{e}"
+                )
+            else:
+                logging.error("File printer %s not found", self.devfile)
+                return
+        logging.info("File printer enabled")
+
+    def flush(self) -> None:
         """Flush printing content."""
-        self.device.flush()
+        if self.device:
+            self.device.flush()
 
     def _raw(self, msg):
         """Print any command sent in raw format.
@@ -71,8 +98,12 @@ class File(Escpos):
         if self.auto_flush:
             self.flush()
 
-    def close(self):
+    def close(self) -> None:
         """Close system file."""
-        if self.device is not None:
-            self.device.flush()
-            self.device.close()
+        if not self._device:
+            return
+        logging.info("Closing File connection to printer %s", self.devfile)
+        if not self.auto_flush:
+            self.flush()
+        self._device.close()
+        self._device = False

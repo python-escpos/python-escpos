@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the Serial printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -10,8 +10,11 @@
 
 
 import functools
+import logging
+from typing import Literal, Optional, Union
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 #: keeps track if the pyserial dependency could be loaded (:py:class:`escpos.printer.Serial`)
 _DEP_PYSERIAL = False
@@ -73,16 +76,16 @@ class Serial(Escpos):
     @dependency_pyserial
     def __init__(
         self,
-        devfile="/dev/ttyS0",
-        baudrate=9600,
-        bytesize=8,
-        timeout=1,
-        parity=None,
-        stopbits=None,
-        xonxoff=False,
-        dsrdtr=True,
+        devfile: str = "",
+        baudrate: int = 9600,
+        bytesize: int = 8,
+        timeout: Union[int, float] = 1,
+        parity: Optional[str] = None,
+        stopbits: Optional[int] = None,
+        xonxoff: bool = False,
+        dsrdtr: bool = True,
         *args,
-        **kwargs
+        **kwargs,
     ):
         """Initialize serial printer.
 
@@ -111,28 +114,46 @@ class Serial(Escpos):
         self.xonxoff = xonxoff
         self.dsrdtr = dsrdtr
 
-        self.open()
+        self._device: Union[Literal[False], Literal[None], serial.Serial] = False
 
     @dependency_pyserial
-    def open(self):
-        """Set up serial port and set is as escpos device."""
-        if self.device is not None and self.device.is_open:
-            self.close()
-        self.device = serial.Serial(
-            port=self.devfile,
-            baudrate=self.baudrate,
-            bytesize=self.bytesize,
-            parity=self.parity,
-            stopbits=self.stopbits,
-            timeout=self.timeout,
-            xonxoff=self.xonxoff,
-            dsrdtr=self.dsrdtr,
-        )
+    def open(self, raise_not_found: bool = True) -> None:
+        """Set up serial port and set is as escpos device.
 
-        if self.device is not None:
-            print("Serial printer enabled")
-        else:
-            print("Unable to open serial printer on: {0}".format(str(self.devfile)))
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device:
+            if self.device and self.device.is_open:
+                self.close()
+
+        try:
+            # Open device
+            self.device: Optional[serial.Serial] = serial.Serial(
+                port=self.devfile,
+                baudrate=self.baudrate,
+                bytesize=self.bytesize,
+                parity=self.parity,
+                stopbits=self.stopbits,
+                timeout=self.timeout,
+                xonxoff=self.xonxoff,
+                dsrdtr=self.dsrdtr,
+            )
+        except (ValueError, serial.SerialException) as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to open serial printer on {self.devfile}:\n{e}"
+                )
+            else:
+                logging.error("Serial device %s not found", self.devfile)
+                return
+        logging.info("Serial printer enabled")
 
     def _raw(self, msg):
         """Print any command sent in raw format.
@@ -146,8 +167,12 @@ class Serial(Escpos):
         """Read the data buffer and return it to the caller."""
         return self.device.read(16)
 
-    def close(self):
+    def close(self) -> None:
         """Close Serial interface."""
-        if self.device is not None and self.device.is_open:
-            self.device.flush()
-            self.device.close()
+        if not self._device:
+            return
+        logging.info("Closing Serial connection to printer %s", self.devfile)
+        if self._device and self._device.is_open:
+            self._device.flush()
+            self._device.close()
+        self._device = False

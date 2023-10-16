@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-"""This module contains the implementation of the CupsPrinter printer driver.
+"""This module contains the implementation of the Win32Raw printer driver.
 
 :author: python-escpos developers
 :organization: `python-escpos <https://github.com/python-escpos>`_
@@ -9,11 +9,15 @@
 """
 
 import functools
+import logging
+from typing import Literal, Optional, Type, Union
 
 from ..escpos import Escpos
+from ..exceptions import DeviceNotFoundError
 
 #: keeps track if the win32print dependency could be loaded (:py:class:`escpos.printer.Win32Raw`)
 _DEP_WIN32PRINT = False
+
 
 try:
     import win32print
@@ -70,38 +74,78 @@ class Win32Raw(Escpos):
         return is_usable()
 
     @dependency_win32print
-    def __init__(self, printer_name=None, *args, **kwargs):
+    def __init__(self, printer_name: str = "", *args, **kwargs):
         """Initialize default printer."""
         Escpos.__init__(self, *args, **kwargs)
-        if printer_name is not None:
-            self.printer_name = printer_name
-        else:
-            self.printer_name = win32print.GetDefaultPrinter()
-        self.hPrinter = None
-        self.open()
+        self.printer_name = printer_name
+        self.job_name = ""
 
-    @dependency_win32print
-    def open(self, job_name="python-escpos"):
-        """Open connection to default printer."""
-        if self.printer_name is None:
-            raise Exception("Printer not found")
-        self.hPrinter = win32print.OpenPrinter(self.printer_name)
-        self.current_job = win32print.StartDocPrinter(
-            self.hPrinter, 1, (job_name, None, "RAW")
-        )
-        win32print.StartPagePrinter(self.hPrinter)
+        self._device: Union[
+            Literal[False],
+            Literal[None],
+            Type[win32print.OpenPrinter],
+        ] = False
 
-    @dependency_win32print
-    def close(self):
+    @property
+    def printers(self) -> dict:
+        """Available Windows printers."""
+        return {
+            printer["pPrinterName"]: printer
+            for printer in win32print.EnumPrinters(win32print.PRINTER_ENUM_NAME, "", 4)
+        }
+
+    def open(
+        self, job_name: str = "python-escpos", raise_not_found: bool = True
+    ) -> None:
+        """Open connection to default printer.
+
+        By default raise an exception if device is not found.
+
+        :param raise_not_found: Default True.
+                                False to log error but do not raise exception.
+
+        :raises: :py:exc:`~escpos.exceptions.DeviceNotFoundError`
+        """
+        if self._device:
+            self.close()
+
+        self.job_name = job_name
+        try:
+            # Name validation, set default if no given name
+            self.printer_name = self.printer_name or win32print.GetDefaultPrinter()
+            assert self.printer_name in self.printers, "Incorrect printer name"
+            # Open device
+            self.device: Optional[
+                Type[win32print.OpenPrinter]
+            ] = win32print.OpenPrinter(self.printer_name)
+            if self.device:
+                self.current_job = win32print.StartDocPrinter(
+                    self.device, 1, (job_name, None, "RAW")
+                )
+                win32print.StartPagePrinter(self.device)
+        except AssertionError as e:
+            # Raise exception or log error and cancel
+            self.device = None
+            if raise_not_found:
+                raise DeviceNotFoundError(
+                    f"Unable to start a print job for the printer {self.printer_name}:"
+                    + f"\n{e}"
+                )
+            else:
+                logging.error("Win32Raw printing %s not available", self.printer_name)
+                return
+        logging.info("Win32Raw printer enabled")
+
+    def close(self) -> None:
         """Close connection to default printer."""
-        if not self.hPrinter:
+        if not self._device:
             return
-        win32print.EndPagePrinter(self.hPrinter)
-        win32print.EndDocPrinter(self.hPrinter)
-        win32print.ClosePrinter(self.hPrinter)
-        self.hPrinter = None
+        logging.info("Closing Win32Raw connection to printer %s", self.printer_name)
+        win32print.EndPagePrinter(self._device)
+        win32print.EndDocPrinter(self._device)
+        win32print.ClosePrinter(self._device)
+        self._device = False
 
-    @dependency_win32print
     def _raw(self, msg):
         """Print any command sent in raw format.
 
@@ -110,6 +154,6 @@ class Win32Raw(Escpos):
         """
         if self.printer_name is None:
             raise Exception("Printer not found")
-        if self.hPrinter is None:
+        if not self.device:
             raise Exception("Printer job not opened")
-        win32print.WritePrinter(self.hPrinter, msg)
+        win32print.WritePrinter(self.device, msg)
