@@ -67,6 +67,10 @@ def test_open(win32rawprinter, caplog, mocker):
     THEN check the success is logged and the device property is set
     """
     mocker.patch("win32print.__init__")
+    mocker.patch("escpos.printer.Win32Raw.printers", new={"test_printer": "Test"})
+
+    win32rawprinter.printer_name = "test_printer"
+    assert win32rawprinter.printer_name in win32rawprinter.printers
 
     with caplog.at_level(logging.INFO):
         win32rawprinter.open()
@@ -83,6 +87,9 @@ def test_close_on_reopen(win32rawprinter, mocker):
     """
     mocker.patch("win32print.__init__")
     spy = mocker.spy(win32rawprinter, "close")
+    mocker.patch("escpos.printer.Win32Raw.printers", new={"test_printer": "Test"})
+
+    win32rawprinter.printer_name = "test_printer"
 
     win32rawprinter.open()
     assert win32rawprinter._device
@@ -98,6 +105,9 @@ def test_close(win32rawprinter, mocker, caplog):
     THEN check the closing is logged and the device property is False
     """
     mocker.patch("win32print.__init__")
+    mocker.patch("escpos.printer.Win32Raw.printers", new={"test_printer": "Test"})
+
+    win32rawprinter.printer_name = "test_printer"
 
     win32rawprinter.open()
     with caplog.at_level(logging.INFO):

@@ -65,6 +65,7 @@ def test_open(lpprinter, caplog, mocker):
     mocker.patch("escpos.printer.LP.printers", new={"test_printer": "Test"})
 
     lpprinter.printer_name = "test_printer"
+    assert lpprinter.printer_name in lpprinter.printers
 
     with caplog.at_level(logging.INFO):
         lpprinter.open()
