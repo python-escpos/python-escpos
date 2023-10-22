@@ -64,6 +64,22 @@ def test_open(fileprinter, caplog, mocker):
     assert fileprinter.device
 
 
+def test_close_on_reopen(fileprinter, mocker):
+    """
+    GIVEN a file printer object and a mocked connection
+    WHEN a valid connection to a device is reopened before close
+    THEN check the close method is called if _device
+    """
+    mocker.patch("builtins.open")
+    spy = mocker.spy(fileprinter, "close")
+
+    fileprinter.open()
+    assert fileprinter._device
+
+    fileprinter.open()
+    spy.assert_called_once_with()
+
+
 def test_flush(fileprinter, mocker):
     """
     GIVEN a file printer object and a mocked connection
