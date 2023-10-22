@@ -1,4 +1,5 @@
 import pytest
+
 from escpos.exceptions import DeviceNotFoundError
 from escpos.printer import LP, CupsPrinter, Dummy, File, Network, Serial, Usb, Win32Raw
 
