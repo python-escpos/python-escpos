@@ -28,24 +28,28 @@ def test_device_not_initialized(lpprinter):
     assert lpprinter._device is False
 
 
-def test_open_raise_exception(lpprinter, devicenotfounderror):
+def test_open_raise_exception(lpprinter, devicenotfounderror, mocker):
     """
     GIVEN a lp printer object
     WHEN open() is set to raise a DeviceNotFoundError on error
     THEN check the exception is raised
     """
+    mocker.patch("escpos.printer.LP.printers", new={"test_printer": "Test"})
+
     lpprinter.printer_name = "fakeprinter"
 
     with pytest.raises(devicenotfounderror):
         lpprinter.open(raise_not_found=True)
 
 
-def test_open_not_raise_exception(lpprinter, caplog):
+def test_open_not_raise_exception(lpprinter, caplog, mocker):
     """
     GIVEN a lp printer object
     WHEN open() is set to not raise on error but simply cancel
     THEN check the error is logged and open() canceled
     """
+    mocker.patch("escpos.printer.LP.printers", new={"test_printer": "Test"})
+
     lpprinter.printer_name = "fakeprinter"
 
     with caplog.at_level(logging.ERROR):
