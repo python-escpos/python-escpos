@@ -81,6 +81,37 @@ def test_open(win32rawprinter, caplog, mocker):
     assert win32rawprinter.device == PyPrinterHANDLE.return_value
 
 
+def test_close_on_reopen(win32rawprinter, mocker):
+    """
+    GIVEN a win32raw printer object and a mocked win32print device
+    WHEN a valid connection to a device is reopened before close
+    THEN check the close method is called if _device
+    """
+    # The _win32typing.PyPrinterHANDLE object is unreachable, so we have to mock it
+    PyPrinterHANDLE = mocker.Mock()
+    PyPrinterHANDLE.return_value = 0  # Accepts 0 or None as return value
+
+    # Replace the contents of Win32Raw.printers to accept test_printer as a system's printer name
+    mocker.patch("escpos.printer.Win32Raw.printers", new={"test_printer": "Test"})
+
+    # Configure printer_name
+    win32rawprinter.printer_name = "test_printer"
+
+    # Patch the win32print.OpenPrinter method to return the mocked PyPrinterHANDLE
+    mocker.patch("win32print.OpenPrinter", new=PyPrinterHANDLE)
+    # Patch the win32print close methods
+    mocker.patch("win32print.EndPagePrinter")
+    mocker.patch("win32print.EndDocPrinter")
+    mocker.patch("win32print.ClosePrinter")
+
+    spy = mocker.spy(win32rawprinter, "close")
+    # Simulate a reopen before close
+    win32rawprinter._device = True
+    win32rawprinter.open()
+
+    spy.assert_called_once()
+
+
 def test_close(win32rawprinter, caplog, mocker):
     """
     GIVEN a win32raw printer object and a mocked win32print device
