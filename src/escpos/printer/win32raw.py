@@ -138,7 +138,7 @@ class Win32Raw(Escpos):
 
     def close(self) -> None:
         """Close connection to default printer."""
-        if not self._device:
+        if self._device is False or self._device is None:  # Literal False | None
             return
         logging.info("Closing Win32Raw connection to printer %s", self.printer_name)
         win32print.EndPagePrinter(self._device)
