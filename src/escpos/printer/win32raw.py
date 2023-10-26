@@ -153,7 +153,7 @@ class Win32Raw(Escpos):
         :type msg: bytes
         """
         if self.printer_name is None:
-            raise Exception("Printer not found")
+            raise DeviceNotFoundError("Printer not found")
         if not self.device:
-            raise Exception("Printer job not opened")
+            raise DeviceNotFoundError("Printer job not opened")
         win32print.WritePrinter(self.device, msg)
