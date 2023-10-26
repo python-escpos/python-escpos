@@ -142,3 +142,36 @@ def test_close(win32rawprinter, caplog, mocker):
 
     assert "Closing" in caplog.text
     assert win32rawprinter._device is False
+
+
+def test_raw_raise_exception(win32rawprinter, devicenotfounderror):
+    """
+    GIVEN a win32raw printer object and a mocked win32print device
+    WHEN calling _raw() before configuring the connection
+    THEN check an exception is raised
+    """
+    win32rawprinter.printer_name = None
+    with pytest.raises(devicenotfounderror):
+        win32rawprinter._raw(b"Test error")
+
+    win32rawprinter.printer_name = "fake_printer"
+    win32rawprinter.device = None
+    with pytest.raises(devicenotfounderror):
+        win32rawprinter._raw(b"Test error")
+
+
+def test_raw(win32rawprinter, mocker):
+    """
+    GIVEN a win32raw printer object and a mocked win32print device
+    WHEN calling _raw() after a valid connection
+    THEN check the underlying method is correctly called
+    """
+    PyPrinterHANDLE = mocker.Mock()
+    PyPrinterHANDLE.return_value = 0
+
+    mocked_writer = mocker.patch("win32print.WritePrinter")
+
+    win32rawprinter._device = PyPrinterHANDLE
+    win32rawprinter._raw(b"Test error")
+
+    mocked_writer.assert_called_once_with(PyPrinterHANDLE, b"Test error")
