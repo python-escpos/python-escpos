@@ -90,7 +90,7 @@ def test_close_on_reopen(cupsprinter, mocker):
     assert cupsprinter._device
 
     cupsprinter.open()
-    spy.assert_called_once_with()
+    spy.assert_called_once()
 
 
 def test_close(cupsprinter, caplog, mocker):
@@ -110,3 +110,47 @@ def test_close(cupsprinter, caplog, mocker):
 
     assert "Closing" in caplog.text
     assert cupsprinter._device is False
+
+
+def test_send_on_close(cupsprinter, mocker):
+    """
+    GIVEN a cups printer object and a mocked pycups device
+    WHEN closing connection before send the buffer
+    THEN check the buffer is sent and cleared
+    """
+    mocked_cups = mocker.patch("cups.Connection")
+
+    spy_send = mocker.spy(cupsprinter, "send")
+    spy_clear = mocker.spy(cupsprinter, "_clear")
+
+    cupsprinter._device = mocked_cups
+    cupsprinter.pending_job = True
+
+    cupsprinter.close()
+
+    spy_send.assert_called_once()
+    spy_clear.assert_called_once()
+    assert cupsprinter.pending_job is False
+
+
+def test_raw_raise_exception(cupsprinter):
+    """
+    GIVEN a cups printer object
+    WHEN passing a non byte string to _raw()
+    THEN check an exception is raised and pending_job is False
+    """
+    with pytest.raises(TypeError):
+        cupsprinter._raw("Non bytes")
+
+    assert cupsprinter.pending_job is False
+
+
+def test_raw(cupsprinter):
+    """
+    GIVEN a cups printer object
+    WHEN passing a byte string to _raw()
+    THEN check the buffer content
+    """
+    cupsprinter._raw(b"Test")
+    cupsprinter.tmpfile.seek(0)
+    assert cupsprinter.tmpfile.read() == b"Test"
