@@ -154,3 +154,23 @@ def test_raw(cupsprinter):
     cupsprinter._raw(b"Test")
     cupsprinter.tmpfile.seek(0)
     assert cupsprinter.tmpfile.read() == b"Test"
+
+
+def test_printers_no_device(cupsprinter):
+    """
+    GIVEN a cups printer object
+    WHEN device is None
+    THEN check the return value is {}
+    """
+    cupsprinter.device = None
+    assert cupsprinter.printers == {}
+
+
+def test_read_no_device(cupsprinter):
+    """
+    GIVEN a cups printer object
+    WHEN device is None
+    THEN check the return value is []
+    """
+    cupsprinter.device = None
+    assert cupsprinter._read() == []
