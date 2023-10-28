@@ -138,7 +138,7 @@ class Win32Raw(Escpos):
 
     def close(self) -> None:
         """Close connection to default printer."""
-        if not self._device:
+        if self._device is False or self._device is None:  # Literal False | None
             return
         logging.info("Closing Win32Raw connection to printer %s", self.printer_name)
         win32print.EndPagePrinter(self._device)
@@ -153,7 +153,7 @@ class Win32Raw(Escpos):
         :type msg: bytes
         """
         if self.printer_name is None:
-            raise Exception("Printer not found")
+            raise DeviceNotFoundError("Printer not found")
         if not self.device:
-            raise Exception("Printer job not opened")
+            raise DeviceNotFoundError("Printer job not opened")
         win32print.WritePrinter(self.device, msg)

@@ -172,9 +172,9 @@ class CupsPrinter(Escpos):
         self.pending_job = True
         try:
             self.tmpfile.write(msg)
-        except ValueError:
+        except TypeError:
             self.pending_job = False
-            raise ValueError("Printer job not opened")
+            raise TypeError("Bytes required. Printer job not opened")
 
     def send(self):
         """Send the print job to the printer."""
