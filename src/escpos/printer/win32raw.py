@@ -148,7 +148,7 @@ class Win32Raw(Escpos):
         win32print.ClosePrinter(self._device)
         self._device = False
 
-    def _raw(self, msg):
+    def _raw(self, msg) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
