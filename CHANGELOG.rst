@@ -7,7 +7,7 @@ This is the major release of the new version 3.0.
 A big thank you to @belono for their many contributions
 for the finalization of v3!
 
-The third major release of this library dropy support for
+The third major release of this library drops support for
 Python 2 and required a Python version of at least 3.8.
 The API has been reworked to be more consistent and two
 new concepts have been introduced:
