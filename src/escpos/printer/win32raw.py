@@ -10,7 +10,7 @@
 
 import functools
 import logging
-from typing import Literal, Optional, Type, Union
+from typing import Any, Literal, Optional, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
@@ -20,9 +20,11 @@ _DEP_WIN32PRINT = False
 
 
 try:
+    import pywintypes
     import win32print
 
     _DEP_WIN32PRINT = True
+    PyPrinterHANDLE: Any = win32print.OpenPrinter
 except ImportError:
     pass
 
@@ -83,7 +85,7 @@ class Win32Raw(Escpos):
         self._device: Union[
             Literal[False],
             Literal[None],
-            Type[win32print.OpenPrinter],
+            "PyPrinterHANDLE",
         ] = False
 
     @property
@@ -115,15 +117,15 @@ class Win32Raw(Escpos):
             self.printer_name = self.printer_name or win32print.GetDefaultPrinter()
             assert self.printer_name in self.printers, "Incorrect printer name"
             # Open device
-            self.device: Optional[
-                Type[win32print.OpenPrinter]
-            ] = win32print.OpenPrinter(self.printer_name)
+            self.device: Optional["PyPrinterHANDLE"] = win32print.OpenPrinter(
+                self.printer_name
+            )
             if self.device:
                 self.current_job = win32print.StartDocPrinter(
-                    self.device, 1, (job_name, None, "RAW")
+                    self.device, 1, (job_name, "", "RAW")
                 )
                 win32print.StartPagePrinter(self.device)
-        except AssertionError as e:
+        except (AssertionError, pywintypes.error) as e:
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
@@ -146,7 +148,7 @@ class Win32Raw(Escpos):
         win32print.ClosePrinter(self._device)
         self._device = False
 
-    def _raw(self, msg):
+    def _raw(self, msg) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """Custom types."""
 
-from typing import Dict
-
-from typing_extensions import TypedDict
+from typing import Dict, TypedDict
 
 
 class ConstTxtStyleClass(TypedDict):
