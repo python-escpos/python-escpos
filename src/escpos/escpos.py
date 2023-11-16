@@ -463,7 +463,7 @@ class Escpos(object):
         """Printer's DPI resolution."""
         try:
             dpi = int(self.profile.profile_data["media"]["dpi"])
-        except (KeyError, TypeError):
+        except (KeyError, TypeError, ValueError):
             # Calculate the printer's DPI from the width info of the profile.
             try:
                 px = self.profile.profile_data["media"]["width"]["pixels"]
