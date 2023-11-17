@@ -1,6 +1,18 @@
 Changelog
 =========
 
+2023-xx-xx - Version 3.x - ""
+-----------------------------
+
+
+changes
+^^^^^^^
+
+
+contributors
+^^^^^^^^^^^^
+
+
 2023-11-17 - Version 3.0 - "Quietly Confident"
 ----------------------------------------------
 This is the major release of the new version 3.0.
