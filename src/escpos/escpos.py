@@ -174,11 +174,11 @@ class Escpos(object):
     def image(
         self,
         img_source,
-        high_density_vertical=True,
-        high_density_horizontal=True,
-        impl="bitImageRaster",
-        fragment_height=960,
-        center=False,
+        high_density_vertical: bool = True,
+        high_density_horizontal: bool = True,
+        impl: str = "bitImageRaster",
+        fragment_height: int = 960,
+        center: bool = False,
     ) -> None:
         """Print an image.
 
