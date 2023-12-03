@@ -10,6 +10,7 @@ This module contains the image format handler :py:class:`EscposImage`.
 
 
 import math
+from typing import Union
 
 from PIL import Image, ImageOps
 
@@ -22,7 +23,7 @@ class EscposImage(object):
     PIL, rather than spend CPU cycles looping over pixels.
     """
 
-    def __init__(self, img_source):
+    def __init__(self, img_source: Union[Image.Image, str]):
         """Load in an image.
 
         :param img_source: PIL.Image, or filename to load one from.
@@ -48,23 +49,23 @@ class EscposImage(object):
         self._im = im.convert("1")
 
     @property
-    def width(self):
+    def width(self) -> int:
         """Return width of image in pixels."""
         width_pixels, _ = self._im.size
         return width_pixels
 
     @property
-    def width_bytes(self):
+    def width_bytes(self) -> int:
         """Return width of image if you use 8 pixels per byte and 0-pad at the end."""
         return (self.width + 7) >> 3
 
     @property
-    def height(self):
+    def height(self) -> int:
         """Height of image in pixels."""
         _, height_pixels = self._im.size
         return height_pixels
 
-    def to_column_format(self, high_density_vertical=True):
+    def to_column_format(self, high_density_vertical: bool = True):
         """Extract slices of an image as equal-sized blobs of column-format data.
 
         :param high_density_vertical: Printed line height in dots
@@ -85,7 +86,7 @@ class EscposImage(object):
         """Convert image to raster-format binary."""
         return self._im.tobytes()
 
-    def split(self, fragment_height):
+    def split(self, fragment_height: int):
         """Split an image into multiple fragments after fragment_height pixels.
 
         :param fragment_height: height of fragment
@@ -102,7 +103,7 @@ class EscposImage(object):
             fragments.append(self.img_original.crop(box))
         return fragments
 
-    def center(self, max_width):
+    def center(self, max_width: int) -> None:
         """Center image in place.
 
         :param: Maximum width in order to deduce x offset for centering
