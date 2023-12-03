@@ -7,10 +7,11 @@ Changelog
 
 changes
 ^^^^^^^
-
+- use version 0.15 and upwards of python-barcode
 
 contributors
 ^^^^^^^^^^^^
+- Patrick Kanzler
 
 
 2023-11-17 - Version 3.0 - "Quietly Confident"
