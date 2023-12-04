@@ -12,6 +12,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 
 
 import textwrap
+import warnings
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
 from typing import List, Literal, Optional, Union
@@ -304,7 +305,8 @@ class Escpos(object):
         model=QR_MODEL_2,
         native=False,
         center=False,
-        impl="bitImageRaster",
+        impl=None,
+        image_arguments: Optional[dict] = None,
     ) -> None:
         """Print QR Code for the provided string.
 
@@ -319,6 +321,8 @@ class Escpos(object):
             printer (Default)
         :param center: Centers the code *default:* False
         :param impl: Image-printing-implementation, refer to :meth:`.image()` for details
+        :param image_arguments: arguments passed to :meth:`.image()`.
+            Replaces `impl` and `center`. If `impl` or `center` are set, they will overwrite `image_arguments`.
         """
         # Basic validation
         if ec not in [QR_ECLEVEL_L, QR_ECLEVEL_M, QR_ECLEVEL_H, QR_ECLEVEL_Q]:
@@ -333,6 +337,19 @@ class Escpos(object):
             # Handle edge case by printing nothing.
             return
         if not native:
+            # impl is deprecated in favor of image_arguments
+            if impl:
+                warnings.warn(
+                    "Parameter impl is deprecated in favor of image_arguments and will be dropped in a future release.",
+                    DeprecationWarning,
+                )
+            # assemble arguments for image
+            if not image_arguments:
+                image_arguments = {}
+            if impl:
+                image_arguments["impl"] = impl
+            if "center" not in image_arguments:
+                image_arguments["center"] = center
             # Map ESC/POS error correction levels to python 'qrcode' library constant and render to an image
             if model != QR_MODEL_2:
                 raise ValueError(
@@ -354,7 +371,7 @@ class Escpos(object):
 
             # Convert the RGB image in printable image
             self.text("\n")
-            self.image(im, center=center, impl=impl)
+            self.image(im, **image_arguments)
             self.text("\n")
             self.text("\n")
             return
