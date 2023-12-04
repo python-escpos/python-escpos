@@ -38,13 +38,19 @@ def test_parameter_image_arguments_passed_to_image_function(img_function):
     d.qr(
         "LoremIpsum",
         native=False,
-        image_arguments={"impl": "bitImageColumn", "high_density_vertical": False},
+        image_arguments={
+            "impl": "bitImageColumn",
+            "high_density_vertical": False,
+            "center": True,
+        },
     )
     args, kwargs = img_function.call_args
     assert "impl" in kwargs
     assert kwargs["impl"] == "bitImageColumn"
     assert "high_density_vertical" in kwargs
     assert kwargs["high_density_vertical"] is False
+    assert "center" in kwargs
+    assert kwargs["center"]
 
 
 @pytest.fixture
