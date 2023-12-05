@@ -14,4 +14,6 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": true
   },
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
 }
