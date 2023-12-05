@@ -45,6 +45,16 @@ def test_config_load_with_invalid_config(tmp_path):
         c.load(config_path=config_file)
 
 
+def test_config_load_with_missing_config(tmp_path):
+    """Test the loading of a config that does not exist."""
+    # test the config loading
+    from escpos import config
+
+    c = config.Config()
+    with pytest.raises(escpos.exceptions.ConfigNotFoundError):
+        c.load(config_path=tmp_path)
+
+
 def test_config_load_from_appdir():
     """Test the loading of a config in appdir."""
     from escpos import config
