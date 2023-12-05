@@ -31,11 +31,27 @@ def simple_printer_test(config):
     assert p.output == b"1234"
 
 
-def test_config_load_with_invalid_config(tmp_path):
-    """Test the loading of a config with a invalid config file."""
+def test_config_load_with_invalid_config_yaml(tmp_path):
+    """Test the loading of a config with a invalid config file (yaml issue)."""
     # generate a dummy config
     config_file = tmp_path / "config.yaml"
     generate_dummy_config(config_file, content="}invalid}yaml}")
+
+    # test the config loading
+    from escpos import config
+
+    c = config.Config()
+    with pytest.raises(escpos.exceptions.ConfigSyntaxError):
+        c.load(config_path=config_file)
+
+
+def test_config_load_with_invalid_config_content(tmp_path):
+    """Test the loading of a config with a invalid config file (content issue)."""
+    # generate a dummy config
+    config_file = tmp_path / "config.yaml"
+    generate_dummy_config(
+        config_file, content="printer:\n   type: NoPrinterWithThatName\n"
+    )
 
     # test the config loading
     from escpos import config
