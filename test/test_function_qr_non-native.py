@@ -4,7 +4,7 @@
 
 :author: `Patrick Kanzler <dev@pkanzler.de>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
-:copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
+:copyright: Copyright (c) 2023 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
 
@@ -16,6 +16,28 @@ import pytest
 from PIL import Image
 
 from escpos.printer import Dummy
+
+
+def test_image():
+    """Test QR as image"""
+    instance = Dummy()
+    image_arguments = {
+        "high_density_vertical": True,
+        "high_density_horizontal": True,
+        "impl": "bitImageRaster",
+        "fragment_height": 960,
+        "center": False,
+    }
+    instance.qr("1", native=False, image_arguments=image_arguments, size=1)
+    print(instance.output)
+    expected = (
+        b"\x1bt\x00\n"
+        b"\x1dv0\x00\x03\x00\x17\x00\x00\x00\x00\x7f\x1d\xfcAu\x04]\x1dt]et"
+        b"]%tAI\x04\x7fU\xfc\x00 \x00}\xca\xa8h\xdf u\x95\x80x/ \x0b\xf4\x98\x00"
+        b"T\x90\x7fzxA\x00\xd0]zp]o ]u\x80Ao(\x7fd\x90\x00\x00\x00"
+        b"\n\n"
+    )
+    assert instance.output == expected
 
 
 @mock.patch("escpos.printer.Dummy.image", spec=Dummy)

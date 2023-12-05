@@ -12,10 +12,6 @@ class CodePageManager:
         """Initialize codepage manager."""
         self.data = data
 
-    def get_all(self):
-        """Get list of all codepages."""
-        return self.data.values()
-
     @staticmethod
     def get_encoding_name(encoding):
         """Get encoding name.

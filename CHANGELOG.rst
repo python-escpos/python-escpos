@@ -8,6 +8,8 @@ Changelog
 changes
 ^^^^^^^
 - use version 0.15 and upwards of python-barcode
+- fix an issue in the config provider that prevented
+  config files to be found when only a path was supplied
 
 contributors
 ^^^^^^^^^^^^
