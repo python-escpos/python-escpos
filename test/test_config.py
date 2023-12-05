@@ -71,6 +71,9 @@ def test_config_load_with_missing_config(tmp_path):
         c.load(config_path=tmp_path)
 
 
+@pytest.mark.skip(
+    "This test creates in the actual appdir files and is therefore skipped."
+)
 def test_config_load_from_appdir():
     """Test the loading of a config in appdir."""
     from escpos import config
