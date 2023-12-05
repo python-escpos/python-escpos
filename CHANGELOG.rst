@@ -7,6 +7,8 @@ Changelog
 
 changes
 ^^^^^^^
+- extend API of the qr-method to allow passing image
+  parameters in non-native mode
 - use version 0.15 and upwards of python-barcode
 - fix an issue in the config provider that prevented
   config files to be found when only a path was supplied
