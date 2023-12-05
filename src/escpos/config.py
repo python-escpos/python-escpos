@@ -3,6 +3,7 @@
 This module contains the implementations of abstract base class :py:class:`Config`.
 """
 import os
+import pathlib
 
 import appdirs
 import yaml
@@ -56,23 +57,19 @@ class Config(object):
             config_path = os.path.join(
                 appdirs.user_config_dir(self._app_name), self._config_file
             )
+        if isinstance(config_path, pathlib.Path):
+            # store string if posixpath
+            config_path = config_path.as_posix()
+        if not os.path.isfile(config_path):
+            # supplied path is not a file --> assume default file
+            config_path = os.path.join(config_path, self._config_file)
 
         try:
-            # First check if it's file like. If it is, pyyaml can load it.
-            # I'm checking type instead of catching exceptions to keep the
-            # exception handling simple
-            if hasattr(config_path, "read"):
-                config = yaml.safe_load(config_path)
-            else:
-                # If it isn't, it's a path. We have to open it first, otherwise
-                # pyyaml will try to read it as yaml
-                with open(config_path, "rb") as config_file:
-                    config = yaml.safe_load(config_file)
+            with open(config_path, "rb") as config_file:
+                config = yaml.safe_load(config_file)
         except EnvironmentError:
             raise exceptions.ConfigNotFoundError(
-                "Couldn't read config at {config_path}".format(
-                    config_path=str(config_path),
-                )
+                f"Couldn't read config at {config_path}"
             )
         except yaml.YAMLError:
             raise exceptions.ConfigSyntaxError("Error parsing YAML")
