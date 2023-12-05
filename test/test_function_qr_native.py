@@ -3,7 +3,7 @@
 
 :author: `Michael Billington <michael.billington@gmail.com>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
-:copyright: Copyright (c) 2016 `Michael Billington <michael.billington@gmail.com>`_
+:copyright: Copyright (c) 2023 `Michael Billington <michael.billington@gmail.com>`_
 :license: MIT
 """
 
@@ -84,22 +84,6 @@ def test_invalid_model():
     instance = printer.Dummy()
     with pytest.raises(ValueError):
         instance.qr("1234", native=True, model="Hello")
-
-
-@pytest.mark.skip("this test has to be debugged")
-def test_image():
-    """Test QR as image"""
-    instance = printer.Dummy()
-    instance.qr("1", native=False, size=1)
-    print(instance.output)
-    expected = (
-        b"\x1bt\x00\n"
-        b"\x1dv0\x00\x03\x00\x17\x00\x00\x00\x00\x7f]\xfcA\x19\x04]it]et"
-        b"]ItA=\x04\x7fU\xfc\x00\x0c\x00y~t4\x7f =\xa84j\xd9\xf0\x05\xd4\x90\x00"
-        b"i(\x7f<\xa8A \xd8]'\xc4]y\xf8]E\x80Ar\x94\x7fR@\x00\x00\x00"
-        b"\n\n"
-    )
-    assert instance.output == expected
 
 
 def test_image_invalid_model():

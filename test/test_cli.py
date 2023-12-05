@@ -89,9 +89,6 @@ class TestCLI:
         # test that additional information on e.g. Serial is printed
         assert "Serial" in result.stdout
 
-    @pytest.mark.skip(
-        reason="disable this test as it is not that easy anymore to predict the outcome of this call"
-    )
     def test_cli_text(self):
         """Make sure text returns what we sent it"""
         test_text = "this is some text"
@@ -107,7 +104,9 @@ class TestCLI:
         )
         assert not result.stderr
         assert DEVFILE_NAME in result.files_updated.keys()
-        assert result.files_updated[DEVFILE_NAME].bytes == test_text + "\n"
+        assert (
+            result.files_updated[DEVFILE_NAME].bytes == "\x1bt\x00" + test_text + "\n"
+        )
 
     def test_cli_text_invalid_args(self):
         """Test a failure to send valid arguments"""
