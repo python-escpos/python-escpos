@@ -4,7 +4,6 @@ This module contains the implementations of abstract base class :py:class:`Confi
 """
 import os
 import pathlib
-from typing import Optional
 
 import appdirs
 import yaml
