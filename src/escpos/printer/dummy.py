@@ -7,6 +7,7 @@
 :copyright: Copyright (c) 2012-2023 Bashlinux and python-escpos
 :license: MIT
 """
+from typing import List
 
 from ..escpos import Escpos
 
@@ -39,25 +40,24 @@ class Dummy(Escpos):
         """
         return is_usable()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Init with empty output list."""
         Escpos.__init__(self, *args, **kwargs)
-        self._output_list = []
+        self._output_list: List[bytes] = []
 
-    def _raw(self, msg):
+    def _raw(self, msg: bytes) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         self._output_list.append(msg)
 
     @property
-    def output(self):
+    def output(self) -> bytes:
         """Get the data that was sent to this printer."""
         return b"".join(self._output_list)
 
-    def clear(self):
+    def clear(self) -> None:
         """Clear the buffer of the printer.
 
         This method can be called if you send the contents to a physical printer
@@ -65,6 +65,6 @@ class Dummy(Escpos):
         """
         del self._output_list[:]
 
-    def close(self):
+    def close(self) -> None:
         """Close not implemented for Dummy printer."""
         pass

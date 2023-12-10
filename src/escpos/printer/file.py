@@ -88,12 +88,12 @@ class File(Escpos):
         if self.device:
             self.device.flush()
 
-    def _raw(self, msg):
+    def _raw(self, msg: bytes) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
+        assert self.device
         self.device.write(msg)
         if self.auto_flush:
             self.flush()

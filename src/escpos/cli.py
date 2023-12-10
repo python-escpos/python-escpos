@@ -26,7 +26,7 @@ from . import version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
-def str_to_bool(string):
+def str_to_bool(string: str) -> bool:
     """Convert string to bool.
 
     Used as a type in argparse so that we get back a proper
@@ -561,7 +561,7 @@ def generate_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main():
+def main() -> None:
     """Handle main entry point of CLI script.
 
     Handles loading of configuration and creating and processing of command
@@ -619,7 +619,7 @@ def main():
         globals()[target_command](**command_arguments)
 
 
-def demo(printer, **kwargs):
+def demo(printer, **kwargs) -> None:
     """Print demos.
 
     Called when CLI is passed `demo`. This function

@@ -76,7 +76,7 @@ class Win32Raw(Escpos):
         return is_usable()
 
     @dependency_win32print
-    def __init__(self, printer_name: str = "", *args, **kwargs):
+    def __init__(self, printer_name: str = "", *args, **kwargs) -> None:
         """Initialize default printer."""
         Escpos.__init__(self, *args, **kwargs)
         self.printer_name = printer_name
@@ -148,7 +148,7 @@ class Win32Raw(Escpos):
         win32print.ClosePrinter(self._device)
         self._device = False
 
-    def _raw(self, msg) -> None:
+    def _raw(self, msg: bytes) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
