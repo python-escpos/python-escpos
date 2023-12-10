@@ -72,7 +72,7 @@ class BarcodeTypeError(Error):
 
     def __str__(self):
         """Return string representation of BarcodeTypeError."""
-        return "No Barcode type is defined ({msg})".format(msg=self.msg)
+        return f"No Barcode type is defined ({self.msg})"
 
 
 class BarcodeSizeError(Error):
@@ -97,7 +97,7 @@ class BarcodeSizeError(Error):
 
     def __str__(self):
         """Return string representation of BarcodeSizeError."""
-        return "Barcode size is out of range ({msg})".format(msg=self.msg)
+        return f"Barcode size is out of range ({self.msg})"
 
 
 class BarcodeCodeError(Error):
@@ -122,7 +122,7 @@ class BarcodeCodeError(Error):
 
     def __str__(self):
         """Return string representation of BarcodeCodeError."""
-        return "No Barcode code was supplied ({msg})".format(msg=self.msg)
+        return f"No Barcode code was supplied ({self.msg})"
 
 
 class ImageSizeError(Error):
@@ -145,9 +145,7 @@ class ImageSizeError(Error):
 
     def __str__(self):
         """Return string representation of ImageSizeError."""
-        return "Image height is longer than 255px and can't be printed ({msg})".format(
-            msg=self.msg
-        )
+        return f"Image height is longer than 255px and can't be printed ({self.msg})"
 
 
 class ImageWidthError(Error):
@@ -170,7 +168,7 @@ class ImageWidthError(Error):
 
     def __str__(self):
         """Return string representation of ImageWidthError."""
-        return "Image width is too large ({msg})".format(msg=self.msg)
+        return f"Image width is too large ({self.msg})"
 
 
 class TextError(Error):
@@ -194,9 +192,7 @@ class TextError(Error):
 
     def __str__(self):
         """Return string representation of TextError."""
-        return "Text string must be supplied to the text() method ({msg})".format(
-            msg=self.msg
-        )
+        return f"Text string must be supplied to the text() method ({self.msg})"
 
 
 class CashDrawerError(Error):
@@ -220,7 +216,7 @@ class CashDrawerError(Error):
 
     def __str__(self):
         """Return string representation of CashDrawerError."""
-        return "Valid pin must be set to send pulse ({msg})".format(msg=self.msg)
+        return f"Valid pin must be set to send pulse ({self.msg})"
 
 
 class TabPosError(Error):
@@ -247,9 +243,7 @@ class TabPosError(Error):
 
     def __str__(self):
         """Return string representation of TabPosError."""
-        return "Valid tab positions must be in the range 0 to 16 ({msg})".format(
-            msg=self.msg
-        )
+        return f"Valid tab positions must be in the range 0 to 16 ({self.msg})"
 
 
 class CharCodeError(Error):
@@ -273,7 +267,7 @@ class CharCodeError(Error):
 
     def __str__(self):
         """Return string representation of CharCodeError."""
-        return "Valid char code must be set ({msg})".format(msg=self.msg)
+        return f"Valid char code must be set ({self.msg})"
 
 
 class DeviceNotFoundError(Error):
@@ -345,7 +339,7 @@ class SetVariableError(Error):
 
     def __str__(self):
         """Return string representation of SetVariableError."""
-        return "Set variable out of range ({msg})".format(msg=self.msg)
+        return f"Set variable out of range ({self.msg})"
 
 
 # Configuration errors
@@ -372,7 +366,7 @@ class ConfigNotFoundError(Error):
 
     def __str__(self):
         """Return string representation of ConfigNotFoundError."""
-        return "Configuration not found ({msg})".format(msg=self.msg)
+        return f"Configuration not found ({self.msg})"
 
 
 class ConfigSyntaxError(Error):
@@ -396,7 +390,7 @@ class ConfigSyntaxError(Error):
 
     def __str__(self):
         """Return string representation of ConfigSyntaxError."""
-        return "Configuration syntax is invalid ({msg})".format(msg=self.msg)
+        return f"Configuration syntax is invalid ({self.msg})"
 
 
 class ConfigSectionMissingError(Error):
@@ -420,4 +414,4 @@ class ConfigSectionMissingError(Error):
 
     def __str__(self):
         """Return string representation of ConfigSectionMissingError."""
-        return "Configuration section is missing ({msg})".format(msg=self.msg)
+        return f"Configuration section is missing ({self.msg})"

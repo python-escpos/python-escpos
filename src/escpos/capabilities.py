@@ -18,9 +18,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 pickle_dir = environ.get("ESCPOS_CAPABILITIES_PICKLE_DIR", mkdtemp())
-pickle_path = path.join(
-    pickle_dir, "{v}.capabilities.pickle".format(v=platform.python_version())
-)
+pickle_path = path.join(pickle_dir, f"{platform.python_version()}.capabilities.pickle")
 # get a temporary file from importlib_resources if no file is specified in env
 file_manager = ExitStack()
 atexit.register(file_manager.close)
@@ -114,9 +112,7 @@ class BaseProfile(object):
         """
         font = {"a": 0, "b": 1}.get(font, font)
         if not six.text_type(font) in self.fonts:
-            raise NotSupported(
-                '"{}" is not a valid font in the current profile'.format(font)
-            )
+            raise NotSupported(f'"{font}" is not a valid font in the current profile')
         return font
 
     def get_columns(self, font):
@@ -158,7 +154,7 @@ def get_profile_class(name: str) -> Type[BaseProfile]:
         profiles: Dict[str, Any] = CAPABILITIES["profiles"]
         profile_data = profiles[name]
         profile_name = clean(name)
-        class_name = "{}{}Profile".format(profile_name[0].upper(), profile_name[1:])
+        class_name = f"{profile_name[0].upper()}{profile_name[1:]}Profile"
         new_class = type(class_name, (BaseProfile,), {"profile_data": profile_data})
         CLASS_CACHE[name] = new_class
 

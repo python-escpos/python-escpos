@@ -47,14 +47,14 @@ def print_codepage(printer, codepage):
 
     # Table header
     printer.set(font="b")
-    printer._raw("  {}\n".format(sep.join(map(lambda s: hex(s)[2:], range(0, 16)))))
+    printer._raw(f"  {sep.join(map(lambda s: hex(s)[2:], range(0, 16)))}\n")
     printer.set()
 
     # The table
     for x in range(0, 16):
         # First column
         printer.set(font="b")
-        printer._raw("{} ".format(hex(x)[2:]))
+        printer._raw(f"{hex(x)[2:]} ")
         printer.set()
 
         for y in range(0, 16):
