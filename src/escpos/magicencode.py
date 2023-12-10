@@ -292,7 +292,7 @@ class MagicEncode(object):
 
     def write_with_encoding(self, encoding, text):
         """Write the text and inject necessary codepage switches."""
-        if text is not None and type(text) is not six.text_type:
+        if text is not None and type(text) is not str:
             raise Error(
                 "The supplied text has to be unicode, but is of type {type}.".format(
                     type=type(text)

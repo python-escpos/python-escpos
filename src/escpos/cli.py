@@ -20,8 +20,6 @@ except ImportError:
     pass  # noqa
 import sys
 
-import six
-
 from . import config
 from . import printer as escpos_printer_module
 from . import version
@@ -581,7 +579,7 @@ def main():
         parser.print_help()
         sys.exit()
     command_arguments = dict(
-        [k, v] for k, v in six.iteritems(args_dict) if v is not None
+        [k, v] for k, v in args_dict.items() if v is not None
     )
 
     # If version should be printed, do this, then exit

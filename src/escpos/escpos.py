@@ -866,8 +866,7 @@ class Escpos(object):
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
-        txt = six.text_type(txt)
-        self.magic.write(txt)
+        self.magic.write(str(txt))
 
     def textln(self, txt=""):
         """Print alpha-numeric text with a newline.
@@ -1420,7 +1419,7 @@ class EscposIO(object):
         params = dict(self.params)
         params.update(kwargs)
 
-        if isinstance(text, six.text_type):
+        if isinstance(text, str):
             lines = text.split("\n")
         elif isinstance(text, list) or isinstance(text, tuple):
             lines = text
@@ -1433,10 +1432,7 @@ class EscposIO(object):
         # TODO flush? or on print? (this should prob rather be handled by the _raw-method)
         for line in lines:
             self.printer.set(**params)
-            if isinstance(text, six.text_type):
-                self.printer.text("{0}\n".format(line))
-            else:
-                self.printer.text("{0}\n".format(line))
+            self.printer.text("{0}\n".format(line))
 
     def close(self):
         """Close printer.

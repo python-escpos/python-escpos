@@ -11,7 +11,6 @@ from tempfile import mkdtemp
 from typing import Any, Dict, Optional, Type
 
 import importlib_resources
-import six
 import yaml
 
 logging.basicConfig()
@@ -113,7 +112,7 @@ class BaseProfile(object):
         Makes sure that the requested `font` is valid.
         """
         font = {"a": 0, "b": 1}.get(font, font)
-        if not six.text_type(font) in self.fonts:
+        if not str(font) in self.fonts:
             raise NotSupported(
                 '"{}" is not a valid font in the current profile'.format(font)
             )
@@ -122,7 +121,7 @@ class BaseProfile(object):
     def get_columns(self, font):
         """Return the number of columns for the given font."""
         font = self.get_font(font)
-        return self.fonts[six.text_type(font)]["columns"]
+        return self.fonts[str(font)]["columns"]
 
     def supports(self, feature):
         """Return true/false for the given feature."""
