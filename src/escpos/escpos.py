@@ -9,7 +9,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT
 """
-
+from __future__ import annotations
 
 import textwrap
 import warnings
