@@ -80,9 +80,7 @@ class Config:
 
             if not self._printer_name or not hasattr(printer, self._printer_name):
                 raise exceptions.ConfigSyntaxError(
-                    'Printer type "{printer_name}" is invalid'.format(
-                        printer_name=self._printer_name,
-                    )
+                    f'Printer type "{self._printer_name}" is invalid'
                 )
 
         self._has_loaded = True
