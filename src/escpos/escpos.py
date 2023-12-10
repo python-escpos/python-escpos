@@ -16,7 +16,7 @@ import warnings
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
 from types import TracebackType
-from typing import Any, List, Literal, Optional, Union
+from typing import Any, List, Literal, Optional, Type, Union
 
 import barcode
 import qrcode
@@ -1438,7 +1438,7 @@ class EscposIO:
         return self
 
     def __exit__(
-        self, type: type[BaseException], value: BaseException, traceback: TracebackType
+        self, type: Type[BaseException], value: BaseException, traceback: TracebackType
     ) -> None:
         """Cut and close if configured.
 
