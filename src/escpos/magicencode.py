@@ -57,9 +57,9 @@ class Encoder(object):
         if encoding not in self.codepages:
             raise ValueError(
                 (
-                    'Encoding "{}" cannot be used for the current profile. '
-                    "Valid encodings are: {}"
-                ).format(encoding, ",".join(self.codepages.keys()))
+                    f'Encoding "{encoding}" cannot be used for the current profile. '
+                    f'Valid encodings are: {",".join(self.codepages.keys())}'
+                )
             )
         return encoding
 
@@ -88,7 +88,7 @@ class Encoder(object):
                     # Non-encodable character, just skip it
                     pass
             return encodable_chars
-        raise LookupError("Can't find a known encoding for {}".format(encoding))
+        raise LookupError(f"Can't find a known encoding for {encoding}")
 
     def _get_codepage_char_map(self, encoding):
         """Get codepage character map.
@@ -294,9 +294,7 @@ class MagicEncode(object):
         """Write the text and inject necessary codepage switches."""
         if text is not None and type(text) is not six.text_type:
             raise Error(
-                "The supplied text has to be unicode, but is of type {type}.".format(
-                    type=type(text)
-                )
+                f"The supplied text has to be unicode, but is of type {type(text)}."
             )
 
         # We always know the current code page; if the new codepage

@@ -219,7 +219,7 @@ class Escpos(object):
             max_width = int(self.profile.profile_data["media"]["width"]["pixels"])
 
             if im.width > max_width:
-                raise ImageWidthError("{} > {}".format(im.width, max_width))
+                raise ImageWidthError(f"{im.width} > {max_width}")
 
             if center:
                 im.center(max_width)
@@ -420,9 +420,7 @@ class Escpos(object):
             raise ValueError("Can only output 1-4 bytes")
         if not 0 <= inp_number <= max_input:
             raise ValueError(
-                "Number too large. Can only output up to {0} in {1} bytes".format(
-                    max_input, out_bytes
-                )
+                f"Number too large. Can only output up to {max_input} in {out_bytes} bytes"
             )
         outp = b""
         for _ in range(0, out_bytes):
@@ -711,21 +709,15 @@ class Escpos(object):
         if not function_type or not BARCODE_TYPES.get(function_type.upper()):
             raise BarcodeTypeError(
                 (
-                    "Barcode '{bc}' not valid for barcode function type "
-                    "{function_type}"
-                ).format(
-                    bc=bc,
-                    function_type=function_type,
+                    f"Barcode '{bc}' not valid for barcode function type "
+                    f"{function_type}"
                 )
             )
         bc_types = BARCODE_TYPES[function_type.upper()]
 
         if check and not self.check_barcode(bc, code):
             raise BarcodeCodeError(
-                ("Barcode '{code}' not in a valid format for type '{bc}'").format(
-                    code=code,
-                    bc=bc,
-                )
+                f"Barcode '{code}' not in a valid format for type '{bc}'"
             )
 
         # Align Bar Code()
@@ -735,12 +727,12 @@ class Escpos(object):
         if 1 <= height <= 255:
             self._raw(BARCODE_HEIGHT + six.int2byte(height))
         else:
-            raise BarcodeSizeError("height = {height}".format(height=height))
+            raise BarcodeSizeError(f"height = {height}")
         # Width
         if 2 <= width <= 6:
             self._raw(BARCODE_WIDTH + six.int2byte(width))
         else:
-            raise BarcodeSizeError("width = {width}".format(width=width))
+            raise BarcodeSizeError(f"width = {width}")
         # Font
         if font.upper() == "B":
             self._raw(BARCODE_FONT_B)
@@ -833,9 +825,7 @@ class Escpos(object):
         # Check if barcode type exists
         if barcode_type not in barcode.PROVIDED_BARCODES:
             raise BarcodeTypeError(
-                "Barcode type {} not supported by software barcode renderer".format(
-                    barcode_type
-                )
+                f"Barcode type {barcode_type} not supported by software barcode renderer"
             )
 
         # Render the barcode
@@ -878,7 +868,7 @@ class Escpos(object):
         :param txt: text to be printed with a newline
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
-        self.text("{}\n".format(txt))
+        self.text(f"{txt}\n")
 
     def ln(self, count=1):
         """Print a newline or more.
@@ -1426,7 +1416,7 @@ class EscposIO(object):
             lines = text
         else:
             lines = [
-                "{0}".format(text),
+                f"{text}",
             ]
 
         # TODO check unicode handling
@@ -1434,9 +1424,9 @@ class EscposIO(object):
         for line in lines:
             self.printer.set(**params)
             if isinstance(text, six.text_type):
-                self.printer.text("{0}\n".format(line))
+                self.printer.text(f"{line}\n")
             else:
-                self.printer.text("{0}\n".format(line))
+                self.printer.text(f"{line}\n")
 
     def close(self):
         """Close printer.
