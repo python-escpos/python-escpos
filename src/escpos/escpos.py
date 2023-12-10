@@ -263,8 +263,8 @@ class Escpos(object, metaclass=ABCMeta):
             )
             tone = b"0"
             colors = b"1"
-            ym = b"1" if high_density_vertical else b"2"
-            xm = b"1" if high_density_horizontal else b"2"
+            ym = b"\x01" if high_density_vertical else b"\x02"
+            xm = b"\x01" if high_density_horizontal else b"\x02"
             header = tone + xm + ym + colors + img_header
             raster_data = im.to_raster_format()
             self._image_send_graphics_data(b"0", b"p", header + raster_data)
