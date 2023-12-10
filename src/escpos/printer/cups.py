@@ -11,7 +11,7 @@
 import functools
 import logging
 import tempfile
-from typing import Literal, Optional, Type, Union, List
+from typing import List, Literal, Optional, Type, Union
 
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError

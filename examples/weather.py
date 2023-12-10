@@ -18,8 +18,8 @@ import calendar
 import json
 import os
 import time
-from urllib.request import urlopen
 from datetime import datetime
+from urllib.request import urlopen
 
 from escpos.printer import Usb
 

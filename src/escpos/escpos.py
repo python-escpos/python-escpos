@@ -16,7 +16,7 @@ import warnings
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
 from types import TracebackType
-from typing import List, Literal, Optional, Union, Any
+from typing import Any, List, Literal, Optional, Union
 
 import barcode
 import qrcode
@@ -857,7 +857,7 @@ class Escpos(object, metaclass=ABCMeta):
         image = my_code.writer._image
         self.image(image, impl=impl, center=center)
 
-    def text(self, txt:str) -> None:
+    def text(self, txt: str) -> None:
         """Print alpha-numeric text.
 
         The text has to be encoded in the currently selected codepage.
@@ -1297,7 +1297,7 @@ class Escpos(object, metaclass=ABCMeta):
             return False
         return not (status[0] & RT_MASK_ONLINE)
 
-    def paper_status(self) -> int: # could be IntEnum
+    def paper_status(self) -> int:  # could be IntEnum
         """Query the paper status of the printer.
 
         Returns 2 if there is plenty of paper, 1 if the paper has arrived to
@@ -1443,15 +1443,12 @@ class EscposIO:
         """
         self.printer.close()
 
-    def __enter__(self, **kwargs: Any) -> 'EscposIO':
+    def __enter__(self, **kwargs: Any) -> "EscposIO":
         """Enter context."""
         return self
 
     def __exit__(
-        self,
-        type: type[BaseException],
-        value: BaseException,
-        traceback: TracebackType
+        self, type: type[BaseException], value: BaseException, traceback: TracebackType
     ) -> None:
         """Cut and close if configured.
 

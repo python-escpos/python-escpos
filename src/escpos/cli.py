@@ -578,9 +578,7 @@ def main() -> None:
     if not args_dict:
         parser.print_help()
         sys.exit()
-    command_arguments = dict(
-        [k, v] for k, v in args_dict.items() if v is not None
-    )
+    command_arguments = dict([k, v] for k, v in args_dict.items() if v is not None)
 
     # If version should be printed, do this, then exit
     print_version = command_arguments.pop("version", None)

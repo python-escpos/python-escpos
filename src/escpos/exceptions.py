@@ -39,7 +39,7 @@ class Error(Exception):
 
     """
 
-    def __init__(self, msg:str, status: Optional[int] = None) -> None:
+    def __init__(self, msg: str, status: Optional[int] = None) -> None:
         """Initialize Error object."""
         Exception.__init__(self)
         self.msg = msg

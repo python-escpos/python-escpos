@@ -46,7 +46,7 @@ class Config:
         self._printer_name = None
         self._printer_config = None
 
-    def load(self, config_path = None):
+    def load(self, config_path=None):
         """Load and parse the configuration file using pyyaml.
 
         :param config_path: An optional file path, file handle, or byte string
