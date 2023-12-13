@@ -154,6 +154,10 @@ class Escpos(object, metaclass=ABCMeta):
         """Open a printer device/connection."""
         pass
 
+    def close(self):
+        """Close a printer device/connection."""
+        pass
+
     @abstractmethod
     def _raw(self, msg: bytes) -> None:
         """Send raw data to the printer.

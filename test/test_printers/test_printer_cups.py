@@ -173,4 +173,4 @@ def test_read_no_device(cupsprinter) -> None:
     THEN check the return value is b''
     """
     cupsprinter.device = None
-    assert cupsprinter._read() == b''
+    assert cupsprinter._read() == b""
