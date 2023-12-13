@@ -74,8 +74,8 @@ class Usb(Escpos):
 
     def __init__(
         self,
-        idVendor: str = "",
-        idProduct: str = "",
+        idVendor: Optional[int] = None,
+        idProduct: Optional[int] = None,
         usb_args: Dict[str, str] = {},
         timeout: Union[int, float] = 0,
         in_ep: int = 0x82,
