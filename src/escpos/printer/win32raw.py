@@ -158,4 +158,8 @@ class Win32Raw(Escpos):
             raise DeviceNotFoundError("Printer not found")
         if not self.device:
             raise DeviceNotFoundError("Printer job not opened")
-        win32print.WritePrinter(self.device, msg)
+        win32print.WritePrinter(self.device, msg)  # type: ignore
+
+        # there is a bug in the typeshed
+        # https://github.com/mhammond/pywin32/blob/main/win32/src/win32print/win32print.cpp#L976
+        # https://github.com/python/typeshed/blob/main/stubs/pywin32/win32/win32print.pyi#L27C4-L27C4
