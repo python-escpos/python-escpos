@@ -43,8 +43,6 @@ class TestCLI:
 
     def setup_method(self) -> None:
         """Create a file to print to and set up env"""
-        self.default_args = None
-
         self.env = TFE(
             base_path=TEST_DIR,
             cwd=os.getcwd(),
