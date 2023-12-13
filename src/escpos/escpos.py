@@ -16,7 +16,7 @@ import warnings
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
 from types import TracebackType
-from typing import Any, List, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union
 
 import barcode
 import qrcode
@@ -1268,10 +1268,10 @@ class Escpos(object, metaclass=ABCMeta):
         else:
             self._raw(PANEL_BUTTON_OFF)
 
-    def query_status(self, mode: bytes) -> List[int]:
+    def query_status(self, mode: bytes) -> bytes:
         """Query the printer for its status.
 
-        Returns an array of integers containing it.
+        Returns byte array containing it.
 
         :param mode: Integer that sets the status mode queried to the printer.
             - RT_STATUS_ONLINE: Printer status.
