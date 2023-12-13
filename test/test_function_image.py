@@ -16,7 +16,7 @@ from escpos.exceptions import ImageWidthError
 
 
 # Raster format print
-def test_bit_image_black():
+def test_bit_image_black() -> None:
     """
     Test printing solid black bit image (raster)
     """
@@ -30,7 +30,7 @@ def test_bit_image_black():
     assert instance.output == b"\x1dv0\x00\x01\x00\x01\x00\x80"
 
 
-def test_bit_image_white():
+def test_bit_image_white() -> None:
     """
     Test printing solid white bit image (raster)
     """
@@ -39,7 +39,7 @@ def test_bit_image_white():
     assert instance.output == b"\x1dv0\x00\x01\x00\x01\x00\x00"
 
 
-def test_bit_image_both():
+def test_bit_image_both() -> None:
     """
     Test printing black/white bit image (raster)
     """
@@ -58,7 +58,7 @@ def test_bit_image_transparent():
 
 
 # Column format print
-def test_bit_image_colfmt_black():
+def test_bit_image_colfmt_black() -> None:
     """
     Test printing solid black bit image (column format)
     """
@@ -67,7 +67,7 @@ def test_bit_image_colfmt_black():
     assert instance.output == b"\x1b3\x10\x1b*!\x01\x00\x80\x00\x00\x0a\x1b2"
 
 
-def test_bit_image_colfmt_white():
+def test_bit_image_colfmt_white() -> None:
     """
     Test printing solid white bit image (column format)
     """
@@ -76,7 +76,7 @@ def test_bit_image_colfmt_white():
     assert instance.output == b"\x1b3\x10\x1b*!\x01\x00\x00\x00\x00\x0a\x1b2"
 
 
-def test_bit_image_colfmt_both():
+def test_bit_image_colfmt_both() -> None:
     """
     Test printing black/white bit image (column format)
     """
@@ -87,7 +87,7 @@ def test_bit_image_colfmt_both():
     )
 
 
-def test_bit_image_colfmt_transparent():
+def test_bit_image_colfmt_transparent() -> None:
     """
     Test printing black/transparent bit image (column format)
     """
@@ -99,7 +99,7 @@ def test_bit_image_colfmt_transparent():
 
 
 # Graphics print
-def test_graphics_black():
+def test_graphics_black() -> None:
     """
     Test printing solid black graphics
     """
@@ -111,7 +111,7 @@ def test_graphics_black():
     )
 
 
-def test_graphics_white():
+def test_graphics_white() -> None:
     """
     Test printing solid white graphics
     """
@@ -123,7 +123,7 @@ def test_graphics_white():
     )
 
 
-def test_graphics_both():
+def test_graphics_both() -> None:
     """
     Test printing black/white graphics
     """
@@ -135,7 +135,7 @@ def test_graphics_both():
     )
 
 
-def test_graphics_transparent():
+def test_graphics_transparent() -> None:
     """
     Test printing black/transparent graphics
     """
@@ -147,7 +147,7 @@ def test_graphics_transparent():
     )
 
 
-def test_large_graphics():
+def test_large_graphics() -> None:
     """
     Test whether 'large' graphics that induce a fragmentation are handled correctly.
     """
@@ -162,13 +162,13 @@ def test_large_graphics():
 
 
 @pytest.fixture
-def dummy_with_width():
+def dummy_with_width() -> printer.Dummy:
     instance = printer.Dummy()
     instance.profile.profile_data = {"media": {"width": {"pixels": 384}}}
     return instance
 
 
-def test_width_too_large(dummy_with_width):
+def test_width_too_large(dummy_with_width: printer.Dummy) -> None:
     """
     Test printing an image that is too large in width.
     """
@@ -180,7 +180,7 @@ def test_width_too_large(dummy_with_width):
     instance.image(Image.new("RGB", (384, 200)))
 
 
-def test_center_image(dummy_with_width):
+def test_center_image(dummy_with_width: printer.Dummy) -> None:
     instance = dummy_with_width
 
     with pytest.raises(ImageWidthError):

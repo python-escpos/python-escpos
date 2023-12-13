@@ -3,8 +3,6 @@
 
 import sys
 
-import six
-
 from escpos import printer
 from escpos.constants import (
     CODEPAGE_CHANGE,
@@ -38,7 +36,7 @@ def print_codepage(printer, codepage):
     """Print a codepage."""
     if codepage.isdigit():
         codepage = int(codepage)
-        printer._raw(CODEPAGE_CHANGE + six.int2byte(codepage))
+        printer._raw(CODEPAGE_CHANGE + bytes((codepage,)))
         printer._raw("after")
     else:
         printer.charcode(codepage)
@@ -58,7 +56,9 @@ def print_codepage(printer, codepage):
         printer.set()
 
         for y in range(0, 16):
-            byte = six.int2byte(x * 16 + y)
+            byte = bytes(
+                (x * 16 + y),
+            )
 
             if byte in (ESC, CTL_LF, CTL_FF, CTL_CR, CTL_HT, CTL_VT):
                 byte = " "

@@ -1,12 +1,13 @@
 import pytest
 import six
+from typing import Optional
 
 import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
 from escpos.exceptions import SetVariableError
 
 
-def test_default_values_with_default():
+def test_default_values_with_default() -> None:
     """Default test, please copy and paste this block to test set method calls"""
     instance = printer.Dummy()
     instance.set_with_default()
@@ -26,7 +27,7 @@ def test_default_values_with_default():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_default_values():
+def test_default_values() -> None:
     """Default test"""
     instance = printer.Dummy()
     instance.set()
@@ -37,7 +38,7 @@ def test_default_values():
 # Size tests
 
 
-def test_set_size_2h():
+def test_set_size_2h() -> None:
     instance = printer.Dummy()
     instance.set_with_default(double_height=True)
 
@@ -56,7 +57,7 @@ def test_set_size_2h():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_size_2h_no_default():
+def test_set_size_2h_no_default() -> None:
     instance = printer.Dummy()
     instance.set(double_height=True)
 
@@ -68,7 +69,7 @@ def test_set_size_2h_no_default():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_size_2w():
+def test_set_size_2w() -> None:
     instance = printer.Dummy()
     instance.set_with_default(double_width=True)
 
@@ -87,7 +88,7 @@ def test_set_size_2w():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_size_2w_no_default():
+def test_set_size_2w_no_default() -> None:
     instance = printer.Dummy()
     instance.set(double_width=True)
 
@@ -99,7 +100,7 @@ def test_set_size_2w_no_default():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_size_2x():
+def test_set_size_2x() -> None:
     instance = printer.Dummy()
     instance.set_with_default(double_height=True, double_width=True)
 
@@ -118,7 +119,7 @@ def test_set_size_2x():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_size_2x_no_default():
+def test_set_size_2x_no_default() -> None:
     instance = printer.Dummy()
     instance.set(double_width=True, double_height=True)
 
@@ -130,7 +131,7 @@ def test_set_size_2x_no_default():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_size_custom():
+def test_set_size_custom() -> None:
     instance = printer.Dummy()
     instance.set_with_default(custom_size=True, width=8, height=7)
 
@@ -151,7 +152,7 @@ def test_set_size_custom():
 
 @pytest.mark.parametrize("width", [1, 8])
 @pytest.mark.parametrize("height", [1, 8])
-def test_set_size_custom_no_default(width, height):
+def test_set_size_custom_no_default(width: int, height: int) -> None:
     instance = printer.Dummy()
     instance.set(custom_size=True, width=width, height=height)
 
@@ -165,7 +166,9 @@ def test_set_size_custom_no_default(width, height):
 
 @pytest.mark.parametrize("width", [None, 0, 9, 10, 4444])
 @pytest.mark.parametrize("height", [None, 0, 9, 10, 4444])
-def test_set_size_custom_invalid_input(width, height):
+def test_set_size_custom_invalid_input(
+    width: Optional[int], height: Optional[int]
+) -> None:
     instance = printer.Dummy()
     with pytest.raises(SetVariableError):
         instance.set(custom_size=True, width=width, height=height)
@@ -174,7 +177,7 @@ def test_set_size_custom_invalid_input(width, height):
 # Flip
 
 
-def test_set_flip():
+def test_set_flip() -> None:
     instance = printer.Dummy()
     instance.set_with_default(flip=True)
 
@@ -193,7 +196,7 @@ def test_set_flip():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_flip_no_default():
+def test_set_flip_no_default() -> None:
     instance = printer.Dummy()
     instance.set(flip=True)
 
@@ -205,7 +208,7 @@ def test_set_flip_no_default():
 # Smooth
 
 
-def test_smooth():
+def test_smooth() -> None:
     instance = printer.Dummy()
     instance.set_with_default(smooth=True)
 
@@ -227,7 +230,7 @@ def test_smooth():
 # Type
 
 
-def test_set_bold():
+def test_set_bold() -> None:
     instance = printer.Dummy()
     instance.set_with_default(bold=True)
 
@@ -246,7 +249,7 @@ def test_set_bold():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_underline():
+def test_set_underline() -> None:
     instance = printer.Dummy()
     instance.set_with_default(underline=1)
 
@@ -265,7 +268,7 @@ def test_set_underline():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_set_underline2():
+def test_set_underline2() -> None:
     instance = printer.Dummy()
     instance.set_with_default(underline=2)
 
@@ -287,7 +290,7 @@ def test_set_underline2():
 # Align
 
 
-def test_align_center():
+def test_align_center() -> None:
     instance = printer.Dummy()
     instance.set_with_default(align="center")
 
@@ -306,7 +309,7 @@ def test_align_center():
     assert instance.output == b"".join(expected_sequence)
 
 
-def test_align_right():
+def test_align_right() -> None:
     instance = printer.Dummy()
     instance.set_with_default(align="right")
 
@@ -328,7 +331,7 @@ def test_align_right():
 # Densities
 
 
-def test_densities():
+def test_densities() -> None:
     for density in range(8):
         instance = printer.Dummy()
         instance.set_with_default(density=density)
@@ -352,7 +355,7 @@ def test_densities():
 # Invert
 
 
-def test_invert():
+def test_invert() -> None:
     instance = printer.Dummy()
     instance.set_with_default(invert=True)
 

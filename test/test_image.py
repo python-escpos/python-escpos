@@ -7,11 +7,12 @@ converted to ESC/POS column & raster formats.
 :copyright: Copyright (c) 2016 `Michael Billington <michael.billington@gmail.com>`_
 :license: MIT
 """
+from typing import List
 
 from escpos.image import EscposImage
 
 
-def test_image_black():
+def test_image_black() -> None:
     """
     Test rendering solid black image
     """
@@ -19,7 +20,7 @@ def test_image_black():
         _load_and_check_img("canvas_black." + img_format, 1, 1, b"\x80", [b"\x80"])
 
 
-def test_image_black_transparent():
+def test_image_black_transparent() -> None:
     """
     Test rendering black/transparent image
     """
@@ -29,7 +30,7 @@ def test_image_black_transparent():
         )
 
 
-def test_image_black_white():
+def test_image_black_white() -> None:
     """
     Test rendering black/white image
     """
@@ -39,7 +40,7 @@ def test_image_black_white():
         )
 
 
-def test_image_white():
+def test_image_white() -> None:
     """
     Test rendering solid white image
     """
@@ -47,7 +48,7 @@ def test_image_white():
         _load_and_check_img("canvas_white." + img_format, 1, 1, b"\x00", [b"\x00"])
 
 
-def test_split():
+def test_split() -> None:
     """
     test whether the split-function works as expected
     """
@@ -62,12 +63,12 @@ def test_split():
 
 
 def _load_and_check_img(
-    filename,
-    width_expected,
-    height_expected,
-    raster_format_expected,
-    column_format_expected,
-):
+    filename: str,
+    width_expected: int,
+    height_expected: int,
+    raster_format_expected: bytes,
+    column_format_expected: List[bytes],
+) -> None:
     """
     Load an image, and test whether raster & column formatted output, sizes, etc match expectations.
     """
