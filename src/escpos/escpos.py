@@ -1131,7 +1131,7 @@ class Escpos(object, metaclass=ABCMeta):
             try:
                 self._raw(CD_KICK_DEC_SEQUENCE(*pin))
             except TypeError as err:
-                raise CashDrawerError(err)
+                raise CashDrawerError(str(err))
 
     def linedisplay_select(self, select_display: bool = False) -> None:
         """Select the line display or the printer.
