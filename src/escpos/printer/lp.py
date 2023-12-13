@@ -188,6 +188,8 @@ class LP(Escpos):
         :param msg: arbitrary code to be printed
         :type msg: bytes
         """
+        assert self.device is not None
+        assert self.device.stdin is not None
         if self.device.stdin.writable():
             self.device.stdin.write(msg)
         else:
