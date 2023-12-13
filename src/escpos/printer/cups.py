@@ -207,7 +207,7 @@ class CupsPrinter(Escpos):
         printer = self.printers.get(self.printer_name, {})
         state = printer.get("printer-state")
         if not state:
-            return b''
+            return b""
         return bytes((state,))
 
     def close(self) -> None:
