@@ -76,7 +76,7 @@ class Usb(Escpos):
         self,
         idVendor: Optional[int] = None,
         idProduct: Optional[int] = None,
-        usb_args: Dict[str, str] = {},
+        usb_args: Dict[str, Union[str, int]] = {},
         timeout: Union[int, float] = 0,
         in_ep: int = 0x82,
         out_ep: int = 0x01,
