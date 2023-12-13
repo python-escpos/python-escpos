@@ -1,6 +1,7 @@
+from typing import Optional
+
 import pytest
 import six
-from typing import Optional
 
 import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
