@@ -114,7 +114,6 @@ class Network(Escpos):
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         assert self.device
         self.device.sendall(msg)

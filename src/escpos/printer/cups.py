@@ -167,7 +167,6 @@ class CupsPrinter(Escpos):
         """Append any command sent in raw format to temporary file.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         self.pending_job = True
         try:

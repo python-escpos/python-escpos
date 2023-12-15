@@ -185,7 +185,6 @@ class Usb(Escpos):
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         assert self.device
         self.device.write(self.out_ep, msg, self.timeout)

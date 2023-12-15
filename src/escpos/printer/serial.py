@@ -155,11 +155,10 @@ class Serial(Escpos):
                 return
         logging.info("Serial printer enabled")
 
-    def _raw(self, msg) -> None:
+    def _raw(self, msg: bytes) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         assert self.device
         self.device.write(msg)

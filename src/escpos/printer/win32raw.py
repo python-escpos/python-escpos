@@ -152,7 +152,6 @@ class Win32Raw(Escpos):
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         if self.printer_name is None:
             raise DeviceNotFoundError("Printer not found")

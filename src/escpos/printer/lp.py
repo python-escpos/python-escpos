@@ -186,7 +186,6 @@ class LP(Escpos):
         """Write raw command(s) to the printer.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         assert self.device is not None
         assert self.device.stdin is not None
