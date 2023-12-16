@@ -182,12 +182,13 @@ class LP(Escpos):
         if not self._is_closing:
             self.open(_close_opened=False)
 
-    def _raw(self, msg):
+    def _raw(self, msg: bytes) -> None:
         """Write raw command(s) to the printer.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
+        assert self.device is not None
+        assert self.device.stdin is not None
         if self.device.stdin.writable():
             self.device.stdin.write(msg)
         else:

@@ -11,7 +11,6 @@ from tempfile import mkdtemp
 from typing import Any, Dict, Optional, Type
 
 import importlib_resources
-import six
 import yaml
 
 logging.basicConfig()
@@ -92,7 +91,7 @@ class NotSupported(Exception):
 BARCODE_B = "barcodeB"
 
 
-class BaseProfile(object):
+class BaseProfile:
     """This represents a printer profile.
 
     A printer profile knows about the number of columns, supported
@@ -111,20 +110,22 @@ class BaseProfile(object):
         Makes sure that the requested `font` is valid.
         """
         font = {"a": 0, "b": 1}.get(font, font)
-        if not six.text_type(font) in self.fonts:
+        if not str(font) in self.fonts:
             raise NotSupported(f'"{font}" is not a valid font in the current profile')
         return font
 
-    def get_columns(self, font):
+    def get_columns(self, font) -> int:
         """Return the number of columns for the given font."""
         font = self.get_font(font)
-        return self.fonts[six.text_type(font)]["columns"]
+        columns = self.fonts[str(font)]["columns"]
+        assert type(columns) is int
+        return columns
 
-    def supports(self, feature):
+    def supports(self, feature) -> bool:
         """Return true/false for the given feature."""
         return self.features.get(feature)
 
-    def get_code_pages(self):
+    def get_code_pages(self) -> Dict[str, int]:
         """Return the support code pages as a ``{name: index}`` dict."""
         return {v: k for k, v in self.codePages.items()}
 
@@ -161,7 +162,7 @@ def get_profile_class(name: str) -> Type[BaseProfile]:
     return CLASS_CACHE[name]
 
 
-def clean(s):
+def clean(s: str) -> str:
     """Clean profile name."""
     # Remove invalid characters
     s = re.sub("[^0-9a-zA-Z_]", "", s)
@@ -180,14 +181,14 @@ class Profile(ProfileBaseClass):
     For users, who want to provide their own profile.
     """
 
-    def __init__(self, columns=None, features=None):
+    def __init__(self, columns: Optional[int] = None, features=None) -> None:
         """Initialize profile."""
         super(Profile, self).__init__()
 
         self.columns = columns
         self.features = features or {}
 
-    def get_columns(self, font):
+    def get_columns(self, font) -> int:
         """Get column count of printer."""
         if self.columns is not None:
             return self.columns

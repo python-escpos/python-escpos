@@ -23,7 +23,7 @@ from .constants import CODEPAGE_CHANGE
 from .exceptions import Error
 
 
-class Encoder(object):
+class Encoder:
     """Take available code spaces and pick the right one for a given character.
 
     Note: To determine the code page, it needs to do the conversion, and
@@ -202,7 +202,7 @@ def split_writable_text(encoder, text, encoding):
     return text, None
 
 
-class MagicEncode(object):
+class MagicEncode:
     """Help switching to the right code page.
 
     A helper that helps us to automatically switch to the right
@@ -292,7 +292,7 @@ class MagicEncode(object):
 
     def write_with_encoding(self, encoding, text):
         """Write the text and inject necessary codepage switches."""
-        if text is not None and type(text) is not six.text_type:
+        if text is not None and type(text) is not str:
             raise Error(
                 f"The supplied text has to be unicode, but is of type {type(text)}."
             )

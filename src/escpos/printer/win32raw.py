@@ -76,7 +76,7 @@ class Win32Raw(Escpos):
         return is_usable()
 
     @dependency_win32print
-    def __init__(self, printer_name: str = "", *args, **kwargs):
+    def __init__(self, printer_name: str = "", *args, **kwargs) -> None:
         """Initialize default printer."""
         Escpos.__init__(self, *args, **kwargs)
         self.printer_name = printer_name
@@ -148,14 +148,17 @@ class Win32Raw(Escpos):
         win32print.ClosePrinter(self._device)
         self._device = False
 
-    def _raw(self, msg) -> None:
+    def _raw(self, msg: bytes) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         if self.printer_name is None:
             raise DeviceNotFoundError("Printer not found")
         if not self.device:
             raise DeviceNotFoundError("Printer job not opened")
-        win32print.WritePrinter(self.device, msg)
+        win32print.WritePrinter(self.device, msg)  # type: ignore
+
+        # there is a bug in the typeshed
+        # https://github.com/mhammond/pywin32/blob/main/win32/src/win32print/win32print.cpp#L976
+        # https://github.com/python/typeshed/blob/main/stubs/pywin32/win32/win32print.pyi#L27C4-L27C4

@@ -13,7 +13,7 @@ import hypothesis.strategies as st
 import pytest
 from hypothesis import example, given
 
-from escpos.exceptions import CharCodeError, Error
+from escpos.exceptions import Error
 from escpos.katakana import encode_katakana
 from escpos.magicencode import Encoder, MagicEncode
 
@@ -23,23 +23,23 @@ class TestEncoder:
     Tests the single encoders.
     """
 
-    def test_can_encode(self):
+    def test_can_encode(self) -> None:
         assert not Encoder({"CP437": 1}).can_encode("CP437", "€")
         assert Encoder({"CP437": 1}).can_encode("CP437", "á")
         assert not Encoder({"foobar": 1}).can_encode("foobar", "a")
 
-    def test_find_suitable_encoding(self):
+    def test_find_suitable_encoding(self) -> None:
         assert not Encoder({"CP437": 1}).find_suitable_encoding("€")
         assert Encoder({"CP858": 1}).find_suitable_encoding("€") == "CP858"
 
-    def test_find_suitable_encoding_unnecessary_codepage_swap(self):
+    def test_find_suitable_encoding_unnecessary_codepage_swap(self) -> None:
         enc = Encoder({"CP857": 1, "CP437": 2, "CP1252": 3, "CP852": 4, "CP858": 5})
         # desired behavior would be that the encoder always stays in the lower
         # available codepages if possible
         for character in ("Á", "É", "Í", "Ó", "Ú"):
             assert enc.find_suitable_encoding(character) == "CP857"
 
-    def test_get_encoding(self):
+    def test_get_encoding(self) -> None:
         with pytest.raises(ValueError):
             Encoder({}).get_encoding_name("latin1")
 
@@ -122,9 +122,9 @@ class TestKatakana:
     @example("カタカナ")
     @example("あいうえお")
     @example("ﾊﾝｶｸｶﾀｶﾅ")
-    def test_accept(self, text):
+    def test_accept(self, text: str) -> None:
         encode_katakana(text)
 
-    def test_result(self):
+    def test_result(self) -> None:
         assert encode_katakana("カタカナ") == b"\xb6\xc0\xb6\xc5"
         assert encode_katakana("あいうえお") == b"\xb1\xb2\xb3\xb4\xb5"

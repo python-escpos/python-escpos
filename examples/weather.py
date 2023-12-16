@@ -18,8 +18,8 @@ import calendar
 import json
 import os
 import time
-import urllib
 from datetime import datetime
+from urllib.request import urlopen
 
 from escpos.printer import Usb
 
@@ -93,7 +93,7 @@ url = (
     + LONG
     + "?exclude=[alerts,minutely,hourly,flags]&units=si"
 )  # change last bit to 'us' for Fahrenheit
-response = urllib.urlopen(url)
+response = urlopen(url)
 data = json.loads(response.read())
 
 printer.print_and_feed(n=1)

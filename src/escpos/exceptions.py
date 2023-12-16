@@ -26,6 +26,8 @@ Result/Exit codes:
 :license: MIT
 """
 
+from typing import Optional
+
 
 class Error(Exception):
     """Base class for ESC/POS errors.
@@ -37,7 +39,7 @@ class Error(Exception):
 
     """
 
-    def __init__(self, msg, status=None):
+    def __init__(self, msg: str, status: Optional[int] = None) -> None:
         """Initialize Error object."""
         Exception.__init__(self)
         self.msg = msg
@@ -45,7 +47,7 @@ class Error(Exception):
         if status is not None:
             self.resultcode = status
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of Error."""
         return self.msg
 
@@ -64,13 +66,13 @@ class BarcodeTypeError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize BarcodeTypeError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 10
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of BarcodeTypeError."""
         return f"No Barcode type is defined ({self.msg})"
 
@@ -89,13 +91,13 @@ class BarcodeSizeError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize BarcodeSizeError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 20
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of BarcodeSizeError."""
         return f"Barcode size is out of range ({self.msg})"
 
@@ -114,13 +116,13 @@ class BarcodeCodeError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize BarcodeCodeError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 30
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of BarcodeCodeError."""
         return f"No Barcode code was supplied ({self.msg})"
 
@@ -137,13 +139,13 @@ class ImageSizeError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize ImageSizeError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 40
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of ImageSizeError."""
         return f"Image height is longer than 255px and can't be printed ({self.msg})"
 
@@ -160,13 +162,13 @@ class ImageWidthError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize ImageWidthError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 41
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of ImageWidthError."""
         return f"Image width is too large ({self.msg})"
 
@@ -184,13 +186,13 @@ class TextError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize TextError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 50
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of TextError."""
         return f"Text string must be supplied to the text() method ({self.msg})"
 
@@ -208,13 +210,13 @@ class CashDrawerError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize CashDrawerError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 60
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of CashDrawerError."""
         return f"Valid pin must be set to send pulse ({self.msg})"
 
@@ -235,13 +237,13 @@ class TabPosError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize TabPosError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 70
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of TabPosError."""
         return f"Valid tab positions must be in the range 0 to 16 ({self.msg})"
 
@@ -259,13 +261,13 @@ class CharCodeError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize CharCodeError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 80
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of CharCodeError."""
         return f"Valid char code must be set ({self.msg})"
 
@@ -283,13 +285,13 @@ class DeviceNotFoundError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize DeviceNotFoundError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 90
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of DeviceNotFoundError."""
         return f"Device not found ({self.msg})"
 
@@ -307,13 +309,13 @@ class USBNotFoundError(DeviceNotFoundError):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize USBNotFoundError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 91
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of USBNotFoundError."""
         return f"USB device not found ({self.msg})"
 
@@ -331,13 +333,13 @@ class SetVariableError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize SetVariableError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 100
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of SetVariableError."""
         return f"Set variable out of range ({self.msg})"
 
@@ -358,13 +360,13 @@ class ConfigNotFoundError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize ConfigNotFoundError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 200
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of ConfigNotFoundError."""
         return f"Configuration not found ({self.msg})"
 
@@ -382,13 +384,13 @@ class ConfigSyntaxError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize ConfigSyntaxError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 210
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of ConfigSyntaxError."""
         return f"Configuration syntax is invalid ({self.msg})"
 
@@ -406,12 +408,12 @@ class ConfigSectionMissingError(Error):
 
     """
 
-    def __init__(self, msg=""):
+    def __init__(self, msg: str = "") -> None:
         """Initialize ConfigSectionMissingError object."""
         Error.__init__(self, msg)
         self.msg = msg
         self.resultcode = 220
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of ConfigSectionMissingError."""
         return f"Configuration section is missing ({self.msg})"

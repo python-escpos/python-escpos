@@ -11,7 +11,7 @@ import yaml
 from . import exceptions, printer
 
 
-class Config(object):
+class Config:
     """Configuration handler class.
 
     This class loads configuration from a default or specified directory. It
@@ -21,7 +21,7 @@ class Config(object):
     _app_name = "python-escpos"
     _config_file = "config.yaml"
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize configuration.
 
         Remember to add anything that needs to be reset between configurations
@@ -33,7 +33,7 @@ class Config(object):
         self._printer_name = None
         self._printer_config = None
 
-    def _reset_config(self):
+    def _reset_config(self) -> None:
         """Clear the loaded configuration.
 
         If we are loading a changed config, we don't want to have leftover

@@ -84,7 +84,7 @@ class CupsPrinter(Escpos):
         return is_usable()
 
     @dependency_pycups
-    def __init__(self, printer_name: str = "", *args, **kwargs):
+    def __init__(self, printer_name: str = "", *args, **kwargs) -> None:
         """Class constructor for CupsPrinter.
 
         :param printer_name: CUPS printer name (Optional)
@@ -163,11 +163,10 @@ class CupsPrinter(Escpos):
                 return
         logging.info("CupsPrinter printer enabled")
 
-    def _raw(self, msg):
+    def _raw(self, msg: bytes) -> None:
         """Append any command sent in raw format to temporary file.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
         self.pending_job = True
         try:
@@ -176,8 +175,9 @@ class CupsPrinter(Escpos):
             self.pending_job = False
             raise TypeError("Bytes required. Printer job not opened")
 
-    def send(self):
+    def send(self) -> None:
         """Send the print job to the printer."""
+        assert self.device
         if self.pending_job:
             # Rewind tempfile
             self.tmpfile.seek(0)
@@ -190,7 +190,7 @@ class CupsPrinter(Escpos):
             )
         self._clear()
 
-    def _clear(self):
+    def _clear(self) -> None:
         """Finish the print job.
 
         Remove temporary file.
@@ -198,18 +198,18 @@ class CupsPrinter(Escpos):
         self.tmpfile.close()
         self.pending_job = False
 
-    def _read(self):
+    def _read(self) -> bytes:
         """Return a single-item array with the accepting state of the print queue.
 
         states: idle = [3], printing a job = [4], stopped = [5]
         """
         printer = self.printers.get(self.printer_name, {})
         state = printer.get("printer-state")
-        if not state:
-            return []
-        return [state]
+        if not state or state in [4, 5]:
+            return b"8"  # offline
+        return b"0"  # online
 
-    def close(self):
+    def close(self) -> None:
         """Close CUPS connection.
 
         Send pending job to the printer if needed.

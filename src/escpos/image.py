@@ -10,12 +10,12 @@ This module contains the image format handler :py:class:`EscposImage`.
 
 
 import math
-from typing import Union
+from typing import Iterator, Union
 
 from PIL import Image, ImageOps
 
 
-class EscposImage(object):
+class EscposImage:
     """
     Load images in, and output ESC/POS formats.
 
@@ -23,7 +23,7 @@ class EscposImage(object):
     PIL, rather than spend CPU cycles looping over pixels.
     """
 
-    def __init__(self, img_source: Union[Image.Image, str]):
+    def __init__(self, img_source: Union[Image.Image, str]) -> None:
         """Load in an image.
 
         :param img_source: PIL.Image, or filename to load one from.
@@ -65,7 +65,7 @@ class EscposImage(object):
         _, height_pixels = self._im.size
         return height_pixels
 
-    def to_column_format(self, high_density_vertical: bool = True):
+    def to_column_format(self, high_density_vertical: bool = True) -> Iterator[bytes]:
         """Extract slices of an image as equal-sized blobs of column-format data.
 
         :param high_density_vertical: Printed line height in dots
@@ -82,7 +82,7 @@ class EscposImage(object):
             yield (im_bytes)
             left += line_height
 
-    def to_raster_format(self):
+    def to_raster_format(self) -> bytes:
         """Convert image to raster-format binary."""
         return self._im.tobytes()
 

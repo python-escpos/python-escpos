@@ -46,9 +46,7 @@ HW_RESET: bytes = ESC + b"\x3f\x0a\x00"  # Reset printer hardware
 # (TODO: Where is this specified?)
 
 # Cash Drawer (ESC p <pin> <on time: 2*ms> <off time: 2*ms>)
-_CASH_DRAWER = (
-    lambda m, t1="", t2="": ESC + b"p" + m + six.int2byte(t1) + six.int2byte(t2)
-)
+_CASH_DRAWER = lambda m, t1="", t2="": ESC + b"p" + m + bytes((t1, t2))
 
 #: decimal cash drawer kick sequence
 CD_KICK_DEC_SEQUENCE = (

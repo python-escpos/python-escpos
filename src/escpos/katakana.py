@@ -11,7 +11,7 @@ except ImportError:
     jaconv = None
 
 
-def encode_katakana(text):
+def encode_katakana(text: str) -> bytes:
     """I don't think this quite works yet."""
     encoded = []
     for char in text:

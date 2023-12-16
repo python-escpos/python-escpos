@@ -74,9 +74,9 @@ class Usb(Escpos):
 
     def __init__(
         self,
-        idVendor: str = "",
-        idProduct: str = "",
-        usb_args: Dict[str, str] = {},
+        idVendor: Optional[int] = None,
+        idProduct: Optional[int] = None,
+        usb_args: Dict[str, Union[str, int]] = {},
         timeout: Union[int, float] = 0,
         in_ep: int = 0x82,
         out_ep: int = 0x01,
@@ -181,16 +181,17 @@ class Usb(Escpos):
         except usb.core.USBError as e:
             logging.error("Could not set configuration: %s", str(e))
 
-    def _raw(self, msg):
+    def _raw(self, msg: bytes) -> None:
         """Print any command sent in raw format.
 
         :param msg: arbitrary code to be printed
-        :type msg: bytes
         """
+        assert self.device
         self.device.write(self.out_ep, msg, self.timeout)
 
-    def _read(self):
+    def _read(self) -> bytes:
         """Read a data buffer and return it to the caller."""
+        assert self.device
         return self.device.read(self.in_ep, 16)
 
     @dependency_usb

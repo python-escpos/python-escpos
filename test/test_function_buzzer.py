@@ -1,14 +1,13 @@
 import pytest
-import six
 
 from escpos import printer
 from escpos.constants import BUZZER
 
 
-def test_buzzer_function_with_default_params():
+def test_buzzer_function_with_default_params() -> None:
     instance = printer.Dummy()
     instance.buzzer()
-    expected = BUZZER + six.int2byte(2) + six.int2byte(4)
+    expected = BUZZER + bytes((2, 4))
     assert instance.output == expected
 
 
@@ -26,10 +25,10 @@ def test_buzzer_function_with_default_params():
         [9, 9],
     ],
 )
-def test_buzzer_function(times, duration):
+def test_buzzer_function(times: int, duration: int) -> None:
     instance = printer.Dummy()
     instance.buzzer(times, duration)
-    expected = BUZZER + six.int2byte(times) + six.int2byte(duration)
+    expected = BUZZER + bytes((times, duration))
     assert instance.output == expected
 
 
@@ -46,7 +45,9 @@ def test_buzzer_function(times, duration):
         [3, 11, "duration must be between 1 and 9"],
     ],
 )
-def test_buzzer_fuction_with_outrange_values(times, duration, expected_message):
+def test_buzzer_fuction_with_outrange_values(
+    times: int, duration: int, expected_message: str
+) -> None:
     instance = printer.Dummy()
     with pytest.raises(ValueError) as e:
         instance.buzzer(times, duration)

@@ -10,8 +10,7 @@
 
 import hypothesis.strategies as st
 import mock
-import pytest
-from hypothesis import assume, given
+from hypothesis import given
 
 from escpos.printer import Dummy
 
@@ -21,7 +20,7 @@ def get_printer():
 
 
 @given(text=st.text())
-def test_text(text):
+def test_text(text: str) -> None:
     """Test that text() calls the MagicEncode object."""
     instance = get_printer()
     instance.magic.write = mock.Mock()
@@ -29,7 +28,7 @@ def test_text(text):
     instance.magic.write.assert_called_with(text)
 
 
-def test_block_text():
+def test_block_text() -> None:
     printer = get_printer()
     printer.block_text(
         "All the presidents men were eating falafel for breakfast.", font="a"
@@ -39,25 +38,25 @@ def test_block_text():
     )
 
 
-def test_textln():
+def test_textln() -> None:
     printer = get_printer()
     printer.textln("hello, world")
     assert printer.output == b"hello, world\n"
 
 
-def test_textln_empty():
+def test_textln_empty() -> None:
     printer = get_printer()
     printer.textln()
     assert printer.output == b"\n"
 
 
-def test_ln():
+def test_ln() -> None:
     printer = get_printer()
     printer.ln()
     assert printer.output == b"\n"
 
 
-def test_multiple_ln():
+def test_multiple_ln() -> None:
     printer = get_printer()
     printer.ln(3)
     assert printer.output == b"\n\n\n"

@@ -19,7 +19,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_device_not_initialized(cupsprinter):
+def test_device_not_initialized(cupsprinter) -> None:
     """
     GIVEN a cups printer object
     WHEN it is not initialized
@@ -28,7 +28,7 @@ def test_device_not_initialized(cupsprinter):
     assert cupsprinter._device is False
 
 
-def test_open_raise_exception(cupsprinter, devicenotfounderror):
+def test_open_raise_exception(cupsprinter, devicenotfounderror) -> None:
     """
     GIVEN a cups printer object
     WHEN open() is set to raise a DeviceNotFoundError on error
@@ -40,7 +40,7 @@ def test_open_raise_exception(cupsprinter, devicenotfounderror):
         cupsprinter.open(raise_not_found=True)
 
 
-def test_open_not_raise_exception(cupsprinter, caplog):
+def test_open_not_raise_exception(cupsprinter, caplog) -> None:
     """
     GIVEN a cups printer object
     WHEN open() is set to not raise on error but simply cancel
@@ -55,7 +55,7 @@ def test_open_not_raise_exception(cupsprinter, caplog):
     assert cupsprinter.device is None
 
 
-def test_open(cupsprinter, caplog, mocker):
+def test_open(cupsprinter, caplog, mocker) -> None:
     """
     GIVEN a cups printer object and a mocked pycups device
     WHEN a valid connection to a device is opened
@@ -74,7 +74,7 @@ def test_open(cupsprinter, caplog, mocker):
     assert cupsprinter.device
 
 
-def test_close_on_reopen(cupsprinter, mocker):
+def test_close_on_reopen(cupsprinter, mocker) -> None:
     """
     GIVEN a cups printer object and a mocked connection
     WHEN a valid connection to a device is reopened before close
@@ -112,7 +112,7 @@ def test_close(cupsprinter, caplog, mocker):
     assert cupsprinter._device is False
 
 
-def test_send_on_close(cupsprinter, mocker):
+def test_send_on_close(cupsprinter, mocker) -> None:
     """
     GIVEN a cups printer object and a mocked pycups device
     WHEN closing connection before send the buffer
@@ -133,7 +133,7 @@ def test_send_on_close(cupsprinter, mocker):
     assert cupsprinter.pending_job is False
 
 
-def test_raw_raise_exception(cupsprinter):
+def test_raw_raise_exception(cupsprinter) -> None:
     """
     GIVEN a cups printer object
     WHEN passing a non byte string to _raw()
@@ -145,7 +145,7 @@ def test_raw_raise_exception(cupsprinter):
     assert cupsprinter.pending_job is False
 
 
-def test_raw(cupsprinter):
+def test_raw(cupsprinter) -> None:
     """
     GIVEN a cups printer object
     WHEN passing a byte string to _raw()
@@ -156,7 +156,7 @@ def test_raw(cupsprinter):
     assert cupsprinter.tmpfile.read() == b"Test"
 
 
-def test_printers_no_device(cupsprinter):
+def test_printers_no_device(cupsprinter) -> None:
     """
     GIVEN a cups printer object
     WHEN device is None
@@ -166,11 +166,11 @@ def test_printers_no_device(cupsprinter):
     assert cupsprinter.printers == {}
 
 
-def test_read_no_device(cupsprinter):
+def test_read_no_device(cupsprinter) -> None:
     """
     GIVEN a cups printer object
     WHEN device is None
-    THEN check the return value is []
+    THEN check the return value is b'8'
     """
     cupsprinter.device = None
-    assert cupsprinter._read() == []
+    assert cupsprinter._read() == b"8"

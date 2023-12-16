@@ -9,13 +9,14 @@ This module contains the abstract base class :py:class:`Escpos`.
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT
 """
-
+from __future__ import annotations
 
 import textwrap
 import warnings
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
-from typing import List, Literal, Optional, Union
+from types import TracebackType
+from typing import Any, Literal, Optional, Union
 
 import barcode
 import qrcode
@@ -107,8 +108,7 @@ SW_BARCODE_NAMES = {
 }
 
 
-@six.add_metaclass(ABCMeta)
-class Escpos(object):
+class Escpos(object, metaclass=ABCMeta):
     """ESC/POS Printer object.
 
     This class is the abstract base class for an Esc/Pos-printer. The printer implementations are children of this
@@ -154,6 +154,10 @@ class Escpos(object):
         """Open a printer device/connection."""
         pass
 
+    def close(self):
+        """Close a printer device/connection."""
+        pass
+
     @abstractmethod
     def _raw(self, msg: bytes) -> None:
         """Send raw data to the printer.
@@ -164,7 +168,7 @@ class Escpos(object):
         """
         pass
 
-    def _read(self):
+    def _read(self) -> bytes:
         """Read from printer.
 
         Returns a NotImplementedError if the instance of the class doesn't override this method.
@@ -250,7 +254,7 @@ class Escpos(object):
             header = (
                 GS
                 + b"v0"
-                + six.int2byte(density_byte)
+                + bytes((density_byte,))
                 + self._int_low_high(im.width_bytes, 2)
                 + self._int_low_high(im.height, 2)
             )
@@ -263,8 +267,8 @@ class Escpos(object):
             )
             tone = b"0"
             colors = b"1"
-            ym = six.int2byte(1 if high_density_vertical else 2)
-            xm = six.int2byte(1 if high_density_horizontal else 2)
+            ym = b"\x01" if high_density_vertical else b"\x02"
+            xm = b"\x01" if high_density_horizontal else b"\x02"
             header = tone + xm + ym + colors + img_header
             raster_data = im.to_raster_format()
             self._image_send_graphics_data(b"0", b"p", header + raster_data)
@@ -847,7 +851,7 @@ class Escpos(object):
         image = my_code.writer._image
         self.image(image, impl=impl, center=center)
 
-    def text(self, txt):
+    def text(self, txt: str) -> None:
         """Print alpha-numeric text.
 
         The text has to be encoded in the currently selected codepage.
@@ -856,10 +860,9 @@ class Escpos(object):
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
         """
-        txt = six.text_type(txt)
-        self.magic.write(txt)
+        self.magic.write(str(txt))
 
-    def textln(self, txt=""):
+    def textln(self, txt: str = "") -> None:
         """Print alpha-numeric text with a newline.
 
         The text has to be encoded in the currently selected codepage.
@@ -870,7 +873,7 @@ class Escpos(object):
         """
         self.text(f"{txt}\n")
 
-    def ln(self, count=1):
+    def ln(self, count: int = 1) -> None:
         """Print a newline or more.
 
         :param count: number of newlines to print
@@ -881,7 +884,7 @@ class Escpos(object):
         if count > 0:
             self.text("\n" * count)
 
-    def block_text(self, txt, font="0", columns=None):
+    def block_text(self, txt, font="0", columns=None) -> None:
         """Print text wrapped to specific columns.
 
         Text has to be encoded in unicode.
@@ -1132,7 +1135,7 @@ class Escpos(object):
             try:
                 self._raw(CD_KICK_DEC_SEQUENCE(*pin))
             except TypeError as err:
-                raise CashDrawerError(err)
+                raise CashDrawerError(str(err))
 
     def linedisplay_select(self, select_display: bool = False) -> None:
         """Select the line display or the printer.
@@ -1265,10 +1268,10 @@ class Escpos(object):
         else:
             self._raw(PANEL_BUTTON_OFF)
 
-    def query_status(self, mode: bytes) -> List[int]:
+    def query_status(self, mode: bytes) -> bytes:
         """Query the printer for its status.
 
-        Returns an array of integers containing it.
+        Returns byte array containing it.
 
         :param mode: Integer that sets the status mode queried to the printer.
             - RT_STATUS_ONLINE: Printer status.
@@ -1288,7 +1291,7 @@ class Escpos(object):
             return False
         return not (status[0] & RT_MASK_ONLINE)
 
-    def paper_status(self):
+    def paper_status(self) -> int:  # could be IntEnum
         """Query the paper status of the printer.
 
         Returns 2 if there is plenty of paper, 1 if the paper has arrived to
@@ -1305,6 +1308,8 @@ class Escpos(object):
             return 1
         if status[0] & RT_MASK_PAPER == RT_MASK_PAPER:
             return 2
+        # not reached
+        return 0
 
     def target(self, type: str = "ROLL") -> None:
         """Select where to print to.
@@ -1359,7 +1364,7 @@ class Escpos(object):
         self._raw(BUZZER + six.int2byte(times) + six.int2byte(duration))
 
 
-class EscposIO(object):
+class EscposIO:
     r"""ESC/POS Printer IO object.
 
     Allows the class to be used together with the `with`-statement. You have to define a printer instance
@@ -1405,12 +1410,12 @@ class EscposIO(object):
         """
         self.params.update(kwargs)
 
-    def writelines(self, text, **kwargs):
+    def writelines(self, text: str, **kwargs) -> None:
         """Print text."""
         params = dict(self.params)
         params.update(kwargs)
 
-        if isinstance(text, six.text_type):
+        if isinstance(text, str):
             lines = text.split("\n")
         elif isinstance(text, list) or isinstance(text, tuple):
             lines = text
@@ -1423,23 +1428,22 @@ class EscposIO(object):
         # TODO flush? or on print? (this should prob rather be handled by the _raw-method)
         for line in lines:
             self.printer.set(**params)
-            if isinstance(text, six.text_type):
-                self.printer.text(f"{line}\n")
-            else:
-                self.printer.text(f"{line}\n")
+            self.printer.text(f"{line}\n")
 
-    def close(self):
+    def close(self) -> None:
         """Close printer.
 
         Called upon closing the `with`-statement.
         """
         self.printer.close()
 
-    def __enter__(self, **kwargs):
+    def __enter__(self, **kwargs: Any) -> "EscposIO":
         """Enter context."""
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(
+        self, type: type[BaseException], value: BaseException, traceback: TracebackType
+    ) -> None:
         """Cut and close if configured.
 
         If :py:attr:`autocut <escpos.escpos.EscposIO.autocut>` is `True` (set by this class' constructor),

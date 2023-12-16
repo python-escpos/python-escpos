@@ -20,15 +20,13 @@ except ImportError:
     pass  # noqa
 import sys
 
-import six
-
 from . import config
 from . import printer as escpos_printer_module
 from . import version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
-def str_to_bool(string):
+def str_to_bool(string: str) -> bool:
     """Convert string to bool.
 
     Used as a type in argparse so that we get back a proper
@@ -563,7 +561,7 @@ def generate_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main():
+def main() -> None:
     """Handle main entry point of CLI script.
 
     Handles loading of configuration and creating and processing of command
@@ -580,9 +578,7 @@ def main():
     if not args_dict:
         parser.print_help()
         sys.exit()
-    command_arguments = dict(
-        [k, v] for k, v in six.iteritems(args_dict) if v is not None
-    )
+    command_arguments = dict([k, v] for k, v in args_dict.items() if v is not None)
 
     # If version should be printed, do this, then exit
     print_version = command_arguments.pop("version", None)
@@ -621,7 +617,7 @@ def main():
         globals()[target_command](**command_arguments)
 
 
-def demo(printer, **kwargs):
+def demo(printer, **kwargs) -> None:
     """Print demos.
 
     Called when CLI is passed `demo`. This function
