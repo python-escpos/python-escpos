@@ -20,12 +20,12 @@ def get_printer() -> Dummy:
 
 
 @given(text=st.text())
-def test_text(text: str) -> None:
+def test_text(text: str):
     """Test that text() calls the MagicEncode object."""
     instance = get_printer()
-    instance.magic.write = mock.Mock()
-    instance.text(text)
-    instance.magic.write.assert_called_with(text)
+    with mock.patch.object(instance.magic, "write") as write:
+        instance.text(text)
+        write.assert_called_with(text)
 
 
 def test_block_text() -> None:
