@@ -13,7 +13,7 @@ import tempfile
 import pytest
 
 
-def test_instantiation():
+def test_instantiation() -> None:
     """test the instantiation of a escpos-printer class"""
     # inject an environment variable that points to an empty capabilities file
     os.environ["ESCPOS_CAPABILITIES_FILE"] = tempfile.NamedTemporaryFile().name

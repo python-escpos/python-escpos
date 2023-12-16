@@ -11,7 +11,7 @@
 import escpos.printer as printer
 
 
-def test_instantiation():
+def test_instantiation() -> None:
     """test the instantiation of a escpos-printer class and basic printing"""
     instance = printer.Dummy()
     instance.text("This is a test\n")
