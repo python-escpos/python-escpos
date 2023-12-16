@@ -205,9 +205,9 @@ class CupsPrinter(Escpos):
         """
         printer = self.printers.get(self.printer_name, {})
         state = printer.get("printer-state")
-        if not state:
-            return b""
-        return bytes((state,))
+        if not state or state in [4, 5]:
+            return b"8"  # offline
+        return b"0"  # online
 
     def close(self) -> None:
         """Close CUPS connection.

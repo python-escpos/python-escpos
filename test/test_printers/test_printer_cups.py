@@ -170,7 +170,7 @@ def test_read_no_device(cupsprinter) -> None:
     """
     GIVEN a cups printer object
     WHEN device is None
-    THEN check the return value is b''
+    THEN check the return value is b'8'
     """
     cupsprinter.device = None
-    assert cupsprinter._read() == b""
+    assert cupsprinter._read() == b"8"
