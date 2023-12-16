@@ -1,7 +1,7 @@
 from escpos.printer import Dummy
 
 
-def test_printer_dummy_clear():
+def test_printer_dummy_clear() -> None:
     printer = Dummy()
     printer.text("Hello")
     printer.clear()

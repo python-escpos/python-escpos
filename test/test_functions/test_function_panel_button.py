@@ -11,14 +11,14 @@
 import escpos.printer as printer
 
 
-def test_function_panel_button_on():
+def test_function_panel_button_on() -> None:
     """test the panel button function (enabling) by comparing output"""
     instance = printer.Dummy()
     instance.panel_buttons()
     assert instance.output == b"\x1B\x63\x35\x00"
 
 
-def test_function_panel_button_off():
+def test_function_panel_button_off() -> None:
     """test the panel button function (disabling) by comparing output"""
     instance = printer.Dummy()
     instance.panel_buttons(False)

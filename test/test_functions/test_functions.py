@@ -3,19 +3,19 @@ import pytest
 from escpos.printer import Dummy
 
 
-def test_line_spacing_code_gen():
+def test_line_spacing_code_gen() -> None:
     printer = Dummy()
     printer.line_spacing(10)
     assert printer.output == b"\x1b3\n"
 
 
-def test_line_spacing_rest():
+def test_line_spacing_rest() -> None:
     printer = Dummy()
     printer.line_spacing()
     assert printer.output == b"\x1b2"
 
 
-def test_line_spacing_error_handling():
+def test_line_spacing_error_handling() -> None:
     printer = Dummy()
     with pytest.raises(ValueError):
         printer.line_spacing(99, divisor=44)

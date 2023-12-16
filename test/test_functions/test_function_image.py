@@ -48,7 +48,7 @@ def test_bit_image_both() -> None:
     assert instance.output == b"\x1dv0\x00\x01\x00\x02\x00\xc0\x00"
 
 
-def test_bit_image_transparent():
+def test_bit_image_transparent() -> None:
     """
     Test printing black/transparent bit image (raster)
     """

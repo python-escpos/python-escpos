@@ -23,7 +23,7 @@ def test_raise_error_wrongly():
         raise escpos.Error("This should raise an AttributeError.")
 
 
-def tests_raise_error():
+def tests_raise_error() -> None:
     """raise error the right way"""
     with pytest.raises(escpos.exceptions.Error):
         raise escpos.exceptions.Error("This should raise an error.")

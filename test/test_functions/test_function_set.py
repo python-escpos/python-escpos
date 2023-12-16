@@ -1,7 +1,6 @@
 from typing import Optional
 
 import pytest
-import six
 
 import escpos.printer as printer
 from escpos.constants import SET_FONT, TXT_NORMAL, TXT_SIZE, TXT_STYLE
@@ -138,7 +137,7 @@ def test_set_size_custom() -> None:
 
     expected_sequence = (
         TXT_SIZE,  # Custom text size, no normal reset
-        six.int2byte(TXT_STYLE["width"][8] + TXT_STYLE["height"][7]),
+        bytes((TXT_STYLE["width"][8] + TXT_STYLE["height"][7],)),
         TXT_STYLE["flip"][False],  # Flip OFF
         TXT_STYLE["smooth"][False],  # Smooth OFF
         TXT_STYLE["bold"][False],  # Bold OFF
@@ -159,7 +158,7 @@ def test_set_size_custom_no_default(width: int, height: int) -> None:
 
     expected_sequence = (
         TXT_SIZE,  # Custom text size, no normal reset
-        six.int2byte(TXT_STYLE["width"][width] + TXT_STYLE["height"][height]),
+        bytes((TXT_STYLE["width"][width] + TXT_STYLE["height"][height],)),
     )
 
     assert instance.output == b"".join(expected_sequence)

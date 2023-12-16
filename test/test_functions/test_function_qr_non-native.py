@@ -18,7 +18,7 @@ from PIL import Image
 from escpos.printer import Dummy
 
 
-def test_image():
+def test_image() -> None:
     """Test QR as image"""
     instance = Dummy()
     image_arguments = {

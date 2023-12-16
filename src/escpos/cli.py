@@ -20,7 +20,7 @@ except ImportError:
     pass  # noqa
 import sys
 
-from . import config
+from . import config, escpos
 from . import printer as escpos_printer_module
 from . import version
 
@@ -617,7 +617,7 @@ def main() -> None:
         globals()[target_command](**command_arguments)
 
 
-def demo(printer, **kwargs) -> None:
+def demo(printer: escpos.Escpos, **kwargs) -> None:
     """Print demos.
 
     Called when CLI is passed `demo`. This function
