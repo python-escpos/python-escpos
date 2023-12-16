@@ -5,32 +5,32 @@ from escpos.printer import LP, CupsPrinter, Dummy, File, Network, Serial, Usb, W
 
 
 @pytest.fixture
-def driver():
+def driver() -> Dummy:
     return Dummy()
 
 
 @pytest.fixture
-def usbprinter():
+def usbprinter() -> Usb:
     return Usb()
 
 
 @pytest.fixture
-def serialprinter():
+def serialprinter() -> Serial:
     return Serial()
 
 
 @pytest.fixture
-def networkprinter():
+def networkprinter() -> Network:
     return Network()
 
 
 @pytest.fixture
-def fileprinter():
+def fileprinter() -> File:
     return File()
 
 
 @pytest.fixture
-def lpprinter():
+def lpprinter() -> LP:
     return LP()
 
 

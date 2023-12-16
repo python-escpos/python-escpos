@@ -15,7 +15,7 @@ from hypothesis import given
 from escpos.printer import Dummy
 
 
-def get_printer():
+def get_printer() -> Dummy:
     return Dummy(magic_encode_args={"disabled": True, "encoding": "CP437"})
 
 
