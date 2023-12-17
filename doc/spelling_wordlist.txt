@@ -68,6 +68,8 @@ Qian
 Lehtonen
 Kanzler
 Rotondo
+Alexandre
+Detiste
 
 barcode
 barcodes
