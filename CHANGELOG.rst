@@ -1,9 +1,11 @@
 Changelog
 =========
 
-2023-xx-xx - Version 3.x - ""
------------------------------
-
+2023-12-17 - Version 3.1 - "Rubric Of Ruin"
+-------------------------------------------
+This is the minor release of the new version 3.1.
+It adds a modification of the API of the qr-method,
+hence the minor release.
 
 changes
 ^^^^^^^
@@ -12,10 +14,15 @@ changes
 - use version 0.15 and upwards of python-barcode
 - fix an issue in the config provider that prevented
   config files to be found when only a path was supplied
+- Improve type annotations, usage of six and other
+  packaging relevant parts.
 
 contributors
 ^^^^^^^^^^^^
 - Patrick Kanzler
+- Alexandre Detiste
+- tuxmaster
+- belono
 
 
 2023-11-17 - Version 3.0 - "Quietly Confident"
