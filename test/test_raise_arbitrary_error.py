@@ -14,13 +14,13 @@ import escpos
 import escpos.exceptions
 
 
-def test_raise_error_wrongly():
+def test_raise_error_wrongly() -> None:
     """raise error the wrong way
 
     should reproduce https://github.com/python-escpos/python-escpos/issues/257
     """
     with pytest.raises(AttributeError):
-        raise escpos.Error("This should raise an AttributeError.")
+        raise escpos.Error("This should raise an AttributeError.")  # type: ignore [attr-defined]
 
 
 def tests_raise_error() -> None:

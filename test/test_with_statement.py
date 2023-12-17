@@ -12,7 +12,7 @@ import escpos.escpos as escpos
 import escpos.printer as printer
 
 
-def test_with_statement():
+def test_with_statement() -> None:
     """Use with statement
 
     .. todo:: Extend these tests as they don't really do anything at the moment"""

@@ -13,6 +13,7 @@ import hypothesis.strategies as st
 import pytest
 from hypothesis import example, given
 
+from escpos import printer
 from escpos.exceptions import Error
 from escpos.katakana import encode_katakana
 from escpos.magicencode import Encoder, MagicEncode
@@ -54,7 +55,7 @@ class TestMagicEncode:
         Test initialization.
         """
 
-        def test_disabled_requires_encoding(self, driver):
+        def test_disabled_requires_encoding(self, driver: printer.Dummy) -> None:
             """
             Test that disabled without encoder raises an error.
 
@@ -64,33 +65,33 @@ class TestMagicEncode:
                 MagicEncode(driver, disabled=True)
 
     class TestWriteWithEncoding:
-        def test_init_from_none(self, driver):
+        def test_init_from_none(self, driver: printer.Dummy) -> None:
             encode = MagicEncode(driver, encoding=None)
             encode.write_with_encoding("CP858", "€ ist teuro.")
             assert driver.output == b"\x1bt\x13\xd5 ist teuro."
 
-        def test_change_from_another(self, driver):
+        def test_change_from_another(self, driver: printer.Dummy) -> None:
             encode = MagicEncode(driver, encoding="CP437")
             encode.write_with_encoding("CP858", "€ ist teuro.")
             assert driver.output == b"\x1bt\x13\xd5 ist teuro."
 
-        def test_no_change(self, driver):
+        def test_no_change(self, driver: printer.Dummy) -> None:
             encode = MagicEncode(driver, encoding="CP858")
             encode.write_with_encoding("CP858", "€ ist teuro.")
             assert driver.output == b"\xd5 ist teuro."
 
     class TestWrite:
-        def test_write(self, driver):
+        def test_write(self, driver: printer.Dummy) -> None:
             encode = MagicEncode(driver)
             encode.write("€ ist teuro.")
             assert driver.output == b"\x1bt\x0f\xa4 ist teuro."
 
-        def test_write_disabled(self, driver):
+        def test_write_disabled(self, driver: printer.Dummy) -> None:
             encode = MagicEncode(driver, encoding="CP437", disabled=True)
             encode.write("€ ist teuro.")
             assert driver.output == b"? ist teuro."
 
-        def test_write_no_codepage(self, driver):
+        def test_write_no_codepage(self, driver: printer.Dummy) -> None:
             encode = MagicEncode(
                 driver,
                 defaultsymbol="_",
@@ -101,7 +102,7 @@ class TestMagicEncode:
             assert driver.output == b"_ ist teuro."
 
     class TestForceEncoding:
-        def test(self, driver):
+        def test(self, driver: printer.Dummy) -> None:
             encode = MagicEncode(driver)
             encode.force_encoding("CP437")
             assert driver.output == b"\x1bt\x00"
