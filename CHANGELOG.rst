@@ -1,6 +1,18 @@
 Changelog
 =========
 
+202x-xx-xx - Version 3.x - ""
+-------------------------------------------
+
+
+changes
+^^^^^^^
+
+
+contributors
+^^^^^^^^^^^^
+
+
 2023-12-17 - Version 3.1 - "Rubric Of Ruin"
 -------------------------------------------
 This is the minor release of the new version 3.1.
