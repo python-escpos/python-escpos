@@ -45,8 +45,8 @@ def dependency_win32print(func):
         """Throw a RuntimeError if win32print not installed."""
         if not is_usable():
             raise RuntimeError(
-                "Printing with Win32Raw requires a win32print library to"
-                "be installed. Please refer to the documentation on"
+                "Printing with Win32Raw requires a win32print library to "
+                "be installed. Please refer to the documentation on "
                 "what to install and install the dependencies for win32print."
             )
         return func(*args, **kwargs)

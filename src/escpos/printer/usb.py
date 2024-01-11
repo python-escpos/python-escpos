@@ -42,8 +42,8 @@ def dependency_usb(func):
         """Throw a RuntimeError if usb not installed."""
         if not is_usable():
             raise RuntimeError(
-                "Printing with USB connection requires a usb library to"
-                "be installed. Please refer to the documentation on"
+                "Printing with USB connection requires a usb library to "
+                "be installed. Please refer to the documentation on "
                 "what to install and install the dependencies for USB."
             )
         return func(*args, **kwargs)

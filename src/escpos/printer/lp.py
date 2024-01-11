@@ -34,7 +34,7 @@ def dependency_linux_lp(func):
         """Throw a RuntimeError if not on a non-Windows system."""
         if not is_usable():
             raise RuntimeError(
-                "This printer driver depends on LP which is not"
+                "This printer driver depends on LP which is not "
                 "available on Windows systems."
             )
         return func(*args, **kwargs)

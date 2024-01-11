@@ -49,8 +49,8 @@ def dependency_pycups(func):
         """Throw a RuntimeError if pycups is not imported."""
         if not is_usable():
             raise RuntimeError(
-                "Printing with PyCups requires the pycups library to"
-                "be installed. Please refer to the documentation on"
+                "Printing with PyCups requires the pycups library to "
+                "be installed. Please refer to the documentation on "
                 "what to install and install the dependencies for pycups."
             )
         return func(*args, **kwargs)

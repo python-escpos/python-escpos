@@ -43,8 +43,8 @@ def dependency_pyserial(func):
         """Throw a RuntimeError if pyserial not installed."""
         if not is_usable():
             raise RuntimeError(
-                "Printing with Serial requires the pyserial library to"
-                "be installed. Please refer to the documentation on"
+                "Printing with Serial requires the pyserial library to "
+                "be installed. Please refer to the documentation on "
                 "what to install and install the dependencies for pyserial."
             )
         return func(*args, **kwargs)
