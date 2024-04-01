@@ -60,7 +60,7 @@ jobs:
       with:
         env_vars: OS,PYTHON
         fail_ci_if_error: true
-        files: ./coverage.xml,!./cache
+        files: ./coverage.xml,!./cache,!./coverage.meta.json,!./coverage.data.json
         flags: unittests
         name: coverage-tox-${{ matrix.python-version }}
         verbose: true
