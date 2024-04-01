@@ -60,8 +60,8 @@ jobs:
       with:
         env_vars: OS,PYTHON
         fail_ci_if_error: true
-        files: ./coverage.xml,!./cache
-        coverage-files-search-exclude-folder: "**/.mypy_cache"
+        files: ./coverage.xml
+        exclude: "**/.mypy_cache"
         flags: unittests
         name: coverage-tox-${{ matrix.python-version }}
         verbose: true
