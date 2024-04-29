@@ -76,7 +76,18 @@ class Config:
 
         if "printer" in config:
             self._printer_config = config["printer"]
-            self._printer_name = self._printer_config.pop("type").title()
+            printer_name = self._printer_config.pop("type")
+            class_names = {
+                "usb": "Usb",
+                "serial": "Serial",
+                "network": "Network",
+                "file": "File",
+                "dummy": "Dummy",
+                "cupsprinter": "CupsPrinter",
+                "lp": "LP",
+                "win32raw": "Win32Raw",
+            }
+            self._printer_name = class_names.get(printer_name.lower(), printer_name)
 
             if not self._printer_name or not hasattr(printer, self._printer_name):
                 raise exceptions.ConfigSyntaxError(
