@@ -934,8 +934,8 @@ class Escpos(object, metaclass=ABCMeta):
         :param double_width: doubles the width of the text
         :param custom_size: uses custom size specified by width and height
             parameters. Cannot be used with double_width or double_height.
-        :param width: text width multiplier when custom_size is used, decimal range 1-8
-        :param height: text height multiplier when custom_size is used, decimal range 1-8
+        :param width: requires custom_size=True, text width multiplier when custom_size is used, decimal range 1-8
+        :param height: requires custom_size=True, text height multiplier when custom_size is used, decimal range 1-8
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
         :param invert: True enables white on black printing
         :param smooth: True enables text smoothing. Effective on 4x4 size text and larger
