@@ -899,6 +899,26 @@ class Escpos(object, metaclass=ABCMeta):
         col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
+    @staticmethod
+    def padding(
+        text: str,
+        width: int,
+        align: Alignment = "center",
+    ) -> str:
+        """Add fill space to meet the width.
+
+        The align parameter sets the alignment of the text in space.
+        """
+        align = align.lower()
+        if align == "center":
+            text = f"{text:^{width}}"
+        elif align == "left":
+            text = f"{text:<{width}}"
+        elif align == "right":
+            text = f"{text:>{width}}"
+
+        return text
+
     def set(
         self,
         align: Optional[str] = None,
