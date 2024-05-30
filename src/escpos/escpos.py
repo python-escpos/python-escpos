@@ -962,6 +962,17 @@ class Escpos(object, metaclass=ABCMeta):
             text_colums.append(row)
         return text_colums
 
+    def _add_padding_into_cols(
+        self,
+        text_list: list[str],
+        widths: list[int],
+        align: list[Alignment],
+    ) -> list:
+        """Add padding, width and alignment into the items of a list of strings."""
+        return [
+            self.padding(text, widths[i], align[i]) for i, text in enumerate(text_list)
+        ]
+
     def set(
         self,
         align: Optional[str] = None,
