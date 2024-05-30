@@ -919,6 +919,16 @@ class Escpos(object, metaclass=ABCMeta):
 
         return text
 
+    @staticmethod
+    def truncate(text: str, width: int, placeholder: str = ".") -> str:
+        """Truncate an string at a max width or leave it untouched.
+
+        Add a placeholder at the end of the output text if it has been truncated.
+        """
+        ph_len = len(placeholder)
+        max_len = width - ph_len
+        return f"{text[:max_len]}{placeholder}" if len(text) > width else text
+
     def set(
         self,
         align: Optional[str] = None,
