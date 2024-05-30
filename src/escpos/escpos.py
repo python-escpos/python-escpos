@@ -929,6 +929,17 @@ class Escpos(object, metaclass=ABCMeta):
         max_len = width - ph_len
         return f"{text[:max_len]}{placeholder}" if len(text) > width else text
 
+    @staticmethod
+    def _repeat_last(iterable, max_iterations: int = 1000):
+        """Iterate over the items of a list repeating the last one until max_iterations."""
+        i = 0
+        while i < max_iterations:
+            try:
+                yield iterable[i]
+            except IndexError:
+                yield iterable[-1]
+            i += 1
+
     def set(
         self,
         align: Optional[str] = None,
