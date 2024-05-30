@@ -940,6 +940,28 @@ class Escpos(object, metaclass=ABCMeta):
                 yield iterable[-1]
             i += 1
 
+    def _rearrange_into_cols(self, text_list: list, widths: list[int]) -> list:
+        """Wrap and convert a list of strings into an array of text columns.
+
+        Set the width of each column by passing a list of widths.
+        Wrap if possible and|or truncate strings longer than its column width.
+        Reorder the wrapped items into an array of text columns.
+        """
+        n_cols = len(text_list)
+        wrapped = [
+            textwrap.wrap(text, widths[i], break_long_words=False)
+            for i, text in enumerate(text_list)
+        ]
+        max_len = max(*[len(text_group) for text_group in wrapped])
+        text_colums = []
+        for i in range(max_len):
+            row = ["" for _ in range(n_cols)]
+            for j, item in enumerate(wrapped):
+                if i in range(len(item)):
+                    row[j] = self.truncate(item[i], widths[j])
+            text_colums.append(row)
+        return text_colums
+
     def set(
         self,
         align: Optional[str] = None,
