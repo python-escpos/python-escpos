@@ -973,6 +973,41 @@ class Escpos(object, metaclass=ABCMeta):
             self.padding(text, widths[i], align[i]) for i, text in enumerate(text_list)
         ]
 
+    def software_columns(
+        self,
+        text_list: list,
+        widths: Union[list[int], int],
+        align: Union[list[Alignment], Alignment],
+    ) -> None:
+        """Print a list of strings arranged horizontaly in columns.
+
+        :param text_list: list of strings, each item in the list will be printed as a column.
+
+        :param widths: width of each column by passing a list of widths,
+            or a single total width to arrange columns of the same size.
+            If the list of width items is shorter than the list of strings then
+            the last width of the list will be applied till the last string (column).
+
+        :param align: alignment of the text into each column by passing a list of alignments,
+            or a single alignment for all the columns.
+            If the list of alignment items is shorter than the list of strings then
+            the last alignment of the list will be applied till the last string (column).
+        """
+        n_cols = len(text_list)
+
+        if isinstance(widths, int):
+            widths = [round(widths / n_cols)]
+        widths = list(self._repeat_last(widths, max_iterations=n_cols))
+
+        if isinstance(align, str):
+            align = [align]
+        align = list(self._repeat_last(align, max_iterations=n_cols))
+
+        columns = self._rearrange_into_cols(text_list, widths)
+        for row in columns:
+            padded = self._add_padding_into_cols(row, widths, align)
+            self.textln("".join(padded))
+
     def set(
         self,
         align: Optional[str] = None,
