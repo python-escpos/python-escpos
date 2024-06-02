@@ -900,7 +900,7 @@ class Escpos(object, metaclass=ABCMeta):
         self.text(textwrap.fill(txt, col_count))
 
     @staticmethod
-    def padding(
+    def _padding(
         text: str,
         width: int,
         align: Alignment = "center",
@@ -920,7 +920,7 @@ class Escpos(object, metaclass=ABCMeta):
         return text
 
     @staticmethod
-    def truncate(text: str, width: int, placeholder: str = ".") -> str:
+    def _truncate(text: str, width: int, placeholder: str = ".") -> str:
         """Truncate an string at a max width or leave it untouched.
 
         Add a placeholder at the end of the output text if it has been truncated.
@@ -958,7 +958,7 @@ class Escpos(object, metaclass=ABCMeta):
             row = ["" for _ in range(n_cols)]
             for j, item in enumerate(wrapped):
                 if i in range(len(item)):
-                    row[j] = self.truncate(item[i], widths[j])
+                    row[j] = self._truncate(item[i], widths[j])
             text_colums.append(row)
         return text_colums
 
@@ -970,7 +970,7 @@ class Escpos(object, metaclass=ABCMeta):
     ) -> list:
         """Add padding, width and alignment into the items of a list of strings."""
         return [
-            self.padding(text, widths[i], align[i]) for i, text in enumerate(text_list)
+            self._padding(text, widths[i], align[i]) for i, text in enumerate(text_list)
         ]
 
     def software_columns(
