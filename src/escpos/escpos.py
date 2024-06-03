@@ -979,7 +979,7 @@ class Escpos(object, metaclass=ABCMeta):
         widths: Union[list[int], int],
         align: Union[list[Alignment], Alignment],
     ) -> None:
-        """Print a list of strings arranged horizontaly in columns.
+        """Print a list of strings arranged horizontally in columns.
 
         :param text_list: list of strings, each item in the list will be printed as a column.
 
