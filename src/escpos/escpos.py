@@ -107,8 +107,6 @@ SW_BARCODE_NAMES = {
     for name in barcode.PROVIDED_BARCODES
 }
 
-Alignment = Union[Literal["center", "left", "right"], str]
-
 
 class Escpos(object, metaclass=ABCMeta):
     """ESC/POS Printer object.
