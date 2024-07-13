@@ -20,8 +20,9 @@ except ImportError:
     pass  # noqa
 import sys
 
-from . import config, escpos, version
+from . import config, escpos
 from . import printer as escpos_printer_module
+from . import version
 
 
 # Must be defined before it's used in DEMO_FUNCTIONS
