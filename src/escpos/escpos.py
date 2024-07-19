@@ -108,6 +108,8 @@ SW_BARCODE_NAMES = {
     for name in barcode.PROVIDED_BARCODES
 }
 
+Alignment = Union[Literal["center", "left", "right"], str]
+
 
 class Escpos(object, metaclass=ABCMeta):
     """ESC/POS Printer object.
@@ -899,6 +901,115 @@ class Escpos(object, metaclass=ABCMeta):
         col_count = self.profile.get_columns(font) if columns is None else columns
         self.text(textwrap.fill(txt, col_count))
 
+    @staticmethod
+    def _padding(
+        text: str,
+        width: int,
+        align: Alignment = "center",
+    ) -> str:
+        """Add fill space to meet the width.
+
+        The align parameter sets the alignment of the text in space.
+        """
+        align = align.lower()
+        if align == "center":
+            text = f"{text:^{width}}"
+        elif align == "left":
+            text = f"{text:<{width}}"
+        elif align == "right":
+            text = f"{text:>{width}}"
+
+        return text
+
+    @staticmethod
+    def _truncate(text: str, width: int, placeholder: str = ".") -> str:
+        """Truncate an string at a max width or leave it untouched.
+
+        Add a placeholder at the end of the output text if it has been truncated.
+        """
+        ph_len = len(placeholder)
+        max_len = width - ph_len
+        return f"{text[:max_len]}{placeholder}" if len(text) > width else text
+
+    @staticmethod
+    def _repeat_last(iterable, max_iterations: int = 1000):
+        """Iterate over the items of a list repeating the last one until max_iterations."""
+        i = 0
+        while i < max_iterations:
+            try:
+                yield iterable[i]
+            except IndexError:
+                yield iterable[-1]
+            i += 1
+
+    def _rearrange_into_cols(self, text_list: list, widths: list[int]) -> list:
+        """Wrap and convert a list of strings into an array of text columns.
+
+        Set the width of each column by passing a list of widths.
+        Wrap if possible and|or truncate strings longer than its column width.
+        Reorder the wrapped items into an array of text columns.
+        """
+        n_cols = len(text_list)
+        wrapped = [
+            textwrap.wrap(text, widths[i], break_long_words=False)
+            for i, text in enumerate(text_list)
+        ]
+        max_len = max(*[len(text_group) for text_group in wrapped])
+        text_colums = []
+        for i in range(max_len):
+            row = ["" for _ in range(n_cols)]
+            for j, item in enumerate(wrapped):
+                if i in range(len(item)):
+                    row[j] = self._truncate(item[i], widths[j])
+            text_colums.append(row)
+        return text_colums
+
+    def _add_padding_into_cols(
+        self,
+        text_list: list[str],
+        widths: list[int],
+        align: list[Alignment],
+    ) -> list:
+        """Add padding, width and alignment into the items of a list of strings."""
+        return [
+            self._padding(text, widths[i], align[i]) for i, text in enumerate(text_list)
+        ]
+
+    def software_columns(
+        self,
+        text_list: list,
+        widths: Union[list[int], int],
+        align: Union[list[Alignment], Alignment],
+    ) -> None:
+        """Print a list of strings arranged horizontally in columns.
+
+        :param text_list: list of strings, each item in the list will be printed as a column.
+
+        :param widths: width of each column by passing a list of widths,
+            or a single total width to arrange columns of the same size.
+            If the list of width items is shorter than the list of strings then
+            the last width of the list will be applied till the last string (column).
+
+        :param align: alignment of the text into each column by passing a list of alignments,
+            or a single alignment for all the columns.
+            If the list of alignment items is shorter than the list of strings then
+            the last alignment of the list will be applied till the last string (column).
+        """
+        n_cols = len(text_list)
+
+        if isinstance(widths, int):
+            widths = [round(widths / n_cols)]
+        widths = list(self._repeat_last(widths, max_iterations=n_cols))
+
+        if isinstance(align, str):
+            align = [align]
+        align = list(self._repeat_last(align, max_iterations=n_cols))
+
+        columns = self._rearrange_into_cols(text_list, widths)
+        for row in columns:
+            padded = self._add_padding_into_cols(row, widths, align)
+            self.textln("".join(padded))
+
     def set(
         self,
         align: Optional[str] = None,
@@ -936,8 +1047,8 @@ class Escpos(object, metaclass=ABCMeta):
         :param double_width: doubles the width of the text
         :param custom_size: uses custom size specified by width and height
             parameters. Cannot be used with double_width or double_height.
-        :param width: text width multiplier when custom_size is used, decimal range 1-8
-        :param height: text height multiplier when custom_size is used, decimal range 1-8
+        :param width: requires custom_size=True, text width multiplier when custom_size is used, decimal range 1-8
+        :param height: requires custom_size=True, text height multiplier when custom_size is used, decimal range 1-8
         :param density: print density, value from 0-8, if something else is supplied the density remains unchanged
         :param invert: True enables white on black printing
         :param smooth: True enables text smoothing. Effective on 4x4 size text and larger

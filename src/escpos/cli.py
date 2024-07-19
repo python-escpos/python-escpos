@@ -211,6 +211,38 @@ ESCPOS_COMMANDS: List[Dict[str, Any]] = [
     },
     {
         "parser": {
+            "name": "software_columns",
+            "help": "Print a list of texts arranged into columns",
+        },
+        "defaults": {
+            "func": "software_columns",
+        },
+        "arguments": [
+            {
+                "option_strings": ("--text_list",),
+                "help": "list of texts to print",
+                "nargs": "+",
+                "type": str,
+                "required": True,
+            },
+            {
+                "option_strings": ("--widths",),
+                "help": "list of column widths",
+                "nargs": "+",
+                "type": int,
+                "required": True,
+            },
+            {
+                "option_strings": ("--align",),
+                "help": "list of column alignments",
+                "nargs": "+",
+                "type": str,
+                "required": True,
+            },
+        ],
+    },
+    {
+        "parser": {
             "name": "cut",
             "help": "Cut the paper",
         },
