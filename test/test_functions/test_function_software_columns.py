@@ -12,6 +12,34 @@
 import pytest
 
 
+def test_rearrange_into_cols(driver) -> None:
+    """
+    GIVEN a list of columnable text
+    WHEN the column width is different for each column and some strings exceed the max width
+    THEN check the strings are properly wrapped, truncated and rearranged into some columns
+    """
+
+    output = driver._rearrange_into_cols(
+        text_list=["fits", "row1 row2", "truncate and wrap"], widths=[4, 5, 6]
+    )
+    assert output == [["fits", "row1", "trunc."], ["", "row2", "and"], ["", "", "wrap"]]
+
+
+def test_add_padding_into_cols(driver) -> None:
+    """
+    GIVEN a list of strings
+    WHEN adding padding and different alignments to each string
+    THEN check the strings are correctly padded and aligned
+    """
+
+    output = driver._add_padding_into_cols(
+        text_list=["col1", "col2", "col3"],
+        widths=[6, 6, 6],
+        align=["center", "left", "right"],
+    )
+    assert output == [" col1 ", "col2  ", "  col3"]
+
+
 @pytest.mark.parametrize("text_list", ["", [], None])
 @pytest.mark.parametrize("widths", [30.5, "30", None])
 @pytest.mark.parametrize("align", ["invalid_align_name", "", None])
@@ -41,9 +69,7 @@ def test_software_columns_invalid_args(driver, text_list, widths, align) -> None
     ],
 )
 @pytest.mark.parametrize("widths", [[10, 10, 10], [10], 30])
-@pytest.mark.parametrize(
-    "align", [["center", "center", "center"], ["center"], "center"]
-)
+@pytest.mark.parametrize("align", [["center", "left", "right"], ["center"], "center"])
 def test_software_columns_valid_args(driver, text_list, widths, align) -> None:
     """
     GIVEN a dummy printer object
