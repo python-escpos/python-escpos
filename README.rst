@@ -100,4 +100,4 @@ Disclaimer
 
 None of the vendors cited in this project agree or endorse any of the
 patterns or implementations.
-Its names are used only to maintain context.
+Their names are used only to maintain context.
