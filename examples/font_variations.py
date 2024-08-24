@@ -13,7 +13,6 @@
 # It is the 3rd entry (zero-based index 2),
 # with Font="B", Bold, Underline, Align=right.
 
-from pprint import pprint
 from escpos import printer
 
 p = printer.Usb(0x04B8, 0x0E20, profile="TM-P80")
