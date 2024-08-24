@@ -7,7 +7,8 @@
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
-
+import types
+import typing
 
 import hypothesis.strategies as st
 import pytest
@@ -111,6 +112,7 @@ class TestMagicEncode:
             assert driver.output == b"\x1bt\x00? ist teuro."
 
 
+jaconv: typing.Optional[types.ModuleType]
 try:
     import jaconv
 except ImportError:
