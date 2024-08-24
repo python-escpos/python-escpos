@@ -91,6 +91,7 @@ docstrings
 ean
 Ean
 encodable
+Errno
 fff
 fullimage
 io
@@ -124,6 +125,7 @@ Todo
 traceback
 udev
 usb
+USBTimeoutError
 usec
 virtualenvs
 whitespaces
