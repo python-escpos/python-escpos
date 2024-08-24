@@ -2,8 +2,10 @@
 
 # Print a fake receipt
 
-import re, textwrap
+import re
+import textwrap
 from datetime import datetime
+
 from escpos import printer
 
 items = [
