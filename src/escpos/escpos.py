@@ -12,8 +12,8 @@ This module contains the abstract base class :py:class:`Escpos`.
 from __future__ import annotations
 
 import textwrap
-import warnings
 import time
+import warnings
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
 from types import TracebackType
