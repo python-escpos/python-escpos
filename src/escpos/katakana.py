@@ -4,7 +4,10 @@
 I doubt that this currently works correctly.
 """
 
+import types
+import typing
 
+jaconv: typing.Optional[types.ModuleType]
 try:
     import jaconv
 except ImportError:
