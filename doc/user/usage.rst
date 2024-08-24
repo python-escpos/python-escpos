@@ -213,6 +213,14 @@ If something is wrong, an ``CharCodeError`` will be raised.
 After you have manually set the codepage the printer won't change it anymore.
 You can revert to normal behavior by setting charcode to ``AUTO``.
 
+Resolving bus timeout issues during printing images
+---------------------------------------------------
+
+If an error message such as "USBTimeoutError: [Errno 110] Operation timed out" occurs,
+setting a sleep time between printing fragments can help.
+
+This can be done with the :meth:`.set_sleep_in_fragment()` method.
+
 Advanced Usage: Print from binary blob
 --------------------------------------
 
