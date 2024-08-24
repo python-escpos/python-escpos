@@ -9,7 +9,7 @@ p = printer.Usb(0x04B8, 0x0E20)
 
 for i in [20, 30, 40, 60]:
     p.set_with_default(custom_size=True, width=3, height=3, underline=True)
-    p.textln("Blk-txt(%d col)" % i)
+    p.textln(f"Blk-txt({i} col)")
 
     p.set_with_default()
     p.block_text(txt, columns=i)
