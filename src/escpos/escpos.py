@@ -12,6 +12,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 from __future__ import annotations
 
 import textwrap
+import time
 import warnings
 from abc import ABCMeta, abstractmethod  # abstract base class support
 from re import match as re_match
@@ -123,6 +124,9 @@ class Escpos(object, metaclass=ABCMeta):
     #   object -> The connection object (Usb(), Serial(), Network(), etc.)
     _device: Union[Literal[False], Literal[None], object] = False
 
+    # sleep time in fragments:
+    _sleep_in_fragment_ms: int = 0
+
     def __init__(self, profile=None, magic_encode_args=None, **kwargs) -> None:
         """Initialize ESCPOS Printer.
 
@@ -177,6 +181,21 @@ class Escpos(object, metaclass=ABCMeta):
         :raises NotImplementedError
         """
         raise NotImplementedError()
+
+    def set_sleep_in_fragment(self, sleep_time_ms: int) -> None:
+        """Configures the currently active sleep time after sending a fragment.
+
+        If during printing an image an issue like "USBTimeoutError: [Errno 110]
+        Operation timed out" occurs, setting this value to roughly 300
+        milliseconds can help resolve the issue.
+
+        :param sleep_time_ms: sleep time in milliseconds
+        """
+        self._sleep_in_fragment_ms = sleep_time_ms
+
+    def _sleep_in_fragment(self) -> None:
+        """Sleeps the preconfigured time after sending a fragment."""
+        time.sleep(self._sleep_in_fragment_ms / 1000)
 
     def image(
         self,
@@ -246,6 +265,7 @@ class Escpos(object, metaclass=ABCMeta):
                     impl=impl,
                     fragment_height=fragment_height,
                 )
+                self._sleep_in_fragment()
             return
 
         if impl == "bitImageRaster":
