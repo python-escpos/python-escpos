@@ -73,7 +73,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "python-escpos"
-copyright = "2023, python-escpos developers"
+copyright = "2024, python-escpos developers"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -312,7 +312,7 @@ texinfo_documents = [
 # texinfo_no_detailmenu = False
 
 # spellchecker
-spelling_ignore_pypi_package_names = True
+spelling_ignore_pypi_package_names = False
 spelling_ignore_wiki_words = True
 spelling_ignore_python_builtins = True
 spelling_ignore_importable_modules = True

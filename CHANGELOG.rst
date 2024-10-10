@@ -69,8 +69,8 @@ changes
 - change the project's license to MIT in accordance with the contributors (see python-escpos/python-escpos#171)
 - feature: add "capabilities" which are shared with escpos-php, capabilities are stored in
   `escpos-printer-db <https://github.com/receipt-print-hq/escpos-printer-db>`_
-- feature: the driver tries now to guess the appropriate codepage and sets it automatically (called "magic encode")
-- as an alternative you can force the codepage with the old API
+- feature: the driver tries now to guess the appropriate code page and sets it automatically (called "magic encode")
+- as an alternative you can force the code page with the old API
 - fix the encoding search so that lower encodings are found first
 - automatically handle cases where full cut or partial cut is not available
 - refactor of the set-method
@@ -335,14 +335,14 @@ changes
 - change the project's license to MIT in accordance with the contributors (see python-escpos/python-escpos#171)
 - feature: add "capabilities" which are shared with escpos-php, capabilities are stored in
   `escpos-printer-db <https://github.com/receipt-print-hq/escpos-printer-db>`_
-- feature: the driver tries now to guess the appropriate codepage and sets it automatically (called "magic encode")
-- as an alternative you can force the codepage with the old API
+- feature: the driver tries now to guess the appropriate code page and sets it automatically (called "magic encode")
+- as an alternative you can force the code page with the old API
 - updated and improved documentation
 - changed constructor of main class due to introduction of capabilities
 - changed interface of method `blocktext`, changed behavior of multiple methods, for details refer to the documentation
   on `python-escpos.readthedocs.io <https://python-escpos.readthedocs.io>`_
 - add support for custom cash drawer sequence
-- enforce flake8 on the src-files, test py36 and py37 on travis
+- enforce flake8 on the src-files, test py36 and py37 on Travis
 
 contributors
 ^^^^^^^^^^^^
@@ -375,7 +375,7 @@ contributors
 
 changes
 ^^^^^^^
-- configure readthedocs and travis
+- configure readthedocs and Travis
 - update doc with hint on image preprocessing
 - add fix for printing large images (by splitting them into multiple images)
 
@@ -440,8 +440,8 @@ changes
 - improve the documentation
 - extend support of barcode-codes to type B
 - add function to disable panel-buttons
-- the text-functions are now intended for unicode, the driver will automatically encode the string based on the selected
-  codepage
+- the text-functions are now intended for Unicode, the driver will automatically encode the string based on the selected
+  code page
 - the image-functions are now much more flexible
 - added a CLI
 - restructured the constants
@@ -479,7 +479,7 @@ contributors
 --------------------------
 
 - Merge pull request #53 from ldos/master
-    - Extended params for serial printers
+    - Extended parameters for serial printers
     - Sent by ldos <cafeteria.ldosalzira@gmail.com>
 
 2015-04-21 - Version 1.0.5
