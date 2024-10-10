@@ -134,7 +134,6 @@ else:
         import sphinx_rtd_theme
 
         html_theme = "sphinx_rtd_theme"
-        html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
     except ImportError:
         print("no sphinx_rtd_theme found, switching to nature")
         html_theme = "default"
