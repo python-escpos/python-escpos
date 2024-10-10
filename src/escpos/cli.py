@@ -522,7 +522,7 @@ def generate_parser() -> argparse.ArgumentParser:
     """Generate an argparse parser."""
     parser = argparse.ArgumentParser(
         description="CLI for python-escpos",
-        epilog="Printer configuration is defined in the python-escpos config"
+        epilog="Printer configuration is defined in the python-escpos configuration "
         "file. See documentation for details.",
     )
 

@@ -1,4 +1,4 @@
-"""Helper module for codepage handling."""
+"""Helper module for code page handling."""
 from .capabilities import CAPABILITIES
 
 
@@ -9,7 +9,7 @@ class CodePageManager:
     """
 
     def __init__(self, data):
-        """Initialize codepage manager."""
+        """Initialize code page manager."""
         self.data = data
 
     @staticmethod

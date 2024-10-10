@@ -23,7 +23,7 @@ def is_usable() -> bool:
 class File(Escpos):
     """Generic file printer.
 
-    This class is used for parallel port printer or other printers that are directly attached to the filesystem.
+    This class is used for parallel port printer or other printers that are directly attached to the file system.
     Note that you should stay away from using USB-to-Parallel-Adapter since they are unreliable
     and produce arbitrary errors.
 
@@ -46,7 +46,7 @@ class File(Escpos):
     def __init__(self, devfile: str = "", auto_flush: bool = True, *args, **kwargs):
         """Initialize file printer with device file.
 
-        :param devfile: Device file under dev filesystem
+        :param devfile: Device file under dev file system
         :param auto_flush: automatically call flush after every call of _raw()
         """
         Escpos.__init__(self, *args, **kwargs)

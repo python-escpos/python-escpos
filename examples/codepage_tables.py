@@ -33,7 +33,7 @@ def main():
 
 
 def print_codepage(printer, codepage):
-    """Print a codepage."""
+    """Print a code page."""
     if codepage.isdigit():
         codepage = int(codepage)
         printer._raw(CODEPAGE_CHANGE + bytes((codepage,)))

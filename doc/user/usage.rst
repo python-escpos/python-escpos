@@ -142,7 +142,7 @@ format. For windows it is probably at::
 
     %appdata%/python-escpos/config.yaml
 
-And for linux::
+And for Linux::
 
     $HOME/.config/python-escpos/config.yaml
 
@@ -200,17 +200,17 @@ An USB-printer could be defined by::
 Printing text right
 -------------------
 
-Python-escpos is designed to accept unicode.
+Python-escpos is designed to accept Unicode.
 
 For normal usage you can simply pass your text to the printers ``text()``-function. It will automatically guess
-the right codepage and then send the encoded data to the printer. If this feature does not work, please try to
+the right code page and then send the encoded data to the printer. If this feature does not work, please try to
 isolate the error and then create an issue on the GitHub project page.
 
-If you want or need to you can manually set the codepage.
+If you want or need to you can manually set the code page.
 For this please use the ``charcode()``-function.
 You can set any key-value that is in ``CHARCODE``.
 If something is wrong, an ``CharCodeError`` will be raised.
-After you have manually set the codepage the printer won't change it anymore.
+After you have manually set the code page the printer won't change it anymore.
 You can revert to normal behavior by setting charcode to ``AUTO``.
 
 Resolving bus timeout issues during printing images
@@ -241,7 +241,7 @@ advantage of the fact that `_raw()` accepts binary strings.)
     p._raw(data)
 
 That's all, the printer should then print your data. You can also use this technique to let others reproduce an issue
-that you have found. (Just "print" your commands to a File-printer on your local filesystem.)
+that you have found. (Just "print" your commands to a File-printer on your local file system.)
 However, please keep in mind, that often it is easier and better to just supply the code that you are using.
 
 Here you can download an example, that will print a set of common barcodes:

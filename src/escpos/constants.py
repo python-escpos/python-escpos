@@ -188,8 +188,8 @@ LINESPACING_FUNCS: Dict[int, bytes] = {
     180: ESC + b"3",  # line_spacing/180 of an inch, 0 <= line_spacing <= 255
 }
 
-#: Prefix to change the codepage. You need to attach a byte to indicate
-#: the codepage to use. We use escpos-printer-db as the data source.
+#: Prefix to change the code page. You need to attach a byte to indicate
+#: the code page to use. We use escpos-printer-db as the data source.
 CODEPAGE_CHANGE: bytes = ESC + b"\x74"
 
 # Barcode format

@@ -460,7 +460,7 @@ class Escpos(object, metaclass=ABCMeta):
         Sets the control sequence from ``CHARCODE`` in :py:mod:`escpos.constants` as active.
         It will be sent with the next text sequence.
         If you set the variable code to ``AUTO`` it will try to automatically guess the
-        right codepage.
+        right code page.
         (This is the standard behavior.)
 
         :param code: Name of CharCode
@@ -876,8 +876,8 @@ class Escpos(object, metaclass=ABCMeta):
     def text(self, txt: str) -> None:
         """Print alpha-numeric text.
 
-        The text has to be encoded in the currently selected codepage.
-        The input text has to be encoded in unicode.
+        The text has to be encoded in the currently selected code page.
+        The input text has to be encoded in Unicode.
 
         :param txt: text to be printed
         :raises: :py:exc:`~escpos.exceptions.TextError`
@@ -887,8 +887,8 @@ class Escpos(object, metaclass=ABCMeta):
     def textln(self, txt: str = "") -> None:
         """Print alpha-numeric text with a newline.
 
-        The text has to be encoded in the currently selected codepage.
-        The input text has to be encoded in unicode.
+        The text has to be encoded in the currently selected code page.
+        The input text has to be encoded in Unicode.
 
         :param txt: text to be printed with a newline
         :raises: :py:exc:`~escpos.exceptions.TextError`
@@ -909,7 +909,7 @@ class Escpos(object, metaclass=ABCMeta):
     def block_text(self, txt, font="0", columns=None) -> None:
         """Print text wrapped to specific columns.
 
-        Text has to be encoded in unicode.
+        Text has to be encoded in Unicode.
 
         :param txt: text to be printed
         :param font: font to be used, can be :code:`a` or :code:`b`
@@ -1555,7 +1555,7 @@ class EscposIO:
                 f"{text}",
             ]
 
-        # TODO check unicode handling
+        # TODO check Unicode handling
         # TODO flush? or on print? (this should prob rather be handled by the _raw-method)
         for line in lines:
             self.printer.set(**params)

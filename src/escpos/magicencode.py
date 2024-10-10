@@ -3,7 +3,7 @@
 """Magic Encode.
 
 This module tries to convert an UTF-8 string to an encoded string for the printer.
-It uses trial and error in order to guess the right codepage.
+It uses trial and error in order to guess the right code page.
 The code is based on the encoding-code in py-xml-escpos by @fvdsn.
 
 :author: `Patrick Kanzler <dev@pkanzler.de>`_
@@ -65,11 +65,11 @@ class Encoder:
 
     @staticmethod
     def _get_codepage_char_list(encoding):
-        """Get codepage character list.
+        """Get code page character list.
 
         Gets characters 128-255 for a given code page, as an array.
 
-        :param encoding: The name of the encoding. This must appear in the CodePage list
+        :param encoding: The name of the encoding. This must appear in the code page list
         """
         codepage = CodePages.get_encoding(encoding)
         if "data" in codepage:
@@ -91,7 +91,7 @@ class Encoder:
         raise LookupError(f"Can't find a known encoding for {encoding}")
 
     def _get_codepage_char_map(self, encoding):
-        """Get codepage character map.
+        """Get code page character map.
 
         Process an encoding and return a map of UTF-characters to code points
         in this encoding.
@@ -166,7 +166,7 @@ class Encoder:
         1. code pages that we already tried before; there is a good
            chance they might work again, reducing the search space,
            and by re-using already used encodings we might also
-           reduce the number of codepage change instruction we have
+           reduce the number of code page change instruction we have
            to send. Still, any performance gains will presumably be
            fairly minor.
 
@@ -225,7 +225,7 @@ class MagicEncode:
         :param encoding: If you know the current encoding of the printer
         when initializing this class, set it here. If the current
         encoding is unknown, the first character emitted will be a
-        codepage switch.
+        code page switch.
         :param disabled:
         :param defaultsymbol:
         :param encoder:
@@ -284,20 +284,20 @@ class MagicEncode:
     def _handle_character_failed(self, char):
         """Write a default symbol.
 
-        Called when no codepage was found to render a character.
+        Called when no code page was found to render a character.
         """
         # Writing the default symbol via write() allows us to avoid
-        # unnecesary codepage switches.
+        # unnecesary code page switches.
         self.write(self.defaultsymbol)
 
     def write_with_encoding(self, encoding, text):
-        """Write the text and inject necessary codepage switches."""
+        """Write the text and inject necessary code page switches."""
         if text is not None and type(text) is not str:
             raise Error(
-                f"The supplied text has to be unicode, but is of type {type(text)}."
+                f"The supplied text has to be Unicode, but is of type {type(text)}."
             )
 
-        # We always know the current code page; if the new codepage
+        # We always know the current code page; if the new code page
         # is different, emit a change command.
         if encoding != self.encoding:
             self.encoding = encoding
