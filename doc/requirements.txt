@@ -2,7 +2,7 @@ pyusb
 Pillow>=2.0
 qrcode>=4.0
 pyserial
-sphinx-rtd-theme==3.0.1
+sphinx-rtd-theme==3.0.2
 setuptools
 setuptools-scm
 docutils>=0.12
