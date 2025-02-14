@@ -27,6 +27,6 @@ jobs:
           sudo apt-get update -y &&
           sudo apt-get install -y git python3-sphinx graphviz libenchant-2-2 &&
           sudo apt-get install -y gcc libcups2-dev python3-dev python3-setuptools &&
-          sudo pip install tox pycups
+          sudo pip install --ignore-installed tox pycups
       - name: Test doc build
         run: tox -e docs
