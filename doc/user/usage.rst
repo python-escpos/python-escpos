@@ -1,7 +1,7 @@
 Usage
 =====
 
-:Last Reviewed: 2023-08-10
+:Last Reviewed: 2025-02-16
 
 Define your printer
 -------------------
@@ -113,7 +113,7 @@ on a USB interface.
 
     from escpos import *
     """ Seiko Epson Corp. Receipt Printer M129 Definitions (EPSON TM-T88IV) """
-    p = printer.Usb(0x04b8,0x0202)
+    p = printer.Usb(0x04b8,0x0202, profile="TM-T88IV")
     # Print text
     p.text("Hello World\n")
     # Print image
@@ -180,6 +180,7 @@ An example file printer::
     printer:
             type: File
             devfile: /dev/someprinter
+            profile: TM-U220
 
 And for a network printer::
 
@@ -187,6 +188,7 @@ And for a network printer::
             type: Network
             host: 127.0.0.1
             port: 9000
+            profile: TM-U220
 
 An USB-printer could be defined by::
 
@@ -196,6 +198,7 @@ An USB-printer could be defined by::
             idProduct: 0x5678
             in_ep: 0x66
             out_ep: 0x01
+            profile: TM-U220
 
 Printing text right
 -------------------
@@ -250,8 +253,8 @@ Here you can download an example, that will print a set of common barcodes:
 
 .. _advanced-usage-change-capabilities-profile:
 
-Advanced Usage: change capabilities-profile
--------------------------------------------
+Advanced Usage: change where is the capabilities-profile
+--------------------------------------------------------
 
 Packaged together with the escpos-code is a capabilities-file. This file in
 JSON-format describes the capabilities of different printers. It is developed and hosted in
