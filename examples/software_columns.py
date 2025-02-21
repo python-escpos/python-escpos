@@ -23,4 +23,3 @@ text_list = ["col1", "col2", "col3"]
 widths = [5, 20, 15]
 align = ["left", "center", "right"]
 p.software_columns(text_list=text_list, widths=widths, align=align)
-
