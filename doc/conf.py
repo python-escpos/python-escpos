@@ -148,7 +148,7 @@ html_context = {
     "display_github": True,
     "github_user": "python-escpos",
     "github_repo": "python-escpos",
-    "github_version": "master",
+    "github_version": "master/",
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
