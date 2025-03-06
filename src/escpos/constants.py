@@ -303,3 +303,23 @@ RT_MASK_ONLINE: int = 8
 RT_MASK_PAPER: int = 18
 RT_MASK_LOWPAPER: int = 30
 RT_MASK_NOPAPER: int = 114
+
+# Kanji mode
+KANJI_PRINT_MODE: bytes = FS + b"\x21"  # Select Kanji print mode (FS !)
+KANJI_ENTER_KANJI_MODE: bytes = FS + b"\x26"  # Set Kanji mode (FS &)
+KANJI_UNDERLINE: bytes = FS + b"\x2d"  # Underline Kanji mode (FS -)
+KANJI_EXIT_KANJI_MODE: bytes = FS + b"\x2e"  # Cancel Kanji mode (FS .)
+KANJI_DEFINE_USER_DEFINED: bytes = (
+    FS + b"\x32"
+)  # Define user-defined Kanji characters (FS 2)
+KANJI_DELETE_USER_DEFINED: bytes = (
+    FS + b"\x3f"
+)  # Cancel user-defined Kanji characters (FS ?)
+KANJI_SET_ENCODING: bytes = FS + b"\x43"  # Set Kanji code system (FS C)
+KANJI_SET_SPACING: bytes = FS + b"\x53"  # Select Kanji character spacing (FS S)
+KANJI_SET_QUADRUPLE_SIZE: bytes = FS + b"\x57"  # Select Kanji quadruple size (FS W)
+KANJI_SET_CHAR_STYLE: bytes = FS + b"\x28\x41"  # Select Kanji character style (FS ( A)
+
+# ISO-2022-JP Escape Sequences (partially implemented)
+ISO2022_JP_ASCII: bytes = b"\x1b\x28\x42"
+ISO2022_JP_JIS_X_0208_1983: bytes = b"\x1b\x24\x42"  # So-called "New JIS"
