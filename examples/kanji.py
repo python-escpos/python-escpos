@@ -1,3 +1,5 @@
+"""Example for Kanji features."""
+
 from escpos.printer import Usb
 
 checkerboard_kanji = (
@@ -27,7 +29,7 @@ checkerboard_kanji = (
     b"\x0f\x0f\x0f"
 )
 
-p = Usb(0x04B8, 0x0E1F, 0, profile="TM-T20II")
+p = Usb(0x04B8, 0x0E1F, {}, profile="TM-T20II")
 
 p.set_kanji_encoding("iso2022_jp")
 

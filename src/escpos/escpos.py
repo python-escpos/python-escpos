@@ -196,7 +196,7 @@ class Escpos(object, metaclass=ABCMeta):
         raise NotImplementedError()
 
     def set_sleep_in_fragment(self, sleep_time_ms: int) -> None:
-        """Configures the currently active sleep time after sending a fragment.
+        """Configure the currently active sleep time after sending a fragment.
 
         If during printing an image an issue like "USBTimeoutError: [Errno 110]
         Operation timed out" occurs, setting this value to roughly 300
@@ -1508,21 +1508,20 @@ class Escpos(object, metaclass=ABCMeta):
         self._raw(BUZZER + six.int2byte(times) + six.int2byte(duration))
 
     def _enter_kanji_mode(self):
-        """Enters Kanji mode."""
+        """Enter Kanji mode."""
         self._raw(KANJI_ENTER_KANJI_MODE)
 
     def _exit_kanji_mode(self):
-        """Exits Kanji mode."""
+        """Exit Kanji mode."""
         self._raw(KANJI_EXIT_KANJI_MODE)
 
     def kanji_text(self, text: str) -> None:
-        """Prints Kanji text.
+        """Print Kanji text.
 
         :param text: The Kanji text.
         :param encoding: The encoding of the text.
         :raises ValueError: If the Kanji encoding is not set.
         """
-
         if self.kanji_encoding is None:
             raise ValueError("Kanji encoding not set")
         elif self.kanji_encoding == "iso2022_jp":
@@ -1536,14 +1535,14 @@ class Escpos(object, metaclass=ABCMeta):
             self._exit_kanji_mode()
 
     def _iso2022jp_text(self, text: str) -> None:
-        """Prints ISO-2022-JP text."""
+        """Print ISO-2022-JP text."""
         encoded = text.encode("iso2022_jp", "ignore")
         while len(encoded) > 0:
             # find the next escape sequence
             escape_pos = encoded.find(b"\x1b", 1)
             if escape_pos == -1:
                 current_chunk = encoded
-                encoded = ""
+                encoded = b""
             else:
                 current_chunk = encoded[:escape_pos]
                 encoded = encoded[escape_pos:]
@@ -1576,7 +1575,7 @@ class Escpos(object, metaclass=ABCMeta):
         double_height: bool = False,
         underline: Literal[0, 1, 2] = 0,
     ):
-        """Sets the Kanji print mode.
+        """Set the Kanji print mode.
 
         :param double_width: Doubles the width of the text.
         :param double_height: Doubles the height of the text.
@@ -1594,14 +1593,15 @@ class Escpos(object, metaclass=ABCMeta):
         self,
         underline: Literal[0, 1, 2] = 0,
     ):
-        """Sets the Kanji underline mode.
+        """Set the Kanji underline mode.
 
         Some printers may only support 1 dot width underline.
 
-        :param underline: The underline mode.
-        0 Unset underline.
-        1 Set underline with 1 dot width.
-        2 Set underline with 2 dot width.
+        :param underline:
+            The underline mode.
+            0 = Unset underline.
+            1 = Set underline with 1 dot width.
+            2 = Set underline with 2 dot width.
         """
         self._raw(KANJI_UNDERLINE + six.int2byte(underline))
 
@@ -1610,7 +1610,7 @@ class Escpos(object, metaclass=ABCMeta):
         code: bytes,
         data: bytes,
     ):
-        """Sets a user defined Kanji character.
+        """Set a user defined Kanji character.
 
         :param code: The Kanji code.
         :param data: The Kanji data.
@@ -1621,7 +1621,8 @@ class Escpos(object, metaclass=ABCMeta):
         self,
         code: bytes,
     ):
-        """Deletes a user defined Kanji character.
+        """Delete a user defined Kanji character.
+
         :param code: The Kanji code.
         """
         self._raw(KANJI_DELETE_USER_DEFINED + code)
@@ -1638,7 +1639,8 @@ class Escpos(object, metaclass=ABCMeta):
             "gb18030",  # FIXME test with real device,
         ],
     ):
-        """Selects the Kanji encoding.
+        """Select the Kanji encoding.
+
         This command is available only for Japanese model printers.
 
         :param code: Encoding.
@@ -1668,8 +1670,10 @@ class Escpos(object, metaclass=ABCMeta):
         left_spacing: int,
         right_spacing: int,
     ):
-        """Sets the Kanji spacing.
+        """Set the Kanji spacing.
+
         Spacing is either 0-255 or 0-32 according to the printer model.
+
         :param left_spacing: The left spacing.
         :param right_spacing: The right spacing.
         """
@@ -1681,7 +1685,8 @@ class Escpos(object, metaclass=ABCMeta):
         self,
         enable: bool,
     ):
-        """Sets the Kanji quadruple size.
+        """Set the Kanji quadruple size.
+
         :param enable: Enable quadruple size.
         """
         self._raw(KANJI_SET_QUADRUPLE_SIZE + six.int2byte(int(enable)))
@@ -1690,12 +1695,13 @@ class Escpos(object, metaclass=ABCMeta):
         self,
         font: Literal[0, 1, 2],
     ):
-        """Sets the Kanji font.
+        """Set the Kanji font.
+
         :param font: The Kanji font.
-        0 font A
-        1 font B
-        2 font C
-        Some fonts may not be available on all printers.
+            0 font A
+            1 font B
+            2 font C
+            Some fonts may not be available on all printers.
         """
         self._raw(KANJI_SET_CHAR_STYLE + b"\x02\x00\x30" + six.int2byte(font))
 
