@@ -1507,11 +1507,11 @@ class Escpos(object, metaclass=ABCMeta):
 
         self._raw(BUZZER + six.int2byte(times) + six.int2byte(duration))
 
-    def _enter_kanji_mode(self):
+    def _enter_kanji_mode(self) -> None:
         """Enter Kanji mode."""
         self._raw(KANJI_ENTER_KANJI_MODE)
 
-    def _exit_kanji_mode(self):
+    def _exit_kanji_mode(self) -> None:
         """Exit Kanji mode."""
         self._raw(KANJI_EXIT_KANJI_MODE)
 
@@ -1574,7 +1574,7 @@ class Escpos(object, metaclass=ABCMeta):
         double_width: bool = False,
         double_height: bool = False,
         underline: Literal[0, 1, 2] = 0,
-    ):
+    ) -> None:
         """Set the Kanji print mode.
 
         :param double_width: Doubles the width of the text.
@@ -1592,7 +1592,7 @@ class Escpos(object, metaclass=ABCMeta):
     def set_kanji_underline(
         self,
         underline: Literal[0, 1, 2] = 0,
-    ):
+    ) -> None:
         """Set the Kanji underline mode.
 
         Some printers may only support 1 dot width underline.
@@ -1609,7 +1609,7 @@ class Escpos(object, metaclass=ABCMeta):
         self,
         code: bytes,
         data: bytes,
-    ):
+    ) -> None:
         """Set a user defined Kanji character.
 
         :param code: The Kanji code.
@@ -1620,12 +1620,24 @@ class Escpos(object, metaclass=ABCMeta):
     def delete_user_defined_kanji(
         self,
         code: bytes,
-    ):
+    ) -> None:
         """Delete a user defined Kanji character.
 
         :param code: The Kanji code.
         """
         self._raw(KANJI_DELETE_USER_DEFINED + code)
+
+    def write_user_defined_kanji(
+        self,
+        code: bytes,
+    ) -> None:
+        """Write a user defined Kanji character.
+
+        :param code: The Kanji code.
+        """
+        self._enter_kanji_mode()
+        self._raw(code)
+        self._exit_kanji_mode()
 
     def set_kanji_encoding(
         self,
@@ -1638,13 +1650,15 @@ class Escpos(object, metaclass=ABCMeta):
             "gb2312",  # FIXME test with real device,
             "gb18030",  # FIXME test with real device,
         ],
-    ):
+    ) -> None:
         """Select the Kanji encoding.
 
         This command is available only for Japanese model printers.
 
         :param code: Encoding.
         :raises ValueError: If the encoding is invalid.
+
+        .. todo:: Test the encodings marked above with `FIXME` with a real device.
         """
         # Japanese model printer have several Kanji encoding modes.
         if (
@@ -1669,7 +1683,7 @@ class Escpos(object, metaclass=ABCMeta):
         self,
         left_spacing: int,
         right_spacing: int,
-    ):
+    ) -> None:
         """Set the Kanji spacing.
 
         Spacing is either 0-255 or 0-32 according to the printer model.
@@ -1684,7 +1698,7 @@ class Escpos(object, metaclass=ABCMeta):
     def set_kanji_quadruple_size(
         self,
         enable: bool,
-    ):
+    ) -> None:
         """Set the Kanji quadruple size.
 
         :param enable: Enable quadruple size.
@@ -1694,7 +1708,7 @@ class Escpos(object, metaclass=ABCMeta):
     def set_kanji_font(
         self,
         font: Literal[0, 1, 2],
-    ):
+    ) -> None:
         """Set the Kanji font.
 
         :param font: The Kanji font.

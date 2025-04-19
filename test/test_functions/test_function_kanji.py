@@ -88,6 +88,13 @@ def test_kanji_text_shift_jis() -> None:
     )
 
 
+def test_kanji_text_without_encoding() -> None:
+    """Test behavior when no encoding is set."""
+    instance = printer.Dummy()
+    with pytest.raises(ValueError):
+        instance.kanji_text("Hello世界Hello")
+
+
 def test_set_kanji_decoration() -> None:
     """should set kanji decoration."""
     instance = printer.Dummy()
@@ -96,7 +103,7 @@ def test_set_kanji_decoration() -> None:
 
     instance = printer.Dummy()
     instance.set_kanji_decoration(double_width=True, double_height=True, underline=1)
-    assert instance.output == KANJI_PRINT_MODE + b"\x0C" + KANJI_UNDERLINE + b"\x01"
+    assert instance.output == KANJI_PRINT_MODE + b"\x0c" + KANJI_UNDERLINE + b"\x01"
 
 
 def test_define_user_defined_kanji() -> None:
