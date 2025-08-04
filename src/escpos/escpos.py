@@ -928,8 +928,8 @@ class Escpos(object, metaclass=ABCMeta):
         suggested by agordon @https://github.com/python-escpos/python-escpos/pull/652
         """
         prev_txt = txt
-        while (l := width - len(txt)) > 0:
-            txt = re.sub(r"(\s+)", r"\1 ", txt, count=l)
+        while (length := width - len(txt)) > 0:
+            txt = re.sub(r"(\s+)", r"\1 ", txt, count=length)
             if txt == prev_txt:
                 break
         return txt.rjust(width)
