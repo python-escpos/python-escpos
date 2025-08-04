@@ -33,11 +33,11 @@ def test_add_padding_into_cols(driver) -> None:
     """
 
     output = driver._add_padding_into_cols(
-        text_list=["col1", "col2", "col3"],
-        widths=[6, 6, 6],
-        align=["center", "left", "right"],
+        text_list=["col1", "col2", "col3", "col 4"],
+        widths=[6, 6, 6, 6],
+        align=["center", "left", "right", "justify"],
     )
-    assert output == [" col1 ", "col2  ", "  col3"]
+    assert output == [" col1 ", "col2  ", "  col3", "col  4"]
 
 
 @pytest.mark.parametrize("text_list", ["", [], None])
