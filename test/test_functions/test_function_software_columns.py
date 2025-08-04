@@ -69,7 +69,7 @@ def test_software_columns_invalid_args(driver, text_list, widths, align) -> None
     ],
 )
 @pytest.mark.parametrize("widths", [[10, 10, 10], [10], 30])
-@pytest.mark.parametrize("align", [["center", "left", "right"], ["center"], "center"])
+@pytest.mark.parametrize("align", [["center", "left", "right"], ["center"], "justify"])
 def test_software_columns_valid_args(driver, text_list, widths, align) -> None:
     """
     GIVEN a dummy printer object
