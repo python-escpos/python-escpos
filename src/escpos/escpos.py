@@ -989,7 +989,7 @@ class Escpos(object, metaclass=ABCMeta):
             textwrap.wrap(text, widths[i], break_long_words=False)
             for i, text in enumerate(text_list)
         ]
-        max_len = max(*[len(text_group) for text_group in wrapped])
+        max_len = max(0, *[len(text_group) for text_group in wrapped])
         text_colums = []
         for i in range(max_len):
             row = ["" for _ in range(n_cols)]
