@@ -55,7 +55,7 @@ def test_software_columns_invalid_args(driver, text_list, widths, align) -> None
 
     bad_args = [bad_text_list, bad_widths, bad_align]
     for kwargs in bad_args:
-        with pytest.raises(Exception):
+        with pytest.raises((TypeError, ValueError)):
             driver.software_columns(**kwargs)
         driver.close()
 
