@@ -953,6 +953,8 @@ class Escpos(object, metaclass=ABCMeta):
             text = f"{text:>{width}}"
         elif align == "justify":
             text = self._justify(text, width)
+        else:
+            raise ValueError("Expected a valid alignment: center|left|right|justify")
 
         return text
 
@@ -1030,6 +1032,9 @@ class Escpos(object, metaclass=ABCMeta):
             If the list of alignment items is shorter than the list of strings then
             the last alignment of the list will be applied till the last string (column).
         """
+        if not all([text_list, widths, align]):
+            raise TypeError("Value can't be of type None")
+
         n_cols = len(text_list)
 
         if isinstance(widths, int):
