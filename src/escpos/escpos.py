@@ -11,6 +11,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 """
 from __future__ import annotations
 
+import re
 import textwrap
 import time
 import warnings
@@ -108,7 +109,7 @@ SW_BARCODE_NAMES = {
     for name in barcode.PROVIDED_BARCODES
 }
 
-Alignment = Union[Literal["center", "left", "right"], str]
+Alignment = Union[Literal["center", "left", "right", "justify"], str]
 
 
 class Escpos(object, metaclass=ABCMeta):
@@ -920,7 +921,21 @@ class Escpos(object, metaclass=ABCMeta):
         self.text(textwrap.fill(txt, col_count))
 
     @staticmethod
+    def _justify(txt: str, width: int) -> str:
+        """Justify-text on left AND right sides by padding spaces.
+
+        code by: Georgina Skibinski https://stackoverflow.com/a/66087666
+        suggested by agordon @https://github.com/python-escpos/python-escpos/pull/652
+        """
+        prev_txt = txt
+        while (length := width - len(txt)) > 0:
+            txt = re.sub(r"(\s+)", r"\1 ", txt, count=length)
+            if txt == prev_txt:
+                break
+        return txt.rjust(width)
+
     def _padding(
+        self,
         text: str,
         width: int,
         align: Alignment = "center",
@@ -936,6 +951,10 @@ class Escpos(object, metaclass=ABCMeta):
             text = f"{text:<{width}}"
         elif align == "right":
             text = f"{text:>{width}}"
+        elif align == "justify":
+            text = self._justify(text, width)
+        else:
+            raise ValueError("Expected a valid alignment: center|left|right|justify")
 
         return text
 
@@ -972,7 +991,7 @@ class Escpos(object, metaclass=ABCMeta):
             textwrap.wrap(text, widths[i], break_long_words=False)
             for i, text in enumerate(text_list)
         ]
-        max_len = max(*[len(text_group) for text_group in wrapped])
+        max_len = max(0, *[len(text_group) for text_group in wrapped])
         text_colums = []
         for i in range(max_len):
             row = ["" for _ in range(n_cols)]
@@ -1013,6 +1032,9 @@ class Escpos(object, metaclass=ABCMeta):
             If the list of alignment items is shorter than the list of strings then
             the last alignment of the list will be applied till the last string (column).
         """
+        if not all([text_list, widths, align]):
+            raise TypeError("Value can't be of type None")
+
         n_cols = len(text_list)
 
         if isinstance(widths, int):
