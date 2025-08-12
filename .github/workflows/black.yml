@@ -6,7 +6,7 @@ jobs:
   black-code-style:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: psf/black@stable
         with:
           version: "23.12.0"
