@@ -5,7 +5,7 @@ This module contains the implementations of abstract base class :py:class:`Confi
 import os
 import pathlib
 
-import appdirs
+import platformdirs
 import yaml
 
 from . import exceptions, printer
@@ -55,7 +55,7 @@ class Config:
 
         if not config_path:
             config_path = os.path.join(
-                appdirs.user_config_dir(self._app_name), self._config_file
+                platformdirs.user_config_dir(self._app_name), self._config_file
             )
         if isinstance(config_path, pathlib.Path):
             # store string if posixpath
