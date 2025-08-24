@@ -373,7 +373,7 @@ ESCPOS_COMMANDS: List[Dict[str, Any]] = [
             {
                 "option_strings": ("--font",),
                 "help": "Font choice",
-                "choices": ["left", "center", "right"],
+                "choices": ["A", "B"],
             },
             {
                 "option_strings": ("--text_type",),

@@ -143,6 +143,14 @@ else:
 # documentation.
 # html_theme_options = {}
 
+# Show a 'Edit on GitHub' link instead of 'View page source'
+html_context = {
+    "display_github": True,
+    "github_user": "python-escpos",
+    "github_repo": "python-escpos",
+    "github_version": "master/doc/",
+}
+
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
 

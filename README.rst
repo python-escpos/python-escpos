@@ -59,7 +59,7 @@ Another example based on the Network printer class:
 
     from escpos.printer import Network
 
-    kitchen = Network("192.168.1.100") #Printer IP Address
+    kitchen = Network("192.168.1.100", profile="TM-T88III") #Printer IP Address
     kitchen.text("Hello World\n")
     kitchen.barcode('4006381333931', 'EAN13', 64, 2, '', '')
     kitchen.cut()
@@ -71,18 +71,22 @@ Another example based on the Serial printer class:
     from escpos.printer import Serial
 
     """ 9600 Baud, 8N1, Flow Control Enabled """
-    p = Serial(devfile='/dev/tty.usbserial',
-               baudrate=9600,
-               bytesize=8,
-               parity='N',
-               stopbits=1,
-               timeout=1.00,
-               dsrdtr=True)
+    p = Serial(
+        devfile='/dev/tty.usbserial',
+        baudrate=9600,
+        bytesize=8,
+        parity='N',
+        stopbits=1,
+        timeout=1.00,
+        dsrdtr=True,
+        profile="TM-T88III"
+    )
 
     p.text("Hello World\n")
     p.qr("You can readme from your smartphone")
     p.cut()
 
+.. note:: It is highly recommended to include a matching profile to inform python-escpos about the printer's capabilities.
 
 The full project-documentation is available on
 `Read the Docs <https://python-escpos.readthedocs.io>`_.

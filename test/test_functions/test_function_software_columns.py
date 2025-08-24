@@ -33,11 +33,11 @@ def test_add_padding_into_cols(driver) -> None:
     """
 
     output = driver._add_padding_into_cols(
-        text_list=["col1", "col2", "col3"],
-        widths=[6, 6, 6],
-        align=["center", "left", "right"],
+        text_list=["col1", "col2", "col3", "col 4"],
+        widths=[6, 6, 6, 6],
+        align=["center", "left", "right", "justify"],
     )
-    assert output == [" col1 ", "col2  ", "  col3"]
+    assert output == [" col1 ", "col2  ", "  col3", "col  4"]
 
 
 @pytest.mark.parametrize("text_list", ["", [], None])
@@ -55,7 +55,7 @@ def test_software_columns_invalid_args(driver, text_list, widths, align) -> None
 
     bad_args = [bad_text_list, bad_widths, bad_align]
     for kwargs in bad_args:
-        with pytest.raises(Exception):
+        with pytest.raises((TypeError, ValueError)):
             driver.software_columns(**kwargs)
         driver.close()
 
@@ -69,7 +69,7 @@ def test_software_columns_invalid_args(driver, text_list, widths, align) -> None
     ],
 )
 @pytest.mark.parametrize("widths", [[10, 10, 10], [10], 30])
-@pytest.mark.parametrize("align", [["center", "left", "right"], ["center"], "center"])
+@pytest.mark.parametrize("align", [["center", "left", "right"], ["center"], "justify"])
 def test_software_columns_valid_args(driver, text_list, widths, align) -> None:
     """
     GIVEN a dummy printer object
