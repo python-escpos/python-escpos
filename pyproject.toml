@@ -25,3 +25,6 @@ module = ["pytest",
           "win32print"
          ]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+branch = true
