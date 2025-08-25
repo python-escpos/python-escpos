@@ -25,3 +25,80 @@ module = ["pytest",
           "win32print"
          ]
 ignore_missing_imports = true
+
+[tool.tox]
+envlist = ["py38", "py39", "py310", "py311", "py312", "py313", "docs", "flake8"]
+
+[tool.tox.gh-actions]
+python = """
+2.7: py27
+3.6: py36
+3.7: py37
+3.8: py38
+3.9: py39
+3.10: py310
+3.11: py311
+3.12: py312
+3.13: py313"""
+
+[tool.tox.env_run_base]
+deps = [
+    "jaconv",
+    "coverage",
+    "scripttest",
+    "mock",
+    "pytest>=7.4",
+    "pytest-cov",
+    "pytest-mock",
+    "hypothesis>=6.83",
+    "python-barcode>=0.15.0,<1"
+]
+extras = ["all"]
+commands = [["pytest"]]
+passenv = ["ESCPOS_CAPABILITIES_PICKLE_DIR", "ESCPOS_CAPABILITIES_FILE", "CI", "TRAVIS", "TRAVIS_*", "APPVEYOR", "APPVEYOR_*", "CODECOV_*"]
+setenv = {PY_IGNORE_IMPORTMISMATCH = 1}
+
+[tool.tox.env.docs]
+base_python = "python"
+changedir = "doc"
+deps = [
+    "sphinx>=7.2.3",
+    "setuptools_scm",
+    "python-barcode>=0.15.0,<1",
+    "sphinx-argparse",
+    "sphinxcontrib-spelling>=8.0.0",
+    "sphinxcontrib.datatemplates",
+    "sphinx-autodoc-typehints",
+    "sphinx_rtd_theme",
+    "pycups",
+]
+commands = [
+    ["sphinx-build", "-W", "-b", "html", "-d", "{envtmpdir}/doctrees", ".",  "{envtmpdir}/html"],
+    ["sphinx-build", "-W", "-b", "spelling", "-d", "{envtmpdir}/doctrees", ".",  "{envtmpdir}/spelling"],
+]
+
+
+[tool.tox.env.flake8]
+base_python = "python"
+deps = [
+    "flake8",
+    "flake8-docstrings",
+]
+commands = [["flake8"]]
+
+[tool.tox.env.mypy]
+base_python = "python"
+deps = [
+    "mypy",
+    "types-six",
+    "types-mock",
+    "types-PyYAML",
+    "types-appdirs",
+    "types-Pillow",
+    "types-pyserial",
+    "types-pywin32>=306.0.0.6",
+    "types-flask",
+    "hypothesis>=6.83",
+    "jaconv",
+]
+commands = [["mypy", "src", "test", "examples"]]
