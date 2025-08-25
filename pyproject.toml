@@ -1,8 +1,10 @@
 [tool.black]
 extend-exclude = 'capabilities-data'
 
+
 [tool.isort]
 profile = "black"
+
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -13,6 +15,7 @@ testpaths = [
     "src/escpos",
     "escpos",
 ]
+
 
 [[tool.mypy.overrides]]
 module = ["pytest",
