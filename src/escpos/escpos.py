@@ -53,6 +53,18 @@ from .constants import (
     HW_INIT,
     HW_RESET,
     HW_SELECT,
+    ISO2022_JP_ASCII,
+    ISO2022_JP_JIS_X_0208_1983,
+    KANJI_DEFINE_USER_DEFINED,
+    KANJI_DELETE_USER_DEFINED,
+    KANJI_ENTER_KANJI_MODE,
+    KANJI_EXIT_KANJI_MODE,
+    KANJI_PRINT_MODE,
+    KANJI_SET_CHAR_STYLE,
+    KANJI_SET_ENCODING,
+    KANJI_SET_QUADRUPLE_SIZE,
+    KANJI_SET_SPACING,
+    KANJI_UNDERLINE,
     LINE_DISPLAY_CLEAR,
     LINE_DISPLAY_CLOSE,
     LINE_DISPLAY_OPEN,
@@ -135,6 +147,7 @@ class Escpos(object, metaclass=ABCMeta):
         """
         self.profile = get_profile(profile)
         self.magic = MagicEncode(self, **(magic_encode_args or {}))
+        self.kanji_encoding: Optional[str] = None
 
     def __del__(self):
         """Call self.close upon deletion."""
@@ -184,7 +197,7 @@ class Escpos(object, metaclass=ABCMeta):
         raise NotImplementedError()
 
     def set_sleep_in_fragment(self, sleep_time_ms: int) -> None:
-        """Configures the currently active sleep time after sending a fragment.
+        """Configure the currently active sleep time after sending a fragment.
 
         If during printing an image an issue like "USBTimeoutError: [Errno 110]
         Operation timed out" occurs, setting this value to roughly 300
@@ -1515,6 +1528,218 @@ class Escpos(object, metaclass=ABCMeta):
             raise ValueError("duration must be between 1 and 9")
 
         self._raw(BUZZER + six.int2byte(times) + six.int2byte(duration))
+
+    def _enter_kanji_mode(self) -> None:
+        """Enter Kanji mode."""
+        self._raw(KANJI_ENTER_KANJI_MODE)
+
+    def _exit_kanji_mode(self) -> None:
+        """Exit Kanji mode."""
+        self._raw(KANJI_EXIT_KANJI_MODE)
+
+    def kanji_text(self, text: str) -> None:
+        """Print Kanji text.
+
+        :param text: The Kanji text.
+        :param encoding: The encoding of the text.
+        :raises ValueError: If the Kanji encoding is not set.
+        """
+        if self.kanji_encoding is None:
+            raise ValueError("Kanji encoding not set")
+        elif self.kanji_encoding == "iso2022_jp":
+            # ISO-2022-JP encoding is a stateful encoding.
+            # We need to enter and exit Kanji mode.
+            self._iso2022jp_text(text)
+        else:
+            encoded_text = text.encode(self.kanji_encoding, "ignore")
+            self._enter_kanji_mode()
+            self._raw(encoded_text)
+            self._exit_kanji_mode()
+
+    def _iso2022jp_text(self, text: str) -> None:
+        """Print ISO-2022-JP text."""
+        encoded = text.encode("iso2022_jp", "ignore")
+        while len(encoded) > 0:
+            # find the next escape sequence
+            escape_pos = encoded.find(b"\x1b", 1)
+            if escape_pos == -1:
+                current_chunk = encoded
+                encoded = b""
+            else:
+                current_chunk = encoded[:escape_pos]
+                encoded = encoded[escape_pos:]
+
+            # find encoding
+            if not current_chunk.startswith(ESC):
+                # ASCII
+                self._raw(current_chunk)
+            elif current_chunk.startswith(ISO2022_JP_ASCII):
+                # ASCII
+                stripped = current_chunk[len(ISO2022_JP_ASCII) :]
+                self._raw(stripped)
+            elif current_chunk.startswith(ISO2022_JP_JIS_X_0208_1983):
+                # JIS X 0208-1983
+                stripped = current_chunk[len(ISO2022_JP_JIS_X_0208_1983) :]
+                self._enter_kanji_mode()
+                self._raw(stripped)
+                self._exit_kanji_mode()
+            else:
+                # unknown encoding
+                pretty_sequence = " ".join([hex(b) for b in current_chunk])
+                raise ValueError(
+                    "Unimplemented ISO-2022-JP escape sequence: " + pretty_sequence
+                )
+
+    def set_kanji_decoration(
+        self,
+        *,
+        double_width: bool = False,
+        double_height: bool = False,
+        underline: Literal[0, 1, 2] = 0,
+    ) -> None:
+        """Set the Kanji print mode.
+
+        :param double_width: Doubles the width of the text.
+        :param double_height: Doubles the height of the text.
+        :param underline: Underlines the text.
+        """
+        n: int = 0x00
+        if double_width:
+            n |= 0x04
+        if double_height:
+            n |= 0x08
+        self._raw(KANJI_PRINT_MODE + six.int2byte(n))
+        self.set_kanji_underline(underline)
+
+    def set_kanji_underline(
+        self,
+        underline: Literal[0, 1, 2] = 0,
+    ) -> None:
+        """Set the Kanji underline mode.
+
+        Some printers may only support 1 dot width underline.
+
+        :param underline:
+            The underline mode.
+            0 = Unset underline.
+            1 = Set underline with 1 dot width.
+            2 = Set underline with 2 dot width.
+        """
+        self._raw(KANJI_UNDERLINE + six.int2byte(underline))
+
+    def define_user_defined_kanji(
+        self,
+        code: bytes,
+        data: bytes,
+    ) -> None:
+        """Set a user defined Kanji character.
+
+        :param code: The Kanji code.
+        :param data: The Kanji data.
+        """
+        self._raw(KANJI_DEFINE_USER_DEFINED + code + data)
+
+    def delete_user_defined_kanji(
+        self,
+        code: bytes,
+    ) -> None:
+        """Delete a user defined Kanji character.
+
+        :param code: The Kanji code.
+        """
+        self._raw(KANJI_DELETE_USER_DEFINED + code)
+
+    def write_user_defined_kanji(
+        self,
+        code: bytes,
+    ) -> None:
+        """Write a user defined Kanji character.
+
+        :param code: The Kanji code.
+        """
+        self._enter_kanji_mode()
+        self._raw(code)
+        self._exit_kanji_mode()
+
+    def set_kanji_encoding(
+        self,
+        encoding: Literal[
+            "iso2022_jp",
+            "shift_jis",
+            "shift_jis_2004",
+            "euc_kr",  # FIXME test with real device,
+            "big5",  # FIXME test with real device,
+            "gb2312",  # FIXME test with real device,
+            "gb18030",  # FIXME test with real device,
+        ],
+    ) -> None:
+        """Select the Kanji encoding.
+
+        This command is available only for Japanese model printers.
+
+        :param code: Encoding.
+        :raises ValueError: If the encoding is invalid.
+
+        .. todo:: Test the encodings marked above with `FIXME` with a real device.
+        """
+        # Japanese model printer have several Kanji encoding modes.
+        if (
+            encoding == "iso2022_jp"
+            or encoding == "euc_kr"
+            or encoding == "big5"
+            or encoding == "gb2312"
+            or encoding == "gb18030"
+        ):
+            self._raw(KANJI_SET_ENCODING + b"\x00")
+            self.kanji_encoding = encoding
+        elif encoding == "shift_jis":
+            self._raw(KANJI_SET_ENCODING + b"\x01")
+            self.kanji_encoding = encoding
+        elif encoding == "shift_jis_2004":
+            self._raw(KANJI_SET_ENCODING + b"\x02")
+            self.kanji_encoding = encoding
+        else:
+            raise ValueError("Invalid encoding")
+
+    def set_kanji_spacing(
+        self,
+        left_spacing: int,
+        right_spacing: int,
+    ) -> None:
+        """Set the Kanji spacing.
+
+        Spacing is either 0-255 or 0-32 according to the printer model.
+
+        :param left_spacing: The left spacing.
+        :param right_spacing: The right spacing.
+        """
+        self._raw(
+            KANJI_SET_SPACING + six.int2byte(left_spacing) + six.int2byte(right_spacing)
+        )
+
+    def set_kanji_quadruple_size(
+        self,
+        enable: bool,
+    ) -> None:
+        """Set the Kanji quadruple size.
+
+        :param enable: Enable quadruple size.
+        """
+        self._raw(KANJI_SET_QUADRUPLE_SIZE + six.int2byte(int(enable)))
+
+    def set_kanji_font(
+        self,
+        font: Literal[0, 1, 2],
+    ) -> None:
+        """Set the Kanji font.
+
+        :param font: The Kanji font.
+            0 font A
+            1 font B
+            2 font C
+            Some fonts may not be available on all printers.
+        """
+        self._raw(KANJI_SET_CHAR_STYLE + b"\x02\x00\x30" + six.int2byte(font))
 
 
 class EscposIO:
