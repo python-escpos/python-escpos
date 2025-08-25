@@ -8,7 +8,7 @@
 """
 import pathlib
 
-import appdirs
+import platformdirs
 import pytest
 
 import escpos.exceptions
@@ -80,7 +80,7 @@ def test_config_load_from_appdir() -> None:
 
     # generate a dummy config
     config_file = (
-        pathlib.Path(appdirs.user_config_dir(config.Config._app_name))
+        pathlib.Path(platformdirs.user_config_dir(config.Config._app_name))
         / config.Config._config_file
     )
 
