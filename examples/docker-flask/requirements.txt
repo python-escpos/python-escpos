@@ -1,4 +1,4 @@
-appdirs==1.4.4
+platformdirs==4.3.8
 argcomplete==3.0.8
 blinker==1.6.2
 click==8.1.3
