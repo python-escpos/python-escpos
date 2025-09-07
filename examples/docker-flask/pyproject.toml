@@ -1,7 +1,7 @@
 [project]
 name = "flask-example"
 version = "0.1.0"
-description = "Add your description here"
+description = "Flask and Python-ESC/POS example"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
