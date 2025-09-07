@@ -490,32 +490,16 @@ ESCPOS_COMMANDS: List[Dict[str, Any]] = [
 def print_extended_information() -> None:
     """Print diagnostic information for bug reports."""
     print(f"* python-escpos version: `{version.version}`")
-    print(
-        f"* python version: `{platform.python_implementation()} v{platform.python_version()}`"
-    )
+    print(f"* python version: `{platform.python_implementation()} v{platform.python_version()}`")
     print(f"* platform: `{platform.platform()}`")
-    print(
-        f"* printer driver `USB` is usable: `{escpos_printer_module.Usb.is_usable()}`"
-    )
-    print(
-        f"* printer driver `File` is usable: `{escpos_printer_module.File.is_usable()}`"
-    )
-    print(
-        f"* printer driver `Network` is usable: `{escpos_printer_module.Network.is_usable()}`"
-    )
-    print(
-        f"* printer driver `Serial` is usable: `{escpos_printer_module.Serial.is_usable()}`"
-    )
+    print(f"* printer driver `USB` is usable: `{escpos_printer_module.Usb.is_usable()}`")
+    print(f"* printer driver `File` is usable: `{escpos_printer_module.File.is_usable()}`")
+    print(f"* printer driver `Network` is usable: `{escpos_printer_module.Network.is_usable()}`")
+    print(f"* printer driver `Serial` is usable: `{escpos_printer_module.Serial.is_usable()}`")
     print(f"* printer driver `LP` is usable: `{escpos_printer_module.LP.is_usable()}`")
-    print(
-        f"* printer driver `Dummy` is usable: `{escpos_printer_module.Dummy.is_usable()}`"
-    )
-    print(
-        f"* printer driver `CupsPrinter` is usable: `{escpos_printer_module.CupsPrinter.is_usable()}`"
-    )
-    print(
-        f"* printer driver `Win32Raw` is usable: `{escpos_printer_module.Win32Raw.is_usable()}`"
-    )
+    print(f"* printer driver `Dummy` is usable: `{escpos_printer_module.Dummy.is_usable()}`")
+    print(f"* printer driver `CupsPrinter` is usable: `{escpos_printer_module.CupsPrinter.is_usable()}`")
+    print(f"* printer driver `Win32Raw` is usable: `{escpos_printer_module.Win32Raw.is_usable()}`")
 
 
 def generate_parser() -> argparse.ArgumentParser:
@@ -553,9 +537,7 @@ def generate_parser() -> argparse.ArgumentParser:
             parser_command.add_argument(*option_strings, **argument)
 
     # Build any custom arguments
-    parser_command_demo = command_subparsers.add_parser(
-        "demo", help="Demonstrates various functions"
-    )
+    parser_command_demo = command_subparsers.add_parser("demo", help="Demonstrates various functions")
     parser_command_demo.set_defaults(func="demo")
     demo_group = parser_command_demo.add_mutually_exclusive_group()
     demo_group.add_argument(
@@ -662,9 +644,7 @@ def demo(printer: escpos.Escpos, **kwargs) -> None:
     for demo_choice in kwargs.keys():
         command = getattr(
             printer,
-            demo_choice.replace("barcodes_a", "barcode").replace(
-                "barcodes_b", "barcode"
-            ),
+            demo_choice.replace("barcodes_a", "barcode").replace("barcodes_b", "barcode"),
         )
         for params in DEMO_FUNCTIONS[demo_choice]:
             command(**params)
