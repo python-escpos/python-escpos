@@ -27,7 +27,7 @@ ignore_missing_imports = true
 
 
 [tool.tox]
-requires = ["tox>=4.11", "tox-uv>=1.13"]
+requires = ["tox>=4.11"]
 envlist = ["3.9", "3.10", "3.11", "3.12", "3.13", "docs", "flake8", "mypy"]
 
 
