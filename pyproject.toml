@@ -99,7 +99,7 @@ commands = [
 [tool.tox.env.style]
 base_python = ["python"]
 deps = ["ruff"]
-commands = [["ruff", "--version"], ["ruff", "check", "."]]
+commands = [["ruff", "--version"], ["ruff", "check", "."], ["ruff", "format"]]
 
 
 [tool.tox.env.mypy]
@@ -144,7 +144,7 @@ line-ending = "lf"
 
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "D"]
+select = ["E", "F", "W", "D", "I"]
 
 
 [tool.ruff.lint.pydocstyle]
