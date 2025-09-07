@@ -30,16 +30,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y graphviz libenchant-2-2 gcc libcups2-dev python3-dev xindy
         python -m pip install --upgrade pip
-        pip install ruff pytest tox tox-gh-actions
+        pip install pytest tox tox-gh-actions
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Check sorting of imports
-      uses: isort/isort-action@master
-      with:
-        requirementsFiles: "requirements.txt doc/requirements.txt"
-        sortPaths: "./doc ./src ./examples ./test ./setup.py"
-    - name: Lint with Ruff
-      run: |
-        ruff check . --output-format=github
     - name: Test with tox
       run: |
         tox

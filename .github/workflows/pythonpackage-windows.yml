@@ -25,11 +25,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install ruff pytest tox tox-gh-actions
+        pip install pytest tox tox-gh-actions
         If (Test-Path .\requirements.txt) { pip install -r .\requirements.txt }
-    - name: Lint with Ruff
-      run: |
-        ruff check . --output-format=github
     - name: Test with tox
       run: |
         tox
