@@ -1,29 +1,28 @@
 [tool.black]
 extend-exclude = 'capabilities-data'
 
+
 [tool.isort]
 profile = "black"
+
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "--doctest-modules --cov escpos --cov-report=xml"
-testpaths = [
-    "test",
-    "src",
-    "src/escpos",
-    "escpos",
-]
+testpaths = ["test", "src", "src/escpos", "escpos"]
+
 
 [[tool.mypy.overrides]]
-module = ["pytest",
-          "jaconv",
-          "scripttest",
-          "barcode.*",
-          "qrcode",
-          "usb.*",
-          "cups",
-          "win32print"
-         ]
+module = [
+  "pytest",
+  "jaconv",
+  "scripttest",
+  "barcode.*",
+  "qrcode",
+  "usb.*",
+  "cups",
+  "win32print",
+]
 ignore_missing_imports = true
 
 
@@ -42,62 +41,86 @@ envlist = ["3.9", "3.10", "3.11", "3.12", "3.13", "docs", "flake8", "mypy"]
 
 [tool.tox.env_run_base]
 deps = [
-    "jaconv",
-    "coverage",
-    "scripttest",
-    "mock",
-    "pytest>=7.4",
-    "pytest-cov",
-    "pytest-mock",
-    "hypothesis>=6.83",
-    "python-barcode>=0.15.0,<1"
+  "jaconv",
+  "coverage",
+  "scripttest",
+  "mock",
+  "pytest>=7.4",
+  "pytest-cov",
+  "pytest-mock",
+  "hypothesis>=6.83",
+  "python-barcode>=0.15.0,<1",
 ]
 extras = ["all"]
 commands = [["pytest"]]
-passenv = ["ESCPOS_CAPABILITIES_PICKLE_DIR", "ESCPOS_CAPABILITIES_FILE", "CI", "TRAVIS", "TRAVIS_*", "APPVEYOR", "APPVEYOR_*", "CODECOV_*"]
-setenv = {PY_IGNORE_IMPORTMISMATCH = "1"}
+passenv = [
+  "ESCPOS_CAPABILITIES_PICKLE_DIR",
+  "ESCPOS_CAPABILITIES_FILE",
+  "CI",
+  "TRAVIS",
+  "TRAVIS_*",
+  "APPVEYOR",
+  "APPVEYOR_*",
+  "CODECOV_*",
+]
+setenv = { PY_IGNORE_IMPORTMISMATCH = "1" }
 
 [tool.tox.env.docs]
 base_python = ["python"]
 changedir = "doc"
 deps = [
-    "sphinx>=7.2.3",
-    "setuptools_scm",
-    "python-barcode>=0.15.0,<1",
-    "sphinx-argparse",
-    "sphinxcontrib-spelling>=8.0.0",
-    "sphinxcontrib.datatemplates",
-    "sphinx-autodoc-typehints",
-    "sphinx_rtd_theme",
-    "pycups",
+  "sphinx>=7.2.3",
+  "setuptools_scm",
+  "python-barcode>=0.15.0,<1",
+  "sphinx-argparse",
+  "sphinxcontrib-spelling>=8.0.0",
+  "sphinxcontrib.datatemplates",
+  "sphinx-autodoc-typehints",
+  "sphinx_rtd_theme",
+  "pycups",
 ]
 commands = [
-    ["sphinx-build", "-W", "-b", "html", "-d", "{envtmpdir}/doctrees", ".",  "{envtmpdir}/html"],
-    ["sphinx-build", "-W", "-b", "spelling", "-d", "{envtmpdir}/doctrees", ".",  "{envtmpdir}/spelling"],
+  [
+    "sphinx-build",
+    "-W",
+    "-b",
+    "html",
+    "-d",
+    "{envtmpdir}/doctrees",
+    ".",
+    "{envtmpdir}/html",
+  ],
+  [
+    "sphinx-build",
+    "-W",
+    "-b",
+    "spelling",
+    "-d",
+    "{envtmpdir}/doctrees",
+    ".",
+    "{envtmpdir}/spelling",
+  ],
 ]
 
 
 [tool.tox.env.flake8]
 base_python = ["python"]
-deps = [
-    "flake8",
-    "flake8-docstrings",
-]
+deps = ["flake8", "flake8-docstrings"]
 commands = [["flake8"]]
 
 
 [tool.tox.env.mypy]
 base_python = ["python"]
 deps = [
-    "mypy",
-    "types-six",
-    "types-mock",
-    "types-PyYAML",
-    "types-Pillow",
-    "types-pyserial",
-    "types-pywin32>=306.0.0.6",
-    "types-flask",
-    "hypothesis>=6.83",
-    "jaconv",
+  "mypy",
+  "types-six",
+  "types-mock",
+  "types-PyYAML",
+  "types-Pillow",
+  "types-pyserial",
+  "types-pywin32>=306.0.0.6",
+  "types-flask",
+  "hypothesis>=6.83",
+  "jaconv",
 ]
 commands = [["mypy", "src", "test", "examples"]]
