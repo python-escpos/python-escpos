@@ -75,9 +75,7 @@ class File(Escpos):
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
-                raise DeviceNotFoundError(
-                    f"Could not open the specified file {self.devfile}:\n{e}"
-                )
+                raise DeviceNotFoundError(f"Could not open the specified file {self.devfile}:\n{e}")
             else:
                 logging.error("File printer %s not found", self.devfile)
                 return

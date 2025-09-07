@@ -8,7 +8,6 @@ This module contains the image format handler :py:class:`EscposImage`.
 :license: MIT
 """
 
-
 import math
 from typing import Iterator, Union
 

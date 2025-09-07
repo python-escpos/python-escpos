@@ -2,6 +2,7 @@
 
 This module contains the implementations of abstract base class :py:class:`Config`.
 """
+
 import os
 import pathlib
 
@@ -54,9 +55,7 @@ class Config:
         self._reset_config()
 
         if not config_path:
-            config_path = os.path.join(
-                platformdirs.user_config_dir(self._app_name), self._config_file
-            )
+            config_path = os.path.join(platformdirs.user_config_dir(self._app_name), self._config_file)
         if isinstance(config_path, pathlib.Path):
             # store string if posixpath
             config_path = config_path.as_posix()
@@ -68,9 +67,7 @@ class Config:
             with open(config_path, "rb") as config_file:
                 config = yaml.safe_load(config_file)
         except EnvironmentError:
-            raise exceptions.ConfigNotFoundError(
-                f"Couldn't read config at {config_path}"
-            )
+            raise exceptions.ConfigNotFoundError(f"Couldn't read config at {config_path}")
         except yaml.YAMLError:
             raise exceptions.ConfigSyntaxError("Error parsing YAML")
 
@@ -90,9 +87,7 @@ class Config:
             self._printer_name = class_names.get(printer_name.lower(), printer_name)
 
             if not self._printer_name or not hasattr(printer, self._printer_name):
-                raise exceptions.ConfigSyntaxError(
-                    f'Printer type "{self._printer_name}" is invalid'
-                )
+                raise exceptions.ConfigSyntaxError(f'Printer type "{self._printer_name}" is invalid')
 
         self._has_loaded = True
 

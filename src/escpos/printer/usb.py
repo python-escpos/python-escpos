@@ -7,6 +7,7 @@
 :copyright: Copyright (c) 2012-2023 Bashlinux and python-escpos
 :license: MIT
 """
+
 import functools
 import logging
 from typing import Dict, Literal, Optional, Type, Union
@@ -103,9 +104,7 @@ class Usb(Escpos):
         if idProduct:
             self.usb_args["idProduct"] = idProduct
 
-        self._device: Union[
-            Literal[False], Literal[None], Type[usb.core.Device]
-        ] = False
+        self._device: Union[Literal[False], Literal[None], Type[usb.core.Device]] = False
 
     @dependency_usb
     def open(self, raise_not_found: bool = True) -> None:
@@ -124,12 +123,9 @@ class Usb(Escpos):
 
         # Open device
         try:
-            self.device: Optional[Type[usb.core.Device]] = usb.core.find(
-                **self.usb_args
-            )
+            self.device: Optional[Type[usb.core.Device]] = usb.core.find(**self.usb_args)
             assert self.device, USBNotFoundError(
-                f"Device {tuple(self.usb_args.values())} not found"
-                + " or cable not plugged in."
+                f"Device {tuple(self.usb_args.values())} not found" + " or cable not plugged in."
             )
             self._check_driver()
             self._configure_usb()
@@ -137,10 +133,7 @@ class Usb(Escpos):
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
-                raise DeviceNotFoundError(
-                    f"Unable to open USB printer on {tuple(self.usb_args.values())}:"
-                    + f"\n{e}"
-                )
+                raise DeviceNotFoundError(f"Unable to open USB printer on {tuple(self.usb_args.values())}:" + f"\n{e}")
             else:
                 logging.error("USB device %s not found", tuple(self.usb_args.values()))
                 return
@@ -199,8 +192,6 @@ class Usb(Escpos):
         """Release USB interface."""
         if not self._device:
             return
-        logging.info(
-            "Closing Usb connection to printer %s", tuple(self.usb_args.values())
-        )
+        logging.info("Closing Usb connection to printer %s", tuple(self.usb_args.values()))
         usb.util.dispose_resources(self._device)
         self._device = False

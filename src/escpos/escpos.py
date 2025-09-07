@@ -9,6 +9,7 @@ This module contains the abstract base class :py:class:`Escpos`.
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT
 """
+
 from __future__ import annotations
 
 import re
@@ -105,8 +106,7 @@ HW_BARCODE_NAMES = {
     for name in bc_type
 }
 SW_BARCODE_NAMES = {
-    "".join([char for char in name.upper() if char.isalnum()]): name
-    for name in barcode.PROVIDED_BARCODES
+    "".join([char for char in name.upper() if char.isalnum()]): name for name in barcode.PROVIDED_BARCODES
 }
 
 Alignment = Union[Literal["center", "left", "right", "justify"], str]
@@ -184,7 +184,7 @@ class Escpos(object, metaclass=ABCMeta):
         raise NotImplementedError()
 
     def set_sleep_in_fragment(self, sleep_time_ms: int) -> None:
-        """Configures the currently active sleep time after sending a fragment.
+        """Configure the currently active sleep time after sending a fragment.
 
         If during printing an image an issue like "USBTimeoutError: [Errno 110]
         Operation timed out" occurs, setting this value to roughly 300
@@ -271,9 +271,7 @@ class Escpos(object, metaclass=ABCMeta):
 
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
-            density_byte = (0 if high_density_horizontal else 1) + (
-                0 if high_density_vertical else 2
-            )
+            density_byte = (0 if high_density_horizontal else 1) + (0 if high_density_vertical else 2)
             header = (
                 GS
                 + b"v0"
@@ -285,9 +283,7 @@ class Escpos(object, metaclass=ABCMeta):
 
         if impl == "graphics":
             # GS ( L raster format graphics
-            img_header = self._int_low_high(im.width, 2) + self._int_low_high(
-                im.height, 2
-            )
+            img_header = self._int_low_high(im.width, 2) + self._int_low_high(im.height, 2)
             tone = b"0"
             colors = b"1"
             ym = b"\x01" if high_density_vertical else b"\x02"
@@ -299,15 +295,8 @@ class Escpos(object, metaclass=ABCMeta):
 
         if impl == "bitImageColumn":
             # ESC *, column format bit image
-            density_byte = (1 if high_density_horizontal else 0) + (
-                32 if high_density_vertical else 0
-            )
-            header = (
-                ESC
-                + b"*"
-                + six.int2byte(density_byte)
-                + self._int_low_high(im.width, 2)
-            )
+            density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0)
+            header = ESC + b"*" + six.int2byte(density_byte) + self._int_low_high(im.width, 2)
             outp = [ESC + b"3" + six.int2byte(16)]  # Adjust line-feed size
             for blob in im.to_column_format(high_density_vertical):
                 outp.append(header + blob + b"\n")
@@ -357,9 +346,7 @@ class Escpos(object, metaclass=ABCMeta):
         if not 1 <= size <= 16:
             raise ValueError("Invalid block size (must be 1-16)")
         if model not in [QR_MODEL_1, QR_MODEL_2, QR_MICRO]:
-            raise ValueError(
-                "Invalid QR model (must be one of QR_MODEL_1, QR_MODEL_2, QR_MICRO)"
-            )
+            raise ValueError("Invalid QR model (must be one of QR_MODEL_1, QR_MODEL_2, QR_MICRO)")
         if content == "":
             # Handle edge case by printing nothing.
             return
@@ -379,18 +366,14 @@ class Escpos(object, metaclass=ABCMeta):
                 image_arguments["center"] = center
             # Map ESC/POS error correction levels to python 'qrcode' library constant and render to an image
             if model != QR_MODEL_2:
-                raise ValueError(
-                    "Invalid QR model for qrlib rendering (must be QR_MODEL_2)"
-                )
+                raise ValueError("Invalid QR model for qrlib rendering (must be QR_MODEL_2)")
             python_qr_ec = {
                 QR_ECLEVEL_H: qrcode.constants.ERROR_CORRECT_H,
                 QR_ECLEVEL_L: qrcode.constants.ERROR_CORRECT_L,
                 QR_ECLEVEL_M: qrcode.constants.ERROR_CORRECT_M,
                 QR_ECLEVEL_Q: qrcode.constants.ERROR_CORRECT_Q,
             }
-            qr_code = qrcode.QRCode(
-                version=None, box_size=size, border=1, error_correction=python_qr_ec[ec]
-            )
+            qr_code = qrcode.QRCode(version=None, box_size=size, border=1, error_correction=python_qr_ec[ec])
             qr_code.add_data(content)
             qr_code.make(fit=True)
             qr_img = qr_code.make_image()
@@ -404,16 +387,12 @@ class Escpos(object, metaclass=ABCMeta):
             return
 
         if center:
-            raise NotImplementedError(
-                "Centering not implemented for native QR rendering"
-            )
+            raise NotImplementedError("Centering not implemented for native QR rendering")
 
         # Native 2D code printing
         cn = b"1"  # Code type for QR code
         # Select model: 1, 2 or micro.
-        self._send_2d_code_data(
-            six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0)
-        )
+        self._send_2d_code_data(six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0))
         # Set dot size.
         self._send_2d_code_data(six.int2byte(67), cn, six.int2byte(size))
         # Set error correction level: L, M, Q, or H
@@ -446,9 +425,7 @@ class Escpos(object, metaclass=ABCMeta):
         if not 1 <= out_bytes <= 4:
             raise ValueError("Can only output 1-4 bytes")
         if not 0 <= inp_number <= max_input:
-            raise ValueError(
-                f"Number too large. Can only output up to {max_input} in {out_bytes} bytes"
-            )
+            raise ValueError(f"Number too large. Can only output up to {max_input} in {out_bytes} bytes")
         outp = b""
         for _ in range(0, out_bytes):
             outp += six.int2byte(inp_number % 256)
@@ -497,9 +474,7 @@ class Escpos(object, metaclass=ABCMeta):
             return False
 
         bounds, regex = BARCODE_FORMATS[bc]
-        return any(bound[0] <= len(code) <= bound[1] for bound in bounds) and re_match(
-            regex, code
-        )
+        return any(bound[0] <= len(code) <= bound[1] for bound in bounds) and re_match(regex, code)
 
     def _dpi(self) -> int:
         """Printer's DPI resolution."""
@@ -591,13 +566,11 @@ class Escpos(object, metaclass=ABCMeta):
             "hw": [mode for mode in hw_modes if self.profile.supports(mode)] or None,
             "sw": [mode for mode in sw_modes if self.profile.supports(mode)] or None,
         }
-        if (not capable["hw"] and not capable["sw"]) or (
-            not capable["sw"] and force_software
-        ):
+        if (not capable["hw"] and not capable["sw"]) or (not capable["sw"] and force_software):
             raise BarcodeTypeError(
-                f"""Profile {
-                    self.profile.profile_data['name']
-                } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
+                f"""Profile {self.profile.profile_data["name"]} - hw barcode: {capable["hw"]}, sw barcode: {
+                    capable["sw"]
+                }"""
             )
 
         bc_alnum = "".join([char for char in bc.upper() if char.isalnum()])
@@ -635,9 +608,7 @@ class Escpos(object, metaclass=ABCMeta):
 
         print("Using hardware barcode renderer")
         bc = capable_bc["hw"] or bc
-        self._hw_barcode(
-            code, bc, height, width, pos, font, align_ct, function_type, check
-        )
+        self._hw_barcode(code, bc, height, width, pos, font, align_ct, function_type, check)
 
     def _hw_barcode(
         self,
@@ -734,18 +705,11 @@ class Escpos(object, metaclass=ABCMeta):
         function_type = function_type or ft_guess[0]
 
         if not function_type or not BARCODE_TYPES.get(function_type.upper()):
-            raise BarcodeTypeError(
-                (
-                    f"Barcode '{bc}' not valid for barcode function type "
-                    f"{function_type}"
-                )
-            )
+            raise BarcodeTypeError((f"Barcode '{bc}' not valid for barcode function type {function_type}"))
         bc_types = BARCODE_TYPES[function_type.upper()]
 
         if check and not self.check_barcode(bc, code):
-            raise BarcodeCodeError(
-                f"Barcode '{code}' not in a valid format for type '{bc}'"
-            )
+            raise BarcodeCodeError(f"Barcode '{code}' not in a valid format for type '{bc}'")
 
         # Align Bar Code()
         if align_ct:
@@ -851,9 +815,7 @@ class Escpos(object, metaclass=ABCMeta):
 
         # Check if barcode type exists
         if barcode_type not in barcode.PROVIDED_BARCODES:
-            raise BarcodeTypeError(
-                f"Barcode type {barcode_type} not supported by software barcode renderer"
-            )
+            raise BarcodeTypeError(f"Barcode type {barcode_type} not supported by software barcode renderer")
 
         # Render the barcode
         barcode_class = barcode.get_barcode_class(barcode_type)
@@ -987,10 +949,7 @@ class Escpos(object, metaclass=ABCMeta):
         Reorder the wrapped items into an array of text columns.
         """
         n_cols = len(text_list)
-        wrapped = [
-            textwrap.wrap(text, widths[i], break_long_words=False)
-            for i, text in enumerate(text_list)
-        ]
+        wrapped = [textwrap.wrap(text, widths[i], break_long_words=False) for i, text in enumerate(text_list)]
         max_len = max(0, *[len(text_group) for text_group in wrapped])
         text_colums = []
         for i in range(max_len):
@@ -1008,9 +967,7 @@ class Escpos(object, metaclass=ABCMeta):
         align: list[Alignment],
     ) -> list:
         """Add padding, width and alignment into the items of a list of strings."""
-        return [
-            self._padding(text, widths[i], align[i]) for i, text in enumerate(text_list)
-        ]
+        return [self._padding(text, widths[i], align[i]) for i, text in enumerate(text_list)]
 
     def software_columns(
         self,
@@ -1095,12 +1052,7 @@ class Escpos(object, metaclass=ABCMeta):
         :param flip: True enables upside-down printing
         """
         if custom_size:
-            if (
-                isinstance(width, int)
-                and isinstance(height, int)
-                and 1 <= width <= 8
-                and 1 <= height <= 8
-            ):
+            if isinstance(width, int) and isinstance(height, int) and 1 <= width <= 8 and 1 <= height <= 8:
                 size_byte = TXT_STYLE["width"][width] + TXT_STYLE["height"][height]
                 self._raw(TXT_SIZE + six.int2byte(size_byte))
             else:
@@ -1226,13 +1178,9 @@ class Escpos(object, metaclass=ABCMeta):
         if divisor not in LINESPACING_FUNCS:
             raise ValueError("divisor must be either 360, 180 or 60")
         if divisor in [360, 180] and (not (0 <= spacing <= 255)):
-            raise ValueError(
-                "spacing must be a int between 0 and 255 when divisor is 360 or 180"
-            )
+            raise ValueError("spacing must be a int between 0 and 255 when divisor is 360 or 180")
         if divisor == 60 and (not (0 <= spacing <= 85)):
-            raise ValueError(
-                "spacing must be a int between 0 and 85 when divisor is 60"
-            )
+            raise ValueError("spacing must be a int between 0 and 85 when divisor is 60")
 
         self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
 
@@ -1379,9 +1327,7 @@ class Escpos(object, metaclass=ABCMeta):
         elif ctl.upper() == "CR":
             self._raw(CTL_CR)
         elif ctl.upper() == "HT":
-            if not (
-                0 <= count <= 32 and 1 <= tab_size <= 255 and count * tab_size < 256
-            ):
+            if not (0 <= count <= 32 and 1 <= tab_size <= 255 and count * tab_size < 256):
                 raise TabPosError()
             else:
                 # Set tab positions
@@ -1537,9 +1483,7 @@ class EscposIO:
     After the `with`-statement the printer automatically cuts the paper if `autocut` is `True`.
     """
 
-    def __init__(
-        self, printer: Escpos, autocut: bool = True, autoclose: bool = True, **kwargs
-    ) -> None:
+    def __init__(self, printer: Escpos, autocut: bool = True, autoclose: bool = True, **kwargs) -> None:
         """Initialize object.
 
         :param printer: An EscPos-printer object
@@ -1594,9 +1538,7 @@ class EscposIO:
         """Enter context."""
         return self
 
-    def __exit__(
-        self, type: type[BaseException], value: BaseException, traceback: TracebackType
-    ) -> None:
+    def __exit__(self, type: type[BaseException], value: BaseException, traceback: TracebackType) -> None:
         """Cut and close if configured.
 
         If :py:attr:`autocut <escpos.escpos.EscposIO.autocut>` is `True` (set by this class' constructor),

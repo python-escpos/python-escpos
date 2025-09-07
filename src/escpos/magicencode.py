@@ -12,7 +12,6 @@ The code is based on the encoding-code in py-xml-escpos by @fvdsn.
 :license: MIT
 """
 
-
 import re
 from builtins import bytes
 
@@ -58,7 +57,7 @@ class Encoder:
             raise ValueError(
                 (
                     f'Encoding "{encoding}" cannot be used for the current profile. '
-                    f'Valid encodings are: {",".join(self.codepages.keys())}'
+                    f"Valid encodings are: {','.join(self.codepages.keys())}"
                 )
             )
         return encoding
@@ -81,9 +80,7 @@ class Encoder:
             for i in range(0, 128):
                 codepoint = i + 128
                 try:
-                    encodable_chars[i] = bytes([codepoint]).decode(
-                        codepage["python_encode"]
-                    )
+                    encodable_chars[i] = bytes([codepoint]).decode(codepage["python_encode"])
                 except UnicodeDecodeError:
                     # Non-encodable character, just skip it
                     pass
@@ -104,9 +101,7 @@ class Encoder:
         if encoding in self.available_characters:
             return self.available_characters[encoding]
         codepage_char_list = self._get_codepage_char_list(encoding)
-        codepage_char_map = dict(
-            (utf8, i + 128) for (i, utf8) in enumerate(codepage_char_list)
-        )
+        codepage_char_map = dict((utf8, i + 128) for (i, utf8) in enumerate(codepage_char_list))
         self.available_characters[encoding] = codepage_char_map
         return codepage_char_map
 
@@ -148,9 +143,7 @@ class Encoder:
         :param defaultchar: Fallback for non-encodable characters
         """
         codepage_char_map = self._get_codepage_char_map(encoding)
-        output_bytes = bytes(
-            [self._encode_char(char, codepage_char_map, defaultchar) for char in text]
-        )
+        output_bytes = bytes([self._encode_char(char, codepage_char_map, defaultchar) for char in text])
         return output_bytes
 
     def __encoding_sort_func(self, item):
@@ -216,9 +209,7 @@ class MagicEncode:
     insert an error character.
     """
 
-    def __init__(
-        self, driver, encoding=None, disabled=False, defaultsymbol="?", encoder=None
-    ):
+    def __init__(self, driver, encoding=None, disabled=False, defaultsymbol="?", encoder=None):
         """Initialize magic encode.
 
         :param driver:
@@ -293,17 +284,13 @@ class MagicEncode:
     def write_with_encoding(self, encoding, text):
         """Write the text and inject necessary code page switches."""
         if text is not None and type(text) is not str:
-            raise Error(
-                f"The supplied text has to be Unicode, but is of type {type(text)}."
-            )
+            raise Error(f"The supplied text has to be Unicode, but is of type {type(text)}.")
 
         # We always know the current code page; if the new code page
         # is different, emit a change command.
         if encoding != self.encoding:
             self.encoding = encoding
-            self.driver._raw(
-                CODEPAGE_CHANGE + six.int2byte(self.encoder.get_sequence(encoding))
-            )
+            self.driver._raw(CODEPAGE_CHANGE + six.int2byte(self.encoder.get_sequence(encoding)))
 
         if text:
             self.driver._raw(self.encoder.encode(text, encoding))

@@ -33,10 +33,7 @@ def dependency_linux_lp(func):
     def wrapper(*args, **kwargs):
         """Throw a RuntimeError if not on a non-Windows system."""
         if not is_usable():
-            raise RuntimeError(
-                "This printer driver depends on LP which is not "
-                "available on Windows systems."
-            )
+            raise RuntimeError("This printer driver depends on LP which is not available on Windows systems.")
         return func(*args, **kwargs)
 
     return wrapper
@@ -146,8 +143,7 @@ class LP(Escpos):
             self.device = None
             if raise_not_found:
                 raise DeviceNotFoundError(
-                    f"Unable to start a print job for the printer {self.printer_name}:"
-                    + f"\n{e}"
+                    f"Unable to start a print job for the printer {self.printer_name}:" + f"\n{e}"
                 )
             else:
                 logging.error("LP printing %s not available", self.printer_name)
