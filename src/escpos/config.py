@@ -45,6 +45,33 @@ class Config:
         self._printer_name = None
         self._printer_config = None
 
+    def _set_config(self, config) -> None:
+        """Set configuration variables.
+
+        :param config: config object loaded from file or string.
+        """
+        if "printer" in config:
+            self._printer_config = config["printer"]
+            printer_name = self._printer_config.pop("type")
+            class_names = {
+                "usb": "Usb",
+                "serial": "Serial",
+                "network": "Network",
+                "file": "File",
+                "dummy": "Dummy",
+                "cupsprinter": "CupsPrinter",
+                "lp": "LP",
+                "win32raw": "Win32Raw",
+            }
+            self._printer_name = class_names.get(printer_name.lower(), printer_name)
+
+            if not self._printer_name or not hasattr(printer, self._printer_name):
+                raise exceptions.ConfigSyntaxError(
+                    f'Printer type "{self._printer_name}" is invalid'
+                )
+
+        self._has_loaded = True
+
     def load(self, config_path=None):
         """Load and parse the configuration file using pyyaml.
 
@@ -74,27 +101,23 @@ class Config:
         except yaml.YAMLError:
             raise exceptions.ConfigSyntaxError("Error parsing YAML")
 
-        if "printer" in config:
-            self._printer_config = config["printer"]
-            printer_name = self._printer_config.pop("type")
-            class_names = {
-                "usb": "Usb",
-                "serial": "Serial",
-                "network": "Network",
-                "file": "File",
-                "dummy": "Dummy",
-                "cupsprinter": "CupsPrinter",
-                "lp": "LP",
-                "win32raw": "Win32Raw",
-            }
-            self._printer_name = class_names.get(printer_name.lower(), printer_name)
+        self._set_config(config)
 
-            if not self._printer_name or not hasattr(printer, self._printer_name):
-                raise exceptions.ConfigSyntaxError(
-                    f'Printer type "{self._printer_name}" is invalid'
-                )
 
-        self._has_loaded = True
+    def load_yaml_string(self, yaml_string):
+        """Load and parse a yaml configuration string.
+
+        :param yaml_string: A string containing yaml formatted configuration
+        """
+        self._reset_config()
+
+        try:
+            config = yaml.safe_load(yaml_string)
+        except yaml.YAMLError:
+            raise exceptions.ConfigSyntaxError("Error parsing YAML")
+
+        self._set_config(config)
+
 
     def printer(self):
         """Return a printer that was defined in the config.
