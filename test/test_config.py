@@ -124,3 +124,29 @@ def test_config_load_with_path(tmp_path):
 
     # test the resulting printer object
     simple_printer_test(c)
+
+def test_config_load_yaml_string_with_invalid_config_yaml():
+    """Invalid YAML string should raise ConfigSyntaxError."""
+    from escpos import config
+
+    c = config.Config()
+    with pytest.raises(escpos.exceptions.ConfigSyntaxError):
+        c.load_yaml_string("}invalid}yaml}")
+
+
+def test_config_load_yaml_string_with_invalid_config_content():
+    """Invalid content should raise ConfigSyntaxError."""
+    from escpos import config
+
+    c = config.Config()
+    with pytest.raises(escpos.exceptions.ConfigSyntaxError):
+        c.load_yaml_string("printer:\n   type: NoPrinterWithThatName\n")
+
+
+def test_config_load_yaml_string_with_valid_config():
+    """Valid YAML string should produce a Dummy printer."""
+    from escpos import config
+
+    c = config.Config()
+    c.load_yaml_string("printer:\n   type: Dummy\n")
+    simple_printer_test(c)
