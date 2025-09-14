@@ -72,7 +72,7 @@ class Config:
 
         self._has_loaded = True
 
-    def load(self, config_path=None):
+    def load(self, config_path=None) -> None:
         """Load and parse the configuration file using pyyaml.
 
         :param config_path: An optional file path, file handle, or byte string
@@ -104,7 +104,7 @@ class Config:
         self._set_config(config)
 
 
-    def load_yaml_string(self, yaml_string):
+    def load_yaml_string(self, yaml_string) -> None:
         """Load and parse a yaml configuration string.
 
         :param yaml_string: A string containing yaml formatted configuration
