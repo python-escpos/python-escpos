@@ -2,6 +2,7 @@
 
 This module contains the implementations of abstract base class :py:class:`Config`.
 """
+
 import os
 import pathlib
 
@@ -99,9 +100,9 @@ class Config:
             )
 
     def load_yaml_string(self, yaml_string) -> None:
-        """Load and parse a yaml configuration string.
+        """Load and parse a yaml configuration string or file-like object.
 
-        :param yaml_string: A string containing yaml formatted configuration
+        :param yaml_string: A string or file-like object containing yaml formatted configuration.
         """
         self._reset_config()
 
@@ -111,7 +112,6 @@ class Config:
             raise exceptions.ConfigSyntaxError("Error parsing YAML")
 
         self._set_config(config)
-
 
     def printer(self):
         """Return a printer that was defined in the config.
