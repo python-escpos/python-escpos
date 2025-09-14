@@ -78,7 +78,6 @@ class Config:
         :param config_path: An optional file path, file handle, or byte string
             for the configuration file.
         """
-        self._reset_config()
 
         if not config_path:
             config_path = os.path.join(
@@ -93,16 +92,11 @@ class Config:
 
         try:
             with open(config_path, "rb") as config_file:
-                config = yaml.safe_load(config_file)
+                self.load_yaml_string(config_file)
         except EnvironmentError:
             raise exceptions.ConfigNotFoundError(
                 f"Couldn't read config at {config_path}"
             )
-        except yaml.YAMLError:
-            raise exceptions.ConfigSyntaxError("Error parsing YAML")
-
-        self._set_config(config)
-
 
     def load_yaml_string(self, yaml_string) -> None:
         """Load and parse a yaml configuration string.
