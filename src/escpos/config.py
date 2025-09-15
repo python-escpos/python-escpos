@@ -31,7 +31,7 @@ class Config:
         self._has_loaded = False
         self._printer = None
 
-        self._printer_name = None
+        self._printer_name = ""
         self._printer_config = None
 
     def _reset_config(self) -> None:
@@ -42,8 +42,7 @@ class Config:
         """
         self._has_loaded = False
         self._printer = None
-
-        self._printer_name = None
+        self._printer_name = ""
         self._printer_config = None
 
     def _set_config(self, config) -> None:
@@ -51,11 +50,11 @@ class Config:
 
         :param config: config object loaded from file or string.
         """
-        self._printer_config = config.get("printer")
+        self._printer_config = config.get("printer", None)
         if self._printer_config is None:
             self._has_loaded = True
             return
-        printer_name = self._printer_config.pop("type")
+        printer_name = self._printer_config.get("type", "")
         class_names = {
             "usb": "Usb",
             "serial": "Serial",
