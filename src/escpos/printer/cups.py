@@ -13,7 +13,7 @@ import logging
 import tempfile
 from typing import Literal, Optional, Type, Union
 
-from ..constants import RT_MASK_ONLINE, RT_MASK_OFFLINE
+from ..constants import RT_MASK_OFFLINE, RT_MASK_ONLINE
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
 
