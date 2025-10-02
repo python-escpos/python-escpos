@@ -169,8 +169,8 @@ def test_printers_no_device(cupsprinter) -> None:
 def test_read_no_device(cupsprinter) -> None:
     """
     GIVEN a cups printer object
-    WHEN device is None
-    THEN check the return value is b'8'
+    WHEN device is None while querying for printer status
+    THEN check the return value is the byte '\x1a'
     """
     cupsprinter.device = None
-    assert cupsprinter._read() == b"8"
+    assert cupsprinter._read() == bytes([26])
