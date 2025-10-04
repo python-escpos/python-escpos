@@ -95,8 +95,8 @@ from .exceptions import (
     CashDrawerError,
     ImageWidthError,
     SetVariableError,
-    ValidationError,
     TabPosError,
+    ValidationError
 )
 from .magicencode import MagicEncode
 
