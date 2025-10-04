@@ -96,7 +96,7 @@ from .exceptions import (
     ImageWidthError,
     SetVariableError,
     TabPosError,
-    ValidationError
+    ValidationError,
 )
 from .magicencode import MagicEncode
 
