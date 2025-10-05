@@ -348,7 +348,7 @@ class SetVariableError(Error):
 class ValidationError(Error):
     """Invalid response format.
 
-    A validator/checker invalidates some data.
+    An error occurred while validating data.
     The return code for this exception is `110`.
 
     inheritance:
