@@ -1458,7 +1458,7 @@ class Escpos(object, metaclass=ABCMeta):
 
         :param resp: A byte containing the printer's response.
         """
-        if len(resp) > 1:
+        if len(resp) == 0 or len(resp) > 1:
             return False
         # Check bits 7 or 0 are not 1
         is_valid_7_0 = (resp[0] & 0b10000001) == 0b00000000
