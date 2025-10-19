@@ -174,3 +174,28 @@ def test_read_no_device(cupsprinter) -> None:
     """
     cupsprinter.device = None
     assert cupsprinter._read() == bytes([26])
+
+
+@pytest.mark.parametrize(
+    "state,expected",
+    [
+        pytest.param(3, bytes([18])),
+        pytest.param(4, bytes([26])),
+        pytest.param(5, bytes([26])),
+    ],
+)
+def test_read(cupsprinter, mocker, state, expected):
+    """
+    GIVEN a cups printer object and a mocked pycups device
+    WHEN querying for printer status
+    THEN check the return value is the expected
+    """
+    mocker.patch("cups.Connection")
+    mocker.patch(
+        "escpos.printer.CupsPrinter.printers",
+        new={"test_printer": {"printer-state": state}},
+    )
+
+    cupsprinter.printer_name = "test_printer"
+
+    assert cupsprinter._read() == expected
