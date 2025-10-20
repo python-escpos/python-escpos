@@ -184,7 +184,7 @@ def test_read_no_device(cupsprinter) -> None:
         pytest.param(5, bytes([26])),
     ],
 )
-def test_read(cupsprinter, mocker, state, expected):
+def test_read(cupsprinter, mocker, state, expected) -> None:
     """
     GIVEN a cups printer object and a mocked pycups device
     WHEN querying for printer status
