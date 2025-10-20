@@ -23,7 +23,7 @@ def test_clear(driver) -> None:
 def test_read_no_output(driver) -> None:
     """
     GIVEN a dummy printer object with no output data
-    WHEN reading the last byte of data 
+    WHEN reading the last byte of data
     THEN check the return value is the expected
     """
     driver.clear()
