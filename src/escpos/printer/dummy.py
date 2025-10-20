@@ -56,7 +56,7 @@ class Dummy(Escpos):
         """Read the last byte of data and return it to the caller."""
         if not self._output_list:
             return b""
-        return self._output_list[-1]
+        return bytes([self._output_list[-1][-1]])
 
     @property
     def output(self) -> bytes:
