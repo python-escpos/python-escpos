@@ -320,14 +320,16 @@ Printer of the STAR TSP100 family do not have a native ESC/POS mode, which
 is why you will not be able to directly print with this library to the printer.
 
 However, for Windows it is possible to use the `Win32Raw <https://python-escpos.readthedocs.io/en/latest/user/printers.html#win32raw>`_
-printer type instead by supplying the printer name.
+printer type instead by supplying the printer name. Only after enabling esc/pos emulation found in the online documentation of
+`Star Micronics <https://www.starmicronics.com/help-center/knowledge-base/configure-tsp100-series-printers-esc-pos-mode/>`_.
 
 .. code-block:: Python
     
     p = Win32Raw(<printer-name>)
 
-More information on this topic can be found in the online documentation of
-`Star Micronics <https://www.starmicronics.com/help-center/knowledge-base/configure-tsp100-series-printers-esc-pos-mode/>`_
-and the `discussion in the python-escpos project <https://github.com/python-escpos/python-escpos/issues/410>`_.
+Currently it does not seem to be possible to emulate esc/pos on Linux.
+
+More information on this topic can be found in the 
+`discussion in the python-escpos project <https://github.com/python-escpos/python-escpos/issues/410>`_.
 
 
