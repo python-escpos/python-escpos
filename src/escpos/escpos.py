@@ -1129,6 +1129,10 @@ class Escpos(object, metaclass=ABCMeta):
             self._raw(TXT_STYLE["underline"][underline])
         if font is not None:
             self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+            # Some printers (confirmed: NT-5890K) reset their active code page
+            # when switching fonts (ESC M). Invalidate the cached encoding so
+            # the next text() call re-emits CODEPAGE_CHANGE before sending text.
+            self.magic.reset_encoding()
         if align is not None:
             self._raw(TXT_STYLE["align"][align])
 
@@ -1335,6 +1339,11 @@ class Escpos(object, metaclass=ABCMeta):
         """
         if hw.upper() == "INIT":
             self._raw(HW_INIT)
+            # ESC @ is defined in the ESC/POS spec as a full printer reset that
+            # restores all settings to factory defaults, including the active
+            # code page. Invalidate the cached encoding so the next text() call
+            # re-emits CODEPAGE_CHANGE rather than silently sending the wrong bytes.
+            self.magic.reset_encoding()
         elif hw.upper() == "SELECT":
             self._raw(HW_SELECT)
         elif hw.upper() == "RESET":

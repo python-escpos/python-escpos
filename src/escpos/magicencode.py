@@ -240,6 +240,18 @@ class MagicEncode:
         self.defaultsymbol = defaultsymbol
         self.disabled = disabled
 
+    def reset_encoding(self):
+        """Invalidate cached encoding state after a printer-side code page reset.
+
+        Some printers silently reset their active code page after certain
+        commands (e.g. image rendering, font switches, hardware init).
+        Calling this method discards both the cached current encoding and the
+        set of previously-used encodings so that the next write() call
+        performs a fresh code page selection and re-emits CODEPAGE_CHANGE.
+        """
+        self.encoding = None
+        self.encoder.used_encodings.clear()
+
     def force_encoding(self, encoding):
         """Set a fixed encoding. The change is emitted right away.
 
