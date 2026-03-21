@@ -111,6 +111,79 @@ class TestMagicEncode:
             encode.write("€ ist teuro.")
             assert driver.output == b"\x1bt\x00? ist teuro."
 
+    class TestResetEncoding:
+        """Tests for reset_encoding(), which discards cached encoding state.
+
+        Some printers (e.g. NT-5890K) silently reset their active code page
+        after commands such as font switches (ESC M) or hardware init (ESC @).
+        reset_encoding() must be called after such commands so that the next
+        write() re-emits CODEPAGE_CHANGE rather than sending text under the
+        wrong code page.
+        """
+
+        def test_clears_encoding(self, driver: printer.Dummy) -> None:
+            """reset_encoding sets self.encoding to None."""
+            encode = MagicEncode(driver, encoding="CP437")
+            encode.reset_encoding()
+            assert encode.encoding is None
+
+        def test_clears_used_encodings(self, driver: printer.Dummy) -> None:
+            """reset_encoding empties the used_encodings set."""
+            encode = MagicEncode(driver)
+            encode.write("€")  # causes an encoding to be recorded in used_encodings
+            assert len(encode.encoder.used_encodings) > 0
+            encode.reset_encoding()
+            assert encode.encoder.used_encodings == set()
+
+        def test_next_write_reemits_codepage_change(self, driver: printer.Dummy) -> None:
+            """After reset_encoding, the next write always emits CODEPAGE_CHANGE.
+
+            Without reset, write_with_encoding skips the change command when
+            the target encoding is already active.  After reset the cached
+            encoding is None, so the change must be re-emitted even if the
+            same encoding is chosen again.
+            """
+            encode = MagicEncode(driver, encoding="CP858")
+
+            # CP858 already "active" — no CODEPAGE_CHANGE emitted for plain ASCII
+            encode.write_with_encoding("CP858", "a")
+            assert driver.output == b"a"
+
+            encode.reset_encoding()
+            encode.write_with_encoding("CP858", "a")
+            # CODEPAGE_CHANGE (\x1bt) + slot 19 (\x13) must precede the character
+            assert driver.output == b"a\x1bt\x13a"
+
+        def test_reselects_encoding_by_slot_not_history(self, driver: printer.Dummy) -> None:
+            """After reset, find_suitable_encoding ignores used_encodings history.
+
+            Without clearing used_encodings, find_suitable_encoding prefers
+            previously-used code pages (even high-slot ones) over lower-slot
+            alternatives.  This caused the NT-5890K bug: € forced CP1257
+            (slot 25) into used_encodings; after a font switch the printer
+            reset its code page, but MagicEncode kept sending ü bytes encoded
+            for CP1257 without re-emitting CODEPAGE_CHANGE — the printer read
+            them against its reset code page and printed garbage.
+
+            After reset_encoding(), used_encodings is empty, so the sort in
+            find_suitable_encoding falls back to slot order and picks the
+            lowest-slot encoding that covers the character.
+            """
+            # Two encodings that can both encode ü; CP850 has the lower slot.
+            encoder = Encoder({"CP850": 2, "CP858": 19})
+            encode = MagicEncode(driver, encoder=encoder)
+
+            # Simulate state left behind after printing € (CP858 was used)
+            encode.encoder.used_encodings.add("CP858")
+            encode.encoding = "CP858"
+
+            # Without reset: history bias picks CP858 (previously used)
+            assert encode.encoder.find_suitable_encoding("ü") == "CP858"
+
+            # After reset: slot order wins — CP850 (slot 2) beats CP858 (slot 19)
+            encode.reset_encoding()
+            assert encode.encoder.find_suitable_encoding("ü") == "CP850"
+
 
 jaconv: typing.Optional[types.ModuleType]
 try:
