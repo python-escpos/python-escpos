@@ -248,6 +248,8 @@ class MagicEncode:
         Calling this method discards both the cached current encoding and the
         set of previously-used encodings so that the next write() call
         performs a fresh code page selection and re-emits CODEPAGE_CHANGE.
+
+        See https://github.com/python-escpos/python-escpos/pull/729
         """
         self.encoding = None
         self.encoder.used_encodings.clear()

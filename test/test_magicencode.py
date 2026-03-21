@@ -164,6 +164,7 @@ class TestMagicEncode:
             reset its code page, but MagicEncode kept sending ü bytes encoded
             for CP1257 without re-emitting CODEPAGE_CHANGE — the printer read
             them against its reset code page and printed garbage.
+            See https://github.com/python-escpos/python-escpos/pull/729
 
             After reset_encoding(), used_encodings is empty, so the sort in
             find_suitable_encoding falls back to slot order and picks the
