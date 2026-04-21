@@ -11,6 +11,7 @@
 import logging
 
 import pytest
+
 from escpos.constants import RT_STATUS_ONLINE, RT_STATUS_PAPER
 from escpos.exceptions import ValidationError
 
