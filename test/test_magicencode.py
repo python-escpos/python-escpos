@@ -185,6 +185,38 @@ class TestMagicEncode:
             encode.reset_encoding()
             assert encode.encoder.find_suitable_encoding("ü") == "CP850"
 
+        def test_set_font_change_resets_encoding(self, driver: printer.Dummy) -> None:
+            """set() resets encoding when font actually changes."""
+            driver.set(font="a")
+            driver.magic.encoding = "CP858"
+            driver.set(font="b")
+            assert driver.magic.encoding is None
+
+        def test_set_same_font_keeps_encoding(self, driver: printer.Dummy) -> None:
+            """set() does NOT reset encoding when font is unchanged."""
+            driver.set(font="a")
+            driver.magic.encoding = "CP858"
+            driver.set(font="a")
+            assert driver.magic.encoding == "CP858"
+
+        def test_set_with_default_no_font_change_keeps_encoding(self, driver: printer.Dummy) -> None:
+            """set_with_default(align=...) must not reset encoding.
+
+            set_with_default() always passes font="a" to set(), but if the
+            font hasn't changed, reset_encoding() must not fire.
+            """
+            driver.set_with_default()  # sets font="a"
+            driver.magic.encoding = "CP858"
+            driver.set_with_default(align="right")
+            assert driver.magic.encoding == "CP858"
+
+        def test_hw_init_resets_font_tracking(self, driver: printer.Dummy) -> None:
+            """hw("INIT") resets _font so the next set(font=...) always fires."""
+            driver.set(font="a")
+            assert driver._font == "a"
+            driver.hw("INIT")
+            assert driver._font is None
+
 
 jaconv: typing.Optional[types.ModuleType]
 try:
