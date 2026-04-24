@@ -135,8 +135,7 @@ class Escpos(object, metaclass=ABCMeta):
         """
         self.profile = get_profile(profile)
         self.magic = MagicEncode(self, **(magic_encode_args or {}))
-        # Last font sent via ESC M; lets set() skip redundant font commands
-        # and avoid spurious reset_encoding() from set_with_default(). (#729)
+        # Track the value of the current font.
         self._font = None
 
     def __del__(self):
@@ -1133,10 +1132,8 @@ class Escpos(object, metaclass=ABCMeta):
         if font is not None and font != self._font:
             self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
             self._font = font
-            # Some printers (confirmed: NT-5890K) reset their active code page
-            # when switching fonts (ESC M). Invalidate the cached encoding so
-            # the next text() call re-emits CODEPAGE_CHANGE before sending text.
-            # See https://github.com/python-escpos/python-escpos/pull/729
+            # Force a fresh code page selection as required by some printer
+            # models (confirmed: NT-5890K).
             self.magic.reset_encoding()
         if align is not None:
             self._raw(TXT_STYLE["align"][align])
@@ -1344,10 +1341,8 @@ class Escpos(object, metaclass=ABCMeta):
         """
         if hw.upper() == "INIT":
             self._raw(HW_INIT)
-            # ESC @ is defined in the ESC/POS spec as a full printer reset that
-            # restores all settings to factory defaults, including the active
-            # code page. Invalidate the cached encoding so the next text() call
-            # re-emits CODEPAGE_CHANGE rather than silently sending the wrong bytes.
+            # ESC @ resets all settings including the active code page.
+            # Force a fresh code page selection.
             self.magic.reset_encoding()
             self._font = None
         elif hw.upper() == "SELECT":
