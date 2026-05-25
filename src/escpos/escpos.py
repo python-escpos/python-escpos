@@ -913,8 +913,13 @@ class Escpos(object, metaclass=ABCMeta):
         Text has to be encoded in Unicode.
 
         :param txt: text to be printed
-        :param font: font to be used, can be :code:`a` or :code:`b`
-        :param columns: amount of columns
+        :param font: font used to look up the wrapping column count when
+            ``columns`` is not set, can be :code:`a` or :code:`b`. This does
+            not switch the active printer font; call ``set(font=...)`` or
+            ``set_with_default(font=...)`` first when the printed text should
+            use a different font.
+        :param columns: amount of columns. Overrides the profile column count
+            looked up from ``font`` when set.
         :return: None
         """
         col_count = self.profile.get_columns(font) if columns is None else columns
