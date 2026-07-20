@@ -10,7 +10,7 @@
 
 import warnings
 
-import mock
+import unittest.mock as mock
 import pytest
 from PIL import Image
 
