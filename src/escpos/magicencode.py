@@ -16,8 +16,6 @@ The code is based on the encoding-code in py-xml-escpos by @fvdsn.
 import re
 from builtins import bytes
 
-import six
-
 from .codepages import CodePages
 from .constants import CODEPAGE_CHANGE
 from .exceptions import Error
@@ -302,7 +300,7 @@ class MagicEncode:
         if encoding != self.encoding:
             self.encoding = encoding
             self.driver._raw(
-                CODEPAGE_CHANGE + six.int2byte(self.encoder.get_sequence(encoding))
+                CODEPAGE_CHANGE + self.encoder.get_sequence(encoding).to_bytes()
             )
 
         if text:

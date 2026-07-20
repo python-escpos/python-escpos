@@ -9,7 +9,7 @@
 
 
 import hypothesis.strategies as st
-import mock
+import unittest.mock as mock
 from hypothesis import given
 
 from escpos.printer import Dummy

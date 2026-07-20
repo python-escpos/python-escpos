@@ -14,8 +14,6 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 
 from typing import Dict
 
-import six
-
 from .types import ConstTxtStyleClass
 
 # Control characters
@@ -50,11 +48,11 @@ _CASH_DRAWER = lambda m, t1="", t2="": ESC + b"p" + m + bytes((t1, t2))
 
 #: decimal cash drawer kick sequence
 CD_KICK_DEC_SEQUENCE = (
-    lambda esc, p, m, t1=50, t2=50: six.int2byte(esc)
-    + six.int2byte(p)
-    + six.int2byte(m)
-    + six.int2byte(t1)
-    + six.int2byte(t2)
+    lambda esc, p, m, t1=50, t2=50: esc.to_bytes()
+    + p.to_bytes()
+    + m.to_bytes()
+    + t1.to_bytes()
+    + t2.to_bytes()
 )
 #: Sends a pulse to pin 2 []
 CD_KICK_2: bytes = _CASH_DRAWER(b"\x00", 50, 50)
@@ -73,7 +71,7 @@ BEEP: bytes = b"\x07"
 BUZZER: bytes = ESC + b"\x42"
 
 # Panel buttons (e.g. the FEED button)
-_PANEL_BUTTON = lambda n: ESC + b"c5" + six.int2byte(n)
+_PANEL_BUTTON = lambda n: ESC + b"c5" + n.to_bytes()
 PANEL_BUTTON_ON: bytes = _PANEL_BUTTON(0)  # enable all panel buttons
 PANEL_BUTTON_OFF: bytes = _PANEL_BUTTON(1)  # disable all panel buttons
 
@@ -211,7 +209,7 @@ BARCODE_WIDTH: bytes = GS + b"w"  #: Barcode Width  [2-6]
 #      -  Type A: "GS k <type as integer> <data> NUL"
 #      -  TYPE B: "GS k <type as letter> <data length> <data>"
 #      The latter command supports more barcode types
-_SET_BARCODE_TYPE = lambda m: GS + b"k" + six.int2byte(m)
+_SET_BARCODE_TYPE = lambda m: GS + b"k" + m.to_bytes()
 
 #: Barcodes for printing function type A
 BARCODE_TYPE_A: Dict[str, bytes] = {
