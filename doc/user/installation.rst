@@ -24,7 +24,7 @@ pre-release.
 .. note::
 
    The PyPI package name is ``python-escpos``. The unrelated and discontinued
-   package named ``escpos`` uses the same ``escpos`` import namespace and can
+   package named ``escpos`` uses the same ``escpos`` import name-space and can
    shadow python-escpos if both are installed in the same environment. If an
    import such as ``from escpos.printer import Usb`` fails with
    ``ImportError: cannot import name 'DeviceNotFoundError' from
