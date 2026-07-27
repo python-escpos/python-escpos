@@ -23,9 +23,8 @@ from escpos.printer import Dummy
 def print_codepage(printer: Dummy, codepage: str) -> None:
     """Print a code page."""
     if codepage.isdigit():
-        codepage = int(codepage)
-        printer._raw(CODEPAGE_CHANGE + bytes((codepage,)))
-        printer._raw("after")
+        printer._raw(CODEPAGE_CHANGE + bytes((int(codepage),)))
+        printer._raw(b"after")
     else:
         printer.charcode(codepage)
 
@@ -33,14 +32,14 @@ def print_codepage(printer: Dummy, codepage: str) -> None:
 
     # Table header
     printer.set(font="b")
-    printer._raw(f"  {sep.join(map(lambda s: hex(s)[2:], range(0, 16)))}\n")
+    printer._raw(f"  {sep.join(map(lambda s: hex(s)[2:], range(0, 16)))}\n".encode())
     printer.set()
 
     # The table
     for x in range(0, 16):
         # First column
         printer.set(font="b")
-        printer._raw(f"{hex(x)[2:]} ")
+        printer._raw(f"{hex(x)[2:]} ".encode())
         printer.set()
 
         for y in range(0, 16):
@@ -52,8 +51,8 @@ def print_codepage(printer: Dummy, codepage: str) -> None:
                 byte = b" "
 
             printer._raw(byte)
-            printer._raw(sep)
-        printer._raw("\n")
+            printer._raw(sep.encode())
+        printer._raw(b"\n")
 
 
 def main() -> None:
@@ -64,9 +63,9 @@ def main() -> None:
 
     for codepage in sys.argv[1:] or ["USA"]:
         dummy.set(height=2, width=2)
-        dummy._raw(codepage + "\n\n\n")
+        dummy._raw((codepage + "\n\n\n").encode())
         print_codepage(dummy, codepage)
-        dummy._raw("\n\n")
+        dummy._raw(b"\n\n")
 
     dummy.cut()
 
