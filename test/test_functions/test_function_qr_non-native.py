@@ -8,9 +8,9 @@
 :license: MIT
 """
 
+import unittest.mock as mock
 import warnings
 
-import unittest.mock as mock
 import pytest
 from PIL import Image
 
