@@ -13,7 +13,6 @@ Icons taken from https://adamwhitcroft.com/climacons/
 Check out his github: https://github.com/AdamWhitcroft/climacons
 """
 
-
 import calendar
 import json
 import os

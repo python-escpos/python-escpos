@@ -8,6 +8,8 @@ Changelog
 changes
 ^^^^^^^
 
+- document that the package should be installed as ``python-escpos``, not the
+  unrelated ``escpos`` package
 
 contributors
 ^^^^^^^^^^^^

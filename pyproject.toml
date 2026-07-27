@@ -125,3 +125,7 @@ deps = [
   "jaconv",
 ]
 commands = [["mypy", "src", "test", "examples"]]
+
+
+[tool.coverage.run]
+branch = true

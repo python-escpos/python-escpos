@@ -1,4 +1,5 @@
 """Handler for capabilities data."""
+
 import atexit
 import logging
 import pickle
@@ -143,7 +144,7 @@ def get_profile(name: Optional[str] = None, **kwargs):
     return clazz(**kwargs)
 
 
-CLASS_CACHE = {}
+CLASS_CACHE: Dict[str, Type[BaseProfile]] = {}
 
 
 def get_profile_class(name: str) -> Type[BaseProfile]:
