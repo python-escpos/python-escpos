@@ -136,7 +136,9 @@ class TestMagicEncode:
             encode.reset_encoding()
             assert encode.encoder.used_encodings == set()
 
-        def test_next_write_reemits_codepage_change(self, driver: printer.Dummy) -> None:
+        def test_next_write_reemits_codepage_change(
+            self, driver: printer.Dummy
+        ) -> None:
             """After reset_encoding, the next write always emits CODEPAGE_CHANGE.
 
             Without reset, write_with_encoding skips the change command when
@@ -155,7 +157,9 @@ class TestMagicEncode:
             # CODEPAGE_CHANGE (\x1bt) + slot 19 (\x13) must precede the character
             assert driver.output == b"a\x1bt\x13a"
 
-        def test_reselects_encoding_by_slot_not_history(self, driver: printer.Dummy) -> None:
+        def test_reselects_encoding_by_slot_not_history(
+            self, driver: printer.Dummy
+        ) -> None:
             """After reset, find_suitable_encoding ignores used_encodings history.
 
             Without clearing used_encodings, find_suitable_encoding prefers
@@ -200,7 +204,9 @@ class TestMagicEncode:
             driver.set(font="a")
             assert driver.magic.encoding == "CP858"
 
-        def test_set_with_default_no_font_change_keeps_encoding(self, driver: printer.Dummy) -> None:
+        def test_set_with_default_no_font_change_keeps_encoding(
+            self, driver: printer.Dummy
+        ) -> None:
             """set_with_default(align=...) must not reset encoding.
 
             set_with_default() always passes font="a" to set(), but if the
