@@ -1,4 +1,5 @@
 """Helper module for code page handling."""
+
 from .capabilities import CAPABILITIES
 
 
