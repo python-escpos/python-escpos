@@ -6,7 +6,7 @@ sphinx-rtd-theme==3.1.0
 setuptools
 setuptools-scm
 docutils>=0.12
-sphinxcontrib-spelling>=8.0.0
+sphinxcontrib-spelling>=8.0.2
 python-barcode>=0.15.0,<1
 importlib-metadata
 importlib_resources
