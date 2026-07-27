@@ -14,6 +14,7 @@ import subprocess
 import sys
 from typing import Literal, Optional, Union
 
+from ..constants import RT_MASK_OFFLINE, RT_MASK_ONLINE
 from ..escpos import Escpos
 from ..exceptions import DeviceNotFoundError
 
@@ -153,6 +154,20 @@ class LP(Escpos):
                 logging.error("LP printing %s not available", self.printer_name)
                 return
         logging.info("LP printer enabled")
+
+    def _read(self) -> bytes:
+        """Return the byte corresponding to the RT status response.
+
+        Respond on/offline given the accepting state of the print queue.
+        """
+        p_name = subprocess.run(
+            ["lpstat", "-a", self.printer_name],
+            capture_output=True,
+            text=True,
+        )
+        if p_name.returncode > 0 or "Rejecting Jobs" in p_name.stdout:
+            return bytes([RT_MASK_OFFLINE])
+        return bytes([RT_MASK_ONLINE])
 
     def close(self) -> None:
         """Stop the subprocess."""

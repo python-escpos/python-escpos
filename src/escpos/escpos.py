@@ -72,7 +72,7 @@ from .constants import (
     QR_MODEL_2,
     RT_MASK_LOWPAPER,
     RT_MASK_NOPAPER,
-    RT_MASK_ONLINE,
+    RT_MASK_OFFLINE,
     RT_MASK_PAPER,
     RT_STATUS_ONLINE,
     RT_STATUS_PAPER,
@@ -1442,7 +1442,7 @@ class Escpos(object, metaclass=ABCMeta):
         status = self.query_status(RT_STATUS_ONLINE)
         if len(status) == 0:
             return False
-        return not (status[0] & RT_MASK_ONLINE)
+        return not (status[0] & RT_MASK_OFFLINE == RT_MASK_OFFLINE)
 
     def paper_status(self) -> int:  # could be IntEnum
         """Query the paper status of the printer.
