@@ -305,10 +305,7 @@ class Escpos(object, metaclass=ABCMeta):
                 32 if high_density_vertical else 0
             )
             header = (
-                ESC
-                + b"*"
-                + density_byte.to_bytes()
-                + self._int_low_high(im.width, 2)
+                ESC + b"*" + density_byte.to_bytes() + self._int_low_high(im.width, 2)
             )
             outp = [ESC + b"3" + int.to_bytes(16)]  # Adjust line-feed size
             for blob in im.to_column_format(high_density_vertical):
