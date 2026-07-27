@@ -14,7 +14,7 @@ import pytest
 import escpos.exceptions
 
 
-def generate_dummy_config(path, content=None):
+def generate_dummy_config(path, content=None) -> None:
     """Generate a dummy config in path"""
     dummy_config_content = content
     if not content:
@@ -23,7 +23,7 @@ def generate_dummy_config(path, content=None):
     assert path.read_text() == dummy_config_content
 
 
-def simple_printer_test(config):
+def simple_printer_test(config) -> None:
     """Simple test for the dummy printer."""
     p = config.printer()
     p._raw(b"1234")
@@ -31,7 +31,7 @@ def simple_printer_test(config):
     assert p.output == b"1234"
 
 
-def test_config_load_with_invalid_config_yaml(tmp_path):
+def test_config_load_with_invalid_config_yaml(tmp_path) -> None:
     """Test the loading of a config with a invalid config file (yaml issue)."""
     # generate a dummy config
     config_file = tmp_path / "config.yaml"
@@ -45,7 +45,7 @@ def test_config_load_with_invalid_config_yaml(tmp_path):
         c.load(config_path=config_file)
 
 
-def test_config_load_with_invalid_config_content(tmp_path):
+def test_config_load_with_invalid_config_content(tmp_path) -> None:
     """Test the loading of a config with a invalid config file (content issue)."""
     # generate a dummy config
     config_file = tmp_path / "config.yaml"
@@ -61,7 +61,7 @@ def test_config_load_with_invalid_config_content(tmp_path):
         c.load(config_path=config_file)
 
 
-def test_config_load_with_missing_config(tmp_path):
+def test_config_load_with_missing_config(tmp_path) -> None:
     """Test the loading of a config that does not exist."""
     # test the config loading
     from escpos import config
@@ -94,7 +94,7 @@ def test_config_load_from_appdir() -> None:
     simple_printer_test(c)
 
 
-def test_config_load_with_file(tmp_path):
+def test_config_load_with_file(tmp_path) -> None:
     """Test the loading of a config with a config file."""
     # generate a dummy config
     config_file = tmp_path / "config.yaml"
@@ -110,7 +110,7 @@ def test_config_load_with_file(tmp_path):
     simple_printer_test(c)
 
 
-def test_config_load_with_path(tmp_path):
+def test_config_load_with_path(tmp_path) -> None:
     """Test the loading of a config with a config path."""
     # generate a dummy config
     config_file = tmp_path / "config.yaml"
@@ -124,3 +124,49 @@ def test_config_load_with_path(tmp_path):
 
     # test the resulting printer object
     simple_printer_test(c)
+
+
+def test_config_load_yaml_string_with_invalid_config_yaml() -> None:
+    """Invalid YAML string should raise ConfigSyntaxError."""
+    from escpos import config
+
+    c = config.Config()
+    with pytest.raises(escpos.exceptions.ConfigSyntaxError):
+        c.load_yaml_string("}invalid}yaml}")
+
+
+def test_config_load_yaml_string_with_invalid_config_content() -> None:
+    """Invalid content should raise ConfigSyntaxError."""
+    from escpos import config
+
+    c = config.Config()
+    with pytest.raises(escpos.exceptions.ConfigSyntaxError):
+        c.load_yaml_string("printer:\n   type: NoPrinterWithThatName\n")
+
+
+def test_config_load_yaml_string_with_valid_config() -> None:
+    """Valid YAML string should produce a Dummy printer."""
+    from escpos import config
+
+    c = config.Config()
+    c.load_yaml_string("printer:\n   type: Dummy\n")
+    simple_printer_test(c)
+
+
+def test_config_load_with_empty_printer_section() -> None:
+    """Config with an empty printer section should raise ConfigSyntaxError."""
+    from escpos import config
+
+    c = config.Config()
+    with pytest.raises(escpos.exceptions.ConfigSyntaxError):
+        c.load_yaml_string("printer: {}")
+
+
+def test_config_load_yaml_string_without_printer_section() -> None:
+    """Config without a printer section should raise ConfigSectionMissingError."""
+    from escpos import config
+
+    c = config.Config()
+    c.load_yaml_string("{}")
+    with pytest.raises(escpos.exceptions.ConfigSectionMissingError):
+        c.printer()

@@ -21,6 +21,16 @@ always install from PyPi.
 If you use the ``--pre`` parameter for ``pip``, you will get the latest
 pre-release.
 
+.. note::
+
+   The PyPI package name is ``python-escpos``. The unrelated and discontinued
+   package named ``escpos`` uses the same ``escpos`` import name-space and can
+   shadow python-escpos if both are installed in the same environment. If an
+   import such as ``from escpos.printer import Usb`` fails with
+   ``ImportError: cannot import name 'DeviceNotFoundError' from
+   'escpos.exceptions'``, remove the ``escpos`` package and reinstall
+   ``python-escpos`` in a clean environment.
+
 The following installation options exist:
 
  * `all`: install all packages available for this platform
