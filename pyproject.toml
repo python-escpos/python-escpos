@@ -28,15 +28,15 @@ ignore_missing_imports = true
 
 [tool.tox]
 requires = ["tox>=4.11"]
-envlist = ["3.9", "3.10", "3.11", "3.12", "3.13", "docs", "flake8", "mypy"]
+envlist = ["3.10", "3.11", "3.12", "3.13", "3.14", "docs", "flake8", "mypy"]
 
 
 [tool.tox.gh.python]
+"3.14" = ["3.14"]
 "3.13" = ["3.13"]
 "3.12" = ["3.12"]
 "3.11" = ["3.11"]
 "3.10" = ["3.10"]
-"3.9" = ["3.9"]
 
 
 [tool.tox.env_run_base]
