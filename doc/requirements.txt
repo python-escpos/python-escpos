@@ -7,7 +7,7 @@ setuptools
 setuptools-scm
 docutils>=0.22
 sphinxcontrib-spelling>=8.0.2
-python-barcode>=0.16.0,<1
+python-barcode>=0.16.1,<1
 importlib-metadata
 importlib_resources
 sphinxcontrib.datatemplates
