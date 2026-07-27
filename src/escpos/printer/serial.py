@@ -8,7 +8,6 @@
 :license: MIT
 """
 
-
 import functools
 import logging
 from typing import Literal, Optional, Union
