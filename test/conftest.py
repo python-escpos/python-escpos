@@ -47,3 +47,9 @@ def cupsprinter():
 @pytest.fixture
 def devicenotfounderror():
     return DeviceNotFoundError
+
+
+@pytest.fixture(scope="module")
+def temp_path(tmp_path_factory):
+    f = tmp_path_factory.mktemp("tempdir")
+    return f

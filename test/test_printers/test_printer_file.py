@@ -49,14 +49,15 @@ def test_open_not_raise_exception(fileprinter, caplog):
     assert fileprinter.device is None
 
 
-def test_open(fileprinter, caplog, mocker):
+def test_open(fileprinter, caplog, temp_path):
     """
-    GIVEN a file printer object and a mocked connection
+    GIVEN a file printer object bound to an existing file
     WHEN a valid connection to a device is opened
     THEN check the success is logged and the device property is set
     """
-    mocker.patch("builtins.open")
-
+    tmpfile = temp_path / "test_open.bin"
+    tmpfile.touch()
+    fileprinter.devfile = tmpfile
     with caplog.at_level(logging.INFO):
         fileprinter.open()
 
@@ -64,15 +65,17 @@ def test_open(fileprinter, caplog, mocker):
     assert fileprinter.device
 
 
-def test_close_on_reopen(fileprinter, mocker):
+def test_close_on_reopen(fileprinter, mocker, temp_path):
     """
-    GIVEN a file printer object and a mocked connection
+    GIVEN a file printer object bound to an existing file
     WHEN a valid connection to a device is reopened before close
     THEN check the close method is called if _device
     """
-    mocker.patch("builtins.open")
     spy = mocker.spy(fileprinter, "close")
 
+    tmpfile = temp_path / "test_close_on_reopen.bin"
+    tmpfile.touch()
+    fileprinter.devfile = tmpfile
     fileprinter.open()
     assert fileprinter._device
 
@@ -80,15 +83,17 @@ def test_close_on_reopen(fileprinter, mocker):
     spy.assert_called_once_with()
 
 
-def test_flush(fileprinter, mocker):
+def test_flush(fileprinter, mocker, temp_path):
     """
-    GIVEN a file printer object and a mocked connection
+    GIVEN a file printer object bound to an existing file
     WHEN auto_flush is disabled and flush() issued manually
     THEN check the flush method is called only one time.
     """
     spy = mocker.spy(fileprinter, "flush")
-    mocker.patch("builtins.open")
 
+    tmpfile = temp_path / "test_flush.bin"
+    tmpfile.touch()
+    fileprinter.devfile = tmpfile
     fileprinter.auto_flush = False
     fileprinter.open()
     fileprinter.textln("python-escpos")
@@ -97,15 +102,17 @@ def test_flush(fileprinter, mocker):
     assert spy.call_count == 1
 
 
-def test_auto_flush_on_command(fileprinter, mocker):
+def test_auto_flush_on_command(fileprinter, mocker, temp_path):
     """
-    GIVEN a file printer object and a mocked connection
+    GIVEN a file printer object bound to an existing file
     WHEN auto_flush is enabled and flush() not issued manually
     THEN check the flush method is called automatically
     """
     spy = mocker.spy(fileprinter, "flush")
-    mocker.patch("builtins.open")
 
+    tmpfile = temp_path / "test_auto_flush_on_command.bin"
+    tmpfile.touch()
+    fileprinter.devfile = tmpfile
     fileprinter.auto_flush = True
     fileprinter.open()
     fileprinter.textln("python-escpos")
@@ -114,15 +121,17 @@ def test_auto_flush_on_command(fileprinter, mocker):
     assert spy.call_count > 1
 
 
-def test_auto_flush_on_close(fileprinter, mocker, caplog, capsys):
+def test_auto_flush_on_close(fileprinter, mocker, temp_path):
     """
-    GIVEN a file printer object and a mocked connection
+    GIVEN a file printer object bound to an existing file
     WHEN auto_flush is disabled and flush() not issued manually
     THEN check the flush method is called automatically on close
     """
     spy = mocker.spy(fileprinter, "flush")
-    mocker.patch("builtins.open")
 
+    tmpfile = temp_path / "test_autoflush_on_close.bin"
+    tmpfile.touch()
+    fileprinter.devfile = tmpfile
     fileprinter.auto_flush = False
     fileprinter.open()
     fileprinter.textln("python-escpos")
@@ -131,13 +140,35 @@ def test_auto_flush_on_close(fileprinter, mocker, caplog, capsys):
     assert spy.call_count == 1
 
 
-def test_close(fileprinter, caplog, mocker):
+def test_read(fileprinter, caplog, temp_path):
     """
-    GIVEN a file printer object and a mocked connection
+    GIVEN a file printer object bound to an existing file
+    WHEN reading the file buffer even with auto_flush disabled
+    THEN check a warning is logged for auto_flush and the last byte is read and response is correct.
+    """
+    tmpfile = temp_path / "test_read.bin"
+    tmpfile.touch()
+    fileprinter.devfile = tmpfile
+    fileprinter.open()
+    fileprinter._raw(b"\x08\x12")
+    fileprinter.auto_flush = False
+
+    with caplog.at_level(logging.WARNING):
+        resp = fileprinter._read()
+
+    assert "Param 'auto_flush' is disabled" in caplog.text
+    assert resp == b"\x12"
+
+
+def test_close(fileprinter, caplog, temp_path):
+    """
+    GIVEN a file printer object bound to an existing file
     WHEN a connection is opened and closed
     THEN check the closing is logged and the device property is False
     """
-    mocker.patch("builtins.open")
+    tmpfile = temp_path / "test_close.bin"
+    tmpfile.touch()
+    fileprinter.devfile = tmpfile
     fileprinter.open()
 
     with caplog.at_level(logging.INFO):
