@@ -189,7 +189,7 @@ class Escpos(object, metaclass=ABCMeta):
         raise NotImplementedError()
 
     def set_sleep_in_fragment(self, sleep_time_ms: int) -> None:
-        """Configures the currently active sleep time after sending a fragment.
+        """Configure the currently active sleep time after sending a fragment.
 
         If during printing an image an issue like "USBTimeoutError: [Errno 110]
         Operation timed out" occurs, setting this value to roughly 300
