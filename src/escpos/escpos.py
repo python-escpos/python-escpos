@@ -9,8 +9,10 @@ This module contains the abstract base class :py:class:`Escpos`.
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT
 """
+
 from __future__ import annotations
 
+import logging
 import re
 import textwrap
 import time
@@ -94,6 +96,7 @@ from .exceptions import (
     ImageWidthError,
     SetVariableError,
     TabPosError,
+    ValidationError,
 )
 from .magicencode import MagicEncode
 
@@ -1421,7 +1424,7 @@ class Escpos(object, metaclass=ABCMeta):
         else:
             self._raw(PANEL_BUTTON_OFF)
 
-    def query_status(self, mode: bytes) -> bytes:
+    def query_status(self, mode: bytes, raise_not_valid=False) -> bytes:
         """Query the printer for its status.
 
         Returns byte array containing it.
@@ -1429,10 +1432,38 @@ class Escpos(object, metaclass=ABCMeta):
         :param mode: Integer that sets the status mode queried to the printer.
             - RT_STATUS_ONLINE: Printer status.
             - RT_STATUS_PAPER: Paper sensor.
+        :param raise_not_valid: Default False.
+                                False to log error but do not raise exception.
+        :raises: :py:exc:`~escpos.exceptions.ValidationError`
         """
         self._raw(mode)
         status = self._read()
+        is_valid = self._check_valid_response(status)
+        if not is_valid:
+            logging.error("Invalid status data: Couldn't get a valid printer response.")
+            if raise_not_valid:
+                raise ValidationError(
+                    "An attemp to read a response value from the device returned an invalid response"
+                )
+            return b""
         return status
+
+    def _check_valid_response(self, resp: bytes) -> bool:
+        """Check a byte to be a valid ESC/POS response.
+
+        Check if a byte is in the format 0xx1xx10 which is the unique way to
+        distinguish a possible printer's response from other bytes.
+
+        A printer response is obtained after a Real Time Status Query command (DLE EOT).
+
+        :param resp: A byte containing the printer's response.
+        """
+        if len(resp) == 0 or len(resp) > 1:
+            return False
+        # Check bits 7 or 0 are not 1
+        is_valid_7_0 = (resp[0] & 0b10000001) == 0b00000000
+        # Return True if additionally bits 4 and 1 are 1
+        return is_valid_7_0 and (resp[0] & 0b00010010) == 0b00010010
 
     def is_online(self) -> bool:
         """Query the online status of the printer.
@@ -1441,6 +1472,7 @@ class Escpos(object, metaclass=ABCMeta):
         """
         status = self.query_status(RT_STATUS_ONLINE)
         if len(status) == 0:
+            logging.warning("Unknown online status data")
             return False
         return not (status[0] & RT_MASK_OFFLINE == RT_MASK_OFFLINE)
 
@@ -1454,7 +1486,8 @@ class Escpos(object, metaclass=ABCMeta):
         """
         status = self.query_status(RT_STATUS_PAPER)
         if len(status) == 0:
-            return 2
+            logging.warning("Unknown paper status data")
+            return 0
         if status[0] & RT_MASK_NOPAPER == RT_MASK_NOPAPER:
             return 0
         if status[0] & RT_MASK_LOWPAPER == RT_MASK_LOWPAPER:
