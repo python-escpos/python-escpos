@@ -7,8 +7,9 @@
 :license: MIT
 """
 
-import hypothesis.strategies as st
 import unittest.mock as mock
+
+import hypothesis.strategies as st
 from hypothesis import given
 
 from escpos.printer import Dummy
