@@ -7,6 +7,7 @@
 :copyright: Copyright (c) 2016 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
+
 import types
 import typing
 

@@ -1,4 +1,5 @@
 """Example for a flask application."""
+
 from flask import Flask
 
 from escpos.printer import CupsPrinter

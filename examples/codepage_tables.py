@@ -1,6 +1,5 @@
 """Prints code page tables."""
 
-
 import sys
 
 from escpos import printer

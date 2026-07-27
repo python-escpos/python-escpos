@@ -1,5 +1,5 @@
 #  -*- coding: utf-8 -*-
-""" Set of ESC/POS Commands (Constants)
+"""Set of ESC/POS Commands (Constants)
 
 This module contains constants that are described in the Esc/Pos-documentation.
 Since there is no definitive and unified specification for all Esc/Pos-like printers the constants could later be
@@ -10,7 +10,6 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT
 """
-
 
 from typing import Dict
 

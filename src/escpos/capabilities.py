@@ -1,4 +1,5 @@
 """Handler for capabilities data."""
+
 import atexit
 import logging
 import pickle

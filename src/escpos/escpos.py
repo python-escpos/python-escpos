@@ -597,11 +597,9 @@ class Escpos(object, metaclass=ABCMeta):
         if (not capable["hw"] and not capable["sw"]) or (
             not capable["sw"] and force_software
         ):
-            raise BarcodeTypeError(
-                f"""Profile {
+            raise BarcodeTypeError(f"""Profile {
                     self.profile.profile_data['name']
-                } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
-            )
+                } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}""")
 
         bc_alnum = "".join([char for char in bc.upper() if char.isalnum()])
         capable_bc = {

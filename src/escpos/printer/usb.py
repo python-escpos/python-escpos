@@ -7,6 +7,7 @@
 :copyright: Copyright (c) 2012-2023 Bashlinux and python-escpos
 :license: MIT
 """
+
 import functools
 import logging
 from typing import Dict, Literal, Optional, Type, Union
@@ -103,9 +104,9 @@ class Usb(Escpos):
         if idProduct:
             self.usb_args["idProduct"] = idProduct
 
-        self._device: Union[
-            Literal[False], Literal[None], Type[usb.core.Device]
-        ] = False
+        self._device: Union[Literal[False], Literal[None], Type[usb.core.Device]] = (
+            False
+        )
 
     @dependency_usb
     def open(self, raise_not_found: bool = True) -> None:
