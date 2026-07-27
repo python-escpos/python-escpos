@@ -1440,7 +1440,7 @@ class Escpos(object, metaclass=ABCMeta):
         status = self._read()
         is_valid = self._check_valid_response(status)
         if not is_valid:
-            logging.error("Invalid status data: Could't get a valid printer response.")
+            logging.error("Invalid status data: Couldn't get a valid printer response.")
             if raise_not_valid:
                 raise ValidationError(
                     "An attemp to read a response value from the device returned an invalid response"
