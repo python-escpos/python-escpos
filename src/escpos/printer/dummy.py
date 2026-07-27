@@ -7,6 +7,7 @@
 :copyright: Copyright (c) 2012-2023 Bashlinux and python-escpos
 :license: MIT
 """
+
 from typing import List
 
 from ..escpos import Escpos
@@ -51,6 +52,12 @@ class Dummy(Escpos):
         :param msg: arbitrary code to be printed
         """
         self._output_list.append(msg)
+
+    def _read(self) -> bytes:
+        """Read the last byte of data and return it to the caller."""
+        if not self._output_list:
+            return b""
+        return bytes([self._output_list[-1][-1]])
 
     @property
     def output(self) -> bytes:

@@ -7,7 +7,6 @@
 :license: MIT
 """
 
-
 import pytest
 
 import escpos

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" Image tests- Check that images from different source formats are correctly
+"""Image tests- Check that images from different source formats are correctly
 converted to ESC/POS column & raster formats.
 
 :author: `Michael Billington <michael.billington@gmail.com>`_
@@ -7,6 +7,7 @@ converted to ESC/POS column & raster formats.
 :copyright: Copyright (c) 2016 `Michael Billington <michael.billington@gmail.com>`_
 :license: MIT
 """
+
 from typing import List
 
 from escpos.image import EscposImage
@@ -53,7 +54,7 @@ def test_split() -> None:
     test whether the split-function works as expected
     """
     im = EscposImage("test/resources/black_white.png")
-    (upper_part, lower_part) = im.split(1)
+    upper_part, lower_part = im.split(1)
     upper_part = EscposImage(upper_part)
     lower_part = EscposImage(lower_part)
     assert upper_part.width == lower_part.width == 2

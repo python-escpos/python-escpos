@@ -1,4 +1,5 @@
 """Example file for software barcodes."""
+
 from escpos.printer import Usb
 
 # Adapt to your needs

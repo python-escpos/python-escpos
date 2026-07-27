@@ -9,6 +9,8 @@
 """
 
 import logging
+import os
+import time
 from typing import IO, Literal, Optional, Union
 
 from ..escpos import Escpos
@@ -54,6 +56,7 @@ class File(Escpos):
         self.auto_flush = auto_flush
 
         self._device: Union[Literal[False], Literal[None], IO[bytes]] = False
+        self._fd: Optional[int] = None
 
     def open(self, raise_not_found: bool = True) -> None:
         """Open system file.
@@ -70,7 +73,8 @@ class File(Escpos):
 
         try:
             # Open device
-            self.device: Optional[IO[bytes]] = open(self.devfile, "wb")
+            self._fd = os.open(self.devfile, os.O_RDWR)
+            self.device: Optional[IO[bytes]] = os.fdopen(self._fd, "wb")
         except OSError as e:
             # Raise exception or log error and cancel
             self.device = None
@@ -98,6 +102,19 @@ class File(Escpos):
         if self.auto_flush:
             self.flush()
 
+    def _read(self) -> bytes:
+        """Read a data buffer and return it to the caller."""
+        assert self.device and not self.device.closed
+        assert self._fd is not None
+        if not self.auto_flush:
+            logging.warning(
+                "Param 'auto_flush' is disabled. Forcing a flush before attempting to read the data"
+            )
+            self.flush()
+        time.sleep(0.2)  # Give some time to respond
+        os.lseek(self._fd, -1, os.SEEK_END)  # Rewind 1 byte
+        return os.read(self._fd, 16)
+
     def close(self) -> None:
         """Close system file."""
         if not self._device:
@@ -105,5 +122,5 @@ class File(Escpos):
         logging.info("Closing File connection to printer %s", self.devfile)
         if not self.auto_flush:
             self.flush()
-        self._device.close()
+        self._device.close()  # This closes also the file descriptor
         self._device = False

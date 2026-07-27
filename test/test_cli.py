@@ -1,7 +1,4 @@
-"""Test for the CLI
-
-"""
-
+"""Test for the CLI"""
 
 import os
 import shutil

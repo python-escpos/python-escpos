@@ -12,7 +12,6 @@ The code is based on the encoding-code in py-xml-escpos by @fvdsn.
 :license: MIT
 """
 
-
 import re
 from builtins import bytes
 
