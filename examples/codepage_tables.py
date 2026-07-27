@@ -72,5 +72,6 @@ def main() -> None:
 
     print(dummy.output)
 
+
 if __name__ == "__main__":
     main()

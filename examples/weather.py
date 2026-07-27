@@ -125,5 +125,6 @@ def main() -> None:
     printer.cut()
     printer.control("LF")
 
+
 if __name__ == "__main__":
     main()
