@@ -1,4 +1,4 @@
-""" Example for software_columns: Print text arranged into columns."""
+"""Example for software_columns: Print text arranged into columns."""
 
 from escpos import printer
 
