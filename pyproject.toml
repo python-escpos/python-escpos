@@ -74,7 +74,7 @@ deps = [
   "setuptools_scm",
   "python-barcode>=0.16.0,<1",
   "sphinx-argparse",
-  "sphinxcontrib-spelling>=8.0.0",
+  "sphinxcontrib-spelling>=8.0.2",
   "sphinxcontrib.datatemplates",
   "sphinx-autodoc-typehints",
   "sphinx_rtd_theme",
