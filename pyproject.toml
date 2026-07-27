@@ -34,8 +34,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Office/Business :: Financial :: Point-Of-Sale",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -44,11 +43,11 @@ requires-python = ">=3.8"
 dependencies = [
     "argcomplete",
     "importlib_resources",
-    "Pillow>=2.0",
+    "Pillow>=12.0",
     "platformdirs",
-    "python-barcode>=0.15.0,<1",
+    "python-barcode>=0.16.0,<1",
     "PyYAML",
-    "qrcode>=4.0",
+    "qrcode>=8.0",
     "setuptools",
     "six",
 ]
@@ -132,15 +131,15 @@ ignore_missing_imports = true
 
 [tool.tox]
 requires = ["tox>=4.11"]
-envlist = ["3.9", "3.10", "3.11", "3.12", "3.13", "docs", "flake8", "mypy"]
+envlist = ["3.10", "3.11", "3.12", "3.13", "3.14", "docs", "flake8", "mypy"]
 
 
 [tool.tox.gh.python]
+"3.14" = ["3.14"]
 "3.13" = ["3.13"]
 "3.12" = ["3.12"]
 "3.11" = ["3.11"]
 "3.10" = ["3.10"]
-"3.9" = ["3.9"]
 
 
 [tool.tox.env_run_base]
@@ -153,7 +152,7 @@ deps = [
   "pytest-cov",
   "pytest-mock",
   "hypothesis>=6.83",
-  "python-barcode>=0.15.0,<1",
+  "python-barcode>=0.16.0,<1",
 ]
 extras = ["all"]
 commands = [["pytest"]]
@@ -176,9 +175,9 @@ changedir = "doc"
 deps = [
   "sphinx>=7.2.3",
   "setuptools_scm",
-  "python-barcode>=0.15.0,<1",
+  "python-barcode>=0.16.0,<1",
   "sphinx-argparse",
-  "sphinxcontrib-spelling>=8.0.0",
+  "sphinxcontrib-spelling>=8.0.2",
   "sphinxcontrib.datatemplates",
   "sphinx-autodoc-typehints",
   "sphinx_rtd_theme",
@@ -211,7 +210,7 @@ commands = [
 [tool.tox.env.flake8]
 base_python = ["python"]
 deps = ["flake8", "flake8-docstrings"]
-commands = [["flake8"]]
+commands = [["flake8", "--version"], ["flake8"]]
 
 
 [tool.tox.env.mypy]
