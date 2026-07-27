@@ -8,6 +8,10 @@ Changelog
 changes
 ^^^^^^^
 
+- clarify that the ``block_text()`` font parameter is only used for column
+  lookup and does not switch the active printer font
+- document that the package should be installed as ``python-escpos``, not the
+  unrelated ``escpos`` package
 
 contributors
 ^^^^^^^^^^^^

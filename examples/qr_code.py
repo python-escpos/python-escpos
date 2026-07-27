@@ -5,6 +5,7 @@
 # python-escpos = { path = "../", editable = true }
 # ///
 """Print example QR codes."""
+
 import sys
 
 from escpos.printer import Usb

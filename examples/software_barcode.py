@@ -5,6 +5,7 @@
 # python-escpos = { path = "../", editable = true }
 # ///
 """Example file for software barcodes."""
+
 from escpos.printer import Usb
 
 

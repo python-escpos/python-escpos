@@ -17,6 +17,7 @@ Adapted and enhanced for escpos library by MrWunderbar666
 Icons taken from https://adamwhitcroft.com/climacons/
 Check out his github: https://github.com/AdamWhitcroft/climacons
 """
+
 import calendar
 import json
 import time
@@ -123,6 +124,7 @@ def main() -> None:
     forecast(1, data, printer)
     printer.cut()
     printer.control("LF")
+
 
 if __name__ == "__main__":
     main()

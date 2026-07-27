@@ -5,6 +5,7 @@
 # python-escpos = { path = "../", editable = true }
 # ///
 """Prints code page tables."""
+
 import sys
 
 from escpos.constants import (
@@ -70,6 +71,7 @@ def main() -> None:
     dummy.cut()
 
     print(dummy.output)
+
 
 if __name__ == "__main__":
     main()

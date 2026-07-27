@@ -7,7 +7,6 @@
 :license: MIT
 """
 
-
 import hypothesis.strategies as st
 import mock
 from hypothesis import given
