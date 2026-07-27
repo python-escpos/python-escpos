@@ -104,9 +104,9 @@ class Usb(Escpos):
         if idProduct:
             self.usb_args["idProduct"] = idProduct
 
-        self._device: Union[Literal[False], Literal[None], Type[usb.core.Device]] = (
-            False
-        )
+        self._device: Union[
+            Literal[False], Literal[None], Type[usb.core.Device]
+        ] = False
 
     @dependency_usb
     def open(self, raise_not_found: bool = True) -> None:
