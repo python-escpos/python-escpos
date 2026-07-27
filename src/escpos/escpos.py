@@ -138,6 +138,8 @@ class Escpos(object, metaclass=ABCMeta):
         """
         self.profile = get_profile(profile)
         self.magic = MagicEncode(self, **(magic_encode_args or {}))
+        # Track the value of the current font.
+        self._font: Optional[str] = None
 
     def __del__(self):
         """Call self.close upon deletion."""
@@ -916,8 +918,13 @@ class Escpos(object, metaclass=ABCMeta):
         Text has to be encoded in Unicode.
 
         :param txt: text to be printed
-        :param font: font to be used, can be :code:`a` or :code:`b`
-        :param columns: amount of columns
+        :param font: font used to look up the wrapping column count when
+            ``columns`` is not set, can be :code:`a` or :code:`b`. This does
+            not switch the active printer font; call ``set(font=...)`` or
+            ``set_with_default(font=...)`` first when the printed text should
+            use a different font.
+        :param columns: amount of columns. Overrides the profile column count
+            looked up from ``font`` when set.
         :return: None
         """
         col_count = self.profile.get_columns(font) if columns is None else columns
@@ -1130,8 +1137,12 @@ class Escpos(object, metaclass=ABCMeta):
             self._raw(TXT_STYLE["bold"][bold])
         if underline is not None:
             self._raw(TXT_STYLE["underline"][underline])
-        if font is not None:
+        if font is not None and font != self._font:
             self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+            self._font = font
+            # Force a fresh code page selection as required by some printer
+            # models (confirmed: NT-5890K).
+            self.magic.reset_encoding()
         if align is not None:
             self._raw(TXT_STYLE["align"][align])
 
@@ -1338,6 +1349,10 @@ class Escpos(object, metaclass=ABCMeta):
         """
         if hw.upper() == "INIT":
             self._raw(HW_INIT)
+            # ESC @ resets all settings including the active code page.
+            # Force a fresh code page selection.
+            self.magic.reset_encoding()
+            self._font = None
         elif hw.upper() == "SELECT":
             self._raw(HW_SELECT)
         elif hw.upper() == "RESET":
