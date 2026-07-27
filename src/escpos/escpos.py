@@ -1131,7 +1131,7 @@ class Escpos(object, metaclass=ABCMeta):
             self._raw(TXT_STYLE["bold"][bold])
         if underline is not None:
             self._raw(TXT_STYLE["underline"][underline])
-        if font is not None:
+        if font is not None and font != self._font:
             self._raw(SET_FONT(self.profile.get_font(font).to_bytes()))
             self._font = font
             # Force a fresh code page selection as required by some printer
