@@ -8,7 +8,6 @@
 :license: MIT
 """
 
-
 import warnings
 
 import unittest.mock as mock
