@@ -53,6 +53,12 @@ class Dummy(Escpos):
         """
         self._output_list.append(msg)
 
+    def _read(self) -> bytes:
+        """Read the last byte of data and return it to the caller."""
+        if not self._output_list:
+            return b""
+        return bytes([self._output_list[-1][-1]])
+
     @property
     def output(self) -> bytes:
         """Get the data that was sent to this printer."""
