@@ -189,7 +189,7 @@ class Escpos(object, metaclass=ABCMeta):
         raise NotImplementedError()
 
     def set_sleep_in_fragment(self, sleep_time_ms: int) -> None:
-        """Configures the currently active sleep time after sending a fragment.
+        """Configure the currently active sleep time after sending a fragment.
 
         If during printing an image an issue like "USBTimeoutError: [Errno 110]
         Operation timed out" occurs, setting this value to roughly 300
@@ -599,11 +599,9 @@ class Escpos(object, metaclass=ABCMeta):
         if (not capable["hw"] and not capable["sw"]) or (
             not capable["sw"] and force_software
         ):
-            raise BarcodeTypeError(
-                f"""Profile {
-                    self.profile.profile_data['name']
-                } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
-            )
+            raise BarcodeTypeError(f"""Profile {
+                self.profile.profile_data['name']
+            } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}""")
 
         bc_alnum = "".join([char for char in bc.upper() if char.isalnum()])
         capable_bc = {

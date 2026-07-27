@@ -104,9 +104,9 @@ class CupsPrinter(Escpos):
         self.job_name = ""
         self.pending_job = False
 
-        self._device: Union[
-            Literal[False], Literal[None], Type[cups.Connection]
-        ] = False
+        self._device: Union[Literal[False], Literal[None], Type[cups.Connection]] = (
+            False
+        )
 
     @property
     def printers(self) -> dict:

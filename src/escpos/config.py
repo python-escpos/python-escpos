@@ -79,7 +79,6 @@ class Config:
         :param config_path: An optional file path, file handle, or byte string
             for the configuration file.
         """
-
         if not config_path:
             config_path = os.path.join(
                 platformdirs.user_config_dir(self._app_name), self._config_file
