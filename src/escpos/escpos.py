@@ -139,7 +139,7 @@ class Escpos(object, metaclass=ABCMeta):
         self.profile = get_profile(profile)
         self.magic = MagicEncode(self, **(magic_encode_args or {}))
         # Track the value of the current font.
-        self._font = None
+        self._font: Optional[str] = None
 
     def __del__(self):
         """Call self.close upon deletion."""
