@@ -1,6 +1,6 @@
 pyusb
 Pillow>=12.3.0
-qrcode>=8.0
+qrcode>=8.2
 pyserial
 sphinx-rtd-theme==3.1.0
 setuptools
