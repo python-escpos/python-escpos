@@ -7,7 +7,6 @@
 :license: MIT
 """
 
-
 import escpos.escpos as escpos
 import escpos.printer as printer
 

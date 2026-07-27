@@ -6,6 +6,7 @@
 :copyright: Copyright (c) 2023 `python-escpos <https://github.com/python-escpos>`_
 :license: MIT
 """
+
 import pathlib
 
 import platformdirs
