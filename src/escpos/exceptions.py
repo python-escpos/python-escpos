@@ -16,6 +16,7 @@ Result/Exit codes:
     - `90` = Device not found :py:exc:`~escpos.exceptions.DeviceNotFoundError`
     - `91` = USB device not found :py:exc:`~escpos.exceptions.USBNotFoundError`
     - `100` = Set variable out of range :py:exc:`~escpos.exceptions.SetVariableError`
+    - `110` = Invalid response format :py:exc:`~escpos.exceptions.ValidationError`
     - `200` = Configuration not found :py:exc:`~escpos.exceptions.ConfigNotFoundError`
     - `210` = Configuration syntax error :py:exc:`~escpos.exceptions.ConfigSyntaxError`
     - `220` = Configuration section not found :py:exc:`~escpos.exceptions.ConfigSectionMissingError`
@@ -342,6 +343,30 @@ class SetVariableError(Error):
     def __str__(self) -> str:
         """Return string representation of SetVariableError."""
         return f"Set variable out of range ({self.msg})"
+
+
+class ValidationError(Error):
+    """Invalid response format.
+
+    An error occurred while validating data.
+    The return code for this exception is `110`.
+
+    inheritance:
+
+    .. inheritance-diagram:: escpos.exceptions.ValidationError
+        :parts: 1
+
+    """
+
+    def __init__(self, msg: str = "") -> None:
+        """Initialize ValidationError object."""
+        Error.__init__(self, msg)
+        self.msg = msg
+        self.resultcode = 110
+
+    def __str__(self) -> str:
+        """Return string representation of ValidationError."""
+        return f"Invalid data ({self.msg})"
 
 
 # Configuration errors

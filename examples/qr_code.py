@@ -1,4 +1,5 @@
 """Print example QR codes."""
+
 import sys
 
 from escpos.printer import Usb

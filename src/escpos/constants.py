@@ -1,5 +1,5 @@
 #  -*- coding: utf-8 -*-
-""" Set of ESC/POS Commands (Constants)
+"""Set of ESC/POS Commands (Constants)
 
 This module contains constants that are described in the Esc/Pos-documentation.
 Since there is no definitive and unified specification for all Esc/Pos-like printers the constants could later be
@@ -10,7 +10,6 @@ moved to `capabilities` as in `escpos-php by @mike42 <https://github.com/mike42/
 :copyright: Copyright (c) 2012-2017 Bashlinux and python-escpos
 :license: MIT
 """
-
 
 from typing import Dict
 
@@ -299,7 +298,8 @@ S_RASTER_Q: bytes = _PRINT_RASTER_IMG(b"\x03")  # Set raster image quadruple
 RT_STATUS: bytes = DLE + EOT
 RT_STATUS_ONLINE: bytes = RT_STATUS + b"\x01"
 RT_STATUS_PAPER: bytes = RT_STATUS + b"\x04"
-RT_MASK_ONLINE: int = 8
+RT_MASK_ONLINE: int = 18
+RT_MASK_OFFLINE: int = 26
 RT_MASK_PAPER: int = 18
 RT_MASK_LOWPAPER: int = 30
 RT_MASK_NOPAPER: int = 114

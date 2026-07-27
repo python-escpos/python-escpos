@@ -7,6 +7,7 @@
 :copyright: Copyright (c) 2012-2023 Bashlinux and python-escpos
 :license: MIT
 """
+
 import functools
 import logging
 from typing import Dict, Literal, Optional, Type, Union

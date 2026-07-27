@@ -154,6 +154,36 @@ def test_auto_flush_on_close(lpprinter, mocker, caplog, capsys):
     assert spy.call_count == 1
 
 
+@pytest.mark.parametrize(
+    "stdout,returncode,expected",
+    [
+        pytest.param("A success message...", 0, bytes([18])),
+        pytest.param("... Rejecting Jobs", 0, bytes([26])),
+        pytest.param("An error message...", 1, bytes([26])),
+    ],
+)
+def test_read(lpprinter, mocker, stdout, returncode, expected) -> None:
+    """
+    GIVEN a lp printer object and a mocked connection
+    WHEN querying for printer status
+    THEN check the return value is the expected
+    """
+    import subprocess
+
+    mocker.patch("escpos.printer.LP.printers", new={"test_printer": "Test"})
+    mocker.patch.object(
+        subprocess,
+        "run",
+        return_value=subprocess.CompletedProcess(
+            [], returncode=returncode, stdout=stdout
+        ),
+    )
+
+    lpprinter.printer_name = "test_printer"
+
+    assert lpprinter._read() == expected
+
+
 def test_close(lpprinter, caplog, mocker):
     """
     GIVEN a lp printer object and a mocked connection
