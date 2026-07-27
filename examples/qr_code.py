@@ -23,5 +23,6 @@ def main() -> None:
     p = Usb(0x0416, 0x5011, profile="POS-5890")
     p.qr(content, center=True)
 
+
 if __name__ == "__main__":
     main()
