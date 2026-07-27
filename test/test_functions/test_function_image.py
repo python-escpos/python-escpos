@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-""" Image function tests- Check that image print commands are sent correctly.
+"""Image function tests- Check that image print commands are sent correctly.
 
 :author: `Michael Billington <michael.billington@gmail.com>`_
 :organization: `python-escpos <https://github.com/python-escpos>`_
 :copyright: Copyright (c) 2016 `Michael Billington <michael.billington@gmail.com>`_
 :license: MIT
 """
-
 
 import pytest
 from PIL import Image

@@ -1628,7 +1628,10 @@ class EscposIO:
         return self
 
     def __exit__(
-        self, type: type[BaseException], value: BaseException, traceback: TracebackType
+        self,
+        type: Optional[type[BaseException]],
+        value: Optional[BaseException],
+        traceback: Optional[TracebackType],
     ) -> None:
         """Cut and close if configured.
 
