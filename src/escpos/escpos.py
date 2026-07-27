@@ -1133,6 +1133,10 @@ class Escpos(object, metaclass=ABCMeta):
             self._raw(TXT_STYLE["underline"][underline])
         if font is not None:
             self._raw(SET_FONT(self.profile.get_font(font).to_bytes()))
+            self._font = font
+            # Force a fresh code page selection as required by some printer
+            # models (confirmed: NT-5890K).
+            self.magic.reset_encoding()
         if align is not None:
             self._raw(TXT_STYLE["align"][align])
 
