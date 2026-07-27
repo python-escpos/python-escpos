@@ -107,7 +107,7 @@ commands = [
 [tool.tox.env.flake8]
 base_python = ["python"]
 deps = ["flake8", "flake8-docstrings"]
-commands = [["flake8"]]
+commands = [["flake8", "--version"], ["flake8"]]
 
 
 [tool.tox.env.mypy]
