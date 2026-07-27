@@ -243,7 +243,7 @@ class MagicEncode:
         """Invalidate cached encoding state after a printer-side code page reset.
 
         Some printers silently reset their active code page after certain
-        commands (e.g. image rendering, font switches, hardware init).
+        commands (e.g. image rendering, font switches, hardware initialization).
         Calling this method discards both the cached current encoding and the
         set of previously-used encodings so that the next write() call
         performs a fresh code page selection and re-emits CODEPAGE_CHANGE.
