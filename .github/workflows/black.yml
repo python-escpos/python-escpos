@@ -9,5 +9,5 @@ jobs:
       - uses: actions/checkout@v6
       - uses: psf/black@stable
         with:
-          version: "26.5.1"
+          version: "23.12.0"
 
