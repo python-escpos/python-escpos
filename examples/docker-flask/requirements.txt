@@ -10,7 +10,7 @@ Pillow==12.3.0
 pycups==2.0.1
 pypng==0.20220715.0
 pyserial==3.5
-python-barcode==0.14.0
+python-barcode==0.16.1
 python-escpos==3.0a9
 pyusb==1.2.1
 PyYAML==6.0

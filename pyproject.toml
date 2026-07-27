@@ -49,7 +49,7 @@ deps = [
   "pytest-cov",
   "pytest-mock",
   "hypothesis>=6.83",
-  "python-barcode>=0.15.0,<1",
+  "python-barcode>=0.16.0,<1",
 ]
 extras = ["all"]
 commands = [["pytest"]]
@@ -72,7 +72,7 @@ changedir = "doc"
 deps = [
   "sphinx>=7.2.3",
   "setuptools_scm",
-  "python-barcode>=0.15.0,<1",
+  "python-barcode>=0.16.0,<1",
   "sphinx-argparse",
   "sphinxcontrib-spelling>=8.0.0",
   "sphinxcontrib.datatemplates",
