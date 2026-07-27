@@ -137,6 +137,8 @@ class Escpos(object, metaclass=ABCMeta):
         """
         self.profile = get_profile(profile)
         self.magic = MagicEncode(self, **(magic_encode_args or {}))
+        # Track the value of the current font.
+        self._font: Optional[str] = None
 
     def __del__(self):
         """Call self.close upon deletion."""
@@ -186,7 +188,7 @@ class Escpos(object, metaclass=ABCMeta):
         raise NotImplementedError()
 
     def set_sleep_in_fragment(self, sleep_time_ms: int) -> None:
-        """Configures the currently active sleep time after sending a fragment.
+        """Configure the currently active sleep time after sending a fragment.
 
         If during printing an image an issue like "USBTimeoutError: [Errno 110]
         Operation timed out" occurs, setting this value to roughly 300
@@ -593,11 +595,9 @@ class Escpos(object, metaclass=ABCMeta):
         if (not capable["hw"] and not capable["sw"]) or (
             not capable["sw"] and force_software
         ):
-            raise BarcodeTypeError(
-                f"""Profile {
-                    self.profile.profile_data['name']
-                } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}"""
-            )
+            raise BarcodeTypeError(f"""Profile {
+                self.profile.profile_data['name']
+            } - hw barcode: {capable['hw']}, sw barcode: {capable['sw']}""")
 
         bc_alnum = "".join([char for char in bc.upper() if char.isalnum()])
         capable_bc = {
@@ -912,8 +912,13 @@ class Escpos(object, metaclass=ABCMeta):
         Text has to be encoded in Unicode.
 
         :param txt: text to be printed
-        :param font: font to be used, can be :code:`a` or :code:`b`
-        :param columns: amount of columns
+        :param font: font used to look up the wrapping column count when
+            ``columns`` is not set, can be :code:`a` or :code:`b`. This does
+            not switch the active printer font; call ``set(font=...)`` or
+            ``set_with_default(font=...)`` first when the printed text should
+            use a different font.
+        :param columns: amount of columns. Overrides the profile column count
+            looked up from ``font`` when set.
         :return: None
         """
         col_count = self.profile.get_columns(font) if columns is None else columns
@@ -1334,6 +1339,10 @@ class Escpos(object, metaclass=ABCMeta):
         """
         if hw.upper() == "INIT":
             self._raw(HW_INIT)
+            # ESC @ resets all settings including the active code page.
+            # Force a fresh code page selection.
+            self.magic.reset_encoding()
+            self._font = None
         elif hw.upper() == "SELECT":
             self._raw(HW_SELECT)
         elif hw.upper() == "RESET":
