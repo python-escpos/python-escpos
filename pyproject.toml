@@ -44,7 +44,6 @@ deps = [
   "jaconv",
   "coverage",
   "scripttest",
-  "mock",
   "pytest>=7.4",
   "pytest-cov",
   "pytest-mock",
@@ -114,8 +113,6 @@ commands = [["flake8", "--version"], ["flake8"]]
 base_python = ["python"]
 deps = [
   "mypy",
-  "types-six",
-  "types-mock",
   "types-PyYAML",
   "types-Pillow",
   "types-pyserial",
