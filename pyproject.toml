@@ -1,11 +1,3 @@
-[tool.black]
-extend-exclude = 'capabilities-data'
-
-
-[tool.isort]
-profile = "black"
-
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "--doctest-modules --cov escpos --cov-report=xml"
@@ -26,9 +18,41 @@ module = [
 ignore_missing_imports = true
 
 
+[tool.ruff]
+extend-exclude = [
+    ".github",
+    "__pycache__",
+    "doc/conf.py",
+    "build",
+    "capabilities-data",
+    "test",
+    "src/escpos/constants.py",
+]
+line-length = 120
+show-fixes = true
+src = ["."]
+target-version = "py38"
+
+
+[tool.ruff.format]
+line-ending = "lf"
+
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "D", "I"]
+
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+
 [tool.tox]
 requires = ["tox>=4.11"]
-envlist = ["3.10", "3.11", "3.12", "3.13", "3.14", "docs", "flake8", "mypy"]
+envlist = ["3.10", "3.11", "3.12", "3.13", "3.14", "docs", "style", "mypy"]
 
 
 [tool.tox.gh.python]
@@ -104,10 +128,10 @@ commands = [
 ]
 
 
-[tool.tox.env.flake8]
+[tool.tox.env.style]
 base_python = ["python"]
-deps = ["flake8", "flake8-docstrings"]
-commands = [["flake8", "--version"], ["flake8"]]
+deps = ["ruff"]
+commands = [["ruff", "check", "."], ["ruff", "format"]]
 
 
 [tool.tox.env.mypy]
