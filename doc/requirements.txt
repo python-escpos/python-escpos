@@ -5,7 +5,7 @@ pyserial
 sphinx-rtd-theme==3.1.0
 setuptools
 setuptools-scm
-docutils>=0.22
+docutils>=0.23
 sphinxcontrib-spelling>=8.0.2
 python-barcode>=0.16.0,<1
 importlib-metadata
