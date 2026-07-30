@@ -66,7 +66,7 @@ class CupsPrinter(Escpos):
 
         Requires ``pycups`` which in turn needs the cups development library package:
             - Ubuntu/Debian: ``libcups2-dev``
-            - OpenSuse/Fedora: ``cups-devel``
+            - openSUSE/Fedora: ``cups-devel``
 
     inheritance:
 
