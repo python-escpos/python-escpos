@@ -52,7 +52,7 @@ deps = [
   "python-barcode>=0.16.0,<1",
 ]
 extras = ["all"]
-commands = [["pytest"]]
+commands = [["pytest", { replace = "posargs", extend = true }]]
 passenv = [
   "ESCPOS_CAPABILITIES_PICKLE_DIR",
   "ESCPOS_CAPABILITIES_FILE",
