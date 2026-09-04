@@ -79,9 +79,7 @@ class File(Escpos):
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
-                raise DeviceNotFoundError(
-                    f"Could not open the specified file {self.devfile}:\n{e}"
-                )
+                raise DeviceNotFoundError(f"Could not open the specified file {self.devfile}:\n{e}")
             else:
                 logging.error("File printer %s not found", self.devfile)
                 return
@@ -107,9 +105,7 @@ class File(Escpos):
         assert self.device and not self.device.closed
         assert self._fd is not None
         if not self.auto_flush:
-            logging.warning(
-                "Param 'auto_flush' is disabled. Forcing a flush before attempting to read the data"
-            )
+            logging.warning("Param 'auto_flush' is disabled. Forcing a flush before attempting to read the data")
             self.flush()
         time.sleep(0.2)  # Give some time to respond
         os.lseek(self._fd, -1, os.SEEK_END)  # Rewind 1 byte

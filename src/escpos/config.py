@@ -67,9 +67,7 @@ class Config:
         }
         self._printer_name = class_names.get(printer_name.lower(), printer_name)
         if not self._printer_name or not hasattr(printer, self._printer_name):
-            raise exceptions.ConfigSyntaxError(
-                f'Printer type "{self._printer_name}" is invalid'
-            )
+            raise exceptions.ConfigSyntaxError(f'Printer type "{self._printer_name}" is invalid')
 
         self._has_loaded = True
 
@@ -80,9 +78,7 @@ class Config:
             for the configuration file.
         """
         if not config_path:
-            config_path = os.path.join(
-                platformdirs.user_config_dir(self._app_name), self._config_file
-            )
+            config_path = os.path.join(platformdirs.user_config_dir(self._app_name), self._config_file)
         if isinstance(config_path, pathlib.Path):
             # store string if posixpath
             config_path = config_path.as_posix()
@@ -94,9 +90,7 @@ class Config:
             with open(config_path, "rb") as config_file:
                 self.load_yaml_string(config_file)
         except EnvironmentError:
-            raise exceptions.ConfigNotFoundError(
-                f"Couldn't read config at {config_path}"
-            )
+            raise exceptions.ConfigNotFoundError(f"Couldn't read config at {config_path}")
 
     def load_yaml_string(self, yaml_string) -> None:
         """Load and parse a yaml configuration string or file-like object.

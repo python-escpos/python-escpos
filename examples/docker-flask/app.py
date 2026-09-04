@@ -1,8 +1,7 @@
 """Example for a flask application."""
 
-from flask import Flask
-
 from escpos.printer import CupsPrinter
+from flask import Flask
 
 # Initialize Flask app
 app = Flask(__name__)

@@ -75,9 +75,7 @@ if full_load:
                 },
             }
             print(
-                "Created a minimal backup profile, "
-                "many functionalities of the library will not work:\n"
-                f"{CAPABILITIES}"
+                f"Created a minimal backup profile, many functionalities of the library will not work:\n{CAPABILITIES}"
             )
         pickle.dump(CAPABILITIES, pp, protocol=2)
 
@@ -112,7 +110,7 @@ class BaseProfile:
         Makes sure that the requested `font` is valid.
         """
         font = {"a": 0, "b": 1}.get(font, font)
-        if not str(font) in self.fonts:
+        if str(font) not in self.fonts:
             raise NotSupported(f'"{font}" is not a valid font in the current profile')
         return font
 
