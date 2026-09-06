@@ -91,9 +91,10 @@ class Win32Raw(Escpos):
     @property
     def printers(self) -> dict:
         """Available Windows printers."""
+        flags = win32print.PRINTER_ENUM_NAME | win32print.PRINTER_ENUM_CONNECTIONS
         return {
             printer["pPrinterName"]: printer
-            for printer in win32print.EnumPrinters(win32print.PRINTER_ENUM_NAME, "", 4)
+            for printer in win32print.EnumPrinters(flags, None, 4)
         }
 
     def open(
