@@ -24,7 +24,6 @@ from typing import Any, Literal, Optional, Union
 
 import barcode
 import qrcode
-import six
 from barcode.writer import ImageWriter
 
 from escpos.capabilities import get_profile
@@ -308,12 +307,9 @@ class Escpos(object, metaclass=ABCMeta):
                 32 if high_density_vertical else 0
             )
             header = (
-                ESC
-                + b"*"
-                + six.int2byte(density_byte)
-                + self._int_low_high(im.width, 2)
+                ESC + b"*" + density_byte.to_bytes() + self._int_low_high(im.width, 2)
             )
-            outp = [ESC + b"3" + six.int2byte(16)]  # Adjust line-feed size
+            outp = [ESC + b"3" + int.to_bytes(16)]  # Adjust line-feed size
             for blob in im.to_column_format(high_density_vertical):
                 outp.append(header + blob + b"\n")
             outp.append(ESC + b"2")  # Reset line-feed size
@@ -417,15 +413,15 @@ class Escpos(object, metaclass=ABCMeta):
         cn = b"1"  # Code type for QR code
         # Select model: 1, 2 or micro.
         self._send_2d_code_data(
-            six.int2byte(65), cn, six.int2byte(48 + model) + six.int2byte(0)
+            int.to_bytes(65), cn, (48 + model).to_bytes() + int.to_bytes(0)
         )
         # Set dot size.
-        self._send_2d_code_data(six.int2byte(67), cn, six.int2byte(size))
+        self._send_2d_code_data(int.to_bytes(67), cn, size.to_bytes())
         # Set error correction level: L, M, Q, or H
-        self._send_2d_code_data(six.int2byte(69), cn, six.int2byte(48 + ec))
+        self._send_2d_code_data(int.to_bytes(69), cn, (48 + ec).to_bytes())
         # Send content & print
-        self._send_2d_code_data(six.int2byte(80), cn, content.encode("utf-8"), b"0")
-        self._send_2d_code_data(six.int2byte(81), cn, b"", b"0")
+        self._send_2d_code_data(int.to_bytes(80), cn, content.encode("utf-8"), b"0")
+        self._send_2d_code_data(int.to_bytes(81), cn, b"", b"0")
 
     def _send_2d_code_data(self, fn, cn, data, m=b"") -> None:
         """Calculate and send correct data length for`GS ( k`.
@@ -456,7 +452,7 @@ class Escpos(object, metaclass=ABCMeta):
             )
         outp = b""
         for _ in range(0, out_bytes):
-            outp += six.int2byte(inp_number % 256)
+            outp += (inp_number % 256).to_bytes()
             inp_number //= 256
         return outp
 
@@ -755,12 +751,12 @@ class Escpos(object, metaclass=ABCMeta):
             self._raw(TXT_STYLE["align"]["center"])
         # Height
         if 1 <= height <= 255:
-            self._raw(BARCODE_HEIGHT + six.int2byte(height))
+            self._raw(BARCODE_HEIGHT + height.to_bytes())
         else:
             raise BarcodeSizeError(f"height = {height}")
         # Width
         if 2 <= width <= 6:
-            self._raw(BARCODE_WIDTH + six.int2byte(width))
+            self._raw(BARCODE_WIDTH + width.to_bytes())
         else:
             raise BarcodeSizeError(f"width = {width}")
         # Font
@@ -781,7 +777,7 @@ class Escpos(object, metaclass=ABCMeta):
         self._raw(bc_types[bc.upper()])
 
         if function_type.upper() == "B":
-            self._raw(six.int2byte(len(code)))
+            self._raw(len(code).to_bytes())
 
         # Print Code
         if code:
@@ -1110,7 +1106,7 @@ class Escpos(object, metaclass=ABCMeta):
                 and 1 <= height <= 8
             ):
                 size_byte = TXT_STYLE["width"][width] + TXT_STYLE["height"][height]
-                self._raw(TXT_SIZE + six.int2byte(size_byte))
+                self._raw(TXT_SIZE + size_byte.to_bytes())
             else:
                 raise SetVariableError()
         elif normal_textsize or double_height or double_width:
@@ -1136,7 +1132,7 @@ class Escpos(object, metaclass=ABCMeta):
         if underline is not None:
             self._raw(TXT_STYLE["underline"][underline])
         if font is not None and font != self._font:
-            self._raw(SET_FONT(six.int2byte(self.profile.get_font(font))))
+            self._raw(SET_FONT(self.profile.get_font(font).to_bytes()))
             self._font = font
             # Force a fresh code page selection as required by some printer
             # models (confirmed: NT-5890K).
@@ -1246,7 +1242,7 @@ class Escpos(object, metaclass=ABCMeta):
                 "spacing must be a int between 0 and 85 when divisor is 60"
             )
 
-        self._raw(LINESPACING_FUNCS[divisor] + six.int2byte(spacing))
+        self._raw(LINESPACING_FUNCS[divisor] + spacing.to_bytes())
 
     def cut(self, mode: str = "FULL", feed: bool = True) -> None:
         """Cut paper.
@@ -1260,7 +1256,7 @@ class Escpos(object, metaclass=ABCMeta):
         :raises ValueError: if mode not in ('FULL', 'PART')
         """
         if not feed:
-            self._raw(GS + b"V" + six.int2byte(66) + b"\x00")
+            self._raw(GS + b"V" + int.to_bytes(66) + b"\x00")
             return
 
         self.print_and_feed(6)
@@ -1368,7 +1364,7 @@ class Escpos(object, metaclass=ABCMeta):
         """
         if 0 <= n <= 255:
             # ESC d n
-            self._raw(ESC + b"d" + six.int2byte(n))
+            self._raw(ESC + b"d" + n.to_bytes())
         else:
             raise ValueError("n must be betwen 0 and 255")
 
@@ -1403,7 +1399,7 @@ class Escpos(object, metaclass=ABCMeta):
                 # Set tab positions
                 self._raw(CTL_SET_HT)
                 for iterator in range(1, count):
-                    self._raw(six.int2byte(iterator * tab_size))
+                    self._raw((iterator * tab_size).to_bytes())
                 self._raw(NUL)
         elif ctl.upper() == "VT":
             self._raw(CTL_VT)
@@ -1560,7 +1556,7 @@ class Escpos(object, metaclass=ABCMeta):
         if not 1 <= duration <= 9:
             raise ValueError("duration must be between 1 and 9")
 
-        self._raw(BUZZER + six.int2byte(times) + six.int2byte(duration))
+        self._raw(BUZZER + times.to_bytes() + duration.to_bytes())
 
 
 class EscposIO:
