@@ -31,6 +31,12 @@ class TestEncoder:
         assert Encoder({"CP437": 1}).can_encode("CP437", "á")
         assert not Encoder({"foobar": 1}).can_encode("foobar", "a")
 
+    def test_encode_cyrillic_decimal_i(self) -> None:
+        assert Encoder({"CP1251": 1}).can_encode("CP1251", "і")
+        assert Encoder({"CP1125": 1}).can_encode("CP1125", "і")
+        assert Encoder({"CP855": 1}).can_encode("CP855", "і")
+        assert not Encoder({"CP866": 1}).can_encode("CP866", "і")
+
     def test_find_suitable_encoding(self) -> None:
         assert not Encoder({"CP437": 1}).find_suitable_encoding("€")
         assert Encoder({"CP858": 1}).find_suitable_encoding("€") == "CP858"
@@ -102,6 +108,50 @@ class TestMagicEncode:
             )
             encode.write("€ ist teuro.")
             assert driver.output == b"_ ist teuro."
+
+        def test_cyrillic_decimal_i_cp855(self, driver: printer.Dummy) -> None:
+            encode = MagicEncode(
+                driver,
+                encoder=Encoder({"CP855": 2}),
+            )
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x02\x8a is like i."
+
+        def test_cyrillic_decimal_i_cp1251(self, driver: printer.Dummy) -> None:
+            encode = MagicEncode(
+                driver,
+                encoder=Encoder({"CP1251": 1}),
+            )
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x01\xb3 is like i."
+
+        def test_cyrillic_decimal_i_two_slots(self, driver: printer.Dummy) -> None:
+            encode = MagicEncode(
+                driver,
+                encoder=Encoder({"CP1251": 1}),
+            )
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x01\xb3 is like i."
+            encode = MagicEncode(
+                driver,
+                encoder=Encoder({"CP855": 2}),
+            )
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x02\x8a is like i."
+
+        def test_cyrillic_decimal_i_same_slot(self, driver: printer.Dummy) -> None:
+            encode = MagicEncode(
+                driver,
+                encoder=Encoder({"CP1251": 2}),
+            )
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x02\xb3 is like i."
+            encode = MagicEncode(
+                driver,
+                encoder=Encoder({"CP855": 2}),
+            )
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x02\x8a is like i."
 
     class TestForceEncoding:
         def test(self, driver: printer.Dummy) -> None:
