@@ -6,7 +6,7 @@
     "**/node_modules/*/**": true,
     "**/.eggs/**": true,
     "**/.hypothesis/**": true,
-    "**/.tox/**": true,
+    "**/.tox/**": true
   },
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
@@ -15,5 +15,5 @@
     "source.organizeImports": "explicit"
   },
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true,
+  "python.testing.pytestEnabled": true
 }

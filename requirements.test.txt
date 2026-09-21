@@ -1,0 +1,10 @@
+jaconv
+tox>=4.11
+pytest>=7.4
+pytest-cov
+pytest-mock
+scripttest
+mock
+hypothesis>=6.83
+flake8
+sphinxcontrib-spelling>=8.0.0
