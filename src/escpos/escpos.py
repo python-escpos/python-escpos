@@ -79,6 +79,7 @@ from .constants import (
     RT_STATUS_ONLINE,
     RT_STATUS_PAPER,
     SET_FONT,
+    SET_PRINT_SPEED,
     SHEET_ROLL_MODE,
     SHEET_SLIP_MODE,
     SLIP_EJECT,
@@ -1561,6 +1562,19 @@ class Escpos(object, metaclass=ABCMeta):
             raise ValueError("duration must be between 1 and 9")
 
         self._raw(BUZZER + six.int2byte(times) + six.int2byte(duration))
+
+    def set_print_speed(self, speed: int) -> None:
+        """Set the print speed of the printer.
+
+        Please note that accepted speed values vary between printer models.
+
+        :param speed: Integer between 1 and 17, indicates the print speed.
+        :returns: None
+        """
+        if not 1 <= speed <= 17:
+            raise ValueError("speed must be between 1 and 17")
+
+        self._raw(SET_PRINT_SPEED + six.int2byte(speed))
 
 
 class EscposIO:
