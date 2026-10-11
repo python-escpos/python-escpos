@@ -1,5 +1,9 @@
-#!/usr/bin/env python3
-
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["python-escpos"]
+# [tool.uv.sources]
+# python-escpos = { path = "../", editable = true }
+# ///
 """Print a block of text with different column widths."""
 
 from escpos import printer
