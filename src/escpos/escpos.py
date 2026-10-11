@@ -263,8 +263,9 @@ class Escpos(object, metaclass=ABCMeta):
 
             if center:
                 im.center(max_width)
-        except (KeyError, ValueError):
-            # If the printer's pixel width is not known, print anyways...
+        except (KeyError, TypeError, ValueError):
+            # If the printer's pixel width is missing, None, or cannot be
+            # converted to an int, print anyways...
             if center:
                 logger.warning(
                     "The media.width.pixel field of the printer profile is not set. "
