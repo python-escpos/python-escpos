@@ -257,8 +257,9 @@ class Escpos(object, metaclass=ABCMeta):
         except KeyError:
             # If the printer's pixel width is not known, print anyways...
             pass
-        except ValueError:
-            # If the max_width cannot be converted to an int, print anyways...
+        except (TypeError, ValueError):
+            # If the width is None, malformed, or cannot be converted to
+            # an int, print anyways...
             pass
 
         if im.height > fragment_height:
