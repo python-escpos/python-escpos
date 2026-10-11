@@ -186,3 +186,55 @@ def test_center_image(dummy_with_width: printer.Dummy) -> None:
         instance.image(Image.new("RGB", (385, 200)), center=True)
 
     instance.image(Image.new("RGB", (384, 200)), center=True)
+
+
+def test_centered_image_split_preserves_centering() -> None:
+    """Centering must survive fragmentation (issue #776).
+
+    A tall centered image split into fragments must print identically to
+    the same image pre-centered to the full media width.
+    """
+    black = Image.new("RGB", (10, 200), (0, 0, 0))
+    reference = Image.new("RGB", (20, 200), (255, 255, 255))
+    reference.paste(black, (5, 0))
+
+    centered = printer.Dummy()
+    centered.profile.profile_data = {"media": {"width": {"pixels": 20}}}
+    centered.image(black, center=True, fragment_height=100)
+
+    plain = printer.Dummy()
+    plain.profile.profile_data = {"media": {"width": {"pixels": 20}}}
+    plain.image(reference, fragment_height=100)
+
+    assert centered.output == plain.output
+
+
+@pytest.mark.parametrize("impl", ["bitImageRaster", "graphics", "bitImageColumn"])
+@pytest.mark.parametrize("fragment_height", [100, 90])
+def test_centered_split_matches_reference(impl: str, fragment_height: int) -> None:
+    """Fragmented centering must match the reference for every renderer,
+    including uneven splits (issue #776)."""
+    black = Image.new("RGB", (10, 200), (0, 0, 0))
+    reference = Image.new("RGB", (20, 200), (255, 255, 255))
+    reference.paste(black, (5, 0))
+
+    centered = printer.Dummy()
+    centered.profile.profile_data = {"media": {"width": {"pixels": 20}}}
+    centered.image(black, center=True, fragment_height=fragment_height, impl=impl)
+
+    plain = printer.Dummy()
+    plain.profile.profile_data = {"media": {"width": {"pixels": 20}}}
+    plain.image(reference, fragment_height=fragment_height, impl=impl)
+
+    assert centered.output != b""
+    assert centered.output == plain.output
+
+
+def test_oversize_fragmented_image_still_raises() -> None:
+    """An over-wide tall image must raise before emitting output (issue #776)."""
+    instance = printer.Dummy()
+    instance.profile.profile_data = {"media": {"width": {"pixels": 20}}}
+
+    with pytest.raises(ImageWidthError):
+        instance.image(Image.new("RGB", (21, 200)), center=True, fragment_height=100)
+    assert instance.output == b""
