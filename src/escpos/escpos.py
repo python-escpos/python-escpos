@@ -241,6 +241,20 @@ class Escpos(object, metaclass=ABCMeta):
         """
         im = EscposImage(img_source)
 
+        if im.height > fragment_height:
+            fragments = im.split(fragment_height)
+            for fragment in fragments:
+                self.image(
+                    fragment,
+                    high_density_vertical=high_density_vertical,
+                    high_density_horizontal=high_density_horizontal,
+                    impl=impl,
+                    fragment_height=fragment_height,
+                    center=center,
+                )
+                self._sleep_in_fragment()
+            return
+
         try:
             max_width = int(self.profile.profile_data["media"]["width"]["pixels"])
 
@@ -256,19 +270,6 @@ class Escpos(object, metaclass=ABCMeta):
                     "The media.width.pixel field of the printer profile is not set. "
                     "The center flag will have no effect."
                 )
-
-        if im.height > fragment_height:
-            fragments = im.split(fragment_height)
-            for fragment in fragments:
-                self.image(
-                    fragment,
-                    high_density_vertical=high_density_vertical,
-                    high_density_horizontal=high_density_horizontal,
-                    impl=impl,
-                    fragment_height=fragment_height,
-                )
-                self._sleep_in_fragment()
-            return
 
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
