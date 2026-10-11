@@ -100,6 +100,8 @@ from .exceptions import (
 )
 from .magicencode import MagicEncode
 
+logger = logging.getLogger(__name__)
+
 # Remove special characters and whitespaces of the supported barcode names,
 # convert to uppercase and map them to their original names.
 HW_BARCODE_NAMES = {
@@ -241,12 +243,6 @@ class Escpos(object, metaclass=ABCMeta):
         im = EscposImage(img_source)
 
         try:
-            if self.profile.profile_data["media"]["width"]["pixels"] == "Unknown":
-                print(
-                    "The media.width.pixel field of the printer profile is not set. "
-                    + "The center flag will have no effect."
-                )
-
             max_width = int(self.profile.profile_data["media"]["width"]["pixels"])
 
             if im.width > max_width:
@@ -254,12 +250,13 @@ class Escpos(object, metaclass=ABCMeta):
 
             if center:
                 im.center(max_width)
-        except KeyError:
+        except (KeyError, ValueError):
             # If the printer's pixel width is not known, print anyways...
-            pass
-        except ValueError:
-            # If the max_width cannot be converted to an int, print anyways...
-            pass
+            if center:
+                logger.warning(
+                    "The media.width.pixel field of the printer profile is not set. "
+                    + "The center flag will have no effect."
+                )
 
         if im.height > fragment_height:
             fragments = im.split(fragment_height)
@@ -520,7 +517,7 @@ class Escpos(object, metaclass=ABCMeta):
             except (KeyError, TypeError, ZeroDivisionError):
                 # Value on error.
                 dpi = 180
-                print(f"No printer's DPI info was found: Defaulting to {dpi}.")
+                logger.warning(f"No printer's DPI info was found: Defaulting to {dpi}.")
             self.profile.profile_data["media"]["dpi"] = dpi
         return dpi
 
@@ -619,7 +616,7 @@ class Escpos(object, metaclass=ABCMeta):
             if force_software in capable["sw"] and isinstance(force_software, str):
                 # Force to a specific mode
                 impl = force_software
-            print(f"Using {impl} software barcode renderer")
+            logger.info(f"Using {impl} software barcode renderer")
             # Set barcode type
             bc = capable_bc["sw"] or bc
             # Get mm per point of the printer
@@ -636,7 +633,7 @@ class Escpos(object, metaclass=ABCMeta):
             )
             return
 
-        print("Using hardware barcode renderer")
+        logger.info("Using hardware barcode renderer")
         bc = capable_bc["hw"] or bc
         self._hw_barcode(
             code, bc, height, width, pos, font, align_ct, function_type, check
