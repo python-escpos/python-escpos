@@ -241,6 +241,20 @@ class Escpos(object, metaclass=ABCMeta):
         """
         im = EscposImage(img_source)
 
+        if im.height > fragment_height:
+            fragments = im.split(fragment_height)
+            for fragment in fragments:
+                self.image(
+                    fragment,
+                    high_density_vertical=high_density_vertical,
+                    high_density_horizontal=high_density_horizontal,
+                    impl=impl,
+                    fragment_height=fragment_height,
+                    center=center,
+                )
+                self._sleep_in_fragment()
+            return
+
         try:
             if self.profile.profile_data["media"]["width"]["pixels"] == "Unknown":
                 print(
@@ -261,19 +275,6 @@ class Escpos(object, metaclass=ABCMeta):
         except ValueError:
             # If the max_width cannot be converted to an int, print anyways...
             pass
-
-        if im.height > fragment_height:
-            fragments = im.split(fragment_height)
-            for fragment in fragments:
-                self.image(
-                    fragment,
-                    high_density_vertical=high_density_vertical,
-                    high_density_horizontal=high_density_horizontal,
-                    impl=impl,
-                    fragment_height=fragment_height,
-                )
-                self._sleep_in_fragment()
-            return
 
         if impl == "bitImageRaster":
             # GS v 0, raster format bit image
