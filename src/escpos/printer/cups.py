@@ -104,9 +104,7 @@ class CupsPrinter(Escpos):
         self.job_name = ""
         self.pending_job = False
 
-        self._device: Union[Literal[False], Literal[None], Type[cups.Connection]] = (
-            False
-        )
+        self._device: Union[Literal[False], Literal[None], Type[cups.Connection]] = False
 
     @property
     def printers(self) -> dict:
@@ -115,9 +113,7 @@ class CupsPrinter(Escpos):
             return self.device.getPrinters()
         return {}
 
-    def open(
-        self, job_name: str = "python-escpos", raise_not_found: bool = True
-    ) -> None:
+    def open(self, job_name: str = "python-escpos", raise_not_found: bool = True) -> None:
         """Set up a new print job and target the printer.
 
         A call to this method is required to send new jobs to
@@ -154,13 +150,10 @@ class CupsPrinter(Escpos):
             self.device = None
             if raise_not_found:
                 raise DeviceNotFoundError(
-                    f"Unable to start a print job for the printer {self.printer_name}:"
-                    + f"\n{e}"
+                    f"Unable to start a print job for the printer {self.printer_name}:" + f"\n{e}"
                 )
             else:
-                logging.error(
-                    "CupsPrinter printing %s not available", self.printer_name
-                )
+                logging.error("CupsPrinter printing %s not available", self.printer_name)
                 return
         logging.info("CupsPrinter printer enabled")
 

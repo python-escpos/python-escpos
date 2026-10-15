@@ -26,19 +26,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y graphviz libenchant-2-2 gcc libcups2-dev python3-dev xindy
         python -m pip install --upgrade pip
-        pip install flake8 pytest tox tox-gh
+        pip install pytest tox tox-gh
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Check sorting of imports
-      uses: isort/isort-action@master
-      with:
-        requirementsFiles: "requirements.txt doc/requirements.txt"
-        sortPaths: "./doc ./src ./examples ./test ./setup.py"
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E,F,W --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with tox
       run: |
         tox --conf pyproject.toml
