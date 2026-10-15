@@ -303,3 +303,6 @@ RT_MASK_OFFLINE: int = 26
 RT_MASK_PAPER: int = 18
 RT_MASK_LOWPAPER: int = 30
 RT_MASK_NOPAPER: int = 114
+
+# Speed command
+SET_PRINT_SPEED: bytes = GS + b"\x28\x4b\x02\x00\x32"
