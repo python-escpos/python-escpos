@@ -186,3 +186,33 @@ def test_center_image(dummy_with_width: printer.Dummy) -> None:
         instance.image(Image.new("RGB", (385, 200)), center=True)
 
     instance.image(Image.new("RGB", (384, 200)), center=True)
+
+
+@pytest.mark.parametrize(
+    "profile_data",
+    [
+        {"media": {"width": {"pixels": None}}},
+        {"media": {"width": None}},
+        {"media": None},
+    ],
+)
+def test_none_width_falls_back_to_print_anyways(profile_data: dict) -> None:
+    """A None media width must fall back to printing, not crash (issue #777)."""
+    instance = printer.Dummy()
+    instance.profile.profile_data = profile_data
+
+    instance.image(Image.new("RGB", (10, 10)))
+    assert instance.output != b""
+    printed = len(instance.output)
+
+    instance.image(Image.new("RGB", (10, 10)), center=True)
+    assert len(instance.output) > printed
+
+
+def test_none_width_tall_image_falls_back_to_print_anyways() -> None:
+    """A None media width must not crash the fragmented path either (issue #777)."""
+    instance = printer.Dummy()
+    instance.profile.profile_data = {"media": {"width": None}}
+
+    instance.image(Image.new("RGB", (10, 200)), fragment_height=100)
+    assert instance.output != b""
