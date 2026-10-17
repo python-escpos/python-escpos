@@ -10,6 +10,7 @@
 
 import functools
 import logging
+import os
 from typing import Dict, Literal, Optional, Type, Union
 
 from ..escpos import Escpos
@@ -155,7 +156,11 @@ class Usb(Escpos):
         and detach_kernel_driver().
         This helps enable this library to work on Windows.
         """
-        if self.device and self.device.backend.__module__.endswith("libusb1"):
+        if (
+            self.device
+            and self.device.backend.__module__.endswith("libusb1")
+            and os.name == "win32"
+        ):
             check_driver: Optional[bool] = None
 
             try:
@@ -170,7 +175,7 @@ class Usb(Escpos):
                     pass
                 except usb.core.USBError as e:
                     if check_driver is not None:
-                        logging.error("Could not detatch kernel driver: %s", str(e))
+                        logging.error("Could not detach kernel driver: %s", str(e))
 
     def _configure_usb(self) -> None:
         """Configure USB."""
@@ -178,7 +183,6 @@ class Usb(Escpos):
             return
         try:
             self.device.set_configuration()
-            self.device.reset()
         except usb.core.USBError as e:
             logging.error("Could not set configuration: %s", str(e))
 
