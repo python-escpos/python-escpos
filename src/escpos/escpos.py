@@ -283,15 +283,15 @@ class Escpos(object, metaclass=ABCMeta):
                 GS
                 + b"v0"
                 + bytes((density_byte,))
-                + self._int_low_high(im.width_bytes, 2)
-                + self._int_low_high(im.height, 2)
+                + im.width_bytes.to_bytes(2, "little")
+                + im.height.to_bytes(2, "little")
             )
             self._raw(header + im.to_raster_format())
 
         if impl == "graphics":
             # GS ( L raster format graphics
-            img_header = self._int_low_high(im.width, 2) + self._int_low_high(
-                im.height, 2
+            img_header = im.width.to_bytes(2, "little") + im.height.to_bytes(
+                2, "little"
             )
             tone = b"0"
             colors = b"1"
@@ -308,7 +308,7 @@ class Escpos(object, metaclass=ABCMeta):
                 32 if high_density_vertical else 0
             )
             header = (
-                ESC + b"*" + density_byte.to_bytes() + self._int_low_high(im.width, 2)
+                ESC + b"*" + density_byte.to_bytes() + im.width.to_bytes(2, "little")
             )
             outp = [ESC + b"3" + int.to_bytes(16)]  # Adjust line-feed size
             for blob in im.to_column_format(high_density_vertical):
@@ -323,7 +323,7 @@ class Escpos(object, metaclass=ABCMeta):
         :param fn: Function number to use, as byte
         :param data: Data to send
         """
-        header = self._int_low_high(len(data) + 2, 2)
+        header = (len(data) + 2).to_bytes(2, "little")
         self._raw(GS + b"(L" + header + m + fn + data)
 
     def qr(
@@ -434,28 +434,8 @@ class Escpos(object, metaclass=ABCMeta):
         """
         if len(m) > 1 or len(cn) != 1 or len(fn) != 1:
             raise ValueError("cn and fn must be one byte each.")
-        header = self._int_low_high(len(data) + len(m) + 2, 2)
+        header = (len(data) + len(m) + 2).to_bytes(2, "little")
         self._raw(GS + b"(k" + header + cn + fn + m + data)
-
-    @staticmethod
-    def _int_low_high(inp_number: int, out_bytes: int) -> bytes:
-        """Generate multiple bytes for a number: In lower and higher parts, or more parts as needed.
-
-        :param inp_number: Input number
-        :param out_bytes: The number of bytes to output (1 - 4).
-        """
-        max_input = 256 << (out_bytes * 8) - 1
-        if not 1 <= out_bytes <= 4:
-            raise ValueError("Can only output 1-4 bytes")
-        if not 0 <= inp_number <= max_input:
-            raise ValueError(
-                f"Number too large. Can only output up to {max_input} in {out_bytes} bytes"
-            )
-        outp = b""
-        for _ in range(0, out_bytes):
-            outp += (inp_number % 256).to_bytes()
-            inp_number //= 256
-        return outp
 
     def charcode(self, code: str = "AUTO") -> None:
         """Set Character Code Table.
