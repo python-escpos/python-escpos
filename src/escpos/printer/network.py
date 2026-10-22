@@ -93,18 +93,14 @@ class Network(Escpos):
 
         try:
             # Open device
-            self.device: Optional[socket.socket] = socket.socket(
-                socket.AF_INET, socket.SOCK_STREAM
-            )
+            self.device: Optional[socket.socket] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.device.settimeout(self.timeout)
             self.device.connect((self.host, self.port))
         except OSError as e:
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
-                raise DeviceNotFoundError(
-                    f"Could not open socket for {self.host}:\n{e}"
-                )
+                raise DeviceNotFoundError(f"Could not open socket for {self.host}:\n{e}")
             else:
                 logging.error("Network device %s not found", self.host)
                 return

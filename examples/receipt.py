@@ -61,9 +61,7 @@ p = printer.Dummy(profile="TM-P80")
 
 # Store Logo at the Top
 p.set_with_default()
-image_path_hocus_pocus = (
-    pathlib.Path(__file__).parent.resolve() / "graphics/receipt/hocus-pocus.gif"
-)
+image_path_hocus_pocus = pathlib.Path(__file__).parent.resolve() / "graphics/receipt/hocus-pocus.gif"
 p.image(image_path_hocus_pocus, center=True)
 
 # Print Address, centered
@@ -139,9 +137,7 @@ p.software_columns(text_list=[txt], widths=disclaimer_width, align="justify")
 # A creature for good luck
 p.set_with_default()
 p.ln(2)
-image_path_creature5 = (
-    pathlib.Path(__file__).parent.resolve() / "graphics/receipt/creature5.gif"
-)
+image_path_creature5 = pathlib.Path(__file__).parent.resolve() / "graphics/receipt/creature5.gif"
 p.image(image_path_creature5, center=True)
 
 p.cut(mode="PART", feed=True)

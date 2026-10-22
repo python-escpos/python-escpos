@@ -92,14 +92,9 @@ class Win32Raw(Escpos):
     def printers(self) -> dict:
         """Available Windows printers."""
         flags = win32print.PRINTER_ENUM_NAME | win32print.PRINTER_ENUM_CONNECTIONS
-        return {
-            printer["pPrinterName"]: printer
-            for printer in win32print.EnumPrinters(flags, None, 4)
-        }
+        return {printer["pPrinterName"]: printer for printer in win32print.EnumPrinters(flags, None, 4)}
 
-    def open(
-        self, job_name: str = "python-escpos", raise_not_found: bool = True
-    ) -> None:
+    def open(self, job_name: str = "python-escpos", raise_not_found: bool = True) -> None:
         """Open connection to default printer.
 
         By default raise an exception if device is not found.
@@ -118,21 +113,16 @@ class Win32Raw(Escpos):
             self.printer_name = self.printer_name or win32print.GetDefaultPrinter()
             assert self.printer_name in self.printers, "Incorrect printer name"
             # Open device
-            self.device: Optional["PyPrinterHANDLE"] = win32print.OpenPrinter(
-                self.printer_name
-            )
+            self.device: Optional["PyPrinterHANDLE"] = win32print.OpenPrinter(self.printer_name)
             if self.device:
-                self.current_job = win32print.StartDocPrinter(
-                    self.device, 1, (job_name, "", "RAW")
-                )
+                self.current_job = win32print.StartDocPrinter(self.device, 1, (job_name, "", "RAW"))
                 win32print.StartPagePrinter(self.device)
         except (AssertionError, pywintypes.error) as e:
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
                 raise DeviceNotFoundError(
-                    f"Unable to start a print job for the printer {self.printer_name}:"
-                    + f"\n{e}"
+                    f"Unable to start a print job for the printer {self.printer_name}:" + f"\n{e}"
                 )
             else:
                 logging.error("Win32Raw printing %s not available", self.printer_name)
