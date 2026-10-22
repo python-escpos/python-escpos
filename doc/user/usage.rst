@@ -216,6 +216,40 @@ If something is wrong, an ``CharCodeError`` will be raised.
 After you have manually set the code page the printer won't change it anymore.
 You can revert to normal behavior by setting charcode to ``AUTO``.
 
+Arabic, Persian and Urdu text
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Arabic script is written from right to left, and most letters change their shape
+to join the letters next to them.
+``text()`` sends one code page character per letter, in the order they are stored.
+Unless your printer joins and reorders the letters itself, a word like ``عصير`` is
+printed with its letters apart and in reverse order
+(see `issue #633 <https://github.com/python-escpos/python-escpos/issues/633>`_).
+
+Printing the text as an image works on any printer that can print images.
+For example, `khatt <https://github.com/DrEssam97/khatt>`_ (``pip install khatt``)
+draws Arabic text with its letters joined and in the right order, without any
+system libraries:
+
+.. code-block:: Python
+
+   import khatt
+   from escpos.printer import Usb
+
+   p = Usb(0x04b8, 0x0202, profile="TM-T88V")
+
+   receipt = khatt.caption_image(
+       "عصير برتقال  ٢٥ ج.م\nشكرًا لزيارتكم",
+       font="noto-naskh",  # a bundled font, or the path to a .ttf/.otf file
+       font_size=30,
+       size=(512, None),  # the printer's width in dots (512 for the TM-T88V)
+       method="caption",  # wrap long lines to that width
+       horizontal_align="right",
+       bg_color="white",
+   )
+   p.image(receipt)
+   p.cut()
+
 Resolving bus timeout issues during printing images
 ---------------------------------------------------
 
