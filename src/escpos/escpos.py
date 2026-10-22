@@ -593,7 +593,7 @@ class Escpos(object, metaclass=ABCMeta):
             if force_software in capable["sw"] and isinstance(force_software, str):
                 # Force to a specific mode
                 impl = force_software
-            logger.info(f"Using {impl} software barcode renderer")
+            logger.info("Using %s software barcode renderer", impl)
             # Set barcode type
             bc = capable_bc["sw"] or bc
             # Get mm per point of the printer
