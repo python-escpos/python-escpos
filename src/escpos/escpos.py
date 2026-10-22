@@ -494,7 +494,7 @@ class Escpos(object, metaclass=ABCMeta):
             except (KeyError, TypeError, ZeroDivisionError):
                 # Value on error.
                 dpi = 180
-                logger.warning(f"No printer's DPI info was found: Defaulting to {dpi}.")
+                logger.warning(f"No printer's DPI info was found: Defaulting to %s.", dpi)
             self.profile.profile_data["media"]["dpi"] = dpi
         return dpi
 
