@@ -38,7 +38,7 @@ classifiers = [
     "Topic :: Office/Business :: Financial :: Point-Of-Sale",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 dependencies = [
     "argcomplete",
     "importlib_resources",
