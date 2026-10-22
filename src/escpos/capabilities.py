@@ -51,12 +51,18 @@ if full_load:
         CAPABILITIES = yaml.safe_load(cp)
         if not CAPABILITIES:
             # yaml could not be loaded
-            print(
+            logger.error(
                 f"Capabilities yaml from {capabilities_path} could not be loaded.\n"
                 "This python package seems to be broken. If it has been installed "
                 "from official sources, please report an issue on GitHub.\n"
                 "Currently loaded capabilities:\n"
-                f"{CAPABILITIES}"
+                "Capabilities yaml from %s could not be loaded.\n"
+                "This python package seems to be broken. If it has been installed "
+                "from official sources, please report an issue on GitHub.\n"
+                "Currently loaded capabilities:\n"
+                "%s",
+                capabilities_path,
+                CAPABILITIES,
             )
             CAPABILITIES = {
                 "profiles": {
@@ -74,10 +80,11 @@ if full_load:
                     }
                 },
             }
-            print(
+            logger.error(
                 "Created a minimal backup profile, "
                 "many functionalities of the library will not work:\n"
-                f"{CAPABILITIES}"
+                "%s",
+                CAPABILITIES,
             )
         pickle.dump(CAPABILITIES, pp, protocol=2)
 
