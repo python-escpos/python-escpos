@@ -79,9 +79,9 @@ if full_load:
                 },
             }
             logger.error(
-                "Created a minimal backup profile, "
-                "many functionalities of the library will not work:\n"
-                f"{CAPABILITIES}"
+"Created a minimal backup profile, "
+"many functionalities of the library will not work:\n"
+"%s", CAPABILITIES
             )
         pickle.dump(CAPABILITIES, pp, protocol=2)
 
