@@ -255,7 +255,7 @@ class Escpos(object, metaclass=ABCMeta):
             if center:
                 logger.warning(
                     "The media.width.pixel field of the printer profile is not set. "
-                    + "The center flag will have no effect."
+                    "The center flag will have no effect."
                 )
 
         if im.height > fragment_height:
