@@ -3,7 +3,7 @@ name = "flask-example"
 version = "0.1.0"
 description = "Flask and Python-ESC/POS example"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "platformdirs==4.3.8",
     "argcomplete==3.0.8",
@@ -24,5 +24,5 @@ dependencies = [
     "qrcode==8.2.0",
     "six==1.16.0",
     "typing_extensions==4.5.0",
-    "Werkzeug==3.1.6",
+    "Werkzeug==3.1.9",
 ]

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.9"
+# requires-python = ">=3.11"
 # dependencies = ["python-escpos"]
 # [tool.uv.sources]
 # python-escpos = { path = "../", editable = true }
