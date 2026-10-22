@@ -5,8 +5,8 @@ python-escpos - Python library to manipulate ESC/POS Printers
 Description
 ===========
 
-.. image:: https://readthedocs.org/projects/python-escpos/badge/?version=latest
-    :target: https://python-escpos.readthedocs.io/en/latest/?badge=latest
+.. image:: https://app.readthedocs.org/projects/python-escpos/badge/?version=latest
+    :target: https://app.readthedocs.org/projects/python-escpos/badge/?version=latest
     :alt: Documentation Status
 
 Python ESC/POS is a library which lets the user have access to all those printers handled
