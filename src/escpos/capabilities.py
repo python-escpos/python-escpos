@@ -56,7 +56,11 @@ if full_load:
                 "This python package seems to be broken. If it has been installed "
                 "from official sources, please report an issue on GitHub.\n"
                 "Currently loaded capabilities:\n"
-                f"{CAPABILITIES}"
+"Capabilities yaml from %s could not be loaded.\n"
+"This python package seems to be broken. If it has been installed "
+"from official sources, please report an issue on GitHub.\n"
+"Currently loaded capabilities:\n"
+"%s", capabilities_path, CAPABILITIES
             )
             CAPABILITIES = {
                 "profiles": {
