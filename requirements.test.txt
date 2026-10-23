@@ -5,5 +5,4 @@ pytest-cov
 pytest-mock
 scripttest
 hypothesis>=6.83
-flake8>7
 sphinxcontrib-spelling>=8.0.2
