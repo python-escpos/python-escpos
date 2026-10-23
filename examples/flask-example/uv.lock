@@ -21,15 +21,6 @@ wheels = [
 ]
 
 [[package]]
-name = "argparse"
-version = "1.4.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/18/dd/e617cfc3f6210ae183374cd9f6a26b20514bbb5a792af97949c5aacddf0f/argparse-1.4.0.tar.gz", hash = "sha256:62b089a55be1d8949cd2bc7e0df0bddb9e028faefc8c32038cc84862aefdd6e4", size = 70508, upload-time = "2015-09-12T20:22:16.217Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f2/94/3af39d34be01a24a6e65433d19e107099374224905f1e0cc6bbe1fd22a2f/argparse-1.4.0-py2.py3-none-any.whl", hash = "sha256:c31647edb69fd3d465a847ea3157d37bed1f95f19760b11a47aa91c04b666314", size = 23000, upload-time = "2015-09-14T16:03:16.137Z" },
-]
-
-[[package]]
 name = "blinker"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -118,7 +109,7 @@ requires-dist = [
     { name = "pypng", specifier = "==0.20220715.0" },
     { name = "pyserial", specifier = "==3.5" },
     { name = "python-barcode", specifier = "==0.16.1" },
-    { name = "python-escpos", specifier = "==3.0a9" },
+    { name = "python-escpos", specifier = "==3.1" },
     { name = "pyusb", specifier = "==1.2.1" },
     { name = "pyyaml", specifier = "==6.0" },
     { name = "qrcode", specifier = "==8.2.0" },
@@ -128,12 +119,12 @@ requires-dist = [
 ]
 
 [[package]]
-name = "future"
-version = "1.0.0"
+name = "importlib-resources"
+version = "7.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a7/b2/4140c69c6a66432916b26158687e821ba631a4c9273c474343badf84d3ba/future-1.0.0.tar.gz", hash = "sha256:bd2968309307861edae1458a4f8a4f3598c03be43b97521076aebf5d94c07b05", size = 1228490, upload-time = "2024-02-21T11:52:38.461Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/06/b56dfa750b44e86157093bc8fca0ab81dccbf5260510de4eaf1cb69b5b99/importlib_resources-7.1.0.tar.gz", hash = "sha256:0722d4c6212489c530f2a145a34c0a7a3b4721bc96a15fada5930e2a0b760708", size = 44985, upload-time = "2026-04-12T16:36:09.232Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/71/ae30dadffc90b9006d77af76b393cb9dfbfc9629f339fc1574a1c52e6806/future-1.0.0-py3-none-any.whl", hash = "sha256:929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216", size = 491326, upload-time = "2024-02-21T11:52:35.956Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/db/55a262f3606bebcae07cc14095338471ad7c0bbcaa37707e6f0ee49725b7/importlib_resources-7.1.0-py3-none-any.whl", hash = "sha256:1bd7b48b4088eddb2cd16382150bb515af0bd2c70128194392725f82ad2c96a1", size = 37232, upload-time = "2026-04-12T16:36:08.219Z" },
 ]
 
 [[package]]
@@ -309,25 +300,22 @@ wheels = [
 
 [[package]]
 name = "python-escpos"
-version = "3.0a9"
+version = "3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "appdirs" },
     { name = "argcomplete" },
-    { name = "argparse" },
-    { name = "future" },
+    { name = "importlib-resources" },
     { name = "pillow" },
-    { name = "pyserial" },
     { name = "python-barcode" },
-    { name = "pyusb" },
     { name = "pyyaml" },
     { name = "qrcode" },
     { name = "setuptools" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/77/3f/bd137eadb7b764a3de9878e84ace1e1d5cae90947eae49311de3962645b1/python-escpos-3.0a9.tar.gz", hash = "sha256:f694f5e82b5c047b9a8620cec4c4e7f1336bb13603afd8414d513790cd340830", size = 172740, upload-time = "2023-05-11T21:41:37.48Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b5/e8/dbcaca6c9db8d133e3a2fc36982f20bb0bdc9bdc9e04a540b231dd75b2d1/python-escpos-3.1.tar.gz", hash = "sha256:31240cdd43a6d3371c2c536f8dec02f31bf68ee967cd2edb255a94cf67295ac0", size = 199540, upload-time = "2023-12-17T22:06:03.643Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/e2/def51a266f86e827f7560612d7a6ae3c397b623ba735c065379a027cd50d/python_escpos-3.0a9-py3-none-any.whl", hash = "sha256:c018ab7c44f403af55c9dfc555b440c8797069443fcfb93eaa167c298fbc9198", size = 48663, upload-time = "2023-05-11T21:41:19.939Z" },
+    { url = "https://files.pythonhosted.org/packages/88/5e/def5f834b900d98c4c6477469b4e0cd1147d7158ddffcddac6904ec53f6e/python_escpos-3.1-py3-none-any.whl", hash = "sha256:d9aec8c50b106ca83aaf0781e2bd38a02c82ab206cb6d673241db5252438c73e", size = 69350, upload-time = "2023-12-17T22:06:01.048Z" },
 ]
 
 [[package]]
