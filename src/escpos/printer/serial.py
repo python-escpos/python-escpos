@@ -146,9 +146,7 @@ class Serial(Escpos):
             # Raise exception or log error and cancel
             self.device = None
             if raise_not_found:
-                raise DeviceNotFoundError(
-                    f"Unable to open serial printer on {self.devfile}:\n{e}"
-                )
+                raise DeviceNotFoundError(f"Unable to open serial printer on {self.devfile}:\n{e}")
             else:
                 logging.error("Serial device %s not found", self.devfile)
                 return

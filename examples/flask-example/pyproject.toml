@@ -13,7 +13,7 @@ dependencies = [
     "itsdangerous==2.2.0",
     "Jinja2==3.1.6",
     "MarkupSafe==2.1.2",
-    "Pillow==12.3.0",
+    "Pillow==13.0.0",
     "pycups==2.0.1",
     "pypng==0.20220715.0",
     "pyserial==3.5",
