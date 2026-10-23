@@ -4,5 +4,5 @@ pytest>=7.4
 pytest-cov
 pytest-mock
 scripttest
-hypothesis>=6.83
+hypothesis>=6.170.5
 sphinxcontrib-spelling>=8.0.2
