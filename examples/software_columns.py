@@ -10,7 +10,7 @@ from escpos import printer
 
 
 def main() -> None:
-    """Main function."""
+    """Run the example."""
     p = printer.Dummy(profile="TM-U220")
 
     font = "a"

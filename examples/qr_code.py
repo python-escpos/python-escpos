@@ -12,7 +12,7 @@ from escpos.printer import Usb
 
 
 def main() -> None:
-    """Main function."""
+    """Run the example."""
     if len(sys.argv) != 2:
         print("usage: qr_code.py <content>")
         sys.exit(1)

@@ -74,7 +74,7 @@ def forecast(idx: int, data: Dict, printer: Usb) -> None:
 
 
 def main() -> None:
-    """Main function."""
+    """Run the example."""
     # Adapt to your needs
     printer = Usb(0x0416, 0x5011, profile="POS-5890")
     # if you want Fahrenheit change units= to 'us'

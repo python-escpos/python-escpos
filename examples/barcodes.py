@@ -10,7 +10,7 @@ from escpos.printer import Usb
 
 
 def main() -> None:
-    """Main function."""
+    """Run the example."""
     p = Usb(0x0416, 0x5011, profile="TM-T88II")
 
     # Print software and then hardware barcode with the same content

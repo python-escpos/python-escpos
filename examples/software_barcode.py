@@ -10,7 +10,7 @@ from escpos.printer import Dummy
 
 
 def main() -> None:
-    """Main function."""
+    """Run the example."""
     # Adapt to your needs
     # p = Usb(0x0416, 0x5011, profile="POS-5890")
     p = Dummy(profile="POS-5890")
