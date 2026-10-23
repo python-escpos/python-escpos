@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=77", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 
@@ -8,7 +8,8 @@ name = "python-escpos"
 dynamic = ["version"]
 description = "Python library to manipulate ESC/POS Printers"
 readme = "README.rst"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     {name = "python-escpos developers", email = "dev@pkanzler.de"},
 ]
