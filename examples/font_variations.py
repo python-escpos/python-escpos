@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["python-escpos"]
+# [tool.uv.sources]
+# python-escpos = { path = "../", editable = true }
+# ///
 """Font variations demo.
 
 This demo allows testing multiple combination of specific font variations.
