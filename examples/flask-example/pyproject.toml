@@ -18,7 +18,7 @@ dependencies = [
     "pypng==0.20220715.0",
     "pyserial==3.5",
     "python-barcode==0.16.1",
-    "python-escpos==3.0a9",
+    "python-escpos==3.1",
     "pyusb==1.2.1",
     "PyYAML==6.0",
     "qrcode==8.2.0",
