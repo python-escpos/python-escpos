@@ -112,6 +112,35 @@ class TestMagicEncode:
             encode.write("€ ist teuro.")
             assert driver.output == b"\x1bt\x00? ist teuro."
 
+    class TestInstanceIsolation:
+        """Two MagicEncode objects on one driver must not share state.
+
+        See https://github.com/python-escpos/python-escpos/issues/766
+        """
+
+        def test_successive_instances_with_own_encoder(self, driver: printer.Dummy) -> None:
+            encode = MagicEncode(driver, encoder=Encoder({"CP1251": 1}))
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x01\xb3 is like i."
+
+            # Dummy.output accumulates every write, so reset it between instances.
+            driver.clear()
+            encode = MagicEncode(driver, encoder=Encoder({"CP855": 2}))
+            encode.write("і is like i.")
+            assert driver.output == b"\x1bt\x02\x8a is like i."
+
+        def test_default_encoders_do_not_share_containers(self, driver: printer.Dummy) -> None:
+            first = MagicEncode(driver)
+            second = MagicEncode(driver)
+            assert first.encoder is not second.encoder
+            assert first.encoder.codepages is not second.encoder.codepages
+            assert first.encoder.available_characters is not second.encoder.available_characters
+
+            first.write("€")
+            assert first.encoder.used_encodings
+            assert not second.encoder.used_encodings
+            assert second.encoding is None
+
     class TestResetEncoding:
         """Tests for reset_encoding(), which discards cached encoding state.
 
