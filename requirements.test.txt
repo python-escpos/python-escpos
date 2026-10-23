@@ -1,5 +1,5 @@
 jaconv
-tox>=4.11
+tox>=4.67.1
 pytest>=7.4
 pytest-cov
 pytest-mock
