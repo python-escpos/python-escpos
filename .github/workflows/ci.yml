@@ -1,0 +1,66 @@
+# Lint, type check, build the docs and run the tests of python-escpos.
+# Lint and the docs build run once (see `lint-and-docs` in the matrix), everything else on every OS and Python version.
+name: CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  checks:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.11', '3.12', '3.13', '3.14', '3.15']
+        include:
+          - os: ubuntu-latest
+            python-version: '3.13'
+            lint-and-docs: true
+    env:
+      ESCPOS_CAPABILITIES_FILE: ${{ github.workspace }}/capabilities-data/dist/capabilities.json
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: 'recursive'
+    - name: Set up uv
+      uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      with:
+        python-version: ${{ matrix.python-version }}
+        enable-cache: true
+    - name: Install system dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y graphviz libenchant-2-2 gcc libcups2-dev python3-dev xindy
+    - name: Lint and format with ruff (tox -e style)
+      if: matrix.lint-and-docs
+      run: |
+        uv run --locked --only-group tox tox --conf pyproject.toml -e style
+    - name: Run tests (tox)
+      run: |
+        uv run --locked --only-group tox tox --conf pyproject.toml
+    - name: Type check with mypy (tox -e mypy)
+      run: |
+        uv run --locked --only-group tox tox --conf pyproject.toml -e mypy
+    - name: Build documentation (tox -e docs)
+      if: matrix.lint-and-docs
+      run: |
+        uv run --locked --only-group tox tox --conf pyproject.toml -e docs
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v7
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        env_vars: OS,PYTHON
+        fail_ci_if_error: true
+        files: ./coverage.xml
+        exclude: "**/.mypy_cache"
+        flags: unittests
+        name: coverage-tox-${{ matrix.os }}-${{ matrix.python-version }}
+        verbose: true
+    - name: Run examples
+      run: |
+        uv run --no-dev python examples/receipt.py
+        uv run --no-dev python examples/font_variations.py
+        uv run --no-dev python examples/block_text.py
