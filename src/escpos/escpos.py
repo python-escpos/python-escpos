@@ -235,13 +235,14 @@ class Escpos(object, metaclass=ABCMeta):
         :param high_density_vertical: print in high density in vertical direction *default:* True
         :param high_density_horizontal: print in high density in horizontal direction *default:* True
         :param impl: choose image printing mode between `bitImageRaster`, `graphics` or `bitImageColumn`
-        :param fragment_height: Images larger than this will be split into multiple fragments *default:* 960
+        :param fragment_height: Images larger than this will be split into multiple fragments. Does not apply
+            to `bitImageColumn` *default:* 960
         :param center: Center image horizontally *default:* False
 
         """
         im = EscposImage(img_source)
 
-        if im.height > fragment_height:
+        if im.height > fragment_height and impl != "bitImageColumn":
             fragments = im.split(fragment_height)
             for fragment in fragments:
                 self.image(
