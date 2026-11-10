@@ -301,10 +301,10 @@ class Escpos(object, metaclass=ABCMeta):
             # ESC *, column format bit image
             density_byte = (1 if high_density_horizontal else 0) + (32 if high_density_vertical else 0)
             header = ESC + b"*" + density_byte.to_bytes() + im.width.to_bytes(2, "little")
-            outp = [ESC + b"3" + int.to_bytes(16)]  # Adjust line-feed size
+            outp = [LINESPACING_FUNCS[180] + int.to_bytes(0)]  # Set line-feed to 0
             for blob in im.to_column_format(high_density_vertical):
                 outp.append(header + blob + b"\n")
-            outp.append(ESC + b"2")  # Reset line-feed size
+            outp.append(LINESPACING_RESET)  # Reset line-feed size
             self._raw(b"".join(outp))
 
     def _image_send_graphics_data(self, m, fn, data) -> None:
