@@ -53,6 +53,10 @@ class Dummy(Escpos):
         """
         self._output_list.append(msg)
 
+    def _check_persistent_print_quality_support(self) -> None:
+        """Reject device queries because Dummy only echoes its own output."""
+        raise NotImplementedError("Persistent print quality requires raw printer replies, unavailable through Dummy")
+
     def _read(self) -> bytes:
         """Read the last byte of data and return it to the caller."""
         if not self._output_list:
