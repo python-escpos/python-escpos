@@ -30,6 +30,21 @@ update the `.mailmap` and the authors-list.
 You can find a good documentation on the mapping-feature in the
 `documentation of git-shortlog <https://git-scm.com/docs/git-shortlog#_mapping_authors>`_.
 
+Development setup
+-----------------
+
+This project uses `uv <https://docs.astral.sh/uv/>`_ to manage its development environment.
+The development dependencies are declared as dependency groups in ``pyproject.toml``
+and pinned in ``uv.lock``.
+
+.. code-block:: sh
+
+    uv sync --all-extras          # create .venv with the library and all development dependencies
+    uv run pytest                 # run the tests in that environment
+    uv run --only-group tox tox   # run the full test matrix (the ``tox-uv`` plugin lets tox use uv)
+
+Please commit the updated ``uv.lock`` when you change dependencies.
+
 Style-Guide
 -----------
 
