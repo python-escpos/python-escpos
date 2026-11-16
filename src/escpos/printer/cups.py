@@ -192,6 +192,10 @@ class CupsPrinter(Escpos):
         self.tmpfile.close()
         self.pending_job = False
 
+    def _check_persistent_print_quality_support(self) -> None:
+        """Reject device queries because CUPS only reports print queue status."""
+        raise NotImplementedError("Persistent print quality requires raw printer replies, unavailable through CUPS")
+
     def _read(self) -> bytes:
         """Return the byte corresponding to the RT status response.
 

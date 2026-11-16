@@ -1501,6 +1501,116 @@ class Escpos(object, metaclass=ABCMeta):
 
         self._raw(SET_PRINT_SPEED + speed.to_bytes(1, "big"))
 
+    def _check_persistent_print_quality_support(self) -> None:
+        """Require a transport that can read user setting replies."""
+        if type(self)._read is Escpos._read:
+            raise NotImplementedError("Persistent print quality requires a bidirectional transport")
+
+    def _read_user_setting_response(self, header: bytes) -> bytes:
+        """Read a complete NUL-terminated user setting reply, including fragmented replies."""
+        response = bytearray()
+        deadline = time.monotonic() + 5
+        for _ in range(64):
+            if len(response) >= 64 or time.monotonic() >= deadline:
+                break
+            chunk = self._read()
+            # USB can deliver an empty packet between complete reply frames.
+            response.extend(chunk)
+            start = response.find(header)
+            if start >= 0:
+                end = response.find(NUL, start + len(header))
+                if end >= 0:
+                    return bytes(response[start + len(header) : end])
+        raise ValidationError("A complete user setting response was not received")
+
+    def _query_customized_setting(self, number: int) -> int:
+        """Query one customized setting with GS ( E Function 6."""
+        self._raw(GS + b"(E\x02\x00\x06" + bytes([number]))
+        response = self._read_user_setting_response(b"\x37\x27" + str(number).encode("ascii") + b"\x1f")
+        if not 1 <= len(response) <= 5 or not response.isdigit():
+            raise ValidationError("Invalid customized setting value")
+        value = int(response)
+        if value > 65535:
+            raise ValidationError("Customized setting value is out of range")
+        return value
+
+    def get_persistent_print_quality(self) -> dict[str, int]:
+        """Read saved print density and speed with Epson GS ( E Function 6.
+
+        This queries NV settings without changing them or resetting the printer.
+        The saved speed can differ from a temporary override set by
+        :meth:`set_print_speed`. Reading requires a bidirectional transport;
+        blocking reads are subject to that transport's timeout.
+        USB reads use PyUSB's default timeout; ``Usb(timeout=...)`` controls writes.
+
+        Values are returned as the printer's unsigned 16-bit customized values
+        for parameters 5 (density) and 6 (speed). Their meaning and supported
+        ranges depend on the model; consult its command reference.
+
+        :return: Dictionary with the raw ``density`` and ``speed`` setting values.
+        :raises NotImplementedError: If the transport cannot return raw setting replies.
+        :raises ValidationError: If a response is incomplete or contains an invalid value.
+        """
+        self._check_persistent_print_quality_support()
+        density = self._query_customized_setting(5)
+        speed = self._query_customized_setting(6)
+        return {"density": density, "speed": speed}
+
+    def set_persistent_print_quality(self, *, density: int | None = None, speed: int | None = None) -> None:
+        """Save print density and speed with Epson GS ( E Function 5.
+
+        This enters user setting mode, writes only the supplied settings, checks
+        their readback, then leaves setting mode and resets the printer. Call
+        only while printing is stopped and the receive/print buffers are empty.
+        Do not call for every receipt: the values survive power cycles.
+
+        This resets text formatting and code page state. If communication fails,
+        settings may already have changed; do not automatically retry. Blocking
+        reads are subject to the underlying transport's timeout.
+        USB reads use PyUSB's default timeout; ``Usb(timeout=...)`` controls writes.
+
+        Only use this on printers that document customized values 5 and 6.
+        The accepted ranges and meanings are model-dependent. Values use the
+        unsigned 16-bit representation in the model's command reference.
+        The connection may need to be reopened after the software reset.
+        CUPS, LP, File and Dummy cannot provide the required raw replies.
+
+        For example, TM-T88V density 6 means 130% and speed 1 is the slowest.
+        This differs from the legacy ``set(density=...)`` command.
+
+        :param density: Customized value for parameter 5, an integer from 0 to 65535.
+        :param speed: Customized value for parameter 6, an integer from 0 to 65535.
+            Omitted parameters remain unchanged; supply at least one parameter.
+        :raises ValueError: If a level is invalid or no setting is supplied.
+        :raises NotImplementedError: If the transport cannot return raw setting replies.
+        :raises ValidationError: If entering setting mode or readback validation fails.
+        """
+        values = {}
+        for name, level in (("density", density), ("speed", speed)):
+            if level is not None and (type(level) is not int or not 0 <= level <= 65535):
+                raise ValueError(f"{name} must be an unsigned 16-bit integer")
+        if density is not None:
+            values[5] = density
+        if speed is not None:
+            values[6] = speed
+        if not values:
+            raise ValueError("Supply density or speed")
+        self._check_persistent_print_quality_support()
+        self.hw("INIT")
+        try:
+            self._raw(GS + b"(E\x03\x00\x01IN")
+            if self._read_user_setting_response(b"\x37\x20"):
+                raise ValidationError("Unexpected user setting mode response")
+            payload = b"\x05" + b"".join(
+                bytes([number]) + value.to_bytes(2, "little") for number, value in values.items()
+            )
+            self._raw(GS + b"(E" + len(payload).to_bytes(2, "little") + payload)
+            for number, expected in values.items():
+                if self._query_customized_setting(number) != expected:
+                    raise ValidationError("Customized setting readback did not match")
+        finally:
+            self._raw(GS + b"(E\x04\x00\x02OUT")
+
 
 class EscposIO:
     r"""ESC/POS Printer IO object.
