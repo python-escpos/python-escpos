@@ -128,8 +128,60 @@ module = [
 ignore_missing_imports = true
 
 
+[dependency-groups]
+test = [
+  "jaconv",
+  "coverage",
+  "scripttest",
+  "mock",
+  "pytest>=7.4",
+  "pytest-cov",
+  "pytest-mock",
+  "hypothesis>=6.83",
+  "python-barcode>=0.16.0,<1",
+]
+docs = [
+  "sphinx>=7.2.3",
+  "docutils>=0.22",
+  "setuptools_scm",
+  "importlib-metadata",
+  "python-barcode>=0.16.0,<1",
+  "sphinx-argparse",
+  "sphinxcontrib-spelling>=8.0.2",
+  "sphinxcontrib.datatemplates",
+  "sphinx-autodoc-typehints",
+  "sphinx_rtd_theme>=3.1.0",
+  "pycups; platform_system!='Windows'",
+]
+lint = ["ruff"]
+typing = [
+  "mypy",
+  "types-six",
+  "types-mock",
+  "types-PyYAML",
+  "types-Pillow",
+  "types-pyserial",
+  "types-pywin32>=306.0.0.6",
+  "types-flask",
+  "hypothesis>=6.83",
+  "jaconv",
+]
+tox = [
+  "tox>=4.22",
+  "tox-gh",
+  "tox-uv",
+]
+dev = [
+  {include-group = "test"},
+  {include-group = "docs"},
+  {include-group = "lint"},
+  {include-group = "typing"},
+  {include-group = "tox"},
+]
+
+
 [tool.tox]
-requires = ["tox>=4.11"]
+requires = ["tox>=4.22", "tox-uv"]
 envlist = ["3.11", "3.12", "3.13", "3.14", "3.15", "docs", "style", "mypy"]
 
 
@@ -142,17 +194,7 @@ envlist = ["3.11", "3.12", "3.13", "3.14", "3.15", "docs", "style", "mypy"]
 
 
 [tool.tox.env_run_base]
-deps = [
-  "jaconv",
-  "coverage",
-  "scripttest",
-  "mock",
-  "pytest>=7.4",
-  "pytest-cov",
-  "pytest-mock",
-  "hypothesis>=6.83",
-  "python-barcode>=0.16.0,<1",
-]
+dependency_groups = ["test"]
 extras = ["all"]
 commands = [["pytest", { replace = "posargs", extend = true }]]
 passenv = [
@@ -171,17 +213,7 @@ setenv = { PY_IGNORE_IMPORTMISMATCH = "1" }
 [tool.tox.env.docs]
 base_python = ["python"]
 changedir = "doc"
-deps = [
-  "sphinx>=7.2.3",
-  "setuptools_scm",
-  "python-barcode>=0.16.0,<1",
-  "sphinx-argparse",
-  "sphinxcontrib-spelling>=8.0.2",
-  "sphinxcontrib.datatemplates",
-  "sphinx-autodoc-typehints",
-  "sphinx_rtd_theme",
-  "pycups",
-]
+dependency_groups = ["docs"]
 commands = [
   [
     "sphinx-build",
@@ -208,24 +240,14 @@ commands = [
 
 [tool.tox.env.style]
 base_python = ["python"]
-deps = ["ruff"]
+package = "skip"
+dependency_groups = ["lint"]
 commands = [["ruff", "--version"], ["ruff", "check", "."], ["ruff", "format"]]
 
 
 [tool.tox.env.mypy]
 base_python = ["python"]
-deps = [
-  "mypy",
-  "types-six",
-  "types-mock",
-  "types-PyYAML",
-  "types-Pillow",
-  "types-pyserial",
-  "types-pywin32>=306.0.0.6",
-  "types-flask",
-  "hypothesis>=6.83",
-  "jaconv",
-]
+dependency_groups = ["typing"]
 commands = [["mypy", "src", "test", "examples"]]
 
 
