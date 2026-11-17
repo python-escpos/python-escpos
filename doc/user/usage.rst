@@ -229,7 +229,8 @@ printed with its letters apart and in reverse order
 Printing the text as an image works on any printer that can print images.
 For example, `khatt <https://github.com/DrEssam97/khatt>`_ (``pip install khatt``)
 draws Arabic text with its letters joined and in the right order, without any
-system libraries:
+system libraries.
+Its ``receipt_image()`` lays out a whole receipt at the printer's width:
 
 .. code-block:: Python
 
@@ -238,17 +239,23 @@ system libraries:
 
    p = Usb(0x04b8, 0x0202, profile="TM-T88V")
 
-   receipt = khatt.caption_image(
-       "عصير برتقال  ٢٥ ج.م\nشكرًا لزيارتكم",
-       font="noto-naskh",  # a bundled font, or the path to a .ttf/.otf file
-       font_size=30,
-       size=(512, None),  # the printer's width in dots (512 for the TM-T88V)
-       method="caption",  # wrap long lines to that width
-       horizontal_align="right",
-       bg_color="white",
+   receipt = khatt.receipt_image(
+       [
+           ("عصير برتقال", "٢٥ ج.م"),
+           ("كعكة", "١٥ ج.م"),
+           "---",
+           ("المجموع", "٤٠ ج.م"),
+       ],
+       width=512,  # the printer's width in dots (512 for the TM-T88V)
+       title="مقهى الخط",
+       footer="شكرًا لزيارتكم",
    )
    p.image(receipt)
    p.cut()
+
+Each row is a line of text or an ``(item, price)`` pair, and ``"---"`` draws a
+divider. ``width`` also takes ``"80mm"`` (576 dots) or ``"58mm"`` (384 dots).
+For other layouts, ``khatt.caption_image()`` draws any text as an image.
 
 Resolving bus timeout issues during printing images
 ---------------------------------------------------
