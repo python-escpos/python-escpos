@@ -63,7 +63,7 @@ def test_bit_image_colfmt_black() -> None:
     """
     instance = printer.Dummy()
     instance.image("test/resources/canvas_black.png", impl="bitImageColumn")
-    assert instance.output == b"\x1b3\x10\x1b*!\x01\x00\x80\x00\x00\x0a\x1b2"
+    assert instance.output == b"\x1b3\x00\x1b*!\x01\x00\x80\x00\x00\x0a\x1b2"
 
 
 def test_bit_image_colfmt_white() -> None:
@@ -72,7 +72,7 @@ def test_bit_image_colfmt_white() -> None:
     """
     instance = printer.Dummy()
     instance.image("test/resources/canvas_white.png", impl="bitImageColumn")
-    assert instance.output == b"\x1b3\x10\x1b*!\x01\x00\x00\x00\x00\x0a\x1b2"
+    assert instance.output == b"\x1b3\x00\x1b*!\x01\x00\x00\x00\x00\x0a\x1b2"
 
 
 def test_bit_image_colfmt_both() -> None:
@@ -82,7 +82,7 @@ def test_bit_image_colfmt_both() -> None:
     instance = printer.Dummy()
     instance.image("test/resources/black_white.png", impl="bitImageColumn")
     assert (
-        instance.output == b"\x1b3\x10\x1b*!\x02\x00\x80\x00\x00\x80\x00\x00\x0a\x1b2"
+        instance.output == b"\x1b3\x00\x1b*!\x02\x00\x80\x00\x00\x80\x00\x00\x0a\x1b2"
     )
 
 
@@ -93,7 +93,17 @@ def test_bit_image_colfmt_transparent() -> None:
     instance = printer.Dummy()
     instance.image("test/resources/black_transparent.png", impl="bitImageColumn")
     assert (
-        instance.output == b"\x1b3\x10\x1b*!\x02\x00\x80\x00\x00\x80\x00\x00\x0a\x1b2"
+        instance.output == b"\x1b3\x00\x1b*!\x02\x00\x80\x00\x00\x80\x00\x00\x0a\x1b2"
+    )
+
+def test_bit_image_colfmt_fragmentation() -> None:
+    """
+    bitImageColumn should not fragment images, even if they are taller than the fragment_height parameter.
+    """
+    instance = printer.Dummy()
+    instance.image("test/resources/black_white.png", impl="bitImageColumn", fragment_height=1)
+    assert (
+        instance.output == b"\x1b3\x00\x1b*!\x02\x00\x80\x00\x00\x80\x00\x00\x0a\x1b2"
     )
 
 
