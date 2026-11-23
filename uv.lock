@@ -1886,15 +1886,15 @@ wheels = [
 
 [[package]]
 name = "tox-gh"
-version = "1.9.3"
+version = "1.9.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "tox" },
     { name = "typing-extensions", marker = "python_full_version < '3.12'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/21/37/2be77636f5e6fa06c491b6dd69ba197a016d861999d3c16c9534dce5a74e/tox_gh-1.9.3.tar.gz", hash = "sha256:d420405ff3102c1b6435af552f608c75e4b340bc66cb4066bc9c55c9f39317b9", size = 12929, upload-time = "2026-11-06T14:52:58.609Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/21/de/a8ae6300b7fb9a74a93fd2bd13b7efe2d6e7f33a5740bf0622fbc1ab3bc2/tox_gh-1.9.4.tar.gz", hash = "sha256:638ea56ee12f6d533cfa4447fd0a2453b6e4aa513139d8600c0d4fcbafc90e42", size = 12906, upload-time = "2026-11-18T00:29:40.663Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4b/44/cee06ffe410e511f43a51ef7823239b91583d133d45e2c428ecdd9b34190/tox_gh-1.9.3-py3-none-any.whl", hash = "sha256:61fcafb19a132e5a6cc9f7d220c7378aa90d48c0486fd356a95f019e69107566", size = 10562, upload-time = "2026-11-06T14:52:57.352Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/71/001c607dcfb5ff004a153a8f00be74802c65c65db405855b00b9a8b6d7f9/tox_gh-1.9.4-py3-none-any.whl", hash = "sha256:5712ec2c8cf8063698285cfe174db82506913262af1c46dec5af17e8e651243f", size = 68600, upload-time = "2026-11-18T00:29:39.42Z" },
 ]
 
 [[package]]
