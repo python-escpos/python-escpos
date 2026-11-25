@@ -100,6 +100,10 @@ class File(Escpos):
         if self.auto_flush:
             self.flush()
 
+    def _check_persistent_print_quality_support(self) -> None:
+        """Reject queries because this backend only reads from the end of the file."""
+        raise NotImplementedError("Persistent print quality requires complete raw replies, unavailable through File")
+
     def _read(self) -> bytes:
         """Read a data buffer and return it to the caller."""
         assert self.device and not self.device.closed
